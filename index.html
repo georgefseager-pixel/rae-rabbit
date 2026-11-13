@@ -16,8 +16,14 @@
   <!-- Little on-screen counter -->
   <div id="hud">
     <span id="hearts"></span>
-    <span class="carrots">🥕 <span id="carrot-count">0</span> / <span id="carrot-total">0</span></span>
+    <span class="carrots carrot-mode-only">🥕 <span id="carrot-count">0</span> / <span id="carrot-total">0</span></span>
+    <span class="frog-mode-only">🐸 <span id="frog-count">0</span></span>
+    <span class="frog-mode-only">⏱ <span id="survive-time">0:00</span></span>
   </div>
+  <!-- Boss health (Frogpocalypse) -->
+  <div id="boss-bar" class="boss-only">👑 Jiggle Jaggle <span id="boss-hp">❤❤❤</span></div>
+  <!-- Big warning banner -->
+  <div id="banner"></div>
   <!-- Flashes red when Rae gets hurt -->
   <div id="hurt-flash"></div>
   <div id="toast"></div>
@@ -29,10 +35,24 @@
   <div id="overlay">
     <div class="card">
       <h1>🐰 Rae Rabbit's Cosy Home</h1>
-      <p id="overlay-title" class="big">
-        <span class="kb-only">Click to start</span>
-        <span class="pad-only">Press <span class="xb a">A</span> to start</span>
-      </p>
+      <!-- Main menu: pick a game mode -->
+      <div id="menu">
+        <p class="menu-sub">Choose your game!</p>
+        <div class="modes">
+          <button class="mode selected" data-mode="carrot">
+            <span class="mode-emoji">🥕</span>
+            <span class="mode-name">Carrotventure</span>
+            <span class="mode-desc">Explore the house, find carrots, smash things and dress up at the Flopsy Shop.</span>
+          </button>
+          <button class="mode" data-mode="frog">
+            <span class="mode-emoji">🐸</span>
+            <span class="mode-name">Frogpocalypse</span>
+            <span class="mode-desc">Frogs everywhere! Survive 5 minutes... then face the boss.</span>
+          </button>
+        </div>
+        <p class="pad-only menu-pad-hint"><span class="xb pill">✚</span> / <span class="xb pill">LS</span> choose &nbsp;·&nbsp; <span class="xb a">A</span> play</p>
+      </div>
+      <p id="overlay-title" class="big hidden"></p>
       <!-- Keyboard & mouse controls -->
       <p class="controls kb-only">
         <b>W A S D</b> move &nbsp;·&nbsp; <b>Mouse</b> look &nbsp;·&nbsp; <b>Space</b> hop &nbsp;·&nbsp; <b>Click</b> punch<br>
@@ -70,11 +90,26 @@
       <h1>💤 Rae needs a nap!</h1>
       <p class="sub">Here's how your adventure went:</p>
       <div class="stats">
-        <div class="stat"><span class="icon">🥕</span><span class="label">Carrots collected</span><b id="go-carrots">0</b></div>
+        <div class="stat carrot-mode-only"><span class="icon">🥕</span><span class="label">Carrots collected</span><b id="go-carrots">0</b></div>
+        <div class="stat frog-mode-only"><span class="icon">⏱</span><span class="label">Time survived</span><b id="go-time">0:00</b></div>
         <div class="stat"><span class="icon">💥</span><span class="label">Things smashed</span><b id="go-smashed">0</b></div>
         <div class="stat"><span class="icon">🐸</span><span class="label">Frogs stomped</span><b id="go-frogs">0</b></div>
       </div>
       <button id="play-again"><span class="pad-only xb a">A</span> Play again</button>
+    </div>
+  </div>
+
+  <!-- YOU WIN! (beating the boss in Frogpocalypse) -->
+  <div id="win" class="hidden">
+    <div class="card summary win-card">
+      <h1>🏆 YOU WIN! 🏆</h1>
+      <p class="sub">Boss Frog Jiggle Jaggle has been defeated!</p>
+      <div class="stats">
+        <div class="stat"><span class="icon">⏱</span><span class="label">Time survived</span><b id="win-time">0:00</b></div>
+        <div class="stat"><span class="icon">🐸</span><span class="label">Frogs stomped</span><b id="win-frogs">0</b></div>
+        <div class="stat"><span class="icon">💥</span><span class="label">Things smashed</span><b id="win-smashed">0</b></div>
+      </div>
+      <button id="win-again" class="play-again"><span class="pad-only xb a">A</span> Play again</button>
     </div>
   </div>
 
@@ -93,6 +128,7 @@
   <script src="js/house.js"></script>
   <script src="js/player.js"></script>
   <script src="js/shop.js"></script>
+  <script src="js/frogpocalypse.js"></script>
   <script src="js/gamepad.js"></script>
   <script src="js/main.js"></script>
 </body>

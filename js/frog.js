@@ -28,6 +28,13 @@ const FROG_LINES = [
 // How often a frog spawns as a tiny, speedy MINI frog (0.15 = 15% of the time)
 const MINI_FROG_CHANCE = 0.15;
 
+// What Boss Frog Jiggle Jaggle shouts
+const BOSS_LINES = [
+  "I AM JIGGLE JAGGLE! RIBBIT!!!",
+  "You can't hop away from me, bunny!",
+  "Bow before the BOSS FROG!",
+];
+
 // Pastel colours for the frogs; each frog gets its own
 const FROG_COLORS = {
   green:  0x9fdc8a,
@@ -40,6 +47,7 @@ const FROG_COLORS = {
 };
 
 class Frog {
+  // (Frog.sightBoost below makes every frog see further — Frogpocalypse turns it up)
   constructor(world, x, y, z, color) {
     this.world = world;
     this.spawn = new THREE.Vector3(x, y, z);
@@ -186,14 +194,69 @@ class Frog {
     const from = new THREE.Vector3(this.pos.x, this.pos.y + 0.35, this.pos.z);
     const to = new THREE.Vector3(player.pos.x, player.pos.y + 0.35, player.pos.z);
     const dist = from.distanceTo(to);
-    const blockers = this.world.props.filter((p) => p.solid && !p.broken &&
-      (p.name === "wall" || p.name === "door" || p.name.includes("floor") || p.name === "ceiling"));
+    const blockers = this.world.sightBlockers();
     const point = new THREE.Vector3();
     for (let d = 0.3; d < dist - 0.2; d += 0.3) {
       point.lerpVectors(from, to, d / dist);
       if (blockers.some((b) => b.box.containsPoint(point))) return false;
     }
     return true;
+  }
+
+  // ---- The BOSS: Jiggle Jaggle. Giant, crowned, takes 3 hits ----
+  setBoss() {
+    this.isBoss = true;
+    this.mini = false;
+    this.size = 3;
+    this.radius = 0.6;
+    this.height = 1.41;
+    this.sightRange = 40;
+    this.loseRange = 100;
+    this.hopSpeed = 1.9;
+    this.hopPower = 4.2;
+    this.hopRest = 0.45;
+    this.respawnDistance = Infinity; // never resets
+    this.hp = 3;
+    this.hitCooldown = 0;
+    this.flash = 0;
+    this.recolor(0x7fc46e);
+    // A golden crown on top of his head
+    if (!this.crown) {
+      this.crown = new THREE.Group();
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.08, 0.05, 8), pastel(0xf6cf5a));
+      this.crown.add(band);
+      for (let i = 0; i < 5; i++) {
+        const a = (i / 5) * Math.PI * 2;
+        const spike = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.06, 4), pastel(0xf6cf5a));
+        spike.position.set(Math.cos(a) * 0.065, 0.05, Math.sin(a) * 0.065);
+        const gem = blob(0.012, i % 2 ? 0xe2475a : 0x6fa8f0);
+        gem.position.set(Math.cos(a) * 0.08, 0, Math.sin(a) * 0.08);
+        this.crown.add(spike, gem);
+      }
+      this.crown.position.set(0, 0.2, 0.0);
+      this.crown.traverse((o) => (o.userData.keep = true)); // stays gold when recoloured
+      this.head.add(this.crown);
+    }
+  }
+
+  // Boss got hit: lose a heart, flash red. Returns true when he's defeated.
+  bossHit() {
+    if (this.hitCooldown > 0) return false;
+    this.hp--;
+    this.hitCooldown = 0.8;
+    this.flash = 0.5;
+    Sfx.frogPop();
+    if (this.hp <= 0) {
+      this.pop();
+      // extra-big burst of pieces for the boss
+      const box = new THREE.Box3().setFromObject(this.root);
+      this.world.debris.burst({ mesh: this.root, box });
+      this.world.debris.burst({ mesh: this.root, box });
+      return true;
+    }
+    Dialogue.say(this.hp === 2 ? "OUCH! RIBBIT!" : "GRRRIBBIT! One more and I'm toast!",
+      { speaker: "👑 Jiggle Jaggle", style: "enemy", voice: "frog" });
+    return false;
   }
 
   // Pop! Called when Rae lands on its head.
@@ -228,17 +291,25 @@ class Frog {
     this.sightTimer -= dt;
     if (this.sightTimer <= 0) {
       this.sightTimer = 0.25;
-      this.canSee = sameLevel && dist < (this.chasing ? this.loseRange : this.sightRange) && this.lookFor(player);
+      const range = (this.chasing ? this.loseRange : this.sightRange) * Frog.sightBoost;
+      this.canSee = sameLevel && dist < range && this.lookFor(player);
     }
     this.talkCooldown = Math.max(0, this.talkCooldown - dt);
+    this.hitCooldown = Math.max(0, (this.hitCooldown || 0) - dt);
     if (this.canSee && !this.chasing) {
       this.chasing = true;
       if (this.talkCooldown === 0) {
-        const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
-        Dialogue.say(this.mini ? line.toUpperCase() : line, this.mini
-          ? { speaker: "🐸 Mini frog", style: "enemy", voice: "minifrog" }
-          : { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
-        this.talkCooldown = 10;
+        if (this.isBoss) {
+          Dialogue.say(BOSS_LINES[Math.floor(Math.random() * BOSS_LINES.length)],
+            { speaker: "👑 Jiggle Jaggle", style: "enemy", voice: "frog" });
+          this.talkCooldown = 6;
+        } else {
+          const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
+          Dialogue.say(this.mini ? line.toUpperCase() : line, this.mini
+            ? { speaker: "🐸 Mini frog", style: "enemy", voice: "minifrog" }
+            : { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
+          this.talkCooldown = 10;
+        }
         if (typeof raeSays === "function") raeSays("frog-spotted"); // Rae's reply, the first time
       }
     }
@@ -246,7 +317,8 @@ class Frog {
 
     // ---- Decide where to hop ----
     let dir = null;
-    if (this.chasing && dist > 0.35) {
+    const closeEnough = this.radius + 0.15;
+    if (this.chasing && dist > closeEnough) {
       dir = { x: dx / dist, z: dz / dist };
       if (this.mini) {
         // Mini frogs zig-zag as they chase, so they're harder to land on
@@ -266,7 +338,7 @@ class Frog {
       if (!this.wanderDir.stay) dir = this.wanderDir;
     }
     if (dir) this.targetYaw = Math.atan2(-dir.x, -dir.z);
-    if (this.chasing && dist <= 0.35) this.targetYaw = Math.atan2(-dx, -dz);
+    if (this.chasing && dist <= closeEnough) this.targetYaw = Math.atan2(-dx, -dz);
 
     // Turn smoothly
     let diff = this.targetYaw - this.yaw;
@@ -333,6 +405,16 @@ class Frog {
   animate(dt, time) {
     this.root.position.copy(this.pos);
     this.root.rotation.y = this.yaw;
+
+    // Flash red when hit (the boss)
+    if (this.flash > 0 || this.wasFlashing) {
+      this.flash = Math.max(0, (this.flash || 0) - dt);
+      const glow = this.flash > 0 ? (Math.sin(time * 40) > 0 ? 0.8 : 0.2) : 0;
+      this.root.traverse((o) => {
+        if (o.isMesh && !o.userData.keep) { o.material.emissive.setRGB(1, 0.1, 0.15); o.material.emissiveIntensity = glow; }
+      });
+      this.wasFlashing = this.flash > 0;
+    }
     this.squash = Math.max(0, this.squash - dt * 5);
 
     const crouching = this.crouch > 0 ? Math.min(1, this.crouch / 0.15) : 0;
@@ -356,3 +438,4 @@ class Frog {
     }
   }
 }
+Frog.sightBoost = 1; // how much further than normal all frogs can see

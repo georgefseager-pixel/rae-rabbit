@@ -64,15 +64,28 @@ function handleGamepad(dt) {
   if (lx || ly || rx || ry || gp.buttons.some((b) => b.pressed)) Pad.setMode("gamepad");
   Pad.navCooldown = Math.max(0, Pad.navCooldown - dt);
 
-  const gameOverShown = !document.getElementById("gameover").classList.contains("hidden");
+  const endShown = !document.getElementById("gameover").classList.contains("hidden") ||
+    !document.getElementById("win").classList.contains("hidden");
   const startOrPauseShown = !overlay.classList.contains("hidden");
 
-  if (gameOverShown) {
+  if (endShown) {
     if (pressed(BTN.A) || pressed(BTN.MENU)) location.reload(); // play again
   } else if (inShop) {
     shopWithPad(pressed, lx, ly);
+  } else if (startOrPauseShown && !started) {
+    // Main menu: left/right (or up/down) to pick a mode, A to play
+    const current = modeButtons.findIndex((b) => b.classList.contains("selected"));
+    let move = 0;
+    if (pressed(BTN.LEFT) || pressed(BTN.UP)) move = -1;
+    if (pressed(BTN.RIGHT) || pressed(BTN.DOWN)) move = 1;
+    if (!move && Pad.navCooldown === 0 && (Math.abs(lx) > 0.5 || Math.abs(ly) > 0.5)) {
+      move = (lx || ly) > 0 ? 1 : -1;
+      Pad.navCooldown = 0.25;
+    }
+    if (move) selectMode(Math.max(0, Math.min(modeButtons.length - 1, current + move)));
+    if (pressed(BTN.A) || pressed(BTN.MENU)) startGame(modeButtons[Math.max(0, current)].dataset.mode);
   } else if (startOrPauseShown) {
-    if (pressed(BTN.A) || pressed(BTN.MENU)) overlay.click(); // start / carry on
+    if (pressed(BTN.A) || pressed(BTN.MENU)) resumeGame(); // carry on
   } else if (started && !paused) {
     // Playing!
     player.padMove.x = lx;

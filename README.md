@@ -4,6 +4,14 @@ A little 3D first-person game: hop around as Rae Rabbit, collect carrots and sma
 
 ## How to play it
 Double-click `index.html` to open it in your web browser (needs internet the first time, to load Three.js).
+Pick a game mode from the main menu:
+
+- **🥕 Carrotventure**: explore the house, find carrots, smash things, dress up at the Flopsy Shop.
+- **🐸 Frogpocalypse**: frogs pour in from all over the house, more and more as time goes on. The Flopsy
+  Shop is boarded up and Flopsy has fled. The HUD shows frogs stomped and how long you've survived;
+  carrots heal a heart. Survive **5 minutes** and **Boss Frog Jiggle Jaggle** (giant, with a crown)
+  appears in the living room. He takes 3 hits (stomps or punches). Beat him for the **YOU WIN!** screen.
+  Spawn rates, the frog limit and the boss time are at the top of `js/frogpocalypse.js`.
 
 - **W A S D**: move
 - **Mouse**: look around (or hold the button and drag, if the browser won't capture the mouse)
@@ -28,6 +36,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/debris.js` | The flying pieces when something breaks |
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
+| `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up the shop |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
 | `js/shop.js` | The Flopsy Shop: outfits & unlocks, the dancing stage, the menu, and Flopsy |
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |

@@ -37,6 +37,7 @@ function isUnlocked(outfit) {
 // Called every frame: when something new unlocks, Flopsy calls out about it
 let announcedUnlocks = null;
 function checkUnlocks() {
+  if (Frogpocalypse.active) return; // Flopsy has fled the Frogpocalypse
   if (!announcedUnlocks) announcedUnlocks = new Set(OUTFITS.filter(isUnlocked).map((o) => o.id));
   for (const outfit of OUTFITS) {
     if (!announcedUnlocks.has(outfit.id) && isUnlocked(outfit)) {
@@ -222,7 +223,14 @@ class Flopsy {
     this.greetCooldown = 0;
   }
 
+  // Frogpocalypse: Flopsy runs away and hides
+  leave() {
+    this.gone = true;
+    this.model.root.visible = false;
+  }
+
   update(dt, player, time) {
+    if (this.gone) return;
     const dx = player.pos.x - this.fake.pos.x, dz = player.pos.z - this.fake.pos.z;
     const insideWardrobe = player.pos.x > 4.12 && Math.abs(player.pos.y - this.fake.pos.y) < 1;
     const seesRae = insideWardrobe && Math.hypot(dx, dz) < 2.8;

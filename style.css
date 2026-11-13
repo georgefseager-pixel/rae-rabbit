@@ -160,6 +160,83 @@ html, body {
 }
 .card h1 { margin: 0 0 10px; font-size: 28px; }
 
+/* ---- Game modes ----
+   The page gets class "frog-mode" in Frogpocalypse, and "boss-fight" once the boss is out */
+body.frog-mode .carrot-mode-only { display: none !important; }
+body:not(.frog-mode) .frog-mode-only { display: none !important; }
+body:not(.boss-fight) .boss-only { display: none !important; }
+#overlay-title.hidden, #menu.hidden { display: none; }
+
+/* Main menu */
+.menu-sub { margin: 6px 0 14px; color: #8a7590; font-size: 18px; }
+.modes { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 14px; }
+.mode {
+  flex: 1 1 200px;
+  max-width: 260px;
+  padding: 16px 14px;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background: #fde7ee;
+  color: #6b5070;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.15s, box-shadow 0.15s;
+}
+.mode:hover, .mode.selected { transform: translateY(-3px); border-color: #f7a8c4; box-shadow: 0 6px 0 #f7a8c4; background: #fff; }
+.mode[data-mode="frog"] { background: #e4f6dc; }
+.mode[data-mode="frog"]:hover, .mode[data-mode="frog"].selected { border-color: #8fd47c; box-shadow: 0 6px 0 #8fd47c; background: #fff; }
+.mode-emoji { display: block; font-size: 40px; }
+.mode-name { display: block; font-size: 22px; font-weight: 700; margin: 4px 0; }
+.mode-desc { display: block; font-size: 14px; line-height: 1.35; color: #8a7590; }
+.menu-pad-hint { margin: 0 0 8px; color: #8a7590; }
+
+/* Boss health bar and the big warning banner */
+#boss-bar {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  padding: 6px 14px;
+  border-radius: 14px;
+  background: rgba(255, 240, 240, 0.92);
+  color: #c22f45;
+  font-weight: 700;
+  font-size: 18px;
+}
+#boss-hp { letter-spacing: 3px; }
+#banner {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  max-width: 90vw;
+  padding: 16px 26px;
+  border-radius: 20px;
+  background: #e8606f;
+  color: #fff;
+  font-family: "Fredoka", "Segoe UI", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 8px 0 #c94a59;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+#banner.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* YOU WIN! */
+#win {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 220, 140, 0.55);
+  animation: fade-in 0.5s;
+}
+#win.hidden { display: none; }
+.win-card h1 { color: #e0a020; font-size: 34px; }
+
 /* ---- Keyboard vs controller prompts ----
    The page gets class "pad" while a controller is being used (see gamepad.js). */
 body.pad .kb-only { display: none !important; }
@@ -315,7 +392,7 @@ body:not(.pad) .pad-only { display: none !important; }
 .stat .icon { font-size: 24px; }
 .stat .label { flex: 1; text-align: left; }
 .stat b { font-size: 22px; color: #d77a9b; }
-#play-again {
+#play-again, .play-again {
   font: inherit;
   font-size: 20px;
   font-weight: 600;
@@ -328,7 +405,7 @@ body:not(.pad) .pad-only { display: none !important; }
   cursor: pointer;
   transition: transform 0.1s;
 }
-#play-again:hover { transform: translateY(-2px); }
-#play-again:active { transform: translateY(3px); box-shadow: 0 2px 0 #e08aa9; }
+#play-again:hover, .play-again:hover { transform: translateY(-2px); }
+#play-again:active, .play-again:active { transform: translateY(3px); box-shadow: 0 2px 0 #e08aa9; }
 .card .big { font-size: 24px; margin: 10px 0; color: #d77a9b; font-weight: 700; }
 .card .controls { margin: 0; line-height: 1.7; }

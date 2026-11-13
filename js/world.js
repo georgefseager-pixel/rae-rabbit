@@ -39,6 +39,7 @@ class World {
   add(prop) {
     this.props.push(prop);
     this.scene.add(prop.mesh);
+    this.changed();
     return prop;
   }
 
@@ -46,10 +47,24 @@ class World {
   remove(prop) {
     this.scene.remove(prop.mesh);
     this.props = this.props.filter((p) => p !== prop);
+    this.changed();
   }
 
-  // Lists of props, handy for the player code
-  solids() { return this.props.filter((p) => p.solid && !p.broken); }
+  // Lists of props, handy for the player code. The solids list is remembered
+  // until something is added, removed or broken (lots of frogs ask for it every frame).
+  solids() {
+    if (!this.solidsCache) this.solidsCache = this.props.filter((p) => p.solid && !p.broken);
+    return this.solidsCache;
+  }
+  // Things that block a frog's view: walls, doors, floors, ceilings
+  sightBlockers() {
+    if (!this.blockersCache) {
+      this.blockersCache = this.props.filter((p) => p.solid && !p.broken &&
+        (p.name === "wall" || p.name === "door" || p.name.includes("floor") || p.name === "ceiling"));
+    }
+    return this.blockersCache;
+  }
+  changed() { this.solidsCache = null; this.blockersCache = null; }
   collectibles() { return this.props.filter((p) => p.collectible && !p.collected); }
 
   // ---------- Shape helpers ----------

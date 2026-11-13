@@ -168,6 +168,53 @@ const Sfx = {
     });
   },
 
+  // The boss arrives: a big, deep, wobbly "RRRIBBBIT"
+  bossRoar() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    for (const [freq, delay] of [[90, 0], [70, 0.45]]) {
+      const osc = this.ctx.createOscillator();
+      const wob = this.ctx.createOscillator();
+      const wobDepth = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+      const gain = this.ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(freq * 1.4, t + delay);
+      osc.frequency.exponentialRampToValueAtTime(freq, t + delay + 0.4);
+      wob.frequency.value = 18;
+      wobDepth.gain.value = 14;
+      wob.connect(wobDepth).connect(osc.frequency);
+      filter.type = "lowpass";
+      filter.frequency.value = 700;
+      gain.gain.setValueAtTime(0.0001, t + delay);
+      gain.gain.exponentialRampToValueAtTime(0.45, t + delay + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + delay + 0.42);
+      osc.connect(filter).connect(gain).connect(this.master);
+      osc.start(t + delay); wob.start(t + delay);
+      osc.stop(t + delay + 0.45); wob.stop(t + delay + 0.45);
+    }
+  },
+
+  // A happy "ta-da-da-DAAA!" for winning
+  win() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [523, 659, 784, 1047, 784, 1047].forEach((freq, i) => {
+      const start = t + i * 0.13 + (i >= 4 ? 0.1 : 0);
+      const long = i === 5;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.25, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + (long ? 1.0 : 0.25));
+      osc.connect(gain).connect(this.master);
+      osc.start(start);
+      osc.stop(start + (long ? 1.05 : 0.3));
+    });
+  },
+
   // A sleepy little falling tune for the summary screen
   gameOver() {
     if (!this.ctx) return;

@@ -8,6 +8,7 @@ const overlayTitle = document.getElementById("overlay-title");
 const countEl = document.getElementById("carrot-count");
 const totalEl = document.getElementById("carrot-total");
 const toastEl = document.getElementById("toast");
+const frogCountEl = document.getElementById("frog-count");
 
 // ---- Three.js basics: renderer, scene, camera ----
 THREE.ColorManagement.legacyMode = false; // makes our pastel colours show up true-to-life
@@ -99,6 +100,7 @@ function showGameOver() {
   gameOver = true;
   paused = true;
   document.getElementById("go-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
+  document.getElementById("go-time").textContent = formatTime(Frogpocalypse.time);
   document.getElementById("go-smashed").textContent = smashedCount;
   document.getElementById("go-frogs").textContent = stompedCount;
   document.getElementById("gameover").classList.remove("hidden");
@@ -117,16 +119,16 @@ function checkFrogs(fallingSpeed) {
     const top = frog.top();
     const stompReach = frog.radius + 0.14, bumpReach = frog.radius + 0.2; // smaller frogs are harder to land on
     if (flat < stompReach && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
-      frog.pop();
-      stompedCount++;
-      raeSays(frog.mini ? "minifrog-popped" : "frog-popped");
+      hitFrog(frog, "stomp");
       player.pos.y = top;
       player.vel.y = 5.5;   // boing off its head
       player.onGround = false;
     } else if (flat < bumpReach && flat > 0.001 && player.pos.y < top - 0.1 && player.pos.y + player.height > frog.pos.y) {
-      const push = bumpReach - flat;
-      frog.pos.x += (dx / flat) * push;
-      frog.pos.z += (dz / flat) * push;
+      if (!frog.isBoss) { // the boss is too big to shove
+        const push = bumpReach - flat;
+        frog.pos.x += (dx / flat) * push;
+        frog.pos.z += (dz / flat) * push;
+      }
       hurtRae(frog.pos.x, frog.pos.z);
     }
   }
@@ -162,11 +164,7 @@ function landPunch() {
     if (!frog.alive) continue;
     const middle = frog.pos.clone();
     middle.y += frog.height / 2;
-    if (middle.distanceTo(hit) < PUNCH_RADIUS + frog.radius) {
-      frog.pop();
-      stompedCount++;
-      raeSays("frog-punched");
-    }
+    if (middle.distanceTo(hit) < PUNCH_RADIUS + frog.radius) hitFrog(frog, "punch");
   }
 }
 
@@ -218,6 +216,7 @@ const RAE_LINES = {
   // carrots
   "first-carrot":  "Yummers mode!",
   "all-carrots":   "All the carrots! Best day ever!",
+  "carrot-heal":   "Crunchy! I feel better already!",
   // places (zones in house.js)
   "zone-bath":         "My fur is wet!",
   "zone-mirror-table": "Who's that cute bunny?!",
@@ -253,11 +252,34 @@ let collectedCount = 0;
 const totalCollectibles = world.collectibles().length;
 totalEl.textContent = totalCollectibles;
 
-// ---- Start / pause screen ----
+// ---- Main menu / pause screen ----
 let started = false;
 let paused = true;
+let gameMode = null; // "carrot" (Carrotventure) or "frog" (Frogpocalypse)
+const menuEl = document.getElementById("menu");
+const modeButtons = [...document.querySelectorAll(".mode")];
 
-overlay.addEventListener("click", () => {
+// Highlight a game mode on the menu (mouse hover, or controller)
+function selectMode(i) {
+  modeButtons.forEach((b, j) => b.classList.toggle("selected", i === j));
+}
+modeButtons.forEach((b, i) => {
+  b.addEventListener("mouseenter", () => selectMode(i));
+  b.addEventListener("click", (e) => { e.stopPropagation(); startGame(b.dataset.mode); });
+});
+
+// Start playing in the chosen mode
+function startGame(mode) {
+  if (started) return;
+  gameMode = mode;
+  if (mode === "frog") Frogpocalypse.start();
+  menuEl.classList.add("hidden");
+  overlayTitle.classList.remove("hidden");
+  resumeGame();
+}
+
+// Hide the menu/pause card and play
+function resumeGame() {
   Sfx.init();                 // sound is allowed now that the player clicked
   started = true;
   paused = false;
@@ -269,7 +291,10 @@ overlay.addEventListener("click", () => {
     const result = canvas.requestPointerLock();
     if (result && result.catch) result.catch(noLock);
   } catch (e) { noLock(); }
-});
+}
+
+// Clicking the pause card carries on (before the game starts, pick a mode instead)
+overlay.addEventListener("click", () => { if (started) resumeGame(); });
 
 document.addEventListener("pointerlockchange", () => {
   if (document.pointerLockElement !== canvas && started && !gameOver && !inShop) showPauseScreen();
@@ -293,6 +318,50 @@ function showToast(text) {
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2500);
 }
 
+// ---- Big warning banner (e.g. the boss arriving) ----
+let bannerTimer = null;
+function showBanner(text) {
+  const el = document.getElementById("banner");
+  el.textContent = text;
+  el.classList.add("show");
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => el.classList.remove("show"), 4000);
+}
+
+// ---- YOU WIN! (beat the boss in Frogpocalypse) ----
+function formatTime(seconds) {
+  const t = Math.floor(seconds);
+  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+}
+function showWin() {
+  gameOver = true;
+  paused = true;
+  document.getElementById("win-time").textContent = formatTime(Frogpocalypse.time);
+  document.getElementById("win-frogs").textContent = stompedCount;
+  document.getElementById("win-smashed").textContent = smashedCount;
+  document.getElementById("win").classList.remove("hidden");
+  if (document.exitPointerLock) document.exitPointerLock();
+  Sfx.win();
+}
+document.getElementById("win-again").addEventListener("click", () => location.reload());
+
+// Rae hit a frog (stomp or punch). The boss takes 3 hits; others pop straight away.
+function hitFrog(frog, how) {
+  if (frog.isBoss) {
+    if (frog.bossHit()) {
+      stompedCount++;
+      Dialogue.say("I did it! Rabbits rule FOREVER!");
+      document.body.classList.remove("boss-fight");
+      setTimeout(showWin, 1800);
+    }
+    return;
+  }
+  frog.pop();
+  stompedCount++;
+  if (how === "punch") raeSays("frog-punched");
+  else raeSays(frog.mini ? "minifrog-popped" : "frog-popped");
+}
+
 // ---- Check if Rae is touching any collectibles ----
 function checkCollectibles() {
   const c = player.center();
@@ -304,8 +373,14 @@ function checkCollectibles() {
       Sfx.chime();
       collectedCount++;
       countEl.textContent = collectedCount;
-      if (prop.name === "carrot") raeSays("first-carrot");
-      if (collectedCount === totalCollectibles) raeSays("all-carrots");
+      if (gameMode === "frog") {
+        // Frogpocalypse: carrots heal a heart
+        if (hearts < MAX_HEARTS) { hearts++; drawHearts(); }
+        raeSays("carrot-heal");
+      } else {
+        if (prop.name === "carrot") raeSays("first-carrot");
+        if (collectedCount === totalCollectibles) raeSays("all-carrots");
+      }
     }
   }
 }
@@ -332,6 +407,8 @@ function loop() {
     for (const frog of frogs) frog.update(dt, player, time);
     flopsy.update(dt, player, time);
     checkUnlocks();
+    Frogpocalypse.update(dt, player);
+    frogCountEl.textContent = stompedCount;
   } else if (!started) {
     player.update(0, world); // just place the camera for the title screen
   }
@@ -345,4 +422,4 @@ function loop() {
 loop();
 
 // Handy for debugging in the browser console: type  game  and press Enter
-window.game = { world, player, scene, camera, raeModel, paws, frogs, flopsy };
+window.game = { world, player, scene, camera, raeModel, paws, frogs, flopsy, Frogpocalypse };
