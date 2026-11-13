@@ -26,7 +26,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 
 ## The house (follows the real floorplan, at about 2x size)
 - **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed), a stool under it, two windows above the bed.
-  - Breakables: a lamp and a glass on each bedside table, five cans on the white table.
+  - Breakables: a lamp and a glass on each bedside table, five cans on the white table, six little clothes piles on the floor (one kicked under the bed).
   - Carrots: above the bed, under the bed, on the white table.
 - **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
 - **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.

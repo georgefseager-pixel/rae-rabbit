@@ -70,6 +70,14 @@ function buildBedroom(w) {
   w.add(makeCan(0.32, 1.35, 3.74, COLORS.canMint));
   w.add(makeCan(0.52, 1.35, 3.6, COLORS.canPink, COLORS.canLilac));
 
+  // Little piles of clothes dotted around the floor (breakable)
+  w.add(makeClothesPile(3.0, 0, 1.0, 1));
+  w.add(makeClothesPile(2.9, 0, -2.2, 2));
+  w.add(makeClothesPile(-3.2, 0, -1.5, 3));
+  w.add(makeClothesPile(-3.3, 0, 2.2, 4));
+  w.add(makeClothesPile(0.9, 0, 2.0, 5));    // on the rug
+  w.add(makeClothesPile(-0.8, 0, -1.0, 6));  // kicked under the bed
+
   // Carrots
   w.add(new Carrot(0, 2.2, -1.6));    // above the bed: bounce up to grab it!
   w.add(new Carrot(0.9, 0.27, -2.2)); // hidden under the bed

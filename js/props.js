@@ -151,6 +151,42 @@ function makeGlass(x, y, z) {
   return new Prop({ name: "glass", mesh: group, breakable: true });
 }
 
+// A small heap of clothes on the floor: a few squashed, crumpled shapes in
+// pastel colours. 'seed' picks the colours and shape, so each pile looks different
+// but stays the same every time the game loads.
+function makeClothesPile(x, y, z, seed = 1) {
+  let s = seed * 9301 + 49297;
+  const rand = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  const palette = [COLORS.canPink, COLORS.canBlue, COLORS.canMint, COLORS.canLilac, COLORS.butter, COLORS.duvet];
+
+  const group = new THREE.Group();
+  const layers = 3 + Math.floor(rand() * 2);
+  let height = 0;
+  for (let i = 0; i < layers; i++) {
+    const size = 0.32 - i * 0.05 + rand() * 0.08;    // smaller towards the top
+    const geo = rand() < 0.5
+      ? new THREE.DodecahedronGeometry(size, 0)       // crumpled jumper
+      : new THREE.BoxGeometry(size * 1.8, size, size * 1.3); // folded T-shirt
+    const piece = new THREE.Mesh(geo, pastel(palette[Math.floor(rand() * palette.length)]));
+    const flat = 0.28;                                // squash it flat
+    piece.scale.set(1, flat, 1);
+    piece.rotation.y = rand() * Math.PI;
+    piece.position.set((rand() - 0.5) * 0.15, height + size * flat * 0.8, (rand() - 0.5) * 0.15);
+    height += size * flat * 1.1;
+    group.add(piece);
+  }
+  // a stray sock poking out
+  const sock = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.22, 6), pastel(palette[Math.floor(rand() * palette.length)]));
+  sock.rotation.z = Math.PI / 2;
+  sock.rotation.y = rand() * Math.PI;
+  sock.position.set(0.22, 0.04, 0.05);
+  group.add(sock);
+
+  group.scale.setScalar(0.75); // overall size of the pile
+  group.position.set(x, y, z);
+  return new Prop({ name: "clothes", mesh: group, breakable: true });
+}
+
 // A door filling a doorway. It smashes apart when Rae touches it!
 //   alongX: true if the wall runs along x
 //   a..b:   the doorway's edges along the wall;  bottom..top: its height
