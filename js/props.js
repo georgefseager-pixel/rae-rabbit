@@ -29,6 +29,9 @@ const COLORS = {
   duvet:   0xc7b6ea, // lavender
   pillow:  0xfdf3f6, // pale pink-white
   corridor:0xfbeec4, // pale butter (hallway, coming later)
+  walnut:  0x9e7656, // brown bedside tables
+  walnutLight: 0xb48b6a, // drawer fronts
+  tableWhite: 0xfbf8f2, // white table
 };
 
 // Makes a flat-shaded pastel material (the "low-poly" look)

@@ -79,9 +79,15 @@ class World {
     // ---- The king-sized bed ----
     this.buildBed();
 
+    // ---- Furniture ----
+    // Tabletops are 1.35m high: too high to hop onto from the floor (a hop reaches ~1.2m).
+    this.buildBedsideTable(-2.4); // left of the bed
+    this.buildBedsideTable(2.4);  // right of the bed
+    this.buildWhiteTable();       // against the back wall, opposite the bed
+
     // ---- A round low-poly rug at the foot of the bed (decoration) ----
-    const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.02, 10), pastel(COLORS.rug));
-    rug.position.set(0, 0.01, 1.7);
+    const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.02, 10), pastel(COLORS.rug));
+    rug.position.set(0, 0.01, 1.5);
     this.add(new Prop({ name: "rug", mesh: rug, solid: false }));
 
     // ---- A carrot floating above the bed: bounce up to grab it! ----
@@ -102,7 +108,7 @@ class World {
   buildBed() {
     const W = 1.7;           // half the bed's width  (bed is 3.4m wide, from x=-1.7 to 1.7)
     const head = -4;         // headboard end touches the front wall
-    const foot = -0.2;       // foot end of the bed
+    const foot = 0.3;        // foot end of the bed (bed is 4.3m long)
     const under = 0.55;      // height of the gap underneath (Rae is 0.45m tall)
     const frameTop = 0.72;
     const mattressTop = 0.98;
@@ -125,6 +131,42 @@ class World {
     this.addSpan("bed-duvet", -W - 0.02, W + 0.02, mattressTop, mattressTop + 0.06, -2.5, foot - 0.03, COLORS.duvet, bounce);
     this.addSpan("bed-pillow", -1.45, -0.12, mattressTop, mattressTop + 0.16, -3.75, -3.15, COLORS.pillow, bounce);
     this.addSpan("bed-pillow", 0.12, 1.45, mattressTop, mattressTop + 0.16, -3.75, -3.15, COLORS.pillow, bounce);
+  }
+
+  // A brown bedside table against the front wall, centred at x.
+  // Too tall to reach from the floor: bounce over from the bed!
+  buildBedsideTable(x) {
+    const w = 0.4;           // half the width (table is 0.8m wide)
+    const z1 = -4, z2 = -3.3; // from the wall out to 0.7m deep
+    const top = 1.35;
+    const deco = { solid: false };
+
+    // Main cabinet body, and a slightly wider top
+    this.addSpan("bedside-table", x - w, x + w, 0, top - 0.05, z1, z2, COLORS.walnut);
+    this.addSpan("bedside-top", x - w - 0.04, x + w + 0.04, top - 0.05, top, z1, z2 + 0.04, COLORS.walnut);
+
+    // Two drawers with little round knobs (decoration)
+    for (const y of [0.45, 0.9]) {
+      this.addSpan("drawer", x - w + 0.06, x + w - 0.06, y - 0.17, y + 0.17, z2, z2 + 0.02, COLORS.walnutLight, deco);
+      const knob = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 4), pastel(COLORS.butter));
+      knob.position.set(x, y, z2 + 0.04);
+      this.add(new Prop({ name: "knob", mesh: knob, solid: false }));
+    }
+  }
+
+  // A wide white table against the back wall, next to the doorway, facing the bed.
+  // The only way up is a big bounce off the foot of the bed.
+  buildWhiteTable() {
+    const x1 = -1.8, x2 = 0.8;   // 2.6m wide
+    const z1 = 2.95, z2 = 3.95;  // 1m deep, back edge against the wall
+    const top = 1.35, thick = 0.08, leg = 0.12;
+
+    this.addSpan("white-table", x1, x2, top - thick, top, z1, z2, COLORS.tableWhite);
+    for (const x of [x1 + 0.05, x2 - 0.05 - leg]) {
+      for (const z of [z1 + 0.05, z2 - 0.05 - leg]) {
+        this.addSpan("white-table-leg", x, x + leg, 0, top - thick, z, z + leg, COLORS.tableWhite);
+      }
+    }
   }
 
   // A doorway in the back wall, with a short closed-off bit of corridor

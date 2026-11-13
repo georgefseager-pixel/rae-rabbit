@@ -9,7 +9,8 @@ class Player {
     this.camera = camera;
 
     // ---- Tweakable numbers (feel free to play with these!) ----
-    this.speed = 3.2;        // walking speed (metres per second)
+    this.speed = 3.4;        // walking speed (metres per second)
+    this.airBoost = 1.25;    // moves this much faster while in the air (bunny leaps!)
     this.hopPower = 6.2;     // how hard a hop launches upward (about 1.2 m high)
     this.gravity = 16;       // how fast Rae falls back down
     this.superBounce = 6.8;  // pressing Space as you land on something bouncy
@@ -89,8 +90,9 @@ class Player {
     let dz = -cos * forward - sin * right;
     const len = Math.hypot(dx, dz);
     if (len > 0) { dx /= len; dz /= len; }
-    this.vel.x = dx * this.speed;
-    this.vel.z = dz * this.speed;
+    const speed = this.onGround ? this.speed : this.speed * this.airBoost;
+    this.vel.x = dx * speed;
+    this.vel.z = dz * speed;
 
     // ---- 2. Hopping and gravity ----
     this.hopQueued = Math.max(0, this.hopQueued - dt);

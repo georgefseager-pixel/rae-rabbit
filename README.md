@@ -24,6 +24,8 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 
 ## Rooms so far
 - **Bedroom**: king-sized bed against the front wall (Rae can run underneath, and bounces on top; press Space as you land for a big bounce), doorway to the corridor on the right of the back wall (as you face it).
+  - Two brown bedside tables either side of the bed, 1.35m tall: too high to hop onto from the floor, so bounce over from the bed.
+  - A wide white table against the back wall, opposite the bed. Only reachable by a big bounce off the foot of the bed (press Space as you land, then run at it).
 
 ## Rae's first-time thoughts
 | When | She says |
