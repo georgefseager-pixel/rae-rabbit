@@ -58,6 +58,17 @@ const COLORS = {
   door:        0xf2c9a7, // doors
   doorPanel:   0xf8dcc3, // raised panels on doors
   exitSign:    0x9edbb0, // fire exit sign
+  // living room furniture
+  sofa:        0xf6f0e6, // big white sofa
+  sofaCushion: 0xefe6d6,
+  bamboo:      0xd9b77e, // bamboo tray on the sofa arm, wooden bowl
+  softBlack:   0x3c3843, // black tables and desk
+  tvBlack:     0x2a2730,
+  screenSky:   0xa7d8f2, // the game on the TV: sky...
+  screenGrass: 0x9fd59a, // ...and green hills
+  rugSage:     0xa8b19b, // grey-green shaggy rug
+  plant:       0x7fc28c,
+  book1: 0xf3a6b8, book2: 0xa6cdf0, book3: 0xf4d58f, book4: 0xb9a6ea, book5: 0x9fd8b4,
 };
 
 // Makes a flat-shaded pastel material (the "low-poly" look)
@@ -149,6 +160,44 @@ function makeGlass(x, y, z) {
   group.add(glass, water);
   group.position.set(x, y, z);
   return new Prop({ name: "glass", mesh: group, breakable: true });
+}
+
+// A bowl (bottom at y), e.g. a wooden salad bowl or a cereal bowl with a spoon
+function makeBowl(x, y, z, color, radius = 0.16, withSpoon = false) {
+  const group = new THREE.Group();
+  const h = radius * 0.6;
+  const bowl = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 0.55, h, 10), pastel(color));
+  bowl.position.y = h / 2;
+  const inside = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.86, radius * 0.86, 0.01, 10),
+    pastel(new THREE.Color(color).multiplyScalar(0.8).getHex()));
+  inside.position.y = h + 0.002;
+  group.add(bowl, inside);
+  if (withSpoon) {
+    const spoon = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, radius * 2.2), pastel(COLORS.steel));
+    spoon.position.set(radius * 0.3, h + 0.04, 0);
+    spoon.rotation.x = 0.5;
+    group.add(spoon);
+  }
+  group.position.set(x, y, z);
+  return new Prop({ name: "bowl", mesh: group, breakable: true });
+}
+
+// A leafy pot plant (bottom at y)
+function makePlant(x, y, z) {
+  const group = new THREE.Group();
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.38, 8), pastel(COLORS.skirting));
+  pot.position.y = 0.19;
+  group.add(pot);
+  for (let i = 0; i < 7; i++) {
+    const a = (i / 7) * Math.PI * 2;
+    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.55 + (i % 3) * 0.12, 4), pastel(COLORS.plant));
+    const lean = 0.25 + (i % 2) * 0.2;
+    leaf.position.set(Math.cos(a) * 0.08, 0.6 + (i % 3) * 0.06, Math.sin(a) * 0.08);
+    leaf.rotation.set(Math.sin(a) * lean, 0, -Math.cos(a) * lean);
+    group.add(leaf);
+  }
+  group.position.set(x, y, z);
+  return new Prop({ name: "plant", mesh: group, breakable: true });
 }
 
 // A small heap of clothes on the floor: a few squashed, crumpled shapes in

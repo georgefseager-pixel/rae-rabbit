@@ -35,6 +35,10 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.
   - Carrots: one in the bath, one in the sink (hop from the bath's end onto the sink).
 - **Living room**: chimney breast with fireplace and a mantelpiece, window, and the doorway to the stairs.
+  - Furniture (from photos): big white sofa with a black side table in the corner, black coffee table on a
+    grey-green rug, TV on a white table in the corner by the window, desk with computer and office chair,
+    bookshelf by the door (Rae can sit on the shelves), chest of drawers.
+  - Breakables: three bowls (coffee table and sofa arm) and the plant on the drawers.
 - **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
 - **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs, window.
 - **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.

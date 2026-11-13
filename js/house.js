@@ -32,7 +32,7 @@ function buildHouse(w) {
   w.addFrog(2.6, GROUND, -0.6, FROG_COLORS.green);   // bedroom, beside the bed
   w.addFrog(1.8, GROUND, 7.2, FROG_COLORS.pink);     // bathroom
   w.addFrog(2.0, GROUND, 12.0, FROG_COLORS.blue);    // living room, by the fireplace
-  w.addFrog(-2.2, GROUND, 15.8, FROG_COLORS.yellow); // living room, far side
+  w.addFrog(-1.2, GROUND, 16.6, FROG_COLORS.yellow); // living room, by the sofa
   w.addFrog(-2.0, LOW, 23.5, FROG_COLORS.teal);      // office
   w.addFrog(-7.0, LOW, 24.0, FROG_COLORS.lilac);     // kitchen, by the hob
   w.addFrog(-3.0, LOW, 26.9, FROG_COLORS.peach);     // kitchen, far end
@@ -250,9 +250,145 @@ function buildLivingRoom(w) {
   w.addDeco("fireplace", 3.37, 3.4, 0, 1.2, 13.9, 15.3, COLORS.fireplace);
   w.addSpan("mantelpiece", 3.15, 3.4, 1.4, 1.5, 13.6, 15.6, COLORS.skirting);
 
-  w.addWindow({ z: 18.5 }, 1.4, 3.6, 1.0, 2.4, -1);
+  w.addWindow({ z: 18.5 }, 0.95, 2.65, 1.0, 2.4, -1); // between the stairs door and the TV corner
+
+  // Furniture, placed from the photos (standing in the corridor doorway, looking in):
+  //   right-hand wall: the big white sofa, black side table in the far corner
+  //   far-left corner: TV on its white table, next to the window
+  //   near-left wall: bookshelf by the door, drawers with a plant, desk in the corner
+  //   middle: black coffee table on a grey-green shaggy rug
+  buildSofa(w);
+  buildCoffeeTable(w);
+  buildTVCorner(w);
+  buildDeskCorner(w);
+  buildShelves(w);
 
   w.addRoomLight(0, H - 0.3, 13.7, 0.55, 14);
+}
+
+// Glowing decoration (screens)
+function addGlow(w, name, x1, x2, y1, y2, z1, z2, color, strength = 0.7) {
+  const p = w.addDeco(name, x1, x2, y1, y2, z1, z2, color);
+  p.mesh.material.emissive = new THREE.Color(color);
+  p.mesh.material.emissiveIntensity = strength;
+  return p;
+}
+
+// The big white sofa along the corridor-side wall, facing the fireplace,
+// with the black side table in the corner and a cereal bowl on the arm
+function buildSofa(w) {
+  const x1 = -4, x2 = -2.2, z1 = 13.4, z2 = 17.4; // 4m long, 1.8m deep
+  const C = COLORS.sofa;
+  w.addSpan("sofa-base", x1, x2, 0, 0.5, z1, z2, C);
+  w.addSpan("sofa-back", x1, x1 + 0.6, 0.5, 1.75, z1, z2, C);
+  w.addSpan("sofa-arm", x1, x2, 0.5, 1.3, z1, z1 + 0.55, C);
+  w.addSpan("sofa-arm", x1, x2, 0.5, 1.3, z2 - 0.55, z2, C);
+  // Two seat cushions and two back cushions
+  for (const [c1, c2] of [[z1 + 0.55, 15.4], [15.4, z2 - 0.55]]) {
+    w.addSpan("sofa-cushion", x1 + 0.6, x2, 0.5, 0.9, c1 + 0.02, c2 - 0.02, COLORS.sofaCushion);
+    w.addSpan("sofa-cushion", x1 + 0.6, x1 + 0.95, 0.9, 1.6, c1 + 0.05, c2 - 0.05, COLORS.sofaCushion);
+  }
+  // Bamboo tray on the near arm, with a cereal bowl on it
+  w.addDeco("bamboo-tray", x1 + 0.1, x2 - 0.05, 1.3, 1.33, z1 + 0.02, z1 + 0.53, COLORS.bamboo);
+  w.add(makeBowl(-2.75, 1.33, 13.67, COLORS.porcelain, 0.15, true));
+
+  // Small black side table in the corner
+  w.addSpan("side-table", -4, -3.1, 0.88, 0.95, 17.55, 18.45, COLORS.softBlack);
+  for (const [lx, lz] of [[-3.95, 17.6], [-3.22, 17.6], [-3.95, 18.33], [-3.22, 18.33]]) {
+    w.addSpan("side-table-leg", lx, lx + 0.07, 0, 0.88, lz, lz + 0.07, COLORS.softBlack);
+  }
+}
+
+// The big black coffee table in the middle, on a shaggy rug, with bowls on it
+function buildCoffeeTable(w) {
+  w.addDeco("shaggy-rug", -1.7, 2.8, 0, 0.03, 11.8, 15.6, COLORS.rugSage);
+  const x1 = -1.0, x2 = 1.1, z1 = 12.6, z2 = 13.75;
+  w.addSpan("coffee-table", x1, x2, 0.87, 0.95, z1, z2, COLORS.softBlack);
+  w.addSpan("coffee-table-shelf", x1 + 0.05, x2 - 0.05, 0.25, 0.3, z1 + 0.05, z2 - 0.05, COLORS.softBlack);
+  for (const lx of [x1, x2 - 0.1]) {
+    for (const lz of [z1, z2 - 0.1]) {
+      w.addSpan("coffee-table-leg", lx, lx + 0.1, 0, 0.87, lz, lz + 0.1, COLORS.softBlack);
+    }
+  }
+  w.add(makeBowl(-0.35, 0.95, 13.1, COLORS.bamboo, 0.3));               // big wooden bowl
+  w.add(makeBowl(0.6, 0.95, 13.25, COLORS.porcelain, 0.16, true));      // cereal bowl
+}
+
+// TV on its white table in the corner by the window, facing the sofa
+function buildTVCorner(w) {
+  const x1 = 2.85, x2 = 3.95, z1 = 16.65, z2 = 18.45, top = 0.95;
+  const white = COLORS.tableWhite;
+  w.addSpan("tv-table", x1, x2, top - 0.07, top, z1, z2, white);
+  w.addSpan("tv-table-shelf", x1, x2, 0.25, 0.3, z1 + 0.1, z2 - 0.1, white);
+  w.addSpan("tv-table-side", x1, x2, 0, top - 0.07, z1, z1 + 0.1, white);
+  w.addSpan("tv-table-side", x1, x2, 0, top - 0.07, z2 - 0.1, z2, white);
+  w.addDeco("games-console", x1 + 0.2, x2 - 0.15, 0.3, 0.42, 17.1, 18.0, COLORS.tvBlack);
+
+  // The TV: stand, body, and a screen showing green hills under a blue sky
+  w.addSpan("tv-stand", 3.3, 3.65, top, top + 0.1, 17.3, 17.8, COLORS.tvBlack);
+  w.addSpan("tv", 3.38, 3.52, top + 0.1, top + 1.2, 16.72, 18.38, COLORS.tvBlack);
+  addGlow(w, "tv-screen", 3.36, 3.38, top + 0.55, top + 1.12, 16.8, 18.3, COLORS.screenSky, 0.6);
+  addGlow(w, "tv-screen", 3.355, 3.375, top + 0.18, top + 0.55, 16.8, 18.3, COLORS.screenGrass, 0.6);
+}
+
+// The desk corner: black desk with a computer, office chair, PC tower
+function buildDeskCorner(w) {
+  const x1 = 2.95, x2 = 4, z1 = 10.2, z2 = 11.8, top = 1.6;
+  const black = COLORS.softBlack;
+  w.addSpan("desk", x1, x2, top - 0.08, top, z1, z2, black);
+  for (const lz of [z1, z2 - 0.08]) {
+    w.addSpan("desk-leg", x1, x1 + 0.08, 0, top - 0.08, lz, lz + 0.08, black);
+  }
+  w.addSpan("desk-back", x2 - 0.08, x2, 0, top - 0.08, z1, z2, black);
+  // Monitor (facing the room) and keyboard
+  w.addSpan("monitor-stand", 3.6, 3.75, top, top + 0.25, 10.9, 11.1, COLORS.tvBlack);
+  w.addSpan("monitor", 3.55, 3.65, top + 0.2, top + 0.85, 10.45, 11.55, COLORS.tvBlack);
+  addGlow(w, "monitor-screen", 3.53, 3.55, top + 0.5, top + 0.8, 10.5, 11.5, COLORS.screenSky, 0.6);
+  addGlow(w, "monitor-screen", 3.525, 3.545, top + 0.25, top + 0.5, 10.5, 11.5, COLORS.screenGrass, 0.6);
+  w.addDeco("keyboard", 3.05, 3.35, top, top + 0.03, 10.6, 11.4, COLORS.canPink);
+  // PC tower on the floor beside the desk
+  w.addSpan("pc-tower", 3.15, 3.95, 0, 0.95, 9.3, 9.95, COLORS.tvBlack);
+
+  // Office chair, facing the desk: star base, pole, seat and back
+  const cx = 2.3, cz = 11.0;
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.08, 5), pastel(COLORS.tvBlack));
+  base.position.set(cx, 0.06, cz);
+  w.add(new Prop({ name: "chair-base", mesh: base, solid: false }));
+  w.addSpan("chair-pole", cx - 0.05, cx + 0.05, 0, 0.9, cz - 0.05, cz + 0.05, COLORS.tvBlack);
+  w.addSpan("chair-seat", cx - 0.45, cx + 0.45, 0.9, 1.0, cz - 0.45, cz + 0.45, COLORS.tvBlack);
+  w.addSpan("chair-back", cx - 0.45, cx - 0.33, 1.0, 1.95, cz - 0.4, cz + 0.4, COLORS.tvBlack);
+}
+
+// Along the wall with the corridor door: tall bookshelf by the door,
+// then a white chest of drawers with a plant on top
+function buildShelves(w) {
+  // Bookshelf: open-fronted, with shelves Rae can squeeze onto
+  const x1 = -2.1, x2 = -1.2, z1 = 9, z2 = 9.6, top = 2.7;
+  const white = COLORS.tableWhite;
+  w.addSpan("bookshelf-back", x1, x2, 0, top, z1, z1 + 0.05, white);
+  w.addSpan("bookshelf-side", x1, x1 + 0.05, 0, top, z1, z2, white);
+  w.addSpan("bookshelf-side", x2 - 0.05, x2, 0, top, z1, z2, white);
+  const bookColors = [COLORS.book1, COLORS.book2, COLORS.book3, COLORS.book4, COLORS.book5];
+  let k = 0;
+  for (let y = 0; y <= top; y += 0.54) {
+    const shelfTop = Math.min(y + 0.05, top);
+    w.addSpan("bookshelf-shelf", x1 + 0.05, x2 - 0.05, shelfTop - 0.05, shelfTop, z1 + 0.05, z2, white);
+    if (shelfTop + 0.4 < top) {
+      // a few books standing on the shelf (decoration)
+      for (let bx = x1 + 0.1; bx < x2 - 0.35; bx += 0.09) {
+        const h = 0.25 + ((k * 37) % 10) / 70;
+        w.addDeco("book", bx, bx + 0.07, shelfTop, shelfTop + h, z1 + 0.08, z1 + 0.42, bookColors[k++ % bookColors.length]);
+      }
+    }
+  }
+
+  // Chest of drawers with a plant on top
+  const dx1 = -1.0, dx2 = -0.15, dTop = 1.9;
+  w.addSpan("drawers", dx1, dx2, 0, dTop, 9, 9.85, white);
+  for (let y = 0.25; y < dTop; y += 0.4) {
+    w.addDeco("drawer-line", dx1 + 0.04, dx2 - 0.04, y, y + 0.02, 9.85, 9.87, COLORS.sofaCushion);
+  }
+  w.add(makePlant((dx1 + dx2) / 2, dTop, 9.42));
 }
 
 // =====================================================
