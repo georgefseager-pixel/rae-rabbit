@@ -270,6 +270,7 @@ function buildLivingRoom(w) {
   buildTVCorner(w);
   buildDeskCorner(w);
   buildShelves(w);
+  buildMantelClutter(w);
 
   w.addRoomLight(0, H - 0.3, 13.7, 0.55, 14);
 }
@@ -308,22 +309,45 @@ function buildSofa(w) {
   for (const [lx, lz] of [[-3.95, 17.6], [-3.22, 17.6], [-3.95, 18.33], [-3.22, 18.33]]) {
     w.addSpan("side-table-leg", lx, lx + 0.07, 0, 0.88, lz, lz + 0.07, COLORS.softBlack);
   }
+  // Side table clutter: little mirror, remote, a jar and a red notebook
+  w.addDeco("small-mirror", -3.98, -3.93, 0.95, 1.75, 17.75, 18.35, COLORS.sky);
+  w.addDeco("remote", -3.75, -3.35, 0.95, 0.99, 17.62, 17.72, COLORS.tvBlack);
+  w.add(makeThing("jar", -3.55, 0.95, 18.15, [
+    ["cyl", [0.08, 0.08, 0.14], [0, 0.07, 0], COLORS.book2],
+    ["cyl", [0.085, 0.085, 0.04], [0, 0.16, 0], COLORS.screenSky],
+  ]));
+  w.add(makeThing("notebook", -3.35, 0.95, 18.05, [["box", [0.22, 0.05, 0.3], [0, 0.025, 0], COLORS.plus]]));
+
+  // Blankets thrown over the sofa (just for looks)
+  w.addDeco("blanket", -3.35, -2.3, 0.9, 1.0, 13.95, 15.0, COLORS.pillow);
+  w.addDeco("blanket", -3.4, -3.0, 0.9, 1.65, 16.0, 16.85, COLORS.book2);
 }
 
-// The big black coffee table in the middle, on a shaggy rug, with bowls on it
+// The big black coffee table in the middle, on a shaggy rug. Its long side
+// lines up with the sofa. Covered in clutter: a desk mat, bowls, laptop, phone, a cracker.
 function buildCoffeeTable(w) {
-  w.addDeco("shaggy-rug", -1.7, 2.8, 0, 0.03, 11.8, 15.6, COLORS.rugSage);
-  const x1 = -1.0, x2 = 1.1, z1 = 12.6, z2 = 13.75;
-  w.addSpan("coffee-table", x1, x2, 0.87, 0.95, z1, z2, COLORS.softBlack);
+  w.addDeco("shaggy-rug", -1.6, 2.6, 0, 0.03, 12.8, 17.4, COLORS.rugSage);
+  const x1 = -0.6, x2 = 0.55, z1 = 14.1, z2 = 16.2, top = 0.95;
+  w.addSpan("coffee-table", x1, x2, top - 0.08, top, z1, z2, COLORS.softBlack);
   w.addSpan("coffee-table-shelf", x1 + 0.05, x2 - 0.05, 0.25, 0.3, z1 + 0.05, z2 - 0.05, COLORS.softBlack);
   for (const lx of [x1, x2 - 0.1]) {
     for (const lz of [z1, z2 - 0.1]) {
-      w.addSpan("coffee-table-leg", lx, lx + 0.1, 0, 0.87, lz, lz + 0.1, COLORS.softBlack);
+      w.addSpan("coffee-table-leg", lx, lx + 0.1, 0, top - 0.08, lz, lz + 0.1, COLORS.softBlack);
     }
   }
-  w.add(makeBowl(-0.35, 0.95, 13.1, COLORS.bamboo, 0.3));               // big wooden bowl
-  w.add(makeBowl(0.6, 0.95, 13.25, COLORS.porcelain, 0.16, true));      // cereal bowl
-  w.add(new Carrot(0.05, 0.5, 13.17)); // hiding on the lower shelf, under the table
+  // Clutter on top
+  const t = top + 0.01;
+  w.addDeco("desk-mat", x1 + 0.08, x2 - 0.08, top, t, z1 + 0.1, z2 - 0.1, COLORS.book2);
+  w.add(makeBowl(-0.15, t, 14.6, COLORS.bamboo, 0.3));                  // big wooden bowl
+  w.add(makeBowl(0.25, t, 15.25, COLORS.porcelain, 0.16, true));        // cereal bowl
+  w.add(makeThing("laptop", -0.18, t, 15.7, [["box", [0.55, 0.05, 0.7], [0, 0.025, 0], COLORS.tvBlack]]));
+  w.add(makeThing("phone", 0.3, t, 14.35, [["box", [0.13, 0.025, 0.26], [0, 0.012, 0], COLORS.tvBlack]]));
+  w.add(makeThing("cracker", 0.3, t, 14.75, [
+    ["cyl", [0.05, 0.05, 0.3], [0, 0.05, 0], COLORS.plus, { rx: Math.PI / 2 }],
+    ["cyl", [0.035, 0.05, 0.08], [0, 0.05, 0.18], COLORS.butter, { rx: Math.PI / 2 }],
+    ["cyl", [0.05, 0.035, 0.08], [0, 0.05, -0.18], COLORS.butter, { rx: Math.PI / 2 }],
+  ]));
+  w.add(new Carrot(0.0, 0.5, 15.15)); // hiding on the lower shelf, under the table
 }
 
 // TV on its white table in the corner by the window, facing the sofa
@@ -337,11 +361,11 @@ function buildTVCorner(w) {
   w.addDeco("games-console", x1 + 0.2, x2 - 0.15, 0.3, 0.42, 17.1, 18.0, COLORS.tvBlack);
   w.add(new Carrot(3.05, 1.15, 18.15)); // on the TV table, an easy hop
 
-  // The TV: stand, body, and a screen showing green hills under a blue sky
-  w.addSpan("tv-stand", 3.3, 3.65, top, top + 0.1, 17.3, 17.8, COLORS.tvBlack);
-  w.addSpan("tv", 3.38, 3.52, top + 0.1, top + 1.2, 16.72, 18.38, COLORS.tvBlack);
-  addGlow(w, "tv-screen", 3.36, 3.38, top + 0.55, top + 1.12, 16.8, 18.3, COLORS.screenSky, 0.6);
-  addGlow(w, "tv-screen", 3.355, 3.375, top + 0.18, top + 0.55, 16.8, 18.3, COLORS.screenGrass, 0.6);
+  // The TV, showing green hills under a blue sky (smashable!), and two photo frames
+  w.add(makeTV(3.45, top, 17.55));
+  w.add(makeFrame(3.0, top, 16.95, COLORS.walnut));
+  w.add(makeFrame(3.02, top, 17.4, COLORS.tvBlack));
+  w.addDeco("controller", 3.0, 3.2, 0.3, 0.36, 16.85, 17.05, COLORS.canMint);
 }
 
 // The desk corner: black desk with a computer, office chair, PC tower
@@ -360,6 +384,14 @@ function buildDeskCorner(w) {
   addGlow(w, "monitor-screen", 3.525, 3.545, top + 0.25, top + 0.5, 10.5, 11.5, COLORS.screenGrass, 0.6);
   w.addDeco("keyboard", 3.05, 3.35, top, top + 0.03, 10.6, 11.4, COLORS.canPink);
   w.add(new Carrot(3.2, top + 0.2, 10.35)); // on the desk: climb up via the chair
+  // Desk clutter: a mug and a little speaker
+  w.add(makeThing("mug", 3.12, top, 11.62, [
+    ["cyl", [0.06, 0.055, 0.13], [0, 0.065, 0], COLORS.book1],
+    ["box", [0.02, 0.06, 0.05], [0.07, 0.07, 0], COLORS.book1],
+  ]));
+  w.add(makeThing("speaker", 3.75, top, 10.3, [["blob", [0.08, 1, 1.2, 1], [0, 0.09, 0], COLORS.tvBlack]]));
+  // A backpack dumped on the floor
+  w.addSpan("backpack", 0.25, 0.85, 0, 0.45, 9.7, 10.15, COLORS.tvBlack);
   // PC tower on the floor beside the desk
   w.addSpan("pc-tower", 3.15, 3.95, 0, 0.95, 9.3, 9.95, COLORS.tvBlack);
 
@@ -403,7 +435,40 @@ function buildShelves(w) {
   for (let y = 0.25; y < dTop; y += 0.4) {
     w.addDeco("drawer-line", dx1 + 0.04, dx2 - 0.04, y, y + 0.02, 9.85, 9.87, COLORS.sofaCushion);
   }
-  w.add(makePlant((dx1 + dx2) / 2, dTop, 9.42));
+  w.add(makePlant(-0.65, dTop, 9.42));
+  w.add(makeThing("pot", -0.3, dTop, 9.55, [["cyl", [0.09, 0.07, 0.14], [0, 0.07, 0], COLORS.tvBlack]]));
+
+  // A wobbly stack of books on the floor, next to the bookshelf
+  w.add(makeThing("book", -1.1, 0, 10.15, [
+    ["box", [0.4, 0.08, 0.3], [0, 0.04, 0], COLORS.book4],
+    ["box", [0.36, 0.07, 0.28], [0.02, 0.115, 0], COLORS.book1, { ry: 0.2 }],
+    ["box", [0.32, 0.07, 0.26], [-0.02, 0.185, 0], COLORS.book3, { ry: -0.15 }],
+  ]));
+}
+
+// The mantelpiece: posters on the chimney breast above, and bits and bobs on the shelf
+function buildMantelClutter(w) {
+  const face = 3.4;  // the room-side face of the chimney breast
+  const posters = [
+    [13.0, 13.55, 1.75, 2.45, COLORS.book1], [13.65, 14.3, 1.9, 2.75, COLORS.plus],
+    [14.4, 14.9, 1.7, 2.3, COLORS.book3], [15.0, 15.7, 1.8, 2.6, COLORS.softBlack],
+    [15.8, 16.3, 1.75, 2.35, COLORS.book4],
+  ];
+  for (const [z1, z2, y1, y2, c] of posters) w.addDeco("poster", face - 0.02, face, y1, y2, z1, z2, c);
+  w.addDeco("tv-bracket", face - 0.03, face, 2.85, 2.92, 13.4, 15.8, COLORS.tvBlack);
+
+  const shelf = 1.5, x = 3.27;
+  w.add(makeThing("vase", x, shelf, 15.35, [
+    ["cyl", [0.06, 0.07, 0.22], [0, 0.11, 0], COLORS.porcelain],
+    ["blob", [0.05, 1, 1, 1], [0.02, 0.27, 0.02], COLORS.plus],
+    ["blob", [0.045, 1, 1, 1], [-0.03, 0.29, -0.02], COLORS.plus],
+    ["blob", [0.04, 1, 1, 1], [0, 0.32, -0.04], COLORS.leaf],
+  ]));
+  w.add(makeFrame(x, shelf, 14.75, COLORS.steel));
+  w.add(makeThing("pot", x, shelf, 14.0, [
+    ["cyl", [0.07, 0.06, 0.12], [0, 0.06, 0], COLORS.porcelain],
+    ["blob", [0.08, 1, 1.3, 1], [0, 0.19, 0], COLORS.plant],
+  ]));
 }
 
 // =====================================================

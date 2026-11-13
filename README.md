@@ -38,7 +38,10 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
   - Furniture (from photos): big white sofa with a black side table in the corner, black coffee table on a
     grey-green rug, TV on a white table in the corner by the window, desk with computer and office chair,
     bookshelf by the door (Rae can sit on the shelves), chest of drawers. The sofa cushions are bouncy.
-  - Breakables: the books, three bowls (coffee table and sofa arm) and the plant on the drawers.
+  - Breakables: the TV, books (shelves and a floor stack), three bowls, the plant and pot on the drawers,
+    laptop, phone and cracker on the coffee table, photo frames, a vase and plant pot on the mantelpiece,
+    a jar and notebook on the side table, mug and speaker on the desk.
+  - Clutter for looks: posters, blankets on the sofa, a desk mat, remote, little mirror, backpack.
   - Carrots: high above the sofa (big bounce), on the TV table, under the coffee table (on its shelf),
     on the desk (hop onto the chair seat from the side, then onto the desk).
 - **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
@@ -91,6 +94,9 @@ w.addDeco("poster", 3.97, 4, 1.2, 2.2, 1, 2, COLORS.canPink);
 
 // a wall with a doorway in it (gets a breakable door automatically; add door: false for an open doorway)
 w.addWall("wall", -4, 4, 0, 3, 10, 10.5, COLORS.livingWall, [{ from: -1, to: 0.2, top: 2.1 }]);
+
+// any small breakable thing, built from simple parts (see makeThing in js/props.js)
+w.add(makeThing("mug", 1, 0, 1, [["cyl", [0.06, 0.055, 0.13], [0, 0.065, 0], COLORS.book1]]));
 
 // ready-made breakables (x, height of the surface, z): see js/props.js
 w.add(makeCan(1, 0, 1, COLORS.canMint));

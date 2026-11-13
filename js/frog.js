@@ -222,7 +222,7 @@ class Frog {
     this.talkCooldown = Math.max(0, this.talkCooldown - dt);
     if (this.canSee && !this.chasing) {
       this.chasing = true;
-      if (this.talkCooldown === 0 && Dialogue.queue.length < 2) {
+      if (this.talkCooldown === 0) {
         const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
         Dialogue.say(line, { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
         this.talkCooldown = 10;

@@ -162,6 +162,50 @@ function makeGlass(x, y, z) {
   return new Prop({ name: "glass", mesh: group, breakable: true });
 }
 
+// A small object made of simple parts, standing at (x, y, z). Breakable by default.
+// Each part is: [shape, size, position, color, extras]
+//   shape "box":  size [width, height, depth]
+//   shape "cyl":  size [radiusTop, radiusBottom, height]
+//   shape "blob": size [radius, stretchX, stretchY, stretchZ]
+//   position is relative to (x, y, z); extras can have { rx, ry, rz, glow }
+function makeThing(name, x, y, z, parts, opts = { breakable: true }) {
+  const group = new THREE.Group();
+  for (const [shape, size, pos, color, extra = {}] of parts) {
+    let mesh;
+    if (shape === "box") mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), pastel(color));
+    else if (shape === "cyl") mesh = new THREE.Mesh(new THREE.CylinderGeometry(size[0], size[1], size[2], 8), pastel(color));
+    else mesh = blob(size[0], color, size[1], size[2], size[3]);
+    mesh.position.set(...pos);
+    mesh.rotation.set(extra.rx || 0, extra.ry || 0, extra.rz || 0);
+    if (extra.glow) {
+      mesh.material.emissive = new THREE.Color(color);
+      mesh.material.emissiveIntensity = extra.glow;
+    }
+    group.add(mesh);
+  }
+  group.position.set(x, y, z);
+  return new Prop({ name, mesh: group, ...opts });
+}
+
+// The living room TV (facing -x), standing on a surface at height y. Smashable!
+function makeTV(x, y, z) {
+  return makeThing("tv", x, y, z, [
+    ["box", [0.35, 0.1, 0.5], [0, 0.05, 0], COLORS.tvBlack],                   // stand
+    ["box", [0.14, 1.1, 1.66], [0, 0.65, 0], COLORS.tvBlack],                  // body
+    ["box", [0.02, 0.57, 1.5], [-0.08, 0.835, 0], COLORS.screenSky, { glow: 0.6 }],   // screen: sky
+    ["box", [0.02, 0.37, 1.5], [-0.085, 0.365, 0], COLORS.screenGrass, { glow: 0.6 }], // ...and hills
+    ["blob", [0.12, 1, 0.5, 1.6], [-0.09, 0.42, 0.3], COLORS.plant, { glow: 0.4 }],    // a tree on screen
+  ]);
+}
+
+// A standing photo frame (facing -x unless turned with ry)
+function makeFrame(x, y, z, color = COLORS.walnut, ry = 0) {
+  return makeThing("frame", x, y, z, [
+    ["box", [0.04, 0.3, 0.24], [0, 0.15, 0], color, { ry }],
+    ["box", [0.01, 0.22, 0.16], [-0.025, 0.15, 0], COLORS.screenSky, { ry }],
+  ]);
+}
+
 // A bowl (bottom at y), e.g. a wooden salad bowl or a cereal bowl with a spoon
 function makeBowl(x, y, z, color, radius = 0.16, withSpoon = false) {
   const group = new THREE.Group();
