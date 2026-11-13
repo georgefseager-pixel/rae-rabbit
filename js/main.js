@@ -132,6 +132,56 @@ function checkFrogs(fallingSpeed) {
   }
 }
 
+// ---- Punching (click) ----
+// Rae punches with alternating paws. Anything breakable, or any frog, just in
+// front of where she's looking gets smashed.
+const PUNCH_REACH = 0.4;   // how far in front of her eyes the punch lands (metres)
+const PUNCH_RADIUS = 0.3;  // how big the "hit zone" around that point is
+let punchCooldown = 0;
+let punchSide = 1;
+
+function punch() {
+  if (!started || paused || gameOver || inShop || punchCooldown > 0) return;
+  punchCooldown = 0.28;
+  punchSide = -punchSide; // left, right, left, right...
+  paws.punch(punchSide);
+  raeModel.punch(punchSide);
+  Sfx.punch();
+  setTimeout(landPunch, 70); // the hit lands as the paw reaches full stretch
+}
+
+function landPunch() {
+  const eye = new THREE.Vector3(), aim = new THREE.Vector3();
+  camera.getWorldPosition(eye);
+  camera.getWorldDirection(aim);
+  const hit = eye.addScaledVector(aim, PUNCH_REACH);
+  for (const prop of world.props.filter((p) => p.breakable && !p.broken)) {
+    if (prop.box.distanceToPoint(hit) < PUNCH_RADIUS) world.breakProp(prop);
+  }
+  for (const frog of frogs) {
+    if (!frog.alive) continue;
+    const middle = frog.pos.clone();
+    middle.y += frog.height / 2;
+    if (middle.distanceTo(hit) < PUNCH_RADIUS + frog.radius) {
+      frog.pop();
+      stompedCount++;
+      raeSays("frog-punched");
+    }
+  }
+}
+
+// A click punches. (In click-and-drag look mode, a quick click still punches; a drag just looks.)
+let pressedAt = null;
+canvas.addEventListener("mousedown", (e) => {
+  if (e.button !== 0) return;
+  if (document.pointerLockElement === canvas) punch();
+  else pressedAt = { x: e.clientX, y: e.clientY };
+});
+window.addEventListener("mouseup", (e) => {
+  if (pressedAt && Math.hypot(e.clientX - pressedAt.x, e.clientY - pressedAt.y) < 6) punch();
+  pressedAt = null;
+});
+
 // ---- Rae's first-time thoughts ----
 // Each line plays only the first time it happens. Edit the words here!
 const RAE_LINES = {
@@ -162,6 +212,7 @@ const RAE_LINES = {
   "frog-spotted":  "Eep! A frog!",
   "frog-popped":   "Pop goes the frog! Rabbits rule!",
   "minifrog-popped": "Got you, you speedy little thing!",
+  "frog-punched":  "Hi-yah! Bunny fu!",
   "hurt":          "Ouch! Frogs are slimy!",
   "last-heart":    "Uh oh, I need a carrot...",
   // carrots
@@ -264,6 +315,7 @@ function loop() {
   if (!paused) {
     hurtCooldown = Math.max(0, hurtCooldown - dt);
     shopCooldown = Math.max(0, shopCooldown - dt);
+    punchCooldown = Math.max(0, punchCooldown - dt);
     paws.group.visible = hurtCooldown === 0 || Math.floor(hurtCooldown * 10) % 2 === 0; // blink while safe
     const fallingSpeed = player.vel.y;
     player.update(dt, world);

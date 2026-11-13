@@ -274,6 +274,16 @@ class RaeModel {
       leg.rotation.x = air ? legSwing : legSwing * side;
     }
 
+    // Punching: the arm swings straight out in front
+    for (const arm of this.arms) {
+      arm.userData.punch = Math.max(0, (arm.userData.punch || 0) - dt);
+      const e = punchCurve(arm.userData.punch);
+      if (e > 0) {
+        arm.rotation.x = 1.6 * e;
+        arm.rotation.z = arm.userData.side * 0.1;
+      }
+    }
+
     // A friendly wave: one arm up high, waggling
     if (this.waveTimer > 0) {
       this.waveTimer -= dt;
@@ -284,6 +294,11 @@ class RaeModel {
   }
 
   wave(seconds = 2.2) { this.waveTimer = seconds; }
+
+  // Throw a punch with the left (-1) or right (+1) arm
+  punch(side) {
+    this.arms.find((a) => a.userData.side === side).userData.punch = PUNCH_TIME;
+  }
 }
 
 // The two front paws you see at the bottom corners of the screen
@@ -294,13 +309,12 @@ class FirstPersonPaws {
     camera.add(this.group);
     this.paws = [-1, 1].map((side) => {
       const paw = new THREE.Group();
-      const arm = blob(0.034, RAE_COLORS.fur, 1, 0.9, 2.4);
-      const pad = blob(0.02, RAE_COLORS.pink, 1.1, 0.75, 0.4, [6, 4]);
-      pad.position.set(0, -0.006, -0.078);
-      paw.add(arm, pad);
-      paw.rotation.x = 0.35;               // tilted up a little, pads facing forward
+      const arm = blob(0.05, RAE_COLORS.fur, 1, 0.9, 2.2); // big fluffy paw
+      paw.add(arm);
+      paw.rotation.x = 0.35;               // tilted up a little
       paw.rotation.y = -side * 0.25;       // angled in towards the middle
       paw.userData.side = side;
+      paw.userData.punch = 0;              // counts down while punching
       this.group.add(paw);
       return paw;
     });
@@ -332,8 +346,31 @@ class FirstPersonPaws {
       const side = paw.userData.side;
       const step = moving ? Math.abs(Math.sin(this.phase + (side > 0 ? Math.PI / 2 : 0))) * 0.018 : 0;
       const idle = Math.sin(time * 2.2 + side) * 0.003;
+      // Punch: the paw shoots forward and up towards the middle of the screen, then back
+      paw.userData.punch = Math.max(0, paw.userData.punch - dt);
+      const e = punchCurve(paw.userData.punch);
+      const restX = side * Math.min(halfW * 0.62, 0.21);
       // Only the tips show: most of each paw sits just below the screen edge
-      paw.position.set(side * Math.min(halfW * 0.68, 0.22), -halfH - 0.002 + step + idle + this.lift, -dist);
+      paw.position.set(
+        restX * (1 - e * 0.75),
+        -halfH - 0.012 + step + idle + this.lift + e * (halfH * 0.75),
+        -dist - e * 0.1);
+      paw.rotation.x = 0.35 - e * 0.35;
     }
   }
+
+  // Throw a punch with the left (-1) or right (+1) paw
+  punch(side) {
+    const paw = this.paws.find((p) => p.userData.side === side);
+    paw.userData.punch = PUNCH_TIME;
+  }
+}
+
+// How long a punch takes (seconds), and its shape over time:
+// 0 at rest -> 1 fully stretched out (quickly) -> back to 0 (a bit slower)
+const PUNCH_TIME = 0.3;
+function punchCurve(timeLeft) {
+  if (timeLeft <= 0) return 0;
+  const t = 1 - timeLeft / PUNCH_TIME;     // 0 -> 1 through the punch
+  return t < 0.3 ? t / 0.3 : 1 - (t - 0.3) / 0.7;
 }

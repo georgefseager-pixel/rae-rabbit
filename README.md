@@ -8,6 +8,8 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **W A S D**: move
 - **Mouse**: look around (or hold the button and drag, if the browser won't capture the mouse)
 - **Space**: hop (press it just as you land on the bed for a big bounce)
+- **Click**: punch! Smashes breakables and pops frogs just in front of Rae (tweak `PUNCH_REACH` and
+  `PUNCH_RADIUS` in `js/main.js`)
 - **Esc**: pause
 
 ## Where things live

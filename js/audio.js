@@ -120,6 +120,30 @@ const Sfx = {
     thump.stop(t + 0.2);
   },
 
+  // A quick "fwip!" whoosh for a punch
+  punch() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const len = Math.floor(this.ctx.sampleRate * 0.16);
+    const buffer = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.Q.value = 2;
+    filter.frequency.setValueAtTime(600, t);
+    filter.frequency.exponentialRampToValueAtTime(2800, t + 0.12); // rising swish
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.35, t + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+    src.connect(filter).connect(gain).connect(this.master);
+    src.start(t);
+    src.stop(t + 0.16);
+  },
+
   // A shop doorbell: "ding-a-ling!"
   shopBell() {
     if (!this.ctx) return;
