@@ -1,0 +1,316 @@
+// ============================================================
+// house.js — all the rooms, following the real floorplan
+// ============================================================
+// Layout (looking down, the bedroom at the bottom like on the floorplan):
+//
+//                 [ kitchen (L-shape, wraps round the office) ]
+//                 [ office ]  [ kitchen ]
+//          [ stairs up --> ]  [ landing ]      <- upstairs level is 1.2m higher
+//   [          living room           ]
+//   [ bathroom ]  [ corridor ] (fire exit)
+//   [            bedroom             ]
+//
+// Each room has its own build function below. Numbers are positions in metres
+// (see the direction notes at the top of world.js).
+
+const GROUND = 0;     // ground floor level
+const UP = 1.2;       // kitchen & office floor level (6 stairs x 0.2m)
+const H = 3;          // ground floor ceiling height
+const H_UP = UP + 3;  // upstairs ceiling height
+const T = 0.5;        // wall thickness
+
+function buildHouse(w) {
+  w.addGlobalLights();
+  buildBedroom(w);
+  buildCorridorAndBathroom(w);
+  buildLivingRoom(w);
+  buildStairs(w);
+  buildOffice(w);
+  buildKitchen(w);
+}
+
+// =====================================================
+// BEDROOM: x -4..4, z -4..4
+// =====================================================
+function buildBedroom(w) {
+  w.addSpan("floor",   -4.5, 4.5, -T, 0,     -4.5, 4.5, COLORS.floor);
+  w.addSpan("ceiling", -4.5, 4.5, H, H + T,  -4.5, 4.5, COLORS.ceiling);
+
+  w.addWall("wall", -4.5, 4.5, 0, H, -4.5, -4, COLORS.wallA);  // bed wall
+  w.addWall("wall", -4.5, -4,  0, H, -4, 4,    COLORS.wallB);
+  w.addWall("wall",  4, 4.5,   0, H, -4, 4,    COLORS.wallB);
+  // Back wall with the door to the corridor (on the right as you face it)
+  w.addWall("wall", -4.5, 4.5, 0, H, 4, 4.5, COLORS.wallA, [{ from: -3.15, to: -2.05, top: 2.1 }]);
+
+  // Two windows above the bed, like on the floorplan
+  w.addWindow({ z: -4 }, 0.35, 2.2, 1.9, 2.7, +1);
+  w.addWindow({ z: -4 }, -2.2, -0.35, 1.9, 2.7, +1);
+
+  // Skirting boards
+  const sk = 0.12;
+  w.addDeco("skirting", -4, 4, 0, sk, -4, -3.96, COLORS.skirting);
+  w.addDeco("skirting", -4, -3.96, 0, sk, -4, 4, COLORS.skirting);
+  w.addDeco("skirting", 3.96, 4, 0, sk, -4, 4, COLORS.skirting);
+  w.addDeco("skirting", -4, -3.23, 0, sk, 3.96, 4, COLORS.skirting);
+  w.addDeco("skirting", -1.97, 4, 0, sk, 3.96, 4, COLORS.skirting);
+
+  buildBed(w);
+  buildBedsideTable(w, -2.4);
+  buildBedsideTable(w, 2.4);
+  buildWhiteTable(w);
+
+  // Breakables: a lamp and a glass on each bedside table, cans on the white table
+  w.add(makeLamp(-2.55, 1.35, -3.72, COLORS.butter));
+  w.add(makeGlass(-2.15, 1.35, -3.45));
+  w.add(makeLamp(2.55, 1.35, -3.72, COLORS.canPink));
+  w.add(makeGlass(2.15, 1.35, -3.45));
+  w.add(makeCan(-1.55, 1.35, 3.72, COLORS.canPink));
+  w.add(makeCan(-1.38, 1.35, 3.78, COLORS.canBlue));
+  w.add(makeCan(-1.22, 1.35, 3.7, COLORS.canLilac));
+  w.add(makeCan(0.32, 1.35, 3.74, COLORS.canMint));
+  w.add(makeCan(0.52, 1.35, 3.6, COLORS.canPink, COLORS.canLilac));
+
+  // Carrots
+  w.add(new Carrot(0, 2.2, -1.6));    // above the bed: bounce up to grab it!
+  w.add(new Carrot(0.9, 0.27, -2.2)); // hidden under the bed
+  w.add(new Carrot(-0.5, 1.7, 3.4));  // on the white table
+
+  // Round rug at the foot of the bed
+  const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.02, 10), pastel(COLORS.rug));
+  rug.position.set(0, 0.01, 1.5);
+  w.add(new Prop({ name: "rug", mesh: rug, solid: false }));
+
+  w.addRoomLight(0, H - 0.3, 0.5, 0.5);
+}
+
+// The king-sized bed, headboard against the bed wall, centred.
+// Raised on four legs so Rae can scurry underneath.
+function buildBed(w) {
+  const W = 1.7;           // half the bed's width (3.4m wide)
+  const head = -4;         // headboard end touches the wall
+  const foot = 0.3;        // foot end (bed is 4.3m long)
+  const under = 0.55;      // gap underneath (Rae is 0.45m tall)
+  const frameTop = 0.72;
+  const mattressTop = 0.98;
+  const leg = 0.18;
+  const bounce = { bouncy: true, bouncePower: 5.5 };
+
+  for (const x of [-W, W - leg]) {
+    for (const z of [head + 0.15, foot - leg]) {
+      w.addSpan("bed-leg", x, x + leg, 0, under, z, z + leg, COLORS.bedWood);
+    }
+  }
+  w.addSpan("bed-frame", -W, W, under, frameTop, head + 0.15, foot, COLORS.bedWood);
+  w.addSpan("bed-headboard", -W - 0.1, W + 0.1, 0, 1.7, head, head + 0.15, COLORS.bedWood);
+
+  // Mattress, duvet and pillows are all bouncy
+  w.addSpan("bed-mattress", -W, W, frameTop, mattressTop, head + 0.15, foot, COLORS.mattress, bounce);
+  w.addSpan("bed-duvet", -W - 0.02, W + 0.02, mattressTop, mattressTop + 0.06, -2.5, foot - 0.03, COLORS.duvet, bounce);
+  w.addSpan("bed-pillow", -1.45, -0.12, mattressTop, mattressTop + 0.16, -3.75, -3.15, COLORS.pillow, bounce);
+  w.addSpan("bed-pillow", 0.12, 1.45, mattressTop, mattressTop + 0.16, -3.75, -3.15, COLORS.pillow, bounce);
+}
+
+// A brown bedside table against the bed wall, centred at x. 1.35m tall:
+// too high to reach from the floor, so bounce over from the bed!
+function buildBedsideTable(w, x) {
+  const hw = 0.4, z1 = -4, z2 = -3.3, top = 1.35;
+  w.addSpan("bedside-table", x - hw, x + hw, 0, top - 0.05, z1, z2, COLORS.walnut);
+  w.addSpan("bedside-top", x - hw - 0.04, x + hw + 0.04, top - 0.05, top, z1, z2 + 0.04, COLORS.walnut);
+  for (const y of [0.45, 0.9]) {
+    w.addDeco("drawer", x - hw + 0.06, x + hw - 0.06, y - 0.17, y + 0.17, z2, z2 + 0.02, COLORS.walnutLight);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 4), pastel(COLORS.butter));
+    knob.position.set(x, y, z2 + 0.04);
+    w.add(new Prop({ name: "knob", mesh: knob, solid: false }));
+  }
+}
+
+// The wide white table opposite the bed (only reachable with a big bounce
+// off the foot of the bed), with a white stool tucked underneath.
+function buildWhiteTable(w) {
+  const x1 = -1.8, x2 = 0.8, z1 = 2.95, z2 = 3.95;
+  const top = 1.35, thick = 0.08, leg = 0.12;
+  w.addSpan("white-table", x1, x2, top - thick, top, z1, z2, COLORS.tableWhite);
+  for (const x of [x1 + 0.05, x2 - 0.05 - leg]) {
+    for (const z of [z1 + 0.05, z2 - 0.05 - leg]) {
+      w.addSpan("white-table-leg", x, x + leg, 0, top - thick, z, z + leg, COLORS.tableWhite);
+    }
+  }
+  // Stool: its seat (0.9m) is too close under the tabletop (1.27m) for Rae to fit on
+  const sx = -0.2, sz = 3.4, half = 0.22, seat = 0.9, sleg = 0.05;
+  w.addSpan("stool-seat", sx - half, sx + half, seat - 0.06, seat, sz - half, sz + half, COLORS.stool);
+  for (const x of [sx - half + 0.02, sx + half - 0.02 - sleg]) {
+    for (const z of [sz - half + 0.02, sz + half - 0.02 - sleg]) {
+      w.addSpan("stool-leg", x, x + sleg, 0, seat - 0.06, z, z + sleg, COLORS.stool);
+    }
+  }
+}
+
+// =====================================================
+// CORRIDOR (x -4..-1.9) and BATHROOM (x -1.4..4), z 4.5..8.5
+// =====================================================
+function buildCorridorAndBathroom(w) {
+  // Floors and the ceiling (one ceiling covers corridor, bathroom and living room)
+  w.addSpan("corridor-floor", -4.5, -1.65, -T, 0, 4.5, 9, COLORS.floor);
+  w.addSpan("bath-floor", -1.65, 4.5, -T, 0, 4.5, 9, COLORS.bathFloor);
+  w.addSpan("ceiling", -4.5, 4.5, H, H + T, 4.5, 18.5, COLORS.ceiling);
+
+  // The bedroom's back wall is pink on the bedroom side: paint this side to match each room
+  w.addDeco("paint", -1.4, 4, 0, H, 4.5, 4.52, COLORS.bathWall);
+  w.addDeco("paint", -4, -1.9, 0, H, 4.5, 4.52, COLORS.hallWall);
+
+  // Outer walls
+  w.addWall("wall", 4, 4.5, 0, H, 4.5, 8.5, COLORS.bathWall);
+  w.addWall("wall", -4.5, -4, 0, H, 4.5, 8.5, COLORS.hallWall);
+  // Wall between bathroom and corridor, with the bathroom door
+  w.addWall("wall", -1.9, -1.4, 0, H, 4.5, 8.5, COLORS.bathWall, [{ from: 5.6, to: 6.8, top: 2.1 }]);
+  // Wall between this strip and the living room, with the corridor's doorway
+  w.addWall("wall", -4.5, 4.5, 0, H, 8.5, 9, COLORS.livingWall, [{ from: -3.6, to: -2.3, top: 2.1 }]);
+
+  // Fire exit door on the corridor's side wall (closed: just for looks)
+  w.addDeco("fire-exit", -4, -3.96, 0, 2.1, 6.9, 8.1, COLORS.door);
+  w.addDeco("fire-exit-bar", -3.96, -3.9, 0.95, 1.05, 7.0, 8.0, COLORS.steel);
+  w.addDeco("fire-exit-sign", -4, -3.94, 2.25, 2.5, 7.15, 7.85, COLORS.exitSign);
+
+  // ---- Bath (along the bedroom wall, hollow so Rae can hop in) ----
+  const bx1 = 0.6, bx2 = 4, bz1 = 4.5, bz2 = 6.0, rim = 1.1, edge = 0.15;
+  w.addSpan("bath-base", bx1, bx2, 0, 0.3, bz1, bz2, COLORS.porcelain);
+  w.addSpan("bath-rim", bx1, bx2, 0.3, rim, bz1, bz1 + edge, COLORS.porcelain);
+  w.addSpan("bath-rim", bx1, bx2, 0.3, rim, bz2 - edge, bz2, COLORS.porcelain);
+  w.addSpan("bath-rim", bx1, bx1 + edge, 0.3, rim, bz1 + edge, bz2 - edge, COLORS.porcelain);
+  w.addSpan("bath-rim", bx2 - edge, bx2, 0.3, rim, bz1 + edge, bz2 - edge, COLORS.porcelain);
+  w.addDeco("bath-inside", bx1 + edge, bx2 - edge, 0.3, 0.31, bz1 + edge, bz2 - edge, COLORS.water);
+  // Taps at the wall end
+  w.addDeco("bath-tap", 3.7, 3.85, rim, rim + 0.25, 5.15, 5.35, COLORS.steel);
+
+  // ---- Toilet (against the outer wall, next to the bath) ----
+  w.addSpan("toilet-cistern", 3.65, 4, 0, 1.7, 7.35, 8.15, COLORS.porcelain);
+  w.addSpan("toilet-bowl", 2.95, 3.65, 0, 0.75, 7.5, 8.0, COLORS.porcelain);
+  w.addSpan("toilet-seat", 2.8, 3.65, 0.75, 0.85, 7.4, 8.1, COLORS.porcelain);
+  w.addDeco("toilet-flush", 3.6, 3.66, 1.45, 1.55, 7.65, 7.85, COLORS.steel);
+
+  // ---- Sink (pedestal basin, with a mirror above) ----
+  w.addSpan("sink-pedestal", -0.5, -0.2, 0, 1.5, 4.5, 4.85, COLORS.porcelain);
+  w.addSpan("sink-basin", -0.95, 0.25, 1.5, 1.8, 4.5, 5.35, COLORS.porcelain);
+  w.addDeco("sink-water", -0.8, 0.1, 1.8, 1.81, 4.65, 5.2, COLORS.water);
+  w.addDeco("sink-tap", -0.4, -0.3, 1.8, 2.0, 4.55, 4.75, COLORS.steel);
+  w.addDeco("mirror", -0.9, 0.2, 2.05, 2.75, 4.5, 4.53, COLORS.sky);
+
+  // Bath mat
+  w.addDeco("bath-mat", 1.4, 2.8, 0, 0.02, 6.1, 6.9, COLORS.canPink);
+
+  w.addRoomLight(-2.9, H - 0.3, 6.5, 0.3, 7);
+  w.addRoomLight(1.5, H - 0.3, 6.5, 0.35, 8);
+}
+
+// =====================================================
+// LIVING ROOM ("reception"): x -4..4, z 9..18.5
+// =====================================================
+function buildLivingRoom(w) {
+  w.addSpan("living-floor", -4.5, 4.5, -T, 0, 9, 18.5, COLORS.livingFloor);
+
+  w.addWall("wall", 4, 4.5, 0, H, 9, 18.5, COLORS.livingWall);
+  w.addWall("wall", -4.5, -4, 0, H, 9, 18.5, COLORS.livingWall);
+  // Far wall: runs all the way along under the kitchen too, and is tall because
+  // the kitchen floor is higher. The gap on the left leads to the stairs.
+  w.addWall("wall", -10.35, 4.5, 0, H_UP, 18.5, 19, COLORS.livingWall, [{ from: -1.4, to: 0.6, top: 2.4 }]);
+
+  // Chimney breast on the outer wall, with a fireplace and a mantelpiece
+  w.addSpan("chimney", 3.4, 4, 0, H, 12.7, 16.5, COLORS.livingWall);
+  w.addDeco("fireplace", 3.37, 3.4, 0, 1.2, 13.9, 15.3, COLORS.fireplace);
+  w.addSpan("mantelpiece", 3.15, 3.4, 1.4, 1.5, 13.6, 15.6, COLORS.skirting);
+
+  w.addWindow({ z: 18.5 }, 1.4, 3.6, 1.0, 2.4, -1);
+
+  w.addRoomLight(0, H - 0.3, 13.7, 0.55, 14);
+}
+
+// =====================================================
+// STAIRS: a hall between the living room and the office; 6 steps
+// climb towards the kitchen landing (x -1 -> -4)
+// =====================================================
+function buildStairs(w) {
+  w.addSpan("stair-hall-floor", -4, 1.1, -T, 0, 18.5, 20.5, COLORS.livingFloor); // also fills the doorway
+  for (let i = 0; i < 6; i++) {
+    const x1 = -1 - 0.5 * i, x2 = x1 - 0.5;
+    w.addSpan("stair", x1, x2, 0, 0.2 * (i + 1), 19, 20.5, COLORS.stairs);
+  }
+  w.addRoomLight(-1.7, H_UP - 0.3, 19.8, 0.3, 6);
+}
+
+// =====================================================
+// OFFICE (the small bedroom on the plan): x -5..0.6, z 21..25.6, upstairs
+// =====================================================
+function buildOffice(w) {
+  w.addSpan("office-floor", -5, 0.6, -T, UP, 21, 25.6, COLORS.floor);
+
+  // West outer wall (shared with the stair hall), with a window
+  w.addWall("wall", 0.6, 1.1, 0, H_UP, 18.5, 25.6, COLORS.officeWall);
+  w.addWindow({ x: 0.6 }, 22.4, 24.2, UP + 0.9, UP + 2.1, -1);
+  // Wall between the stairs and the office
+  w.addWall("wall", -5.5, 1.1, 0, H_UP, 20.5, 21, COLORS.officeWall);
+  // Wall between office and kitchen, with the office door
+  w.addWall("wall", -5.5, -5, 0, H_UP, 21, 26.1, COLORS.officeWall,
+    [{ from: 21.4, to: 22.6, bottom: UP, top: UP + 2.1 }]);
+  w.addWall("wall", -5.5, 1.1, 0, H_UP, 25.6, 26.1, COLORS.officeWall);
+
+  w.addRoomLight(-2.2, H_UP - 0.3, 23.3, 0.4, 8);
+}
+
+// =====================================================
+// KITCHEN: an L-shape wrapping round the office, upstairs.
+// Counters along the far wall and the side wall, with a sink and a hob.
+// =====================================================
+function buildKitchen(w) {
+  // Floor pieces (raised to the upstairs level)
+  w.addSpan("kitchen-floor", -9.85, -4, -T, UP, 19, 21, COLORS.kitchenFloor);      // landing
+  w.addSpan("kitchen-floor", -9.85, -5.5, -T, UP, 21, 26.1, COLORS.kitchenFloor);  // beside office
+  w.addSpan("kitchen-floor", -9.85, 0.6, -T, UP, 26.1, 29, COLORS.kitchenFloor);   // far end
+  w.addSpan("ceiling", -10.35, 1.1, H_UP, H_UP + T, 18.5, 29.5, COLORS.ceiling);
+
+  w.addWall("wall", 0.6, 1.1, 0, H_UP, 25.6, 29.5, COLORS.kitchenWall);
+  w.addWall("wall", -10.35, 1.1, 0, H_UP, 29, 29.5, COLORS.kitchenWall);
+  w.addWall("wall", -10.35, -9.85, 0, H_UP, 18.5, 29, COLORS.kitchenWall);
+
+  // Back door to outside (closed: just for looks)
+  w.addDeco("back-door", -6.6, -5.4, UP, UP + 2.1, 19, 19.04, COLORS.door);
+  w.addDeco("back-door-knob", -6.45, -6.35, UP + 1.0, UP + 1.1, 19.04, 19.09, COLORS.steel);
+
+  // ---- Counters: 1.9m tall cupboards with a worktop ----
+  const top = UP + 1.8, depth = 1.3;
+  // Along the far wall
+  w.addSpan("counter", 0.6, -9.85 + depth, UP, top, 29 - depth, 29, COLORS.cabinet);
+  w.addSpan("worktop", 0.6, -9.85 + depth, top, top + 0.1, 29 - depth - 0.08, 29, COLORS.worktop);
+  // Along the side wall
+  w.addSpan("counter", -9.85, -9.85 + depth, UP, top, 19.6, 29, COLORS.cabinet);
+  w.addSpan("worktop", -9.85, -9.85 + depth + 0.08, top, top + 0.1, 19.52, 29, COLORS.worktop);
+  // Cupboard doors (decoration): pale panels along the fronts
+  for (let x = 0.4; x > -8.4; x -= 1.1) {
+    w.addDeco("cupboard-door", x, x - 0.95, UP + 0.15, top - 0.15, 29 - depth - 0.02, 29 - depth, COLORS.sky);
+  }
+  for (let z = 20.0; z < 27.5; z += 1.1) {
+    w.addDeco("cupboard-door", -9.85 + depth, -9.85 + depth + 0.02, UP + 0.15, top - 0.15, z, z + 0.95, COLORS.sky);
+  }
+
+  // Sink (by the side-wall window) and tap
+  const wt = top + 0.1;
+  w.addDeco("sink", -8.8, -9.6, wt, wt + 0.02, 25.6, 27.0, COLORS.steel);
+  w.addDeco("tap", -9.7, -9.6, wt, wt + 0.35, 26.25, 26.35, COLORS.steel);
+  w.addDeco("tap-spout", -9.7, -9.35, wt + 0.3, wt + 0.35, 26.25, 26.35, COLORS.steel);
+  w.addWindow({ x: -9.85 }, 25.3, 27.3, wt + 0.25, H_UP - 0.25, +1);
+
+  // Hob with four rings
+  w.addDeco("hob", -8.75, -9.65, wt, wt + 0.02, 22.6, 24.2, COLORS.hob);
+  for (const x of [-8.98, -9.42]) {
+    for (const z of [23.0, 23.8]) {
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.03, 8), pastel(COLORS.walnut));
+      ring.position.set(x, wt + 0.03, z);
+      w.add(new Prop({ name: "hob-ring", mesh: ring, solid: false }));
+    }
+  }
+
+  // Windows above the far counter
+  w.addWindow({ z: 29 }, -4.6, -1.4, wt + 0.25, H_UP - 0.25, -1);
+
+  w.addRoomLight(-6.5, H_UP - 0.3, 26.5, 0.55, 14);
+  w.addRoomLight(-7, H_UP - 0.3, 21, 0.3, 7);
+}

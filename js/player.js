@@ -14,6 +14,7 @@ class Player {
     this.hopPower = 6.2;     // how hard a hop launches upward (about 1.2 m high)
     this.gravity = 16;       // how fast Rae falls back down
     this.superBounce = 6.8;  // pressing Space as you land on something bouncy
+    this.stepHeight = 0.25;  // walks straight up anything this low (stairs!) without hopping
     this.radius = 0.22;      // half the width of Rae's collision box
     this.height = 0.45;      // height of Rae's collision box
     this.eyeHeight = 0.38;   // where the camera sits (rabbits are low!)
@@ -116,11 +117,25 @@ class Player {
       return true;
     };
 
+    // Walking into something low (like a stair)? Step up onto it, if there's room.
+    const stepUp = (s) => {
+      const rise = s.box.max.y - this.pos.y;
+      if (!this.onGround || rise <= 0 || rise > this.stepHeight) return false;
+      const test = this.pos.clone();
+      test.y = s.box.max.y + 0.001;
+      const box = this.boxAt(test);
+      for (const o of solids) {
+        if (o !== s && !o.broken && !o.breakable && this.overlaps(box, o.box)) return false;
+      }
+      this.pos.y = test.y;
+      return true;
+    };
+
     this.pos.x += this.vel.x * dt;
     for (const s of solids) {
       if (s.broken) continue;
       if (this.overlaps(this.boxAt(this.pos), s.box)) {
-        if (smashIfBreakable(s)) continue;
+        if (smashIfBreakable(s) || stepUp(s)) continue;
         this.pos.x = this.vel.x > 0 ? s.box.min.x - this.radius - eps : s.box.max.x + this.radius + eps;
       }
     }
@@ -129,7 +144,7 @@ class Player {
     for (const s of solids) {
       if (s.broken) continue;
       if (this.overlaps(this.boxAt(this.pos), s.box)) {
-        if (smashIfBreakable(s)) continue;
+        if (smashIfBreakable(s) || stepUp(s)) continue;
         this.pos.z = this.vel.z > 0 ? s.box.min.z - this.radius - eps : s.box.max.z + this.radius + eps;
       }
     }

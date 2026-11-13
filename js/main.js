@@ -29,7 +29,7 @@ window.addEventListener("resize", () => {
 
 // ---- Build the world and the player ----
 const world = new World(scene);
-world.buildBedroom();
+buildHouse(world); // see house.js
 
 const player = new Player(camera);
 player.attachInput(canvas);

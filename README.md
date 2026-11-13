@@ -1,35 +1,39 @@
 # 🐰 Rae Rabbit's Cosy Home
 
-A little 3D first-person game: hop around as Rae Rabbit and collect things.
+A little 3D first-person game: hop around as Rae Rabbit, collect carrots and smash things.
 
 ## How to play it
 Double-click `index.html` to open it in your web browser (needs internet the first time, to load Three.js).
 
 - **W A S D**: move
-- **Mouse**: look around
-- **Space**: hop
+- **Mouse**: look around (or hold the button and drag, if the browser won't capture the mouse)
+- **Space**: hop (press it just as you land on the bed for a big bounce)
 - **Esc**: pause
 
 ## Where things live
 | File | What it does |
 |------|--------------|
 | `index.html` | The page: canvas, start screen, loads the scripts |
-| `style.css` | Look of the start screen and counter |
-| `js/audio.js` | Sound effects made in code (boing, chime, crunch) |
+| `style.css` | Look of the start screen, counter and dialogue bubble |
+| `js/audio.js` | Sound effects made in code (boing, spring, chime, crunch, babble) |
 | `js/dialogue.js` | Rae's thought bubble (top left). `Dialogue.sayOnce("id", "Text!")` |
-| `js/props.js` | The `Prop` class (every object), colours, the `Carrot` collectible |
+| `js/props.js` | The `Prop` class (every object), colours, carrots, cans, glasses, lamps |
 | `js/debris.js` | The flying pieces when something breaks |
-| `js/world.js` | Builds the rooms and lights |
-| `js/player.js` | Rae's controls, hopping and collision (tweak speed/hop here) |
+| `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
+| `js/house.js` | **The house itself**: one build function per room |
+| `js/player.js` | Rae's controls, hopping, stairs and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
 
-## Rooms so far
-- **Bedroom**: king-sized bed against the front wall (Rae can run underneath, and bounces on top; press Space as you land for a big bounce), doorway to the corridor on the right of the back wall (as you face it).
-  - Two brown bedside tables either side of the bed, 1.35m tall: too high to hop onto from the floor, so bounce over from the bed.
-  - A wide white table against the back wall, opposite the bed. Only reachable by a big bounce off the foot of the bed (press Space as you land, then run at it).
-  - A white stool tucked under the white table (scenery only, no room to stand on it).
+## The house (follows the real floorplan, at about 2x size)
+- **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed), a stool under it, two windows above the bed.
   - Breakables: a lamp and a glass on each bedside table, five cans on the white table.
-  - Carrots: one above the bed, one under the bed, one on the white table.
+  - Carrots: above the bed, under the bed, on the white table.
+- **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
+- **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.
+- **Living room**: chimney breast with fireplace and a mantelpiece, window, and the doorway to the stairs.
+- **Stairs**: six steps up to the kitchen level (1.2m higher). Rae walks up them; no hopping needed.
+- **Office** (the small bedroom on the plan): upstairs, door from the kitchen, window.
+- **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
 
 ## Rae's first-time thoughts
 | When | She says |
@@ -39,27 +43,27 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 
 New ones go in `js/main.js` (look for "Rae's first-time thoughts").
 
-## Adding a prop
-In `js/world.js`, inside a build function. Floor is y = 0; the front wall is negative z.
+## Adding things
+In `js/house.js`, inside a room's build function (`w` is the world). Ground floor is y = 0, upstairs is y = 1.2.
 
 ```js
-// solid box you can hop onto: name, x, y, z (centre), width, height, depth, colour
-this.addBox("cushion", 2, 0.15, 1, 0.8, 0.3, 0.8, COLORS.lilac);
-
-// same thing, but giving edges instead: from x1 to x2, y1 to y2, z1 to z2
-this.addSpan("cushion", 1.6, 2.4, 0, 0.3, 0.6, 1.4, COLORS.lilac);
+// solid box you can hop onto, giving its edges: from x1 to x2, y1 to y2, z1 to z2
+w.addSpan("cushion", 1.6, 2.4, 0, 0.3, 0.6, 1.4, COLORS.lilac);
 
 // something springy, like the bed
-this.addBox("beanbag", -2, 0.25, 2, 1, 0.5, 1, COLORS.butter, { bouncy: true, bouncePower: 5 });
+w.addSpan("beanbag", -2.5, -1.5, 0, 0.5, 1.5, 2.5, COLORS.butter, { bouncy: true, bouncePower: 5 });
 
-// mark it breakable: Rae smashes it into pieces by bumping into or landing on it
-this.addBox("vase", -2, 0.2, 1, 0.3, 0.4, 0.3, COLORS.butter, { breakable: true });
+// decoration only (Rae passes through it)
+w.addDeco("poster", 3.97, 4, 1.2, 2.2, 1, 2, COLORS.canPink);
+
+// a wall with a doorway in it
+w.addWall("wall", -4, 4, 0, 3, 10, 10.5, COLORS.livingWall, [{ from: -1, to: 0.2, top: 2.1 }]);
 
 // ready-made breakables (x, height of the surface, z): see js/props.js
-this.add(makeCan(1, 0, 1, COLORS.canMint));
-this.add(makeGlass(1.2, 0, 1));
-this.add(makeLamp(1.4, 0, 1));
+w.add(makeCan(1, 0, 1, COLORS.canMint));
+w.add(makeGlass(1.2, 0, 1));
+w.add(makeLamp(1.4, 0, 1));
 
-// another collectible carrot
-this.add(new Carrot(3, 0.35, 3));
+// another carrot
+w.add(new Carrot(3, 0.35, 3));
 ```

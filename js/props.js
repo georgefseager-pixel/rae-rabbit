@@ -38,6 +38,25 @@ const COLORS = {
   canBlue: 0xaed3f3,
   canMint: 0xa8e2c7,
   canLilac:0xcdb8ef,
+  sky:     0xcdeafc, // window glass
+  // rooms
+  hallWall:    0xfbeec4, // corridor (pale butter)
+  bathWall:    0xd2eee2, // bathroom (mint)
+  bathFloor:   0xe3eef8, // bathroom tiles (pale blue)
+  porcelain:   0xfefefe, // bath, toilet, sink
+  livingWall:  0xfde0cc, // living room (peach)
+  livingFloor: 0xe6cfae, // living room floor
+  fireplace:   0xcfc4dc, // fireplace opening
+  stairs:      0xd9b38e, // stair treads
+  officeWall:  0xe4dbf6, // office (lilac)
+  kitchenWall: 0xfdf2d0, // kitchen (cream yellow)
+  kitchenFloor:0xeee6f3, // kitchen tiles
+  cabinet:     0xb9dcea, // kitchen cupboards (pastel blue)
+  worktop:     0xfffaf2, // kitchen worktop
+  hob:         0x8d88a2, // cooker top
+  steel:       0xd8dce6, // sink & tap
+  door:        0xf2c9a7, // closed doors
+  exitSign:    0x9edbb0, // fire exit sign
 };
 
 // Makes a flat-shaded pastel material (the "low-poly" look)
