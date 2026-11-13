@@ -12,6 +12,11 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
   `PUNCH_RADIUS` in `js/main.js`)
 - **Esc**: pause
 
+**With a controller** (Xbox layout; just press a button and the on-screen prompts switch over):
+left stick move, right stick look, **A** hop, **X** / **RB** / **RT** punch, **Menu (☰)** pause.
+In the Flopsy Shop: D-pad or left stick to choose, **A** to wear, **B** to leave.
+Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
+
 ## Where things live
 | File | What it does |
 |------|--------------|
@@ -23,6 +28,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `js/debris.js` | The flying pieces when something breaks |
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
+| `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
 | `js/shop.js` | The Flopsy Shop: outfits & unlocks, the dancing stage, the menu, and Flopsy |
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |

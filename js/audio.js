@@ -9,11 +9,16 @@ const Sfx = {
   master: null,
 
   init() {
-    if (this.ctx) return;
+    if (this.ctx) { this.ctx.resume(); return; }
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.master = this.ctx.createGain();
     this.master.gain.value = 0.6; // overall volume (0 = silent, 1 = loud)
     this.master.connect(this.ctx.destination);
+    // Some browsers only allow sound after a click or key press (a controller
+    // button may not count), so wake the sound up on the next one if needed.
+    const wake = () => { if (this.ctx.state === "suspended") this.ctx.resume(); };
+    window.addEventListener("keydown", wake);
+    window.addEventListener("mousedown", wake);
   },
 
   // A soft, springy "boing" for hops

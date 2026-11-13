@@ -29,10 +29,21 @@
   <div id="overlay">
     <div class="card">
       <h1>🐰 Rae Rabbit's Cosy Home</h1>
-      <p id="overlay-title" class="big">Click to start</p>
-      <p class="controls">
+      <p id="overlay-title" class="big">
+        <span class="kb-only">Click to start</span>
+        <span class="pad-only">Press <span class="xb a">A</span> to start</span>
+      </p>
+      <!-- Keyboard & mouse controls -->
+      <p class="controls kb-only">
         <b>W A S D</b> move &nbsp;·&nbsp; <b>Mouse</b> look &nbsp;·&nbsp; <b>Space</b> hop &nbsp;·&nbsp; <b>Click</b> punch<br>
-        <b>Esc</b> pause &nbsp;·&nbsp; Mouse look not working? Hold the button and drag
+        <b>Esc</b> pause &nbsp;·&nbsp; Mouse look not working? Hold the button and drag<br>
+        <span class="hint">🎮 Controllers work too: just press a button</span>
+      </p>
+      <!-- Controller controls (shown when you use a controller) -->
+      <p class="controls pad-only">
+        <span class="xb pill">LS</span> move &nbsp;·&nbsp; <span class="xb pill">RS</span> look &nbsp;·&nbsp;
+        <span class="xb a">A</span> hop &nbsp;·&nbsp; <span class="xb x">X</span> / <span class="xb pill">RT</span> punch<br>
+        <span class="xb pill">☰</span> pause
       </p>
     </div>
   </div>
@@ -48,7 +59,8 @@
       <canvas id="shop-stage"></canvas>
       <div id="shop-items"></div>
       <button id="shop-wear">Wear it!</button>
-      <button id="shop-leave">Just looking, thanks</button>
+      <button id="shop-leave"><span class="pad-only xb b">B</span> Just looking, thanks</button>
+      <p class="pad-only shop-pad-hint"><span class="xb pill">✚</span> / <span class="xb pill">LS</span> choose &nbsp;·&nbsp; <span class="xb a">A</span> wear &nbsp;·&nbsp; <span class="xb b">B</span> leave</p>
     </div>
   </div>
 
@@ -62,7 +74,7 @@
         <div class="stat"><span class="icon">💥</span><span class="label">Things smashed</span><b id="go-smashed">0</b></div>
         <div class="stat"><span class="icon">🐸</span><span class="label">Frogs stomped</span><b id="go-frogs">0</b></div>
       </div>
-      <button id="play-again">Play again</button>
+      <button id="play-again"><span class="pad-only xb a">A</span> Play again</button>
     </div>
   </div>
 
@@ -81,6 +93,7 @@
   <script src="js/house.js"></script>
   <script src="js/player.js"></script>
   <script src="js/shop.js"></script>
+  <script src="js/gamepad.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

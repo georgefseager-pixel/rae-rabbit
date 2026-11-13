@@ -25,6 +25,7 @@ class Player {
     this.pos = this.spawn.clone(); // position of Rae's FEET
     this.vel = new THREE.Vector3();
     this.knock = new THREE.Vector3(); // a shove from getting hurt; fades away quickly
+    this.padMove = { x: 0, y: 0 };    // controller left stick (see gamepad.js)
     this.yaw = 0;    // looking left/right
     this.pitch = 0;  // looking up/down
     this.onGround = false;
@@ -85,13 +86,20 @@ class Player {
     if (this.keys.KeyS || this.keys.ArrowDown) forward -= 1;
     if (this.keys.KeyD || this.keys.ArrowRight) right += 1;
     if (this.keys.KeyA || this.keys.ArrowLeft) right -= 1;
+    // Controller left stick (set by gamepad.js): push it a little to walk slowly
+    forward -= this.padMove.y;
+    right += this.padMove.x;
 
     // Turn that into a direction based on where we're looking
     const sin = Math.sin(this.yaw), cos = Math.cos(this.yaw);
     let dx = -sin * forward + cos * right;
     let dz = -cos * forward - sin * right;
     const len = Math.hypot(dx, dz);
-    if (len > 0) { dx /= len; dz /= len; }
+    if (len > 0) {
+      const amount = Math.min(1, len); // full speed with keys; analog with a stick
+      dx = (dx / len) * amount;
+      dz = (dz / len) * amount;
+    }
     const speed = this.onGround ? this.speed : this.speed * this.airBoost;
     this.knock.multiplyScalar(Math.max(0, 1 - dt * 5));
     this.vel.x = dx * speed + this.knock.x;
@@ -186,7 +194,7 @@ class Player {
     }
 
     // ---- 4. Put the camera at Rae's eyes, with a gentle hop-bob ----
-    const moving = (len > 0 || this.knock.length() > 0.3) && this.onGround;
+    const moving = (len > 0.15 || this.knock.length() > 0.3) && this.onGround;
     this.bobTime = moving ? this.bobTime + dt * 9 : 0;
     const bob = Math.abs(Math.sin(this.bobTime)) * 0.03;
     this.camera.position.set(this.pos.x, this.pos.y + this.eyeHeight + bob, this.pos.z);

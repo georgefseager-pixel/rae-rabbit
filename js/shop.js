@@ -144,7 +144,8 @@ function drawShopItems() {
   }
   const ok = shopSelected && isUnlocked(shopSelected);
   wearBtn.disabled = !ok;
-  wearBtn.textContent = ok ? `Wear the ${shopSelected.name.toLowerCase()}!` : "Locked! Keep exploring 🔒";
+  wearBtn.innerHTML = `<span class="pad-only xb a">A</span> ` +
+    (ok ? `Wear the ${shopSelected.name.toLowerCase()}!` : "Locked! Keep exploring 🔒");
 }
 
 function selectOutfit(outfit) {

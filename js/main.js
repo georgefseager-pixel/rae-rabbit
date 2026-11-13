@@ -264,7 +264,7 @@ overlay.addEventListener("click", () => {
   overlay.classList.add("hidden");
   // Capture the mouse for looking around. If the browser says no,
   // tell the player to click-and-drag instead (see player.js).
-  const noLock = () => showToast("Hold the mouse button and drag to look around");
+  const noLock = () => { if (Pad.mode !== "gamepad") showToast("Hold the mouse button and drag to look around"); };
   try {
     const result = canvas.requestPointerLock();
     if (result && result.catch) result.catch(noLock);
@@ -272,12 +272,17 @@ overlay.addEventListener("click", () => {
 });
 
 document.addEventListener("pointerlockchange", () => {
-  if (document.pointerLockElement !== canvas && started && !gameOver && !inShop) {
-    paused = true;
-    overlayTitle.textContent = "Paused — click to continue";
-    overlay.classList.remove("hidden");
-  }
+  if (document.pointerLockElement !== canvas && started && !gameOver && !inShop) showPauseScreen();
 });
+
+// Pause, and show the card with the right prompt for keyboard or controller
+function showPauseScreen() {
+  paused = true;
+  overlayTitle.innerHTML = `<span class="kb-only">Paused — click to continue</span>` +
+    `<span class="pad-only">Paused — press <span class="xb a">A</span> to continue</span>`;
+  overlay.classList.remove("hidden");
+  if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+}
 
 // ---- Little pop-up message ----
 let toastTimer = null;
@@ -311,6 +316,8 @@ function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), 0.05); // cap big jumps (e.g. after switching tabs)
   const time = clock.elapsedTime;
+
+  handleGamepad(dt); // controller input (see gamepad.js)
 
   if (!paused) {
     hurtCooldown = Math.max(0, hurtCooldown - dt);

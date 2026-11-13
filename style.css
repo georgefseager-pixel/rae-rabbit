@@ -160,6 +160,37 @@ html, body {
 }
 .card h1 { margin: 0 0 10px; font-size: 28px; }
 
+/* ---- Keyboard vs controller prompts ----
+   The page gets class "pad" while a controller is being used (see gamepad.js). */
+body.pad .kb-only { display: none !important; }
+body:not(.pad) .pad-only { display: none !important; }
+
+/* Xbox-style button icons: round face buttons in their colours, pills for the rest */
+.xb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.45em;
+  height: 1.45em;
+  padding: 0;
+  border-radius: 50%;
+  background: #2f2b35;
+  color: #fff;
+  font-family: "Fredoka", "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: 0.85em;
+  line-height: 1;
+  vertical-align: middle;
+  box-shadow: 0 2px 0 #1a171e;
+}
+.xb.a { color: #7ed957; }
+.xb.b { color: #ff6464; }
+.xb.x { color: #4fa8ff; }
+.xb.y { color: #ffd23f; }
+.xb.pill { border-radius: 8px; padding: 0 0.45em; font-size: 0.75em; }
+.hint { font-size: 0.9em; color: #9a8aa0; }
+.shop-pad-hint { margin: 10px 0 0; color: #8a7590; font-size: 15px; }
+
 /* ---- Fade to black ---- */
 #fade {
   position: fixed;
