@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rae Rabbit's Cosy Home</title>
+  <!-- A round, friendly font for Rae's dialogue -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,6 +16,12 @@
   <!-- Little on-screen counter -->
   <div id="hud">🥕 <span id="carrot-count">0</span> / <span id="carrot-total">0</span></div>
   <div id="toast"></div>
+
+  <!-- Rae's inner thoughts (filled in by js/dialogue.js) -->
+  <div id="dialogue">
+    <div class="name-tag">🐰 Rae</div>
+    <p id="dialogue-text"></p>
+  </div>
 
   <!-- Start / pause screen (a click is needed before browsers allow sound) -->
   <div id="overlay">
@@ -31,6 +40,7 @@
 
   <!-- Our game code. Order matters: later files use things from earlier ones. -->
   <script src="js/audio.js"></script>
+  <script src="js/dialogue.js"></script>
   <script src="js/props.js"></script>
   <script src="js/world.js"></script>
   <script src="js/player.js"></script>

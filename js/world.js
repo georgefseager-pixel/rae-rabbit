@@ -4,7 +4,7 @@
 // Directions used in this file (looking down from above):
 //   "front" wall = north = negative z  (the wall you face when you start)
 //   "back" wall  = south = positive z  (behind you; has the corridor door)
-//   right = positive x,  left = negative x,  up = positive y
+//   right = positive x,  left = negative x  (as you face the front wall),  up = positive y
 // Floor level is y = 0. Sizes are in metres.
 
 class World {
@@ -61,8 +61,8 @@ class World {
     this.addSpan("wall-left",  -4.5, -4,  0, H, -4, 4,    COLORS.wallB);
     this.addSpan("wall-right",  4, 4.5,   0, H, -4, 4,    COLORS.wallB);
 
-    // Back wall, with a doorway on the right-hand side
-    const door = { x1: 2.05, x2: 3.15, top: 2.1 }; // 1.1m wide, 2.1m tall
+    // Back wall, with a doorway on the right-hand side (as you face the door)
+    const door = { x1: -3.15, x2: -2.05, top: 2.1 }; // 1.1m wide, 2.1m tall
     this.addSpan("wall-back",       -4.5, door.x1, 0, H,        4, 4.5, COLORS.wallA);
     this.addSpan("wall-back",       door.x2, 4.5,  0, H,        4, 4.5, COLORS.wallA);
     this.addSpan("wall-back-above", door.x1, door.x2, door.top, H, 4, 4.5, COLORS.wallA);

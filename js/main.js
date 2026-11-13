@@ -34,6 +34,12 @@ world.buildBedroom();
 const player = new Player(camera);
 player.attachInput(canvas);
 
+// ---- Rae's first-time thoughts ----
+Dialogue.init();
+player.onBounce = (prop) => {
+  if (prop.name.startsWith("bed")) Dialogue.sayOnce("first-bed-bounce", "Bounce! Bounce! BOUNCE!");
+};
+
 let collectedCount = 0;
 const totalCollectibles = world.collectibles().length;
 totalEl.textContent = totalCollectibles;
@@ -84,7 +90,7 @@ function checkCollectibles() {
       Sfx.chime();
       collectedCount++;
       countEl.textContent = collectedCount;
-      showToast(collectedCount === totalCollectibles ? "You found them all! 🎉" : `Found a ${prop.name}!`);
+      if (prop.name === "carrot") Dialogue.sayOnce("first-carrot", "Yummers mode!");
     }
   }
 }

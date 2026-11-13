@@ -16,13 +16,22 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `index.html` | The page: canvas, start screen, loads the scripts |
 | `style.css` | Look of the start screen and counter |
 | `js/audio.js` | Sound effects made in code (boing, chime, crunch) |
+| `js/dialogue.js` | Rae's thought bubble (top left). `Dialogue.sayOnce("id", "Text!")` |
 | `js/props.js` | The `Prop` class (every object), colours, the `Carrot` collectible |
 | `js/world.js` | Builds the rooms and lights |
 | `js/player.js` | Rae's controls, hopping and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
 
 ## Rooms so far
-- **Bedroom**: king-sized bed against the front wall (Rae can run underneath, and bounces on top; press Space as you land for a big bounce), doorway to the corridor in the back wall.
+- **Bedroom**: king-sized bed against the front wall (Rae can run underneath, and bounces on top; press Space as you land for a big bounce), doorway to the corridor on the right of the back wall (as you face it).
+
+## Rae's first-time thoughts
+| When | She says |
+|------|----------|
+| First bounce on the bed | Bounce! Bounce! BOUNCE! |
+| First carrot | Yummers mode! |
+
+New ones go in `js/main.js` (look for "Rae's first-time thoughts").
 
 ## Adding a prop
 In `js/world.js`, inside a build function. Floor is y = 0; the front wall is negative z.

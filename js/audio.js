@@ -61,6 +61,31 @@ const Sfx = {
     osc.stop(t + 0.52); wobble.stop(t + 0.52);
   },
 
+  // One tiny squeaky "mi" syllable for Rae's babbly voice.
+  // excited = true makes it higher and bouncier (used for CAPITAL letters).
+  babble(excited = false) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const notes = [660, 740, 784, 880, 988]; // a cheerful pentatonic-ish set
+    let freq = notes[Math.floor(Math.random() * notes.length)];
+    if (excited) freq *= 1.25;
+
+    const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+    osc.type = "square";
+    osc.frequency.setValueAtTime(freq * 1.15, t);           // starts a bit high...
+    osc.frequency.exponentialRampToValueAtTime(freq, t + 0.03); // ...and settles: "mi"
+    filter.type = "lowpass";
+    filter.frequency.value = 2400; // softens the square wave so it's cute, not harsh
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.12, t + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    osc.connect(filter).connect(gain).connect(this.master);
+    osc.start(t);
+    osc.stop(t + 0.08);
+  },
+
   // A sparkly three-note chime for collecting things
   chime() {
     if (!this.ctx) return;

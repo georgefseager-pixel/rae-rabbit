@@ -19,7 +19,7 @@ class Player {
     this.mouseSensitivity = 0.0022;
 
     // ---- State ----
-    this.spawn = new THREE.Vector3(2.6, 0, 3.2); // just inside the bedroom door
+    this.spawn = new THREE.Vector3(-2.6, 0, 3.2); // just inside the bedroom door
     this.pos = this.spawn.clone(); // position of Rae's FEET
     this.vel = new THREE.Vector3();
     this.yaw = 0;    // looking left/right
@@ -144,6 +144,7 @@ class Player {
       this.hopQueued = 0;
       this.onGround = false;
       Sfx.spring();
+      if (this.onBounce) this.onBounce(landedOn);
     }
 
     // Safety net: if Rae ever somehow falls out of the world, put her back
