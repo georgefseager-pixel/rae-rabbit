@@ -43,8 +43,16 @@ class Player {
     window.addEventListener("keyup", (e) => { this.keys[e.code] = false; });
     window.addEventListener("blur", () => { this.keys = {}; });
 
+    // Normally the mouse is "captured" (pointer lock) and moving it turns Rae's head.
+    // Some browsers/previews don't allow that, so as a backup you can also
+    // hold the mouse button down and drag to look around.
+    this.dragging = false;
+    canvas.addEventListener("mousedown", () => { this.dragging = true; });
+    window.addEventListener("mouseup", () => { this.dragging = false; });
+
     document.addEventListener("mousemove", (e) => {
-      if (document.pointerLockElement !== canvas) return;
+      const locked = document.pointerLockElement === canvas;
+      if (!locked && !this.dragging) return;
       this.yaw -= e.movementX * this.mouseSensitivity;
       this.pitch -= e.movementY * this.mouseSensitivity;
       const limit = Math.PI / 2 - 0.05;

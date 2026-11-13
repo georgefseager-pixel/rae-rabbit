@@ -47,11 +47,13 @@ overlay.addEventListener("click", () => {
   started = true;
   paused = false;
   overlay.classList.add("hidden");
-  // Capture the mouse for looking around. Some browsers say no; the game still runs.
+  // Capture the mouse for looking around. If the browser says no,
+  // tell the player to click-and-drag instead (see player.js).
+  const noLock = () => showToast("Hold the mouse button and drag to look around");
   try {
     const result = canvas.requestPointerLock();
-    if (result && result.catch) result.catch(() => {});
-  } catch (e) {}
+    if (result && result.catch) result.catch(noLock);
+  } catch (e) { noLock(); }
 });
 
 document.addEventListener("pointerlockchange", () => {
@@ -68,7 +70,7 @@ function showToast(text) {
   toastEl.textContent = text;
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2500);
 }
 
 // ---- Check if Rae is touching any collectibles ----
