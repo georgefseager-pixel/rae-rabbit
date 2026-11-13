@@ -25,6 +25,9 @@ const FROG_LINES = [
   "I'm un-frog-ettable!",
 ];
 
+// How often a frog spawns as a tiny, speedy MINI frog (0.15 = 15% of the time)
+const MINI_FROG_CHANCE = 0.15;
+
 // Pastel colours for the frogs; each frog gets its own
 const FROG_COLORS = {
   green:  0x9fdc8a,
@@ -42,19 +45,26 @@ class Frog {
     this.spawn = new THREE.Vector3(x, y, z);
     this.color = color;
 
-    // ---- Tweakable numbers ----
-    this.sightRange = 6.5;    // how far away a frog can spot Rae
-    this.loseRange = 10;      // stops chasing beyond this
-    this.hopSpeed = 1.5;      // sideways speed during a hop (slow!)
-    this.hopPower = 3.4;      // how high each hop goes
     this.gravity = 14;
-    this.radius = 0.2;
-    this.height = 0.47;
+    this.loseRange = 10;       // stops chasing beyond this
     this.respawnDistance = 16; // Rae this far from the spawn point -> frog resets
 
     this.buildModel(color);
     world.scene.add(this.root);
     this.reset(false);
+  }
+
+  // Normal frog or MINI frog? Mini frogs are rare: small, fast, bouncy and sharp-eyed.
+  setMini(mini) {
+    this.mini = mini;
+    // ---- Tweakable numbers (normal frog / mini frog) ----
+    this.size = mini ? 0.6 : 1;          // overall scale of the model
+    this.sightRange = mini ? 8.5 : 6.5;  // how far away it can spot Rae
+    this.hopSpeed = mini ? 3.0 : 1.5;    // sideways speed during a hop
+    this.hopPower = mini ? 5.6 : 3.4;    // how high each hop goes
+    this.hopRest = mini ? 0.12 : 0.35;   // pause between hops while chasing
+    this.radius = 0.2 * this.size;
+    this.height = 0.47 * this.size;
   }
 
   // Repaint the whole frog in a new colour (eyes stay black; mouth is a darker shade)
@@ -149,6 +159,7 @@ class Frog {
   // Back to the spawn point, fresh and unpopped (and, on a respawn, a new colour!)
   reset(newColor = true) {
     if (newColor) this.recolor(this.randomColor());
+    this.setMini(Math.random() < MINI_FROG_CHANCE); // every spawn is a new roll of the dice
     this.pos = this.spawn.clone();
     this.pos.y += 0.05; // start just above the floor, then drop onto it
     this.vel = new THREE.Vector3();
@@ -208,7 +219,7 @@ class Frog {
 
     // Pop-in grow after a respawn
     const s = this.root.scale.x;
-    if (s < 1) this.root.scale.setScalar(Math.min(1, s + dt * 4));
+    if (s < this.size) this.root.scale.setScalar(Math.min(this.size, s + dt * 4));
 
     // ---- Look for Rae (a few times a second) ----
     const dx = player.pos.x - this.pos.x, dz = player.pos.z - this.pos.z;
@@ -224,7 +235,9 @@ class Frog {
       this.chasing = true;
       if (this.talkCooldown === 0) {
         const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
-        Dialogue.say(line, { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
+        Dialogue.say(this.mini ? line.toUpperCase() : line, this.mini
+          ? { speaker: "🐸 Mini frog", style: "enemy", voice: "minifrog" }
+          : { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
         this.talkCooldown = 10;
         if (typeof raeSays === "function") raeSays("frog-spotted"); // Rae's reply, the first time
       }
@@ -235,6 +248,13 @@ class Frog {
     let dir = null;
     if (this.chasing && dist > 0.35) {
       dir = { x: dx / dist, z: dz / dist };
+      if (this.mini) {
+        // Mini frogs zig-zag as they chase, so they're harder to land on
+        const zig = Math.sin(time * 3 + this.spawn.x) * 0.8;
+        dir = { x: dir.x - dir.z * zig, z: dir.z + dir.x * zig };
+        const len = Math.hypot(dir.x, dir.z);
+        dir.x /= len; dir.z /= len;
+      }
     } else if (!this.chasing) {
       // Wander gently near home
       if (!this.wanderDir || Math.random() < dt * 0.4) {
@@ -265,7 +285,7 @@ class Frog {
           this.vel.x = dir.x * this.hopSpeed;
           this.vel.z = dir.z * this.hopSpeed;
           this.onGround = false;
-          this.hopTimer = (this.chasing ? 0.35 : 1.0) + Math.random() * 0.4;
+          this.hopTimer = (this.chasing ? this.hopRest : 1.0) + Math.random() * (this.mini ? 0.15 : 0.4);
           Sfx.frogHop(this.pos.distanceTo(player.pos));
         }
       }

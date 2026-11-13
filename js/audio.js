@@ -68,6 +68,7 @@ const Sfx = {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
     const notes = voice === "frog" ? [196, 220, 247, 262, 294]        // low, froggy
+      : voice === "minifrog" ? [440, 494, 523, 587, 659]                // small, croaky-squeaky
       : voice === "flopsy" ? [988, 1109, 1175, 1319, 1480]              // tiny and squeaky
       : [660, 740, 784, 880, 988];                                      // Rae: cheerful
     let freq = notes[Math.floor(Math.random() * notes.length)];

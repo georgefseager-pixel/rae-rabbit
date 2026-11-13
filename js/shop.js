@@ -17,7 +17,7 @@ const OUTFITS = [
   { id: "naked", emoji: "🐰", name: "Just fur",          line: "Fur is the only outfit I need!" },
   { id: "shirt", emoji: "➕", name: "Favourite shirt",   line: "Back in my favourite shirt!" },
   { id: "dress", emoji: "👗", name: "Pink dress",        line: "I feel like a princess bunny!",               need: { carrots: 3 } },
-  { id: "frog",  emoji: "🐸", name: "Frog face shirt",   line: "Ribbit! The frogs will think I'm one of them!", need: { frogs: 2 } },
+  { id: "frog",  emoji: "🐸", name: "Frog face shirt",   line: "Ribbit! The frogs will think I'm one of them!", need: { frogs: 5 } },
   { id: "suit",  emoji: "👔", name: "Navy suit",         line: "Time for serious business. Carrot business.",  need: { smashed: 20 } },
   { id: "clown", emoji: "🤡", name: "Clown face & nose", line: "Honk honk! The funniest bunny in town!",       need: { carrots: 8 } },
 ];
@@ -210,12 +210,6 @@ class Flopsy {
   constructor(scene, x, y, z) {
     this.model = new RaeModel(FLOPSY_COLORS);
     this.model.setOutfit("naked");
-    // A little shopkeeper's apron
-    const apron = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.14, 0.02), pastel(COLORS.butter));
-    apron.position.set(0, 0.15, -0.115);
-    const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.04, 0.01), pastel(COLORS.canPink));
-    pocket.position.set(0, 0.13, -0.127);
-    this.model.body.add(apron, pocket);
     // Unlike Rae's body, everyone can see Flopsy
     this.model.root.traverse((o) => o.layers.set(0));
     this.model.root.scale.setScalar(0.72); // smaller than Rae

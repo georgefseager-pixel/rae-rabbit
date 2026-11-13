@@ -39,8 +39,8 @@ function blob(radius, color, sx = 1, sy = 1, sz = 1, detail = [7, 5]) {
   return mesh;
 }
 
-// Flopsy, who runs the Flopsy Shop: a smaller, chocolate-brown bunny (same shape as Rae)
-const FLOPSY_COLORS = { ...RAE_COLORS, fur: 0x9b6a48, furLight: 0xc89e7a, tail: 0xf0dcc4 };
+// Flopsy, who runs the Flopsy Shop: a smaller, light caramel-brown bunny (same shape as Rae)
+const FLOPSY_COLORS = { ...RAE_COLORS, fur: 0xc39a72, furLight: 0xe2c8a8, tail: 0xf6e9d8 };
 
 class RaeModel {
   // colors: RAE_COLORS for Rae, FLOPSY_COLORS for Flopsy

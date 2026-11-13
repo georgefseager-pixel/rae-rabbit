@@ -115,15 +115,16 @@ function checkFrogs(fallingSpeed) {
     const dx = frog.pos.x - player.pos.x, dz = frog.pos.z - player.pos.z;
     const flat = Math.hypot(dx, dz);
     const top = frog.top();
-    if (flat < 0.34 && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
+    const stompReach = frog.radius + 0.14, bumpReach = frog.radius + 0.2; // smaller frogs are harder to land on
+    if (flat < stompReach && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
       frog.pop();
       stompedCount++;
-      raeSays("frog-popped");
+      raeSays(frog.mini ? "minifrog-popped" : "frog-popped");
       player.pos.y = top;
       player.vel.y = 5.5;   // boing off its head
       player.onGround = false;
-    } else if (flat < 0.4 && flat > 0.001 && player.pos.y < top - 0.1 && player.pos.y + player.height > frog.pos.y) {
-      const push = 0.4 - flat;
+    } else if (flat < bumpReach && flat > 0.001 && player.pos.y < top - 0.1 && player.pos.y + player.height > frog.pos.y) {
+      const push = bumpReach - flat;
       frog.pos.x += (dx / flat) * push;
       frog.pos.z += (dz / flat) * push;
       hurtRae(frog.pos.x, frog.pos.z);
@@ -160,6 +161,7 @@ const RAE_LINES = {
   // frogs and hearts
   "frog-spotted":  "Eep! A frog!",
   "frog-popped":   "Pop goes the frog! Rabbits rule!",
+  "minifrog-popped": "Got you, you speedy little thing!",
   "hurt":          "Ouch! Frogs are slimy!",
   "last-heart":    "Uh oh, I need a carrot...",
   // carrots

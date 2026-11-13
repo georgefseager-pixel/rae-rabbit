@@ -55,7 +55,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 
 ## The Flopsy Shop
 Inside the wardrobe, behind the mirror door, is a tiny door with a scrappy hand-written FLOPSY SHOP
-sign. Flopsy (a small brown bunny in an apron) stands beside it and waves hello when Rae comes in.
+sign. Flopsy (a small light-brown bunny) stands beside it and waves hello when Rae comes in.
 Walk up to the door: the screen fades to black and the shop opens, with Rae dancing on a little stage
 in whichever outfit you click. "Wear it!" and she steps back out in it, with something to say.
 
@@ -63,7 +63,7 @@ in whichever outfit you click. "Wear it!" and she steps back out in it, with som
 |--------|---------------|
 | Just fur, Favourite shirt | Always |
 | Pink dress | Collect 3 carrots |
-| Frog face shirt | Stomp 2 frogs |
+| Frog face shirt | Stomp 5 frogs |
 | Navy suit | Smash 20 things |
 | Clown face & nose | Collect 8 carrots |
 
@@ -76,6 +76,10 @@ When one spots Rae it says one of its lines in red (the list is at the top of `j
 slowly after her. Land on its head to pop it (silly squeak, and Rae bounces off). Touch one any other way
 and Rae loses a heart. Wander about 16m away from where a frog lives and it comes back, good as new,
 in a new random colour.
+
+**Mini frogs:** each time a frog spawns there's a small chance (15%, `MINI_FROG_CHANCE` in `js/frog.js`)
+it's a mini frog: 60% of the size (harder to land on), about twice as fast, hops much higher, spots Rae
+from further away, zig-zags while chasing, and shouts in a squeaky voice.
 
 ## Hearts
 Rae has 3 hearts (top right). Getting hurt loses one, flashes the screen red and knocks her back; then
