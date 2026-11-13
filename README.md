@@ -30,7 +30,10 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 ## The house (follows the real floorplan, at about 2x size)
 - **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed) with an oval vanity mirror above it (hop up to see Rae!), a stool under it, two windows above the bed.
   - Breakables: a lamp and a glass on each bedside table, five cans on the white table, six little clothes piles on the floor (one kicked under the bed).
-  - Carrots: above the bed, under the bed, on the white table.
+  - Carrots: above the bed, under the bed, on the white table, hidden in the wardrobe.
+  - Built-in wardrobe in the wall to the left of the vanity mirror: three sliding doors. The left one is
+    open (walk in: shelf with boxes, hanging shirts, a clothes pile), the middle one is a full-length
+    mirror, the right one is plain white. Its insides run behind the other doors.
 - **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
 - **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.
   - Carrots: one in the bath, one in the sink (hop from the bath's end onto the sink).
