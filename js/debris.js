@@ -22,8 +22,9 @@ class Debris {
     const box = prop.box;
     const centre = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
-    const pieceSize = Math.max(0.025, Math.max(size.x, size.y, size.z) * 0.16);
-    const count = 10 + Math.floor(Math.random() * 5);
+    const biggest = Math.max(size.x, size.y, size.z);
+    const pieceSize = Math.min(0.17, Math.max(0.025, biggest * 0.16)); // not too tiny, not too chunky
+    const count = 10 + Math.floor(Math.random() * 5) + (biggest > 1 ? 14 : 0); // big things: more bits
 
     for (let i = 0; i < count; i++) {
       const geo = Math.random() < 0.5

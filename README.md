@@ -31,9 +31,10 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
 - **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.
 - **Living room**: chimney breast with fireplace and a mantelpiece, window, and the doorway to the stairs.
-- **Stairs**: six steps up to the kitchen level (1.2m higher). Rae walks up them; no hopping needed.
-- **Office** (the small bedroom on the plan): upstairs, door from the kitchen, window.
+- **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
+- **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs, window.
 - **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
+- **Doors**: every doorway has a door that smashes to pieces when Rae touches it.
 
 ## Rae's first-time thoughts
 | When | She says |
@@ -44,7 +45,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 New ones go in `js/main.js` (look for "Rae's first-time thoughts").
 
 ## Adding things
-In `js/house.js`, inside a room's build function (`w` is the world). Ground floor is y = 0, upstairs is y = 1.2.
+In `js/house.js`, inside a room's build function (`w` is the world). Ground floor is y = 0, the kitchen level is y = -1.2.
 
 ```js
 // solid box you can hop onto, giving its edges: from x1 to x2, y1 to y2, z1 to z2
@@ -56,7 +57,7 @@ w.addSpan("beanbag", -2.5, -1.5, 0, 0.5, 1.5, 2.5, COLORS.butter, { bouncy: true
 // decoration only (Rae passes through it)
 w.addDeco("poster", 3.97, 4, 1.2, 2.2, 1, 2, COLORS.canPink);
 
-// a wall with a doorway in it
+// a wall with a doorway in it (gets a breakable door automatically; add door: false for an open doorway)
 w.addWall("wall", -4, 4, 0, 3, 10, 10.5, COLORS.livingWall, [{ from: -1, to: 0.2, top: 2.1 }]);
 
 // ready-made breakables (x, height of the surface, z): see js/props.js

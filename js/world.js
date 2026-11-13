@@ -6,7 +6,7 @@
 // Directions (looking down from above):
 //   +z = towards the living room and kitchen, -z = the bedroom's bed wall
 //   +x = the bathroom / west side, -x = the corridor / fire-exit side
-//   up = +y. Ground floor is y = 0; the kitchen & office level is y = 1.2.
+//   up = +y. Ground floor is y = 0; the kitchen & office level is y = -1.2 (down the stairs).
 // Sizes are in metres (Rae-sized metres: the house is ~2x real size).
 
 class World {
@@ -75,9 +75,10 @@ class World {
   }
 
   // A wall from (x1..x2, z1..z2), y1 up to y2, with optional doorways cut out.
-  // Doorways run along the wall's long side:
-  //   doors: [{ from: 2, to: 3.2, top: 2.1 }]              (from the floor up to 'top')
-  //   doors: [{ from: 2, to: 3.2, bottom: 1.2, top: 3.3 }] (for upstairs doors)
+  // Doorways run along the wall's long side, and each gets a breakable door:
+  //   doors: [{ from: 2, to: 3.2, top: 2.1 }]                 (from the floor up to 'top')
+  //   doors: [{ from: 2, to: 3.2, bottom: -1.2, top: 0.9 }]   (doorway starting at another level)
+  //   doors: [{ from: 2, to: 3.2, top: 2.1, door: false }]    (an open doorway, no door)
   addWall(name, x1, x2, y1, y2, z1, z2, color, doors = []) {
     [x1, x2] = [Math.min(x1, x2), Math.max(x1, x2)];
     [z1, z2] = [Math.min(z1, z2), Math.max(z1, z2)];
@@ -98,6 +99,8 @@ class World {
       piece(a, b, y1, bottom);        // under the doorway (for raised doors)
       piece(a, b, d.top, y2);         // above the doorway
       if (d.trim !== false) this.addDoorTrim(alongX, a, b, bottom, d.top, alongX ? z1 : x1, alongX ? z2 : x2);
+      // a breakable door in the doorway (unless door: false)
+      if (d.door !== false) this.add(makeDoor(alongX, a, b, bottom, d.top, alongX ? (z1 + z2) / 2 : (x1 + x2) / 2));
       cursor = b;
     }
     piece(cursor, end, y1, y2);

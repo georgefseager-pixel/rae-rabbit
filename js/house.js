@@ -5,7 +5,7 @@
 //
 //                 [ kitchen (L-shape, wraps round the office) ]
 //                 [ office ]  [ kitchen ]
-//          [ stairs up --> ]  [ landing ]      <- upstairs level is 1.2m higher
+//          [ stairs down ->]  [ landing ]      <- kitchen level is 1.2m lower
 //   [          living room           ]
 //   [ bathroom ]  [ corridor ] (fire exit)
 //   [            bedroom             ]
@@ -14,9 +14,9 @@
 // (see the direction notes at the top of world.js).
 
 const GROUND = 0;     // ground floor level
-const UP = 1.2;       // kitchen & office floor level (6 stairs x 0.2m)
-const H = 3;          // ground floor ceiling height
-const H_UP = UP + 3;  // upstairs ceiling height
+const LOW = -1.2;     // kitchen & office floor level: 6 stairs (0.2m each) DOWN
+const H = 3;          // ceiling height (the kitchen & office are taller rooms)
+const BASE = LOW - 0.5; // bottom of the walls & floors round the kitchen level
 const T = 0.5;        // wall thickness
 
 function buildHouse(w) {
@@ -210,9 +210,10 @@ function buildLivingRoom(w) {
 
   w.addWall("wall", 4, 4.5, 0, H, 9, 18.5, COLORS.livingWall);
   w.addWall("wall", -4.5, -4, 0, H, 9, 18.5, COLORS.livingWall);
-  // Far wall: runs all the way along under the kitchen too, and is tall because
-  // the kitchen floor is higher. The gap on the left leads to the stairs.
-  w.addWall("wall", -10.35, 4.5, 0, H_UP, 18.5, 19, COLORS.livingWall, [{ from: -1.4, to: 0.6, top: 2.4 }]);
+  // Far wall: runs along the kitchen too, and goes down to the kitchen's
+  // lower floor. The doorway on the left leads to the stairs.
+  w.addWall("wall", -10.35, 4.5, BASE, H, 18.5, 19, COLORS.livingWall,
+    [{ from: -1.4, to: 0.6, bottom: GROUND, top: 2.4 }]);
 
   // Chimney breast on the outer wall, with a fireplace and a mantelpiece
   w.addSpan("chimney", 3.4, 4, 0, H, 12.7, 16.5, COLORS.livingWall);
@@ -226,34 +227,36 @@ function buildLivingRoom(w) {
 
 // =====================================================
 // STAIRS: a hall between the living room and the office; 6 steps
-// climb towards the kitchen landing (x -1 -> -4)
+// go DOWN to the kitchen level (x -1 -> -4)
 // =====================================================
 function buildStairs(w) {
-  w.addSpan("stair-hall-floor", -4, 1.1, -T, 0, 18.5, 20.5, COLORS.livingFloor); // also fills the doorway
+  // Top of the stairs, at living room level (also fills the doorway)
+  w.addSpan("stair-hall-floor", -1, 1.1, -T, GROUND, 18.5, 20.5, COLORS.livingFloor);
   for (let i = 0; i < 6; i++) {
     const x1 = -1 - 0.5 * i, x2 = x1 - 0.5;
-    w.addSpan("stair", x1, x2, 0, 0.2 * (i + 1), 19, 20.5, COLORS.stairs);
+    w.addSpan("stair", x1, x2, BASE, GROUND - 0.2 * (i + 1), 19, 20.5, COLORS.stairs);
   }
-  w.addRoomLight(-1.7, H_UP - 0.3, 19.8, 0.3, 6);
+  w.addRoomLight(-1.7, H - 0.3, 19.8, 0.3, 6);
 }
 
 // =====================================================
-// OFFICE (the small bedroom on the plan): x -5..0.6, z 21..25.6, upstairs
+// OFFICE (the small bedroom on the plan): x -5..0.6, z 21..25.6, down the stairs
 // =====================================================
 function buildOffice(w) {
-  w.addSpan("office-floor", -5, 0.6, -T, UP, 21, 25.6, COLORS.floor);
+  w.addSpan("office-floor", -5, 0.6, BASE, LOW, 21, 25.6, COLORS.floor);
 
   // West outer wall (shared with the stair hall), with a window
-  w.addWall("wall", 0.6, 1.1, 0, H_UP, 18.5, 25.6, COLORS.officeWall);
-  w.addWindow({ x: 0.6 }, 22.4, 24.2, UP + 0.9, UP + 2.1, -1);
-  // Wall between the stairs and the office
-  w.addWall("wall", -5.5, 1.1, 0, H_UP, 20.5, 21, COLORS.officeWall);
-  // Wall between office and kitchen, with the office door
-  w.addWall("wall", -5.5, -5, 0, H_UP, 21, 26.1, COLORS.officeWall,
-    [{ from: 21.4, to: 22.6, bottom: UP, top: UP + 2.1 }]);
-  w.addWall("wall", -5.5, 1.1, 0, H_UP, 25.6, 26.1, COLORS.officeWall);
+  w.addWall("wall", 0.6, 1.1, BASE, H, 18.5, 25.6, COLORS.officeWall);
+  w.addWindow({ x: 0.6 }, 22.4, 24.2, LOW + 1.2, LOW + 2.6, -1);
+  // Wall between the stairs and the office, with the office door at the
+  // bottom of the stairs (like on the floorplan)
+  w.addWall("wall", -5.5, 1.1, BASE, H, 20.5, 21, COLORS.officeWall,
+    [{ from: -4.85, to: -3.65, bottom: LOW, top: LOW + 2.1 }]);
+  // Wall between office and kitchen
+  w.addWall("wall", -5.5, -5, BASE, H, 21, 26.1, COLORS.officeWall);
+  w.addWall("wall", -5.5, 1.1, BASE, H, 25.6, 26.1, COLORS.officeWall);
 
-  w.addRoomLight(-2.2, H_UP - 0.3, 23.3, 0.4, 8);
+  w.addRoomLight(-2.2, H - 0.3, 23.3, 0.45, 9);
 }
 
 // =====================================================
@@ -261,34 +264,34 @@ function buildOffice(w) {
 // Counters along the far wall and the side wall, with a sink and a hob.
 // =====================================================
 function buildKitchen(w) {
-  // Floor pieces (raised to the upstairs level)
-  w.addSpan("kitchen-floor", -9.85, -4, -T, UP, 19, 21, COLORS.kitchenFloor);      // landing
-  w.addSpan("kitchen-floor", -9.85, -5.5, -T, UP, 21, 26.1, COLORS.kitchenFloor);  // beside office
-  w.addSpan("kitchen-floor", -9.85, 0.6, -T, UP, 26.1, 29, COLORS.kitchenFloor);   // far end
-  w.addSpan("ceiling", -10.35, 1.1, H_UP, H_UP + T, 18.5, 29.5, COLORS.ceiling);
+  // Floor pieces (down at the kitchen level)
+  w.addSpan("kitchen-floor", -9.85, -4, BASE, LOW, 19, 21, COLORS.kitchenFloor);      // bottom of the stairs
+  w.addSpan("kitchen-floor", -9.85, -5.5, BASE, LOW, 21, 26.1, COLORS.kitchenFloor);  // beside office
+  w.addSpan("kitchen-floor", -9.85, 0.6, BASE, LOW, 26.1, 29, COLORS.kitchenFloor);   // far end
+  w.addSpan("ceiling", -10.35, 1.1, H, H + T, 18.5, 29.5, COLORS.ceiling);
 
-  w.addWall("wall", 0.6, 1.1, 0, H_UP, 25.6, 29.5, COLORS.kitchenWall);
-  w.addWall("wall", -10.35, 1.1, 0, H_UP, 29, 29.5, COLORS.kitchenWall);
-  w.addWall("wall", -10.35, -9.85, 0, H_UP, 18.5, 29, COLORS.kitchenWall);
+  w.addWall("wall", 0.6, 1.1, BASE, H, 25.6, 29.5, COLORS.kitchenWall);
+  w.addWall("wall", -10.35, 1.1, BASE, H, 29, 29.5, COLORS.kitchenWall);
+  w.addWall("wall", -10.35, -9.85, BASE, H, 18.5, 29, COLORS.kitchenWall);
 
   // Back door to outside (closed: just for looks)
-  w.addDeco("back-door", -6.6, -5.4, UP, UP + 2.1, 19, 19.04, COLORS.door);
-  w.addDeco("back-door-knob", -6.45, -6.35, UP + 1.0, UP + 1.1, 19.04, 19.09, COLORS.steel);
+  w.addDeco("back-door", -6.6, -5.4, LOW, LOW + 2.1, 19, 19.04, COLORS.door);
+  w.addDeco("back-door-knob", -6.45, -6.35, LOW + 1.0, LOW + 1.1, 19.04, 19.09, COLORS.steel);
 
   // ---- Counters: 1.9m tall cupboards with a worktop ----
-  const top = UP + 1.8, depth = 1.3;
+  const top = LOW + 1.8, depth = 1.3;
   // Along the far wall
-  w.addSpan("counter", 0.6, -9.85 + depth, UP, top, 29 - depth, 29, COLORS.cabinet);
+  w.addSpan("counter", 0.6, -9.85 + depth, LOW, top, 29 - depth, 29, COLORS.cabinet);
   w.addSpan("worktop", 0.6, -9.85 + depth, top, top + 0.1, 29 - depth - 0.08, 29, COLORS.worktop);
   // Along the side wall
-  w.addSpan("counter", -9.85, -9.85 + depth, UP, top, 19.6, 29, COLORS.cabinet);
+  w.addSpan("counter", -9.85, -9.85 + depth, LOW, top, 19.6, 29, COLORS.cabinet);
   w.addSpan("worktop", -9.85, -9.85 + depth + 0.08, top, top + 0.1, 19.52, 29, COLORS.worktop);
   // Cupboard doors (decoration): pale panels along the fronts
   for (let x = 0.4; x > -8.4; x -= 1.1) {
-    w.addDeco("cupboard-door", x, x - 0.95, UP + 0.15, top - 0.15, 29 - depth - 0.02, 29 - depth, COLORS.sky);
+    w.addDeco("cupboard-door", x, x - 0.95, LOW + 0.15, top - 0.15, 29 - depth - 0.02, 29 - depth, COLORS.sky);
   }
   for (let z = 20.0; z < 27.5; z += 1.1) {
-    w.addDeco("cupboard-door", -9.85 + depth, -9.85 + depth + 0.02, UP + 0.15, top - 0.15, z, z + 0.95, COLORS.sky);
+    w.addDeco("cupboard-door", -9.85 + depth, -9.85 + depth + 0.02, LOW + 0.15, top - 0.15, z, z + 0.95, COLORS.sky);
   }
 
   // Sink (by the side-wall window) and tap
@@ -296,7 +299,7 @@ function buildKitchen(w) {
   w.addDeco("sink", -8.8, -9.6, wt, wt + 0.02, 25.6, 27.0, COLORS.steel);
   w.addDeco("tap", -9.7, -9.6, wt, wt + 0.35, 26.25, 26.35, COLORS.steel);
   w.addDeco("tap-spout", -9.7, -9.35, wt + 0.3, wt + 0.35, 26.25, 26.35, COLORS.steel);
-  w.addWindow({ x: -9.85 }, 25.3, 27.3, wt + 0.25, H_UP - 0.25, +1);
+  w.addWindow({ x: -9.85 }, 25.3, 27.3, wt + 0.25, wt + 1.6, +1);
 
   // Hob with four rings
   w.addDeco("hob", -8.75, -9.65, wt, wt + 0.02, 22.6, 24.2, COLORS.hob);
@@ -309,8 +312,8 @@ function buildKitchen(w) {
   }
 
   // Windows above the far counter
-  w.addWindow({ z: 29 }, -4.6, -1.4, wt + 0.25, H_UP - 0.25, -1);
+  w.addWindow({ z: 29 }, -4.6, -1.4, wt + 0.25, wt + 1.6, -1);
 
-  w.addRoomLight(-6.5, H_UP - 0.3, 26.5, 0.55, 14);
-  w.addRoomLight(-7, H_UP - 0.3, 21, 0.3, 7);
+  w.addRoomLight(-6.5, H - 0.3, 26.5, 0.6, 15);
+  w.addRoomLight(-7, H - 0.3, 21, 0.35, 8);
 }

@@ -55,7 +55,8 @@ const COLORS = {
   worktop:     0xfffaf2, // kitchen worktop
   hob:         0x8d88a2, // cooker top
   steel:       0xd8dce6, // sink & tap
-  door:        0xf2c9a7, // closed doors
+  door:        0xf2c9a7, // doors
+  doorPanel:   0xf8dcc3, // raised panels on doors
   exitSign:    0x9edbb0, // fire exit sign
 };
 
@@ -148,6 +149,36 @@ function makeGlass(x, y, z) {
   group.add(glass, water);
   group.position.set(x, y, z);
   return new Prop({ name: "glass", mesh: group, breakable: true });
+}
+
+// A door filling a doorway. It smashes apart when Rae touches it!
+//   alongX: true if the wall runs along x
+//   a..b:   the doorway's edges along the wall;  bottom..top: its height
+//   mid:    the middle of the wall's thickness
+function makeDoor(alongX, a, b, bottom, top, mid) {
+  const width = b - a, height = top - bottom, thick = 0.1;
+  const group = new THREE.Group();
+  const size = (w, h, d) => (alongX ? [w, h, d] : [d, h, w]); // swap for walls along z
+
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(...size(width, height, thick)), pastel(COLORS.door));
+  group.add(slab);
+  // Two raised panels on each side, and a knob on each side
+  for (const side of [-1, 1]) {
+    for (const [py, ph] of [[height * 0.2, height * 0.38], [-height * 0.22, height * 0.34]]) {
+      const panel = new THREE.Mesh(new THREE.BoxGeometry(...size(width * 0.7, ph, 0.03)), pastel(COLORS.doorPanel));
+      panel.position.y = py;
+      if (alongX) panel.position.z = side * (thick / 2 + 0.01); else panel.position.x = side * (thick / 2 + 0.01);
+      group.add(panel);
+    }
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 4), pastel(COLORS.butter));
+    const along = width / 2 - 0.15, out = side * (thick / 2 + 0.05);
+    knob.position.set(alongX ? along : out, -height * 0.02, alongX ? out : along);
+    group.add(knob);
+  }
+
+  const centre = (a + b) / 2, y = (bottom + top) / 2;
+  if (alongX) group.position.set(centre, y, mid); else group.position.set(mid, y, centre);
+  return new Prop({ name: "door", mesh: group, breakable: true });
 }
 
 // A little bedside lamp: round base, thin stem, glowing cone shade
