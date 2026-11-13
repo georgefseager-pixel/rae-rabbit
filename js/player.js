@@ -10,15 +10,16 @@ class Player {
 
     // ---- Tweakable numbers (feel free to play with these!) ----
     this.speed = 3.2;        // walking speed (metres per second)
-    this.hopPower = 5.0;     // how hard a hop launches upward
-    this.gravity = 14;       // how fast Rae falls back down
+    this.hopPower = 6.2;     // how hard a hop launches upward (about 1.2 m high)
+    this.gravity = 16;       // how fast Rae falls back down
+    this.superBounce = 6.8;  // pressing Space as you land on something bouncy
     this.radius = 0.22;      // half the width of Rae's collision box
     this.height = 0.45;      // height of Rae's collision box
     this.eyeHeight = 0.38;   // where the camera sits (rabbits are low!)
     this.mouseSensitivity = 0.0022;
 
     // ---- State ----
-    this.spawn = new THREE.Vector3(0, 0, 2.5);
+    this.spawn = new THREE.Vector3(2.6, 0, 3.2); // just inside the bedroom door
     this.pos = this.spawn.clone(); // position of Rae's FEET
     this.vel = new THREE.Vector3();
     this.yaw = 0;    // looking left/right
@@ -113,17 +114,28 @@ class Player {
     }
 
     this.onGround = false;
+    let landedOn = null;
     this.pos.y += this.vel.y * dt;
     for (const s of solids) {
       if (this.overlaps(this.boxAt(this.pos), s.box)) {
         if (this.vel.y <= 0) {
           this.pos.y = s.box.max.y; // landed on top of it
           this.onGround = true;
+          landedOn = s;
         } else {
           this.pos.y = s.box.min.y - this.height - eps; // bonked head
         }
         this.vel.y = 0;
       }
+    }
+
+    // Landed on something bouncy (like the bed)? Spring back up!
+    // Press Space just as you land for an extra-big bounce.
+    if (landedOn && landedOn.bouncy) {
+      this.vel.y = this.hopQueued > 0 ? this.superBounce : landedOn.bouncePower;
+      this.hopQueued = 0;
+      this.onGround = false;
+      Sfx.spring();
     }
 
     // Safety net: if Rae ever somehow falls out of the world, put her back

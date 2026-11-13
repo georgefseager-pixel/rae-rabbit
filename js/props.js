@@ -7,6 +7,8 @@
 //   collectible: true  -> touching it picks it up (chime!)
 //   breakable:   true  -> bumping into or landing on it breaks it (crunch!)
 //                         (breaking is coming in a later step)
+//   bouncy:      true  -> landing on it springs Rae back up (like the bed)
+//                         bouncePower sets how high
 //
 // To add something new later you just create a Prop and add it to the world.
 
@@ -22,6 +24,11 @@ const COLORS = {
   leaf:    0x9ad88f, // soft green
   lilac:   0xd8c8f0,
   butter:  0xfff0a8,
+  bedWood: 0xc9a27e, // soft caramel wood
+  mattress:0xfffaf3, // white sheet
+  duvet:   0xc7b6ea, // lavender
+  pillow:  0xfdf3f6, // pale pink-white
+  corridor:0xfbeec4, // pale butter (hallway, coming later)
 };
 
 // Makes a flat-shaded pastel material (the "low-poly" look)
@@ -30,12 +37,15 @@ function pastel(color) {
 }
 
 class Prop {
-  constructor({ name = "prop", mesh, solid = true, collectible = false, breakable = false }) {
+  constructor({ name = "prop", mesh, solid = true, collectible = false, breakable = false,
+                bouncy = false, bouncePower = 5.5 }) {
     this.name = name;
     this.mesh = mesh;
     this.solid = solid;
     this.collectible = collectible;
     this.breakable = breakable;
+    this.bouncy = bouncy;
+    this.bouncePower = bouncePower;
     this.collected = false;
     this.broken = false;
     this.box = new THREE.Box3(); // the invisible collision box

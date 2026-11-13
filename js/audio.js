@@ -35,6 +35,32 @@ const Sfx = {
     osc.stop(t + 0.32);
   },
 
+  // A wobbly "sproing" for bouncing on springy things like the bed
+  spring() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    // a fast wobble (LFO) on the pitch makes it sound like a coiled spring
+    const wobble = this.ctx.createOscillator();
+    const wobbleDepth = this.ctx.createGain();
+    wobble.frequency.value = 28;
+    wobbleDepth.gain.setValueAtTime(90, t);
+    wobbleDepth.gain.exponentialRampToValueAtTime(5, t + 0.45);
+    wobble.connect(wobbleDepth).connect(osc.frequency);
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(260, t);
+    osc.frequency.exponentialRampToValueAtTime(700, t + 0.18);
+    osc.frequency.exponentialRampToValueAtTime(480, t + 0.45);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+    osc.connect(gain).connect(this.master);
+    osc.start(t); wobble.start(t);
+    osc.stop(t + 0.52); wobble.stop(t + 0.52);
+  },
+
   // A sparkly three-note chime for collecting things
   chime() {
     if (!this.ctx) return;

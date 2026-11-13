@@ -21,12 +21,21 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `js/player.js` | Rae's controls, hopping and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
 
+## Rooms so far
+- **Bedroom**: king-sized bed against the front wall (Rae can run underneath, and bounces on top; press Space as you land for a big bounce), doorway to the corridor in the back wall.
+
 ## Adding a prop
-In `js/world.js`, inside a build function:
+In `js/world.js`, inside a build function. Floor is y = 0; the front wall is negative z.
 
 ```js
 // solid box you can hop onto: name, x, y, z (centre), width, height, depth, colour
 this.addBox("cushion", 2, 0.15, 1, 0.8, 0.3, 0.8, COLORS.lilac);
+
+// same thing, but giving edges instead: from x1 to x2, y1 to y2, z1 to z2
+this.addSpan("cushion", 1.6, 2.4, 0, 0.3, 0.6, 1.4, COLORS.lilac);
+
+// something springy, like the bed
+this.addBox("beanbag", -2, 0.25, 2, 1, 0.5, 1, COLORS.butter, { bouncy: true, bouncePower: 5 });
 
 // mark it breakable (breaking comes in a later step)
 this.addBox("vase", -2, 0.2, 1, 0.3, 0.4, 0.3, COLORS.butter, { breakable: true });
