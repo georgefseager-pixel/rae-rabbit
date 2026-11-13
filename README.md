@@ -30,6 +30,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
   - Carrots: above the bed, under the bed, on the white table.
 - **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
 - **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.
+  - Carrots: one in the bath, one in the sink (hop from the bath's end onto the sink).
 - **Living room**: chimney breast with fireplace and a mantelpiece, window, and the doorway to the stairs.
 - **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
 - **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs, window.
@@ -41,6 +42,8 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 |------|----------|
 | First bounce on the bed | Bounce! Bounce! BOUNCE! |
 | First carrot | Yummers mode! |
+| First door smashed | Coming through! |
+| First time in the bath | My fur is wet! |
 
 New ones go in `js/main.js` (look for "Rae's first-time thoughts").
 

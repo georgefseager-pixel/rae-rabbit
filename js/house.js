@@ -156,7 +156,10 @@ function buildCorridorAndBathroom(w) {
 
   // The bedroom's back wall is pink on the bedroom side: paint this side to match each room
   w.addDeco("paint", -1.4, 4, 0, H, 4.5, 4.52, COLORS.bathWall);
-  w.addDeco("paint", -4, -1.9, 0, H, 4.5, 4.52, COLORS.hallWall);
+  // (corridor side: around the bedroom doorway, not over it!)
+  w.addDeco("paint", -4, -3.23, 0, H, 4.5, 4.52, COLORS.hallWall);
+  w.addDeco("paint", -1.97, -1.9, 0, H, 4.5, 4.52, COLORS.hallWall);
+  w.addDeco("paint", -3.23, -1.97, 2.18, H, 4.5, 4.52, COLORS.hallWall);
 
   // Outer walls
   w.addWall("wall", 4, 4.5, 0, H, 4.5, 8.5, COLORS.bathWall);
@@ -197,6 +200,13 @@ function buildCorridorAndBathroom(w) {
 
   // Bath mat
   w.addDeco("bath-mat", 1.4, 2.8, 0, 0.02, 6.1, 6.9, COLORS.canPink);
+
+  // The inside of the bath, so main.js knows when Rae hops in ("My fur is wet!")
+  w.addZone("bath", bx1 + edge, bx2 - edge, 0.25, rim - 0.2, bz1 + edge, bz2 - edge);
+
+  // Carrots: one lying in the bath, one in the sink (hop from the bath's edge!)
+  w.add(new Carrot(2.3, 0.5, 5.25));
+  w.add(new Carrot(-0.35, 2.0, 4.95));
 
   w.addRoomLight(-2.9, H - 0.3, 6.5, 0.3, 7);
   w.addRoomLight(1.5, H - 0.3, 6.5, 0.35, 8);

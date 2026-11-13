@@ -13,6 +13,7 @@ class World {
   constructor(scene) {
     this.scene = scene;
     this.props = []; // every Prop in the house lives in this list
+    this.zones = []; // invisible areas (like "inside the bath") that main.js can check
     this.debris = new Debris(scene);
     this.onBreak = null; // main.js can set this to react when something breaks
   }
@@ -144,6 +145,20 @@ class World {
       mk(x + out, x + out * 1.5, y1, y2, a1, a2, COLORS.sky, pane);
       mk(x + out * 1.5, x + out * 2, y1, y2, (a1 + a2) / 2 - 0.03, (a1 + a2) / 2 + 0.03, COLORS.skirting);
     }
+  }
+
+  // An invisible named area (from x1..x2, y1..y2, z1..z2). Use world.zoneAt(point)
+  // to find out which zone a position is in.
+  addZone(name, x1, x2, y1, y2, z1, z2) {
+    const box = new THREE.Box3(
+      new THREE.Vector3(Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2)),
+      new THREE.Vector3(Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)));
+    this.zones.push({ name, box });
+  }
+
+  zoneAt(point) {
+    const zone = this.zones.find((z) => z.box.containsPoint(point));
+    return zone ? zone.name : null;
   }
 
   // A warm ceiling light for a room

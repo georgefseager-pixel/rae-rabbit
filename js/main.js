@@ -39,6 +39,14 @@ Dialogue.init();
 player.onBounce = (prop) => {
   if (prop.name.startsWith("bed")) Dialogue.sayOnce("first-bed-bounce", "Bounce! Bounce! BOUNCE!");
 };
+world.onBreak = (prop) => {
+  if (prop.name === "door") Dialogue.sayOnce("first-door", "Coming through!");
+};
+// Checked every frame: which invisible zone (see house.js) is Rae standing in?
+function checkZones() {
+  const zone = world.zoneAt(player.pos);
+  if (zone === "bath") Dialogue.sayOnce("first-bath", "My fur is wet!");
+}
 
 let collectedCount = 0;
 const totalCollectibles = world.collectibles().length;
@@ -105,6 +113,7 @@ function loop() {
   if (!paused) {
     player.update(dt, world);
     checkCollectibles();
+    checkZones();
   } else if (!started) {
     player.update(0, world); // just place the camera for the title screen
   }
