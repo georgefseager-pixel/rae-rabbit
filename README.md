@@ -37,8 +37,10 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **Living room**: chimney breast with fireplace and a mantelpiece, window, and the doorway to the stairs.
   - Furniture (from photos): big white sofa with a black side table in the corner, black coffee table on a
     grey-green rug, TV on a white table in the corner by the window, desk with computer and office chair,
-    bookshelf by the door (Rae can sit on the shelves), chest of drawers.
-  - Breakables: three bowls (coffee table and sofa arm) and the plant on the drawers.
+    bookshelf by the door (Rae can sit on the shelves), chest of drawers. The sofa cushions are bouncy.
+  - Breakables: the books, three bowls (coffee table and sofa arm) and the plant on the drawers.
+  - Carrots: high above the sofa (big bounce), on the TV table, under the coffee table (on its shelf),
+    on the desk (hop onto the chair seat from the side, then onto the desk).
 - **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
 - **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs, window.
 - **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
@@ -59,14 +61,20 @@ Tweak `MAX_HEARTS` and `HURT_COOLDOWN` in `js/main.js`.
 Add more in `js/house.js`: `w.addFrog(x, y, z, FROG_COLORS.pink);`
 
 ## Rae's first-time thoughts
+Each plays only the first time it happens. They're all listed together in `RAE_LINES` in `js/main.js`:
+change the words there. Some examples:
+
 | When | She says |
 |------|----------|
-| First bounce on the bed | Bounce! Bounce! BOUNCE! |
-| First carrot | Yummers mode! |
-| First door smashed | Coming through! |
-| First time in the bath | My fur is wet! |
+| First bounce on the bed / sofa | Bounce! Bounce! BOUNCE! / Sofa, so good! |
+| First carrot / all carrots | Yummers mode! / All the carrots! Best day ever! |
+| First smash of a door, book, bowl, glass, lamp, can, clothes, plant | Coming through! / Who needs books anyway? / Oopsie! Butterpaws! / ... |
+| First frog spots her / first frog popped | Eep! A frog! / Pop goes the frog! Rabbits rule! |
+| First hurt / down to one heart | Ouch! Frogs are slimy! / Uh oh, I need a carrot... |
+| First time in the bath, on the mirror table, living room, office, kitchen | My fur is wet! / Who's that cute bunny?! / ... |
 
-New ones go in `js/main.js` (look for "Rae's first-time thoughts").
+For a new smashable thing, add a `"smash-<its name>"` line. For a new place, add a zone in `js/house.js`
+(`w.addZone("name", x1, x2, y1, y2, z1, z2)`) and a `"zone-<name>"` line.
 
 ## Adding things
 In `js/house.js`, inside a room's build function (`w` is the world). Ground floor is y = 0, the kitchen level is y = -1.2.

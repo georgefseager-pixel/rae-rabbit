@@ -84,6 +84,8 @@ function hurtRae(fromX, fromZ) {
   player.onGround = false;
 
   if (hearts <= 0) setTimeout(showGameOver, 700); // out of hearts: show the summary
+  else if (hearts === 1) raeSays("last-heart");
+  else raeSays("hurt");
 }
 let hurts = 0; // how many times Rae has been hurt (handy for testing)
 
@@ -116,6 +118,7 @@ function checkFrogs(fallingSpeed) {
     if (flat < 0.34 && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
       frog.pop();
       stompedCount++;
+      raeSays("frog-popped");
       player.pos.y = top;
       player.vel.y = 5.5;   // boing off its head
       player.onGround = false;
@@ -129,18 +132,52 @@ function checkFrogs(fallingSpeed) {
 }
 
 // ---- Rae's first-time thoughts ----
+// Each line plays only the first time it happens. Edit the words here!
+const RAE_LINES = {
+  // bouncing
+  "bounce-bed":   "Bounce! Bounce! BOUNCE!",
+  "bounce-sofa":  "Sofa, so good!",
+  // smashing things (by the thing's name)
+  "smash-door":    "Coming through!",
+  "smash-book":    "Who needs books anyway?",
+  "smash-bowl":    "Oopsie! Butterpaws!",
+  "smash-glass":   "Smash-tastic!",
+  "smash-lamp":    "Lights out!",
+  "smash-can":     "Pssssht!",
+  "smash-clothes": "Laundry day!",
+  "smash-plant":   "Sorry, leafy friend!",
+  // frogs and hearts
+  "frog-spotted":  "Eep! A frog!",
+  "frog-popped":   "Pop goes the frog! Rabbits rule!",
+  "hurt":          "Ouch! Frogs are slimy!",
+  "last-heart":    "Uh oh, I need a carrot...",
+  // carrots
+  "first-carrot":  "Yummers mode!",
+  "all-carrots":   "All the carrots! Best day ever!",
+  // places (zones in house.js)
+  "zone-bath":         "My fur is wet!",
+  "zone-mirror-table": "Who's that cute bunny?!",
+  "zone-living-room":  "Ooh, so cosy in here!",
+  "zone-office":       "This is where the humans do work-stuff.",
+  "zone-kitchen":      "Down the rabbit hole... something smells yummy!",
+};
+function raeSays(id) {
+  if (RAE_LINES[id]) Dialogue.sayOnce(id, RAE_LINES[id]);
+}
+
 Dialogue.init();
 player.onBounce = (prop) => {
-  if (prop.name.startsWith("bed")) Dialogue.sayOnce("first-bed-bounce", "Bounce! Bounce! BOUNCE!");
+  if (prop.name.startsWith("bed")) raeSays("bounce-bed");
+  if (prop.name.startsWith("sofa")) raeSays("bounce-sofa");
 };
 world.onBreak = (prop) => {
   smashedCount++;
-  if (prop.name === "door") Dialogue.sayOnce("first-door", "Coming through!");
+  raeSays("smash-" + prop.name);
 };
 // Checked every frame: which invisible zone (see house.js) is Rae standing in?
 function checkZones() {
   const zone = world.zoneAt(player.pos);
-  if (zone === "bath") Dialogue.sayOnce("first-bath", "My fur is wet!");
+  if (zone) raeSays("zone-" + zone);
 }
 
 let collectedCount = 0;
@@ -193,7 +230,8 @@ function checkCollectibles() {
       Sfx.chime();
       collectedCount++;
       countEl.textContent = collectedCount;
-      if (prop.name === "carrot") Dialogue.sayOnce("first-carrot", "Yummers mode!");
+      if (prop.name === "carrot") raeSays("first-carrot");
+      if (collectedCount === totalCollectibles) raeSays("all-carrots");
     }
   }
 }

@@ -28,6 +28,14 @@ function buildHouse(w) {
   buildOffice(w);
   buildKitchen(w);
 
+  // Invisible zones, so Rae can say something the first time she gets somewhere
+  w.addZone("mirror-table", -1.8, 0.8, 1.3, 2.5, 2.95, 3.95);   // standing on the white table
+  w.addZone("living-room", -4, 4, -0.2, 3, 9, 18.5);
+  w.addZone("office", -5, 0.6, LOW - 0.3, LOW + 2, 21, 25.6);
+  w.addZone("kitchen", -9.85, -4, LOW - 0.3, LOW + 2.5, 19, 21);
+  w.addZone("kitchen", -9.85, -5.5, LOW - 0.3, LOW + 2.5, 21, 26.1);
+  w.addZone("kitchen", -9.85, 0.6, LOW - 0.3, LOW + 2.5, 26.1, 29);
+
   // Frogs! One per spot, each a different colour (see frog.js)
   w.addFrog(2.6, GROUND, -0.6, FROG_COLORS.green);   // bedroom, beside the bed
   w.addFrog(1.8, GROUND, 7.2, FROG_COLORS.pink);     // bathroom
@@ -283,11 +291,14 @@ function buildSofa(w) {
   w.addSpan("sofa-back", x1, x1 + 0.6, 0.5, 1.75, z1, z2, C);
   w.addSpan("sofa-arm", x1, x2, 0.5, 1.3, z1, z1 + 0.55, C);
   w.addSpan("sofa-arm", x1, x2, 0.5, 1.3, z2 - 0.55, z2, C);
-  // Two seat cushions and two back cushions
+  // Two seat cushions and two back cushions: bouncy, like the bed!
+  const bounce = { bouncy: true, bouncePower: 5.2 };
   for (const [c1, c2] of [[z1 + 0.55, 15.4], [15.4, z2 - 0.55]]) {
-    w.addSpan("sofa-cushion", x1 + 0.6, x2, 0.5, 0.9, c1 + 0.02, c2 - 0.02, COLORS.sofaCushion);
-    w.addSpan("sofa-cushion", x1 + 0.6, x1 + 0.95, 0.9, 1.6, c1 + 0.05, c2 - 0.05, COLORS.sofaCushion);
+    w.addSpan("sofa-cushion", x1 + 0.6, x2, 0.5, 0.9, c1 + 0.02, c2 - 0.02, COLORS.sofaCushion, bounce);
+    w.addSpan("sofa-cushion", x1 + 0.6, x1 + 0.95, 0.9, 1.6, c1 + 0.05, c2 - 0.05, COLORS.sofaCushion, bounce);
   }
+  // A carrot floating high above the sofa: a big bounce reaches it
+  w.add(new Carrot(-3.0, 2.45, 15.4));
   // Bamboo tray on the near arm, with a cereal bowl on it
   w.addDeco("bamboo-tray", x1 + 0.1, x2 - 0.05, 1.3, 1.33, z1 + 0.02, z1 + 0.53, COLORS.bamboo);
   w.add(makeBowl(-2.75, 1.33, 13.67, COLORS.porcelain, 0.15, true));
@@ -312,6 +323,7 @@ function buildCoffeeTable(w) {
   }
   w.add(makeBowl(-0.35, 0.95, 13.1, COLORS.bamboo, 0.3));               // big wooden bowl
   w.add(makeBowl(0.6, 0.95, 13.25, COLORS.porcelain, 0.16, true));      // cereal bowl
+  w.add(new Carrot(0.05, 0.5, 13.17)); // hiding on the lower shelf, under the table
 }
 
 // TV on its white table in the corner by the window, facing the sofa
@@ -323,6 +335,7 @@ function buildTVCorner(w) {
   w.addSpan("tv-table-side", x1, x2, 0, top - 0.07, z1, z1 + 0.1, white);
   w.addSpan("tv-table-side", x1, x2, 0, top - 0.07, z2 - 0.1, z2, white);
   w.addDeco("games-console", x1 + 0.2, x2 - 0.15, 0.3, 0.42, 17.1, 18.0, COLORS.tvBlack);
+  w.add(new Carrot(3.05, 1.15, 18.15)); // on the TV table, an easy hop
 
   // The TV: stand, body, and a screen showing green hills under a blue sky
   w.addSpan("tv-stand", 3.3, 3.65, top, top + 0.1, 17.3, 17.8, COLORS.tvBlack);
@@ -346,6 +359,7 @@ function buildDeskCorner(w) {
   addGlow(w, "monitor-screen", 3.53, 3.55, top + 0.5, top + 0.8, 10.5, 11.5, COLORS.screenSky, 0.6);
   addGlow(w, "monitor-screen", 3.525, 3.545, top + 0.25, top + 0.5, 10.5, 11.5, COLORS.screenGrass, 0.6);
   w.addDeco("keyboard", 3.05, 3.35, top, top + 0.03, 10.6, 11.4, COLORS.canPink);
+  w.add(new Carrot(3.2, top + 0.2, 10.35)); // on the desk: climb up via the chair
   // PC tower on the floor beside the desk
   w.addSpan("pc-tower", 3.15, 3.95, 0, 0.95, 9.3, 9.95, COLORS.tvBlack);
 
@@ -374,10 +388,11 @@ function buildShelves(w) {
     const shelfTop = Math.min(y + 0.05, top);
     w.addSpan("bookshelf-shelf", x1 + 0.05, x2 - 0.05, shelfTop - 0.05, shelfTop, z1 + 0.05, z2, white);
     if (shelfTop + 0.4 < top) {
-      // a few books standing on the shelf (decoration)
+      // a few books standing on the shelf (breakable!)
       for (let bx = x1 + 0.1; bx < x2 - 0.35; bx += 0.09) {
         const h = 0.25 + ((k * 37) % 10) / 70;
-        w.addDeco("book", bx, bx + 0.07, shelfTop, shelfTop + h, z1 + 0.08, z1 + 0.42, bookColors[k++ % bookColors.length]);
+        w.addSpan("book", bx, bx + 0.07, shelfTop, shelfTop + h, z1 + 0.08, z1 + 0.42,
+          bookColors[k++ % bookColors.length], { breakable: true });
       }
     }
   }

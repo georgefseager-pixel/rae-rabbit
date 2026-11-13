@@ -226,6 +226,7 @@ class Frog {
         const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
         Dialogue.say(line, { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
         this.talkCooldown = 10;
+        if (typeof raeSays === "function") raeSays("frog-spotted"); // Rae's reply, the first time
       }
     }
     if (!this.canSee && this.chasing && (dist > this.loseRange || !sameLevel)) this.chasing = false;
