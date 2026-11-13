@@ -49,8 +49,9 @@ in a new random colour.
 
 ## Hearts
 Rae has 3 hearts (top right). Getting hurt loses one, flashes the screen red and knocks her back; then
-she's safe for 1.5 seconds (her paws blink). Out of hearts: back to the bedroom with full hearts
-(carrots are kept). Tweak `MAX_HEARTS` and `HURT_COOLDOWN` in `js/main.js`.
+she's safe for 1.5 seconds (her paws blink). Out of hearts: a summary screen ("Rae needs a nap!") shows
+carrots collected, things smashed and frogs stomped, with a "Play again" button that restarts the game.
+Tweak `MAX_HEARTS` and `HURT_COOLDOWN` in `js/main.js`.
 Add more in `js/house.js`: `w.addFrog(x, y, z, FROG_COLORS.pink);`
 
 ## Rae's first-time thoughts

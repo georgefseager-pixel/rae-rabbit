@@ -119,6 +119,26 @@ const Sfx = {
     thump.stop(t + 0.2);
   },
 
+  // A sleepy little falling tune for the summary screen
+  gameOver() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [784, 659, 523, 392].forEach((freq, i) => {
+      const start = t + i * 0.22;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, start);
+      if (i === 3) osc.frequency.exponentialRampToValueAtTime(freq * 0.94, start + 0.6); // droopy last note
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.22, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + (i === 3 ? 0.8 : 0.3));
+      osc.connect(gain).connect(this.master);
+      osc.start(start);
+      osc.stop(start + 0.85);
+    });
+  },
+
   // A soft "plip" when a frog hops (quieter the further away it is)
   frogHop(distance = 0) {
     if (!this.ctx) return;

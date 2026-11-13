@@ -40,6 +40,20 @@
     </div>
   </div>
 
+  <!-- Summary screen when Rae runs out of hearts (filled in by main.js) -->
+  <div id="gameover" class="hidden">
+    <div class="card summary">
+      <h1>💤 Rae needs a nap!</h1>
+      <p class="sub">Here's how your adventure went:</p>
+      <div class="stats">
+        <div class="stat"><span class="icon">🥕</span><span class="label">Carrots collected</span><b id="go-carrots">0</b></div>
+        <div class="stat"><span class="icon">💥</span><span class="label">Things smashed</span><b id="go-smashed">0</b></div>
+        <div class="stat"><span class="icon">🐸</span><span class="label">Frogs stomped</span><b id="go-frogs">0</b></div>
+      </div>
+      <button id="play-again">Play again</button>
+    </div>
+  </div>
+
   <!-- Three.js (the 3D library), loaded from a free public CDN -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 

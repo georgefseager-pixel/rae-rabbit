@@ -83,21 +83,27 @@ function hurtRae(fromX, fromZ) {
   player.vel.y = 3.5;
   player.onGround = false;
 
-  if (hearts <= 0) {
-    // Out of hearts: back to the bedroom to try again (carrots are kept)
-    setTimeout(() => {
-      player.pos.copy(player.spawn);
-      player.vel.set(0, 0, 0);
-      player.knock.set(0, 0, 0);
-      player.yaw = 0;
-      hearts = MAX_HEARTS;
-      drawHearts();
-      showToast("Oh no! Back to bed, Rae 🐰");
-      for (const frog of frogs) frog.chasing = false;
-    }, 600);
-  }
+  if (hearts <= 0) setTimeout(showGameOver, 700); // out of hearts: show the summary
 }
 let hurts = 0; // how many times Rae has been hurt (handy for testing)
+
+// ---- Scores for the summary screen ----
+let smashedCount = 0;  // breakable things smashed (doors, cans, clothes...)
+let stompedCount = 0;  // frogs popped
+let gameOver = false;
+
+// Out of hearts: pause, and show how she did, with a button to play again
+function showGameOver() {
+  gameOver = true;
+  paused = true;
+  document.getElementById("go-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
+  document.getElementById("go-smashed").textContent = smashedCount;
+  document.getElementById("go-frogs").textContent = stompedCount;
+  document.getElementById("gameover").classList.remove("hidden");
+  if (document.exitPointerLock) document.exitPointerLock(); // give the mouse back
+  Sfx.gameOver();
+}
+document.getElementById("play-again").addEventListener("click", () => location.reload());
 
 // Landing on a frog's head pops it (and bounces Rae up).
 // Touching one any other way hurts Rae (and nudges the frog back a bit).
@@ -109,6 +115,7 @@ function checkFrogs(fallingSpeed) {
     const top = frog.top();
     if (flat < 0.34 && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
       frog.pop();
+      stompedCount++;
       player.pos.y = top;
       player.vel.y = 5.5;   // boing off its head
       player.onGround = false;
@@ -127,6 +134,7 @@ player.onBounce = (prop) => {
   if (prop.name.startsWith("bed")) Dialogue.sayOnce("first-bed-bounce", "Bounce! Bounce! BOUNCE!");
 };
 world.onBreak = (prop) => {
+  smashedCount++;
   if (prop.name === "door") Dialogue.sayOnce("first-door", "Coming through!");
 };
 // Checked every frame: which invisible zone (see house.js) is Rae standing in?
@@ -158,7 +166,7 @@ overlay.addEventListener("click", () => {
 });
 
 document.addEventListener("pointerlockchange", () => {
-  if (document.pointerLockElement !== canvas && started) {
+  if (document.pointerLockElement !== canvas && started && !gameOver) {
     paused = true;
     overlayTitle.textContent = "Paused — click to continue";
     overlay.classList.remove("hidden");
