@@ -24,6 +24,7 @@ class Player {
     this.spawn = new THREE.Vector3(-2.6, 0, 3.2); // just inside the bedroom door
     this.pos = this.spawn.clone(); // position of Rae's FEET
     this.vel = new THREE.Vector3();
+    this.knock = new THREE.Vector3(); // a shove from getting hurt; fades away quickly
     this.yaw = 0;    // looking left/right
     this.pitch = 0;  // looking up/down
     this.onGround = false;
@@ -92,8 +93,9 @@ class Player {
     const len = Math.hypot(dx, dz);
     if (len > 0) { dx /= len; dz /= len; }
     const speed = this.onGround ? this.speed : this.speed * this.airBoost;
-    this.vel.x = dx * speed;
-    this.vel.z = dz * speed;
+    this.knock.multiplyScalar(Math.max(0, 1 - dt * 5));
+    this.vel.x = dx * speed + this.knock.x;
+    this.vel.z = dz * speed + this.knock.z;
 
     // ---- 2. Hopping and gravity ----
     this.hopQueued = Math.max(0, this.hopQueued - dt);
@@ -184,7 +186,7 @@ class Player {
     }
 
     // ---- 4. Put the camera at Rae's eyes, with a gentle hop-bob ----
-    const moving = len > 0 && this.onGround;
+    const moving = (len > 0 || this.knock.length() > 0.3) && this.onGround;
     this.bobTime = moving ? this.bobTime + dt * 9 : 0;
     const bob = Math.abs(Math.sin(this.bobTime)) * 0.03;
     this.camera.position.set(this.pos.x, this.pos.y + this.eyeHeight + bob, this.pos.z);

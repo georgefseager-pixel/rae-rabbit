@@ -44,8 +44,63 @@ const paws = new FirstPersonPaws(camera);
 // Frogs, at the spots listed in house.js
 const frogs = world.frogSpawns.map((s) => new Frog(world, s.x, s.y, s.z, s.color));
 
-// Landing on a frog's head pops it (and bounces Rae up). Bumping into one
-// from the side just nudges the frog out of the way.
+// ---- Hearts ----
+const MAX_HEARTS = 3;
+const HURT_COOLDOWN = 1.5; // seconds Rae is safe after getting hurt
+let hearts = MAX_HEARTS;
+let hurtCooldown = 0;
+const heartsEl = document.getElementById("hearts");
+const flashEl = document.getElementById("hurt-flash");
+
+function drawHearts(lostIndex = -1) {
+  heartsEl.innerHTML = "";
+  for (let i = 0; i < MAX_HEARTS; i++) {
+    const h = document.createElement("span");
+    h.className = "heart" + (i < hearts ? "" : " empty") + (i === lostIndex ? " lost" : "");
+    h.textContent = "♥";
+    heartsEl.appendChild(h);
+  }
+}
+drawHearts();
+
+// Rae gets hurt by something at (fromX, fromZ): lose a heart, flash red, get knocked back
+function hurtRae(fromX, fromZ) {
+  if (hurtCooldown > 0) return;
+  hurts++;
+  hearts--;
+  hurtCooldown = HURT_COOLDOWN;
+  drawHearts(hearts);
+  Sfx.hurt();
+  flashEl.classList.remove("flash");
+  void flashEl.offsetWidth; // restart the CSS animation
+  flashEl.classList.add("flash");
+
+  // Knocked back, away from whatever hurt her, with a little hop
+  const away = new THREE.Vector3(player.pos.x - fromX, 0, player.pos.z - fromZ);
+  if (away.length() < 0.001) away.set(0, 0, 1);
+  away.normalize();
+  player.knock.set(away.x * 5, 0, away.z * 5);
+  player.vel.y = 3.5;
+  player.onGround = false;
+
+  if (hearts <= 0) {
+    // Out of hearts: back to the bedroom to try again (carrots are kept)
+    setTimeout(() => {
+      player.pos.copy(player.spawn);
+      player.vel.set(0, 0, 0);
+      player.knock.set(0, 0, 0);
+      player.yaw = 0;
+      hearts = MAX_HEARTS;
+      drawHearts();
+      showToast("Oh no! Back to bed, Rae 🐰");
+      for (const frog of frogs) frog.chasing = false;
+    }, 600);
+  }
+}
+let hurts = 0; // how many times Rae has been hurt (handy for testing)
+
+// Landing on a frog's head pops it (and bounces Rae up).
+// Touching one any other way hurts Rae (and nudges the frog back a bit).
 function checkFrogs(fallingSpeed) {
   for (const frog of frogs) {
     if (!frog.alive) continue;
@@ -61,6 +116,7 @@ function checkFrogs(fallingSpeed) {
       const push = 0.4 - flat;
       frog.pos.x += (dx / flat) * push;
       frog.pos.z += (dz / flat) * push;
+      hurtRae(frog.pos.x, frog.pos.z);
     }
   }
 }
@@ -142,6 +198,8 @@ function loop() {
   const time = clock.elapsedTime;
 
   if (!paused) {
+    hurtCooldown = Math.max(0, hurtCooldown - dt);
+    paws.group.visible = hurtCooldown === 0 || Math.floor(hurtCooldown * 10) % 2 === 0; // blink while safe
     const fallingSpeed = player.vel.y;
     player.update(dt, world);
     checkFrogs(Math.min(fallingSpeed, player.vel.y));

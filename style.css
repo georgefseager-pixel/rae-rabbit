@@ -25,6 +25,41 @@ html, body {
   user-select: none;
 }
 
+#hud { display: flex; align-items: center; gap: 14px; }
+
+/* Rae's hearts */
+#hearts { display: flex; gap: 4px; }
+.heart {
+  font-size: 22px;
+  line-height: 1;
+  color: #f0607a;
+  text-shadow: 0 2px 0 #c94a62;
+  transition: transform 0.2s, color 0.3s;
+}
+.heart.empty { color: #e6d8dc; text-shadow: 0 2px 0 #cdbcc2; }
+.heart.lost { animation: heart-lost 0.5s; }
+@keyframes heart-lost {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.6) rotate(-12deg); }
+  60% { transform: scale(0.8) rotate(8deg); }
+  100% { transform: scale(1); }
+}
+
+/* Red screen flash when hurt */
+#hurt-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(255, 70, 90, 0.15) 30%, rgba(230, 30, 60, 0.6) 100%);
+  opacity: 0;
+}
+#hurt-flash.flash { animation: hurt-flash 0.45s ease-out; }
+@keyframes hurt-flash {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 #toast {
   position: fixed;
   top: 22%;

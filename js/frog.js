@@ -11,6 +11,18 @@ const FROG_LINES = [
   "Ribbit!",
   "Have a hoppy day!",
   "It's me, Friggle Fraggle!",
+  "Ribbit ribbit!",
+  "Wanna play leapfrog?",
+  "Toad-ally nice to see you!",
+  "Hoppity hop hop!",
+  "Croak-a-doodle-doo!",
+  "Lily pads are my favourite!",
+  "You're un-be-leaf-able!",
+  "Frogs and bunnies, best buddies!",
+  "Catch me if you can! Wait, no...",
+  "Splish splash!",
+  "Ribbit means hello!",
+  "I'm un-frog-ettable!",
 ];
 
 // Pastel colours for the frogs; each frog gets its own
@@ -42,7 +54,24 @@ class Frog {
 
     this.buildModel(color);
     world.scene.add(this.root);
-    this.reset();
+    this.reset(false);
+  }
+
+  // Repaint the whole frog in a new colour (eyes stay black; mouth is a darker shade)
+  recolor(color) {
+    this.color = color;
+    const dark = new THREE.Color(color).multiplyScalar(0.45);
+    this.root.traverse((o) => {
+      if (!o.isMesh || o.userData.keep) return;
+      if (o.userData.dark) o.material.color.copy(dark);
+      else o.material.color.set(color);
+    });
+  }
+
+  // A random colour from FROG_COLORS, different from the current one
+  randomColor() {
+    const options = Object.values(FROG_COLORS).filter((c) => c !== this.color);
+    return options[Math.floor(Math.random() * options.length)];
   }
 
   // ---------- The model ----------
@@ -66,13 +95,16 @@ class Frog {
       const bump = blob(0.06, color);
       bump.position.set(side * 0.095, 0.145, -0.025);
       const eye = blob(0.019, RAE_COLORS.eye, 1, 1, 0.6, [6, 4]);
+      eye.userData.keep = true; // eyes stay black when the frog changes colour
       eye.position.set(side * 0.095, 0.155, -0.08);
       const nostril = blob(0.008, dark, 1, 1, 1, [4, 3]);
+      nostril.userData.dark = true;
       nostril.position.set(side * 0.03, 0.105, -0.146);
       this.head.add(bump, eye, nostril);
     }
     // A wide, happy smile (half a thin ring)
     const smile = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.007, 4, 14, Math.PI), pastel(dark));
+    smile.userData.dark = true;
     smile.rotation.z = Math.PI;
     smile.scale.set(1.15, 0.45, 1);
     smile.position.set(0, 0.075, -0.135);
@@ -114,8 +146,9 @@ class Frog {
     });
   }
 
-  // Back to the spawn point, fresh and unpopped
-  reset() {
+  // Back to the spawn point, fresh and unpopped (and, on a respawn, a new colour!)
+  reset(newColor = true) {
+    if (newColor) this.recolor(this.randomColor());
     this.pos = this.spawn.clone();
     this.pos.y += 0.05; // start just above the floor, then drop onto it
     this.vel = new THREE.Vector3();

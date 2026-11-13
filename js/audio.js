@@ -89,6 +89,36 @@ const Sfx = {
     osc.stop(t + 0.08);
   },
 
+  // A little "oof!" when Rae gets hurt: a squeaky voice dropping in pitch, plus a soft thump
+  hurt() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(700, t);
+    osc.frequency.exponentialRampToValueAtTime(260, t + 0.22);
+    filter.type = "lowpass";
+    filter.frequency.value = 1500;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.2, t + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+    osc.connect(filter).connect(gain).connect(this.master);
+    osc.start(t);
+    osc.stop(t + 0.28);
+
+    const thump = this.ctx.createOscillator();
+    const tg = this.ctx.createGain();
+    thump.frequency.setValueAtTime(160, t);
+    thump.frequency.exponentialRampToValueAtTime(60, t + 0.15);
+    tg.gain.setValueAtTime(0.35, t);
+    tg.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    thump.connect(tg).connect(this.master);
+    thump.start(t);
+    thump.stop(t + 0.2);
+  },
+
   // A soft "plip" when a frog hops (quieter the further away it is)
   frogHop(distance = 0) {
     if (!this.ctx) return;

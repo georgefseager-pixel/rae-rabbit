@@ -42,9 +42,15 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).
-When one spots Rae it says a line in red ("Hop hop!", "Hi rabbit friend!", "Ribbit!", "Have a hoppy day!",
-"It's me, Friggle Fraggle!") and hops slowly after her. Land on its head to pop it (silly squeak, and Rae
-bounces off). Wander about 16m away from where a frog lives and it comes back, good as new.
+When one spots Rae it says one of its lines in red (the list is at the top of `js/frog.js`) and hops
+slowly after her. Land on its head to pop it (silly squeak, and Rae bounces off). Touch one any other way
+and Rae loses a heart. Wander about 16m away from where a frog lives and it comes back, good as new,
+in a new random colour.
+
+## Hearts
+Rae has 3 hearts (top right). Getting hurt loses one, flashes the screen red and knocks her back; then
+she's safe for 1.5 seconds (her paws blink). Out of hearts: back to the bedroom with full hearts
+(carrots are kept). Tweak `MAX_HEARTS` and `HURT_COOLDOWN` in `js/main.js`.
 Add more in `js/house.js`: `w.addFrog(x, y, z, FROG_COLORS.pink);`
 
 ## Rae's first-time thoughts

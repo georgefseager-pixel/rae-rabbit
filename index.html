@@ -14,7 +14,12 @@
   <canvas id="game"></canvas>
 
   <!-- Little on-screen counter -->
-  <div id="hud">🥕 <span id="carrot-count">0</span> / <span id="carrot-total">0</span></div>
+  <div id="hud">
+    <span id="hearts"></span>
+    <span class="carrots">🥕 <span id="carrot-count">0</span> / <span id="carrot-total">0</span></span>
+  </div>
+  <!-- Flashes red when Rae gets hurt -->
+  <div id="hurt-flash"></div>
   <div id="toast"></div>
 
   <!-- Rae's inner thoughts (filled in by js/dialogue.js) -->
