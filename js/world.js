@@ -11,6 +11,24 @@ class World {
   constructor(scene) {
     this.scene = scene;
     this.props = []; // every Prop in the house lives in this list
+    this.debris = new Debris(scene);
+    this.onBreak = null; // main.js can set this to react when something breaks
+  }
+
+  // Smash a breakable prop into pieces
+  breakProp(prop) {
+    if (prop.broken) return;
+    prop.broken = true;
+    this.debris.burst(prop);
+    this.remove(prop);
+    Sfx.crunch();
+    if (this.onBreak) this.onBreak(prop);
+  }
+
+  // Called every frame from main.js
+  update(dt, time) {
+    for (const prop of this.props) prop.update(dt, time);
+    this.debris.update(dt, this.props.filter((p) => p.solid && !p.breakable));
   }
 
   // Add any Prop to the world
@@ -85,13 +103,28 @@ class World {
     this.buildBedsideTable(2.4);  // right of the bed
     this.buildWhiteTable();       // against the back wall, opposite the bed
 
+    // ---- Breakables ----
+    // Bedside tables (top at 1.35): a lamp at the back, a glass nearer the bed
+    this.add(makeLamp(-2.55, 1.35, -3.72, COLORS.butter));
+    this.add(makeGlass(-2.15, 1.35, -3.45));
+    this.add(makeLamp(2.55, 1.35, -3.72, COLORS.canPink));
+    this.add(makeGlass(2.15, 1.35, -3.45));
+    // White table: a cluster of cans by the wall, and a couple more on the right
+    this.add(makeCan(-1.55, 1.35, 3.72, COLORS.canPink));
+    this.add(makeCan(-1.38, 1.35, 3.78, COLORS.canBlue));
+    this.add(makeCan(-1.22, 1.35, 3.7, COLORS.canLilac));
+    this.add(makeCan(0.32, 1.35, 3.74, COLORS.canMint));
+    this.add(makeCan(0.52, 1.35, 3.6, COLORS.canPink, COLORS.canLilac));
+
+    // ---- Carrots ----
+    this.add(new Carrot(0, 2.2, -1.6));    // above the bed: bounce up to grab it!
+    this.add(new Carrot(0.9, 0.27, -2.2)); // hidden under the bed
+    this.add(new Carrot(-0.5, 1.7, 3.4));  // on the white table
+
     // ---- A round low-poly rug at the foot of the bed (decoration) ----
     const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.02, 10), pastel(COLORS.rug));
     rug.position.set(0, 0.01, 1.5);
     this.add(new Prop({ name: "rug", mesh: rug, solid: false }));
-
-    // ---- A carrot floating above the bed: bounce up to grab it! ----
-    this.add(new Carrot(0, 2.2, -1.6));
 
     // ---- Lights: a soft overall glow, gentle shading, and a warm ceiling lamp ----
     this.scene.add(new THREE.HemisphereLight(0xfff4e6, 0xe4d9f5, 0.6));
@@ -165,6 +198,16 @@ class World {
     for (const x of [x1 + 0.05, x2 - 0.05 - leg]) {
       for (const z of [z1 + 0.05, z2 - 0.05 - leg]) {
         this.addSpan("white-table-leg", x, x + leg, 0, top - thick, z, z + leg, COLORS.tableWhite);
+      }
+    }
+
+    // A white stool tucked underneath. Its seat (0.9m) is so close to the
+    // tabletop's underside (1.27m) that Rae can't fit on it: just scenery.
+    const sx = -0.2, sz = 3.4, half = 0.22, seat = 0.9, sleg = 0.05;
+    this.addSpan("stool-seat", sx - half, sx + half, seat - 0.06, seat, sz - half, sz + half, COLORS.stool);
+    for (const x of [sx - half + 0.02, sx + half - 0.02 - sleg]) {
+      for (const z of [sz - half + 0.02, sz + half - 0.02 - sleg]) {
+        this.addSpan("stool-leg", x, x + sleg, 0, seat - 0.06, z, z + sleg, COLORS.stool);
       }
     }
   }

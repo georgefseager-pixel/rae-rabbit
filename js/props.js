@@ -5,8 +5,7 @@
 //
 //   solid:       true  -> Rae bumps into it / can stand on it
 //   collectible: true  -> touching it picks it up (chime!)
-//   breakable:   true  -> bumping into or landing on it breaks it (crunch!)
-//                         (breaking is coming in a later step)
+//   breakable:   true  -> bumping into or landing on it breaks it into pieces (crunch!)
 //   bouncy:      true  -> landing on it springs Rae back up (like the bed)
 //                         bouncePower sets how high
 //
@@ -32,6 +31,13 @@ const COLORS = {
   walnut:  0x9e7656, // brown bedside tables
   walnutLight: 0xb48b6a, // drawer fronts
   tableWhite: 0xfbf8f2, // white table
+  stool:   0xffffff, // white stool
+  glass:   0xd6f0fb, // see-through glass
+  water:   0xa9dcf2, // water in the glass
+  canPink: 0xf7b6cb,
+  canBlue: 0xaed3f3,
+  canMint: 0xa8e2c7,
+  canLilac:0xcdb8ef,
 };
 
 // Makes a flat-shaded pastel material (the "low-poly" look)
@@ -90,4 +96,54 @@ class Carrot extends Prop {
     this.mesh.rotation.y += dt * 1.5;
     this.mesh.position.y = this.baseY + Math.sin(time * 2.5) * 0.05;
   }
+}
+
+// ============================================================
+// Breakable things. Each function returns a Prop standing with its
+// BOTTOM at (x, y, z), so y is just the height of the surface it sits on.
+// ============================================================
+
+// A tall narrow can (deodorant / hairspray style), with a cap
+function makeCan(x, y, z, color, capColor = COLORS.skirting) {
+  const group = new THREE.Group();
+  const h = 0.3, r = 0.055;
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 8), pastel(color));
+  body.position.y = h / 2;
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.85, r * 0.85, 0.07, 8), pastel(capColor));
+  cap.position.y = h + 0.035;
+  group.add(body, cap);
+  group.position.set(x, y, z);
+  return new Prop({ name: "can", mesh: group, breakable: true });
+}
+
+// A drinking glass with a little water in it
+function makeGlass(x, y, z) {
+  const group = new THREE.Group();
+  const glassMat = new THREE.MeshStandardMaterial({
+    color: COLORS.glass, flatShading: true, roughness: 0.2, transparent: true, opacity: 0.55,
+  });
+  const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.045, 0.15, 8), glassMat);
+  glass.position.y = 0.075;
+  const water = new THREE.Mesh(new THREE.CylinderGeometry(0.044, 0.04, 0.08, 8), pastel(COLORS.water));
+  water.position.y = 0.045;
+  group.add(glass, water);
+  group.position.set(x, y, z);
+  return new Prop({ name: "glass", mesh: group, breakable: true });
+}
+
+// A little bedside lamp: round base, thin stem, glowing cone shade
+function makeLamp(x, y, z, shadeColor = COLORS.butter) {
+  const group = new THREE.Group();
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 0.04, 8), pastel(COLORS.lilac));
+  base.position.y = 0.02;
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.28, 6), pastel(COLORS.skirting));
+  stem.position.y = 0.18;
+  const shadeMat = pastel(shadeColor);
+  shadeMat.emissive = new THREE.Color(shadeColor);
+  shadeMat.emissiveIntensity = 0.35; // a soft "switched on" glow
+  const shade = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.16, 0.2, 8), shadeMat);
+  shade.position.y = 0.38;
+  group.add(base, stem, shade);
+  group.position.set(x, y, z);
+  return new Prop({ name: "lamp", mesh: group, breakable: true });
 }

@@ -108,7 +108,7 @@ function loop() {
   } else if (!started) {
     player.update(0, world); // just place the camera for the title screen
   }
-  for (const prop of world.props) prop.update(dt, time);
+  world.update(dt, time); // animates props and flying pieces
 
   renderer.render(scene, camera);
 }

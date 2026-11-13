@@ -109,16 +109,27 @@ class Player {
     const solids = world.solids();
     const eps = 0.0001;
 
+    // Breakable things don't stop Rae: touching them smashes them instead.
+    const smashIfBreakable = (s) => {
+      if (!s.breakable) return false;
+      world.breakProp(s);
+      return true;
+    };
+
     this.pos.x += this.vel.x * dt;
     for (const s of solids) {
+      if (s.broken) continue;
       if (this.overlaps(this.boxAt(this.pos), s.box)) {
+        if (smashIfBreakable(s)) continue;
         this.pos.x = this.vel.x > 0 ? s.box.min.x - this.radius - eps : s.box.max.x + this.radius + eps;
       }
     }
 
     this.pos.z += this.vel.z * dt;
     for (const s of solids) {
+      if (s.broken) continue;
       if (this.overlaps(this.boxAt(this.pos), s.box)) {
+        if (smashIfBreakable(s)) continue;
         this.pos.z = this.vel.z > 0 ? s.box.min.z - this.radius - eps : s.box.max.z + this.radius + eps;
       }
     }
@@ -127,7 +138,9 @@ class Player {
     let landedOn = null;
     this.pos.y += this.vel.y * dt;
     for (const s of solids) {
+      if (s.broken) continue;
       if (this.overlaps(this.boxAt(this.pos), s.box)) {
+        if (smashIfBreakable(s)) continue;
         if (this.vel.y <= 0) {
           this.pos.y = s.box.max.y; // landed on top of it
           this.onGround = true;

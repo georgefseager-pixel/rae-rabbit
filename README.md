@@ -18,6 +18,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `js/audio.js` | Sound effects made in code (boing, chime, crunch) |
 | `js/dialogue.js` | Rae's thought bubble (top left). `Dialogue.sayOnce("id", "Text!")` |
 | `js/props.js` | The `Prop` class (every object), colours, the `Carrot` collectible |
+| `js/debris.js` | The flying pieces when something breaks |
 | `js/world.js` | Builds the rooms and lights |
 | `js/player.js` | Rae's controls, hopping and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
@@ -26,6 +27,9 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **Bedroom**: king-sized bed against the front wall (Rae can run underneath, and bounces on top; press Space as you land for a big bounce), doorway to the corridor on the right of the back wall (as you face it).
   - Two brown bedside tables either side of the bed, 1.35m tall: too high to hop onto from the floor, so bounce over from the bed.
   - A wide white table against the back wall, opposite the bed. Only reachable by a big bounce off the foot of the bed (press Space as you land, then run at it).
+  - A white stool tucked under the white table (scenery only, no room to stand on it).
+  - Breakables: a lamp and a glass on each bedside table, five cans on the white table.
+  - Carrots: one above the bed, one under the bed, one on the white table.
 
 ## Rae's first-time thoughts
 | When | She says |
@@ -48,8 +52,13 @@ this.addSpan("cushion", 1.6, 2.4, 0, 0.3, 0.6, 1.4, COLORS.lilac);
 // something springy, like the bed
 this.addBox("beanbag", -2, 0.25, 2, 1, 0.5, 1, COLORS.butter, { bouncy: true, bouncePower: 5 });
 
-// mark it breakable (breaking comes in a later step)
+// mark it breakable: Rae smashes it into pieces by bumping into or landing on it
 this.addBox("vase", -2, 0.2, 1, 0.3, 0.4, 0.3, COLORS.butter, { breakable: true });
+
+// ready-made breakables (x, height of the surface, z): see js/props.js
+this.add(makeCan(1, 0, 1, COLORS.canMint));
+this.add(makeGlass(1.2, 0, 1));
+this.add(makeLamp(1.4, 0, 1));
 
 // another collectible carrot
 this.add(new Carrot(3, 0.35, 3));
