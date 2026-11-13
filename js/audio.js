@@ -119,6 +119,25 @@ const Sfx = {
     thump.stop(t + 0.2);
   },
 
+  // A shop doorbell: "ding-a-ling!"
+  shopBell() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [1760, 2350, 1760, 2350].forEach((freq, i) => {
+      const start = t + i * 0.07;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.15, start + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.5);
+      osc.connect(gain).connect(this.master);
+      osc.start(start);
+      osc.stop(start + 0.55);
+    });
+  },
+
   // A sleepy little falling tune for the summary screen
   gameOver() {
     if (!this.ctx) return;

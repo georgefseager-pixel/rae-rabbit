@@ -280,6 +280,57 @@ function makeClothesPile(x, y, z, seed = 1) {
   return new Prop({ name: "clothes", mesh: group, breakable: true });
 }
 
+// A scrappy cardboard sign with wobbly hand-written letters (like FLOPSY SHOP).
+// Returns a flat mesh, width x height metres, facing +z (turn it to face elsewhere).
+function makeHandwrittenSign(text, width, height) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = Math.round(512 * height / width);
+  const ctx = canvas.getContext("2d");
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.encoding = THREE.sRGBEncoding;
+
+  const draw = () => {
+    const W = canvas.width, Hc = canvas.height;
+    ctx.clearRect(0, 0, W, Hc);
+    // torn cardboard
+    ctx.fillStyle = "#d9b48a";
+    ctx.beginPath();
+    ctx.moveTo(8, 14); ctx.lineTo(W - 20, 6); ctx.lineTo(W - 6, Hc - 18); ctx.lineTo(24, Hc - 6); ctx.closePath();
+    ctx.fill();
+    // bits of sticky tape in the corners
+    ctx.fillStyle = "rgba(255, 250, 220, 0.75)";
+    ctx.save(); ctx.translate(30, 18); ctx.rotate(-0.6); ctx.fillRect(-28, -10, 56, 20); ctx.restore();
+    ctx.save(); ctx.translate(W - 30, 16); ctx.rotate(0.6); ctx.fillRect(-28, -10, 56, 20); ctx.restore();
+    // wobbly letters in red marker: each one tilted, sized and placed a bit differently
+    let seed = 7;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const size = Hc * 0.42;
+    ctx.fillStyle = "#c22f45";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    const step = (W - 70) / text.length;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === " ") continue;
+      ctx.save();
+      ctx.translate(40 + step * (i + 0.5) + (rand() - 0.5) * 8, Hc * 0.52 + (rand() - 0.5) * Hc * 0.18 + i * 1.5);
+      ctx.rotate((rand() - 0.5) * 0.5);
+      ctx.font = `${Math.round(size * (0.85 + rand() * 0.35))}px "Rock Salt", "Comic Sans MS", cursive`;
+      ctx.fillText(ch, 0, 0);
+      ctx.restore();
+    }
+    texture.needsUpdate = true;
+  };
+  draw();
+  // redraw once the messy handwriting font has downloaded
+  if (document.fonts) document.fonts.load('40px "Rock Salt"').then(draw).catch(() => {});
+
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height),
+    new THREE.MeshBasicMaterial({ map: texture, transparent: true }));
+  return mesh;
+}
+
 // A door filling a doorway. It smashes apart when Rae touches it!
 //   alongX: true if the wall runs along x
 //   a..b:   the doorway's edges along the wall;  bottom..top: its height

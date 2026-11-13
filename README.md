@@ -52,6 +52,13 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
 - **Doors**: every doorway has a door that smashes to pieces when Rae touches it.
 
+## The Flopsy Shop
+Inside the wardrobe, behind the mirror door, is a tiny door with a scrappy hand-written FLOPSY SHOP
+sign. Walk up to it: the screen fades to black and the shop opens. Pick an outfit (just fur, favourite
+shirt, pink dress, navy suit, frog face shirt, clown face & nose) and Rae steps back out wearing it,
+with something to say about it. See her in the mirrors! Outfits and their lines are the `OUTFITS`
+list in `js/main.js`; how each one looks is `setOutfit` in `js/rae.js`.
+
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).
 When one spots Rae it says one of its lines in red (the list is at the top of `js/frog.js`) and hops

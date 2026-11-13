@@ -159,11 +159,13 @@ function buildWardrobe(w) {
   rail.position.set(4.8, shelfY - 0.12, (z1 + z2) / 2);
   w.add(new Prop({ name: "rail", mesh: rail, solid: false }));
 
-  // A row of hanging shirts (decoration: Rae runs underneath them)
+  // A row of hanging shirts (decoration: Rae runs underneath them),
+  // with a gap in front of the Flopsy Shop door
   const shirtColors = [COLORS.book2, COLORS.canMint, COLORS.butter, COLORS.sofaCushion, COLORS.leaf,
     0x8ea7c9, COLORS.bamboo, COLORS.canLilac, COLORS.tvBlack, COLORS.pillow];
   let i = 0;
   for (let z = z1 + 0.1; z < z2 - 0.1; z += 0.11) {
+    if (z > -0.2 && z < 0.75) continue;
     const bottom = 1.05 + ((i * 53) % 7) * 0.06; // some shirts are longer than others
     w.addDeco("shirt", 4.5, 5.1, bottom, shelfY - 0.14, z, z + 0.07, shirtColors[(i * 7) % shirtColors.length]);
     i++;
@@ -171,8 +173,35 @@ function buildWardrobe(w) {
 
   // A heap of clothes on the floor of the open side, and a carrot hiding behind the mirror
   w.add(makeClothesPile(4.75, 0, z1 + 0.6, 7));
-  w.add(new Carrot(4.75, 0.35, (mz1 + mz2) / 2 + 0.3));
+  w.add(new Carrot(4.75, 0.35, 1.25));
+
+  buildFlopsyShopDoor(w, back, (mz1 + mz2) / 2);
+  w.addZone("shop-door", back - 0.35, back, -0.2, 0.4, 0.0, 0.6); // walk up to the little door
   w.addZone("wardrobe", 4.12, back, -0.2, 1.5, z1, z2);
+}
+
+// A tiny Rae-sized arched door on the wardrobe's back wall, with a scrappy
+// hand-written FLOPSY SHOP sign above it. Walking up to it opens the shop (main.js).
+function buildFlopsyShopDoor(w, wallX, z) {
+  const face = wallX - 0.005, hw = 0.3, top = 0.75;
+  w.addDeco("shop-door", face - 0.06, face, 0, top, z - hw, z + hw, COLORS.canMint);
+  const arch = new THREE.Mesh(new THREE.CylinderGeometry(hw, hw, 0.06, 14), pastel(COLORS.canMint));
+  arch.rotation.z = Math.PI / 2;
+  arch.position.set(face - 0.03, top, z);
+  w.add(new Prop({ name: "shop-door", mesh: arch, solid: false }));
+  // panels, knob and a doormat
+  w.addDeco("shop-door-panel", face - 0.075, face - 0.06, 0.1, 0.45, z - 0.2, z - 0.03, COLORS.book5);
+  w.addDeco("shop-door-panel", face - 0.075, face - 0.06, 0.1, 0.45, z + 0.03, z + 0.2, COLORS.book5);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), pastel(COLORS.butter));
+  knob.position.set(face - 0.09, 0.38, z + 0.21);
+  w.add(new Prop({ name: "shop-knob", mesh: knob, solid: false }));
+  w.addDeco("shop-mat", face - 0.45, face - 0.02, 0, 0.015, z - 0.3, z + 0.3, COLORS.canPink);
+
+  const sign = makeHandwrittenSign("FLOPSY SHOP", 0.85, 0.24);
+  sign.rotation.y = -Math.PI / 2;  // face into the wardrobe (-x)
+  sign.rotation.z = 0.06;          // stuck up a bit wonky
+  sign.position.set(face - 0.02, top + 0.42, z);
+  w.add(new Prop({ name: "shop-sign", mesh: sign, solid: false }));
 }
 
 // The king-sized bed, headboard against the bed wall, centred.

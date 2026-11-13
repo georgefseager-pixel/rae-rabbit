@@ -156,6 +156,75 @@ html, body {
 }
 .card h1 { margin: 0 0 10px; font-size: 28px; }
 
+/* ---- Fade to black ---- */
+#fade {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-in;
+}
+#fade.on { opacity: 1; pointer-events: auto; }
+
+/* ---- The Flopsy Shop ---- */
+#shop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-family: "Fredoka", "Segoe UI", sans-serif;
+}
+#shop.hidden { display: none; }
+.shop-card {
+  width: min(560px, 100%);
+  padding: 22px 24px 20px;
+  border-radius: 26px;
+  background: #fff4e8;
+  border: 4px dashed #d9b48a;
+  text-align: center;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.7, 0.64, 1);
+}
+.shop-title {
+  margin: 0;
+  font-family: "Rock Salt", "Comic Sans MS", cursive;
+  font-size: 34px;
+  color: #c22f45;
+  transform: rotate(-2deg);
+}
+.shop-sub { margin: 6px 0 16px; color: #8a7590; }
+#shop-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.outfit {
+  font: inherit;
+  padding: 12px 8px;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  background: #fde7ee;
+  color: #6b5070;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.15s;
+}
+.outfit:hover { transform: translateY(-2px); border-color: #f7a8c4; }
+.outfit .emoji { display: block; font-size: 32px; }
+.outfit .name { font-weight: 600; font-size: 16px; }
+.outfit.wearing { border-color: #9fd8b4; background: #eaf8ef; }
+.outfit.wearing .name::after { content: " ✓"; color: #4f9f6a; }
+#shop-leave {
+  font: inherit;
+  border: none;
+  background: none;
+  color: #8a7590;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* ---- Summary screen (out of hearts) ---- */
 #gameover {
   position: fixed;

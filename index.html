@@ -6,7 +6,7 @@
   <title>Rae Rabbit's Cosy Home</title>
   <!-- A round, friendly font for Rae's dialogue -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Rock+Salt&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,6 +34,19 @@
         <b>W A S D</b> move &nbsp;·&nbsp; <b>Mouse</b> look &nbsp;·&nbsp; <b>Space</b> hop<br>
         <b>Esc</b> pause &nbsp;·&nbsp; Mouse look not working? Hold the button and drag
       </p>
+    </div>
+  </div>
+
+  <!-- Fades the screen to black (e.g. going through the Flopsy Shop door) -->
+  <div id="fade"></div>
+
+  <!-- The Flopsy Shop: pick an outfit (buttons are added by main.js) -->
+  <div id="shop" class="hidden">
+    <div class="shop-card">
+      <h1 class="shop-title">FLOPSY SHOP</h1>
+      <p class="shop-sub">Pick an outfit, little bunny!</p>
+      <div id="shop-items"></div>
+      <button id="shop-leave">Just looking, thanks</button>
     </div>
   </div>
 

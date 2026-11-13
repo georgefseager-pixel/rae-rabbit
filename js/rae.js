@@ -20,6 +20,15 @@ const RAE_COLORS = {
   tail:     0xf6e7d4,
 };
 
+// Colours for Rae's outfits (see setOutfit below and the Flopsy Shop in main.js)
+const OUTFIT_COLORS = {
+  dress:     0xf6a5c8, // pink dress
+  navy:      0x3e4c7e, // navy suit
+  frogGreen: 0x9fdc8a, // frog shirt
+  clownRed:  0xec3b4f, // clown nose & cheeks
+  clownBlue: 0x6fa8f0, // clown face paint
+};
+
 const LAYER_MIRROR_ONLY = 1; // things only mirrors see (Rae's body)
 const LAYER_EYES_ONLY = 2;   // things only the main camera sees (first-person paws)
 
@@ -108,12 +117,100 @@ class RaeModel {
       return pivot;
     });
 
+    // Remember the parts that outfits change
+    this.torso = torso;
+    this.muzzle = muzzle;
+    this.nose = nose;
+    this.plusSign = [plusA, plusB];
+    this.thighs = this.legs.map((leg) => leg.children[0]);
+    this.buildOutfitExtras();
+    this.setOutfit("shirt");
+
     // Only mirrors may see her body
     this.root.traverse((o) => o.layers.set(LAYER_MIRROR_ONLY));
 
     this.walkPhase = 0;
     this.squash = 0;
     this.wasOnGround = true;
+  }
+
+  // The extra bits that only some outfits use (all hidden until needed)
+  buildOutfitExtras() {
+    const X = {};
+    // Pink dress: a flared skirt and a bow between the ears
+    X.skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.175, 0.13, 9), pastel(OUTFIT_COLORS.dress));
+    X.skirt.position.y = 0.1;
+    X.bow = new THREE.Group();
+    for (const side of [-1, 1]) {
+      const loop = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.06, 4), pastel(OUTFIT_COLORS.dress));
+      loop.rotation.z = side * Math.PI / 2;
+      loop.position.x = side * 0.03;
+      X.bow.add(loop);
+    }
+    X.bow.add(blob(0.015, OUTFIT_COLORS.dress));
+    X.bow.position.set(0, 0.19, -0.02);
+    this.head.add(X.bow);
+
+    // Navy suit: white shirt collar, a red tie
+    X.collar = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.07, 3), pastel(0xffffff));
+    X.collar.rotation.x = Math.PI;
+    X.collar.position.set(0, 0.245, -0.108);
+    X.tie = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.085, 0.015), pastel(RAE_COLORS.plus));
+    X.tie.position.set(0, 0.2, -0.122);
+
+    // Frog shirt: a frog face on the chest
+    X.frogFace = new THREE.Group();
+    for (const side of [-1, 1]) {
+      const eyeWhite = blob(0.024, 0xffffff);
+      eyeWhite.position.set(side * 0.038, 0.235, -0.11);
+      const pupil = blob(0.011, RAE_COLORS.eye);
+      pupil.position.set(side * 0.038, 0.235, -0.13);
+      X.frogFace.add(eyeWhite, pupil);
+    }
+    const frogSmile = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.006, 4, 10, Math.PI), pastel(0x4f7f48));
+    frogSmile.rotation.z = Math.PI;
+    frogSmile.position.set(0, 0.185, -0.12);
+    X.frogFace.add(frogSmile);
+
+    // Clown: big red nose, blue diamonds round the eyes, rosy cheeks
+    X.clown = new THREE.Group();
+    const redNose = blob(0.03, OUTFIT_COLORS.clownRed);
+    redNose.position.set(0, 0.065, -0.14);
+    X.clown.add(redNose);
+    for (const side of [-1, 1]) {
+      for (const dy of [0.032, -0.03]) {
+        const diamond = new THREE.Mesh(new THREE.OctahedronGeometry(0.018), pastel(OUTFIT_COLORS.clownBlue));
+        diamond.scale.set(0.7, 1.3, 0.3);
+        diamond.position.set(side * 0.048, 0.1 + dy, -0.103);
+        X.clown.add(diamond);
+      }
+      const cheek = blob(0.02, OUTFIT_COLORS.clownRed, 1, 0.8, 0.4);
+      cheek.position.set(side * 0.075, 0.045, -0.09);
+      X.clown.add(cheek);
+    }
+    this.head.add(X.clown);
+
+    this.body.add(X.skirt, X.collar, X.tie, X.frogFace);
+    this.extras = X;
+  }
+
+  // Change clothes! name is one of the ids in OUTFITS (frog.js / main.js use these too)
+  setOutfit(name) {
+    const C = RAE_COLORS, X = this.extras;
+    const torsoColor = {
+      naked: C.fur, shirt: C.shirt, dress: OUTFIT_COLORS.dress,
+      suit: OUTFIT_COLORS.navy, frog: OUTFIT_COLORS.frogGreen, clown: C.shirt,
+    }[name];
+    this.outfit = name;
+    this.torso.material.color.set(torsoColor);
+    this.plusSign.forEach((m) => (m.visible = name === "shirt" || name === "clown"));
+    X.skirt.visible = X.bow.visible = name === "dress";
+    X.collar.visible = X.tie.visible = name === "suit";
+    X.frogFace.visible = name === "frog";
+    X.clown.visible = name === "clown";
+    this.nose.visible = name !== "clown";
+    this.muzzle.material.color.set(name === "clown" ? 0xffffff : C.furLight); // white face paint
+    this.thighs.forEach((t) => t.material.color.set(name === "suit" ? OUTFIT_COLORS.navy : C.fur)); // trousers
   }
 
   // Follow the player and animate. Called every frame.
