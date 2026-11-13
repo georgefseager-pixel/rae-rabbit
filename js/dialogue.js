@@ -36,7 +36,7 @@ const Dialogue = {
     while (this.bubbles.length >= this.maxBubbles) this.dismiss(this.bubbles[0]);
 
     const el = document.createElement("div");
-    el.className = "bubble" + (opts.style === "enemy" ? " enemy" : "");
+    el.className = "bubble" + (opts.style ? " " + opts.style : ""); // e.g. "enemy" (frogs), "flopsy"
     const name = document.createElement("div");
     name.className = "name-tag";
     name.textContent = opts.speaker || "🐰 Rae";

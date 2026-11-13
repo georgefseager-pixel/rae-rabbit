@@ -125,6 +125,10 @@ html, body {
 .bubble.enemy { border-color: #f3a3ad; box-shadow: 0 6px 0 #f3a3ad, 0 12px 26px rgba(170, 60, 80, 0.2); }
 .bubble.enemy .name-tag { background: #e8606f; box-shadow: 0 2px 0 #c94a59; }
 .bubble.enemy .bubble-text { color: #d6334a; }
+/* Flopsy talking: brown */
+.bubble.flopsy { border-color: #e2c3a4; box-shadow: 0 6px 0 #e2c3a4, 0 12px 26px rgba(120, 80, 50, 0.18); }
+.bubble.flopsy .name-tag { background: #b5835e; box-shadow: 0 2px 0 #92664a; }
+.bubble.flopsy .bubble-text { color: #8a5a3c; }
 
 .bubble-text {
   margin: 0;
@@ -172,9 +176,10 @@ html, body {
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: safe center;
   justify-content: center;
   padding: 16px;
+  overflow-y: auto; /* scrolls on short screens */
   font-family: "Fredoka", "Segoe UI", sans-serif;
 }
 #shop.hidden { display: none; }
@@ -214,8 +219,34 @@ html, body {
 .outfit:hover { transform: translateY(-2px); border-color: #f7a8c4; }
 .outfit .emoji { display: block; font-size: 32px; }
 .outfit .name { font-weight: 600; font-size: 16px; }
-.outfit.wearing { border-color: #9fd8b4; background: #eaf8ef; }
 .outfit.wearing .name::after { content: " ✓"; color: #4f9f6a; }
+.outfit.selected { border-color: #f7a8c4; background: #fff; box-shadow: 0 4px 0 #f7a8c4; }
+.outfit.locked { background: #efe7ea; color: #a898a6; }
+.outfit.locked .emoji { filter: grayscale(1); opacity: 0.6; }
+.outfit .need { display: block; font-size: 13px; margin-top: 3px; }
+#shop-stage {
+  display: block;
+  width: 100%;
+  height: 190px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  background: #4a3558;
+}
+#shop-wear {
+  display: block;
+  margin: 0 auto 10px;
+  font: inherit;
+  font-size: 19px;
+  font-weight: 600;
+  padding: 11px 30px;
+  border: none;
+  border-radius: 999px;
+  background: #f7a8c4;
+  color: #fff;
+  box-shadow: 0 5px 0 #e08aa9;
+  cursor: pointer;
+}
+#shop-wear:disabled { background: #d8ccd2; box-shadow: 0 5px 0 #bfb1b8; cursor: default; }
 #shop-leave {
   font: inherit;
   border: none;

@@ -176,6 +176,10 @@ function buildWardrobe(w) {
   w.add(new Carrot(4.75, 0.35, 1.25));
 
   buildFlopsyShopDoor(w, back, (mz1 + mz2) / 2);
+  // Flopsy stands beside her shop door (main.js creates her); a hidden box stops Rae walking through her
+  w.flopsySpot = { x: 5.05, y: 0, z: -0.28 };
+  const flopsyBlock = w.addSpan("flopsy", 4.92, 5.18, 0, 0.36, -0.41, -0.15, COLORS.floor);
+  flopsyBlock.mesh.visible = false;
   w.addZone("shop-door", back - 0.35, back, -0.2, 0.4, 0.0, 0.6); // walk up to the little door
   w.addZone("wardrobe", 4.12, back, -0.2, 1.5, z1, z2);
 }

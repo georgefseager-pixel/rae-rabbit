@@ -193,75 +193,8 @@ function checkZones() {
   else if (zone) raeSays("zone-" + zone);
 }
 
-// ---- The Flopsy Shop (the little door inside the wardrobe) ----
-// Each outfit: id (used by rae.js setOutfit), name and emoji for the menu,
-// and what Rae says when she steps out wearing it.
-const OUTFITS = [
-  { id: "naked", emoji: "🐰", name: "Just fur",          line: "Fur is the only outfit I need!" },
-  { id: "shirt", emoji: "➕", name: "Favourite shirt",   line: "Back in my favourite shirt!" },
-  { id: "dress", emoji: "👗", name: "Pink dress",        line: "I feel like a princess bunny!" },
-  { id: "suit",  emoji: "👔", name: "Navy suit",         line: "Time for serious business. Carrot business." },
-  { id: "frog",  emoji: "🐸", name: "Frog face shirt",   line: "Ribbit! The frogs will think I'm one of them!" },
-  { id: "clown", emoji: "🤡", name: "Clown face & nose", line: "Honk honk! The funniest bunny in town!" },
-];
-let inShop = false;
-let shopCooldown = 0; // so stepping out doesn't send her straight back in
-const fadeEl = document.getElementById("fade");
-const shopEl = document.getElementById("shop");
-const shopItemsEl = document.getElementById("shop-items");
-
-for (const outfit of OUTFITS) {
-  const b = document.createElement("button");
-  b.className = "outfit";
-  b.dataset.id = outfit.id;
-  b.innerHTML = `<span class="emoji">${outfit.emoji}</span><span class="name">${outfit.name}</span>`;
-  b.addEventListener("click", () => leaveShop(outfit));
-  shopItemsEl.appendChild(b);
-}
-document.getElementById("shop-leave").addEventListener("click", () => leaveShop(null));
-
-function openShop() {
-  if (inShop || shopCooldown > 0 || gameOver) return;
-  inShop = true;
-  paused = true;
-  player.keys = {};
-  player.vel.set(0, 0, 0);
-  Sfx.shopBell();
-  fadeEl.classList.add("on"); // quick fade to black
-  if (document.exitPointerLock) document.exitPointerLock();
-  setTimeout(() => {
-    for (const b of shopItemsEl.children) b.classList.toggle("wearing", b.dataset.id === raeModel.outfit);
-    shopEl.classList.remove("hidden");
-  }, 300);
-}
-
-// Pick an outfit (or null to leave as she is), then step back out of the little door
-function leaveShop(outfit) {
-  if (!inShop) return;
-  shopEl.classList.add("hidden");
-  if (outfit) {
-    raeModel.setOutfit(outfit.id);
-    Sfx.chime();
-  }
-  // Out of the door, facing back into the wardrobe
-  player.pos.set(4.65, 0, 0.3);
-  player.vel.set(0, 0, 0);
-  player.knock.set(0, 0, 0);
-  player.yaw = Math.PI / 2;
-  player.pitch = 0;
-  shopCooldown = 1.0;
-  setTimeout(() => {
-    fadeEl.classList.remove("on");
-    inShop = false;
-    paused = false;
-    Dialogue.say(outfit ? outfit.line : "Maybe next time!");
-  }, 250);
-  try {
-    const result = canvas.requestPointerLock(); // the click counts, so we can grab the mouse again
-    if (result && result.catch) result.catch(() => {});
-  } catch (e) {}
-}
-window.addEventListener("keydown", (e) => { if (inShop && e.code === "Escape") leaveShop(null); });
+// ---- The Flopsy Shop & Flopsy: see shop.js ----
+const flopsy = new Flopsy(scene, world.flopsySpot.x, world.flopsySpot.y, world.flopsySpot.z);
 
 let collectedCount = 0;
 const totalCollectibles = world.collectibles().length;
@@ -336,6 +269,8 @@ function loop() {
     checkCollectibles();
     checkZones();
     for (const frog of frogs) frog.update(dt, player, time);
+    flopsy.update(dt, player, time);
+    checkUnlocks();
   } else if (!started) {
     player.update(0, world); // just place the camera for the title screen
   }
@@ -343,9 +278,10 @@ function loop() {
   raeModel.update(paused ? 0 : dt, player, time);
   paws.update(paused ? 0 : dt, player, time);
 
-  renderer.render(scene, camera);
+  if (inShop) shopStage.render(dt, time); // Rae dancing on the shop's little stage
+  else renderer.render(scene, camera);
 }
 loop();
 
 // Handy for debugging in the browser console: type  game  and press Enter
-window.game = { world, player, scene, camera, raeModel, paws, frogs };
+window.game = { world, player, scene, camera, raeModel, paws, frogs, flopsy };

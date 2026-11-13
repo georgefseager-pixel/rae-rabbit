@@ -21,6 +21,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `js/debris.js` | The flying pieces when something breaks |
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
+| `js/shop.js` | The Flopsy Shop: outfits & unlocks, the dancing stage, the menu, and Flopsy |
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
@@ -54,10 +55,20 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 
 ## The Flopsy Shop
 Inside the wardrobe, behind the mirror door, is a tiny door with a scrappy hand-written FLOPSY SHOP
-sign. Walk up to it: the screen fades to black and the shop opens. Pick an outfit (just fur, favourite
-shirt, pink dress, navy suit, frog face shirt, clown face & nose) and Rae steps back out wearing it,
-with something to say about it. See her in the mirrors! Outfits and their lines are the `OUTFITS`
-list in `js/main.js`; how each one looks is `setOutfit` in `js/rae.js`.
+sign. Flopsy (a small brown bunny in an apron) stands beside it and waves hello when Rae comes in.
+Walk up to the door: the screen fades to black and the shop opens, with Rae dancing on a little stage
+in whichever outfit you click. "Wear it!" and she steps back out in it, with something to say.
+
+| Outfit | How to unlock |
+|--------|---------------|
+| Just fur, Favourite shirt | Always |
+| Pink dress | Collect 3 carrots |
+| Frog face shirt | Stomp 2 frogs |
+| Navy suit | Smash 20 things |
+| Clown face & nose | Collect 8 carrots |
+
+Flopsy calls out when something new unlocks. Change outfits, lines and unlock rules in the `OUTFITS`
+list at the top of `js/shop.js`; how each one looks is `setOutfit` in `js/rae.js`.
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).

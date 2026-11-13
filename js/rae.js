@@ -39,9 +39,15 @@ function blob(radius, color, sx = 1, sy = 1, sz = 1, detail = [7, 5]) {
   return mesh;
 }
 
+// Flopsy, who runs the Flopsy Shop: a smaller, chocolate-brown bunny (same shape as Rae)
+const FLOPSY_COLORS = { ...RAE_COLORS, fur: 0x9b6a48, furLight: 0xc89e7a, tail: 0xf0dcc4 };
+
 class RaeModel {
-  constructor() {
-    const C = RAE_COLORS;
+  // colors: RAE_COLORS for Rae, FLOPSY_COLORS for Flopsy
+  constructor(colors = RAE_COLORS) {
+    const C = colors;
+    this.C = colors;
+    this.waveTimer = 0;
     this.root = new THREE.Group();   // stands at Rae's feet, turns with her
     this.body = new THREE.Group();   // everything; squashes & bobs
     this.root.add(this.body);
@@ -196,7 +202,7 @@ class RaeModel {
 
   // Change clothes! name is one of the ids in OUTFITS (frog.js / main.js use these too)
   setOutfit(name) {
-    const C = RAE_COLORS, X = this.extras;
+    const C = this.C, X = this.extras;
     const torsoColor = {
       naked: C.fur, shirt: C.shirt, dress: OUTFIT_COLORS.dress,
       suit: OUTFIT_COLORS.navy, frog: OUTFIT_COLORS.frogGreen, clown: C.shirt,
@@ -267,7 +273,17 @@ class RaeModel {
       const side = leg.userData.side;
       leg.rotation.x = air ? legSwing : legSwing * side;
     }
+
+    // A friendly wave: one arm up high, waggling
+    if (this.waveTimer > 0) {
+      this.waveTimer -= dt;
+      const arm = this.arms[1];
+      arm.rotation.z = 2.5 + Math.sin(time * 16) * 0.35;
+      arm.rotation.x = 0;
+    }
   }
+
+  wave(seconds = 2.2) { this.waveTimer = seconds; }
 }
 
 // The two front paws you see at the bottom corners of the screen
