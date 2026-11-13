@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rae Rabbit's Cosy Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- The 3D game draws into this canvas -->
+  <canvas id="game"></canvas>
+
+  <!-- Little on-screen counter -->
+  <div id="hud">🥕 <span id="carrot-count">0</span> / <span id="carrot-total">0</span></div>
+  <div id="toast"></div>
+
+  <!-- Start / pause screen (a click is needed before browsers allow sound) -->
+  <div id="overlay">
+    <div class="card">
+      <h1>🐰 Rae Rabbit's Cosy Home</h1>
+      <p id="overlay-title" class="big">Click to start</p>
+      <p class="controls">
+        <b>W A S D</b> move &nbsp;·&nbsp; <b>Mouse</b> look &nbsp;·&nbsp; <b>Space</b> hop<br>
+        <b>Esc</b> pause
+      </p>
+    </div>
+  </div>
+
+  <!-- Three.js (the 3D library), loaded from a free public CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+  <!-- Our game code. Order matters: later files use things from earlier ones. -->
+  <script src="js/audio.js"></script>
+  <script src="js/props.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

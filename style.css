@@ -1,0 +1,65 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #fbefe6;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #5a4a5e;
+}
+
+#game {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+#hud {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(255, 250, 245, 0.85);
+  font-size: 20px;
+  font-weight: 600;
+  user-select: none;
+}
+
+#toast {
+  position: fixed;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 16px;
+  background: rgba(255, 250, 245, 0.92);
+  font-size: 22px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+#toast.show { opacity: 1; }
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(250, 225, 235, 0.7);
+  cursor: pointer;
+}
+#overlay.hidden { display: none; }
+
+.card {
+  max-width: 90vw;
+  padding: 28px 36px;
+  border-radius: 24px;
+  background: #fffaf5;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(120, 80, 110, 0.18);
+}
+.card h1 { margin: 0 0 10px; font-size: 28px; }
+.card .big { font-size: 24px; margin: 10px 0; color: #d77a9b; font-weight: 700; }
+.card .controls { margin: 0; line-height: 1.7; }
