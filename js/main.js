@@ -41,6 +41,30 @@ const raeModel = new RaeModel();
 scene.add(raeModel.root);
 const paws = new FirstPersonPaws(camera);
 
+// Frogs, at the spots listed in house.js
+const frogs = world.frogSpawns.map((s) => new Frog(world, s.x, s.y, s.z, s.color));
+
+// Landing on a frog's head pops it (and bounces Rae up). Bumping into one
+// from the side just nudges the frog out of the way.
+function checkFrogs(fallingSpeed) {
+  for (const frog of frogs) {
+    if (!frog.alive) continue;
+    const dx = frog.pos.x - player.pos.x, dz = frog.pos.z - player.pos.z;
+    const flat = Math.hypot(dx, dz);
+    const top = frog.top();
+    if (flat < 0.34 && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
+      frog.pop();
+      player.pos.y = top;
+      player.vel.y = 5.5;   // boing off its head
+      player.onGround = false;
+    } else if (flat < 0.4 && flat > 0.001 && player.pos.y < top - 0.1 && player.pos.y + player.height > frog.pos.y) {
+      const push = 0.4 - flat;
+      frog.pos.x += (dx / flat) * push;
+      frog.pos.z += (dz / flat) * push;
+    }
+  }
+}
+
 // ---- Rae's first-time thoughts ----
 Dialogue.init();
 player.onBounce = (prop) => {
@@ -118,9 +142,12 @@ function loop() {
   const time = clock.elapsedTime;
 
   if (!paused) {
+    const fallingSpeed = player.vel.y;
     player.update(dt, world);
+    checkFrogs(Math.min(fallingSpeed, player.vel.y));
     checkCollectibles();
     checkZones();
+    for (const frog of frogs) frog.update(dt, player, time);
   } else if (!started) {
     player.update(0, world); // just place the camera for the title screen
   }
@@ -133,4 +160,4 @@ function loop() {
 loop();
 
 // Handy for debugging in the browser console: type  game  and press Enter
-window.game = { world, player, scene, camera, raeModel, paws };
+window.game = { world, player, scene, camera, raeModel, paws, frogs };

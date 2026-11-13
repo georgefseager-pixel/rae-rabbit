@@ -1,15 +1,18 @@
 // ============================================================
-// dialogue.js — Rae's little thoughts, shown in the top-left panel
+// dialogue.js — the speech bubble in the top-left panel
 // ============================================================
 // Use:
-//   Dialogue.sayOnce("some-id", "Text!")  -> only ever shown the FIRST time
-//   Dialogue.say("Text!")                 -> shown every time it's called
+//   Dialogue.sayOnce("some-id", "Text!")  -> Rae says it only the FIRST time
+//   Dialogue.say("Text!")                 -> Rae says it every time it's called
+//   Dialogue.say("Ribbit!", { speaker: "🐸 Frog", style: "enemy", voice: "frog" })
+//                                         -> someone else talks (red text)
 // Messages queue up, type out letter by letter with a babbly voice,
 // stay for a moment, then fade away.
 
 const Dialogue = {
   panel: null,
   textEl: null,
+  nameEl: null,
   queue: [],
   busy: false,
   seen: new Set(), // ids of lines Rae has already said
@@ -22,6 +25,7 @@ const Dialogue = {
   init() {
     this.panel = document.getElementById("dialogue");
     this.textEl = document.getElementById("dialogue-text");
+    this.nameEl = this.panel.querySelector(".name-tag");
   },
 
   sayOnce(id, text) {
@@ -30,16 +34,19 @@ const Dialogue = {
     this.say(text);
   },
 
-  say(text) {
-    this.queue.push(text);
+  say(text, opts = {}) {
+    this.queue.push({ text, opts });
     if (!this.busy) this.next();
   },
 
   next() {
-    const text = this.queue.shift();
-    if (text === undefined) { this.busy = false; return; }
+    const item = this.queue.shift();
+    if (item === undefined) { this.busy = false; return; }
     this.busy = true;
+    const { text, opts } = item;
 
+    this.nameEl.textContent = opts.speaker || "🐰 Rae";
+    this.panel.classList.toggle("enemy", opts.style === "enemy");
     this.textEl.textContent = "";
     this.panel.classList.add("show");
 
@@ -50,7 +57,7 @@ const Dialogue = {
       const ch = text[i - 1];
       // a babble blip on every other letter (skipping spaces & punctuation)
       if (/[a-z0-9]/i.test(ch) && i % 2 === 1) {
-        Sfx.babble(ch === ch.toUpperCase() && /[A-Z]/.test(ch)); // CAPITALS = excited & higher
+        Sfx.babble(/[A-Z]/.test(ch), opts.voice); // CAPITALS = excited & higher
       }
       if (i < text.length) {
         setTimeout(typeLetter, /[.!?,]/.test(ch) ? this.letterDelay * 4 : this.letterDelay);

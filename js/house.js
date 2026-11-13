@@ -27,6 +27,15 @@ function buildHouse(w) {
   buildStairs(w);
   buildOffice(w);
   buildKitchen(w);
+
+  // Frogs! One per spot, each a different colour (see frog.js)
+  w.addFrog(2.6, GROUND, -0.6, FROG_COLORS.green);   // bedroom, beside the bed
+  w.addFrog(1.8, GROUND, 7.2, FROG_COLORS.pink);     // bathroom
+  w.addFrog(2.0, GROUND, 12.0, FROG_COLORS.blue);    // living room, by the fireplace
+  w.addFrog(-2.2, GROUND, 15.8, FROG_COLORS.yellow); // living room, far side
+  w.addFrog(-2.0, LOW, 23.5, FROG_COLORS.teal);      // office
+  w.addFrog(-7.0, LOW, 24.0, FROG_COLORS.lilac);     // kitchen, by the hob
+  w.addFrog(-3.0, LOW, 26.9, FROG_COLORS.peach);     // kitchen, far end
 }
 
 // =====================================================

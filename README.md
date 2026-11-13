@@ -21,6 +21,7 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `js/debris.js` | The flying pieces when something breaks |
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
+| `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
 | `js/player.js` | Rae's controls, hopping, stairs and collision (tweak speed/hop here) |
@@ -38,6 +39,13 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 - **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs, window.
 - **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
 - **Doors**: every doorway has a door that smashes to pieces when Rae touches it.
+
+## Frogs
+Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).
+When one spots Rae it says a line in red ("Hop hop!", "Hi rabbit friend!", "Ribbit!", "Have a hoppy day!",
+"It's me, Friggle Fraggle!") and hops slowly after her. Land on its head to pop it (silly squeak, and Rae
+bounces off). Wander about 16m away from where a frog lives and it comes back, good as new.
+Add more in `js/house.js`: `w.addFrog(x, y, z, FROG_COLORS.pink);`
 
 ## Rae's first-time thoughts
 | When | She says |

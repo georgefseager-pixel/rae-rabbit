@@ -63,10 +63,13 @@ const Sfx = {
 
   // One tiny squeaky "mi" syllable for Rae's babbly voice.
   // excited = true makes it higher and bouncier (used for CAPITAL letters).
-  babble(excited = false) {
+  // voice "frog" = lower and croakier
+  babble(excited = false, voice = "rae") {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    const notes = [660, 740, 784, 880, 988]; // a cheerful pentatonic-ish set
+    const notes = voice === "frog"
+      ? [196, 220, 247, 262, 294]       // low, froggy
+      : [660, 740, 784, 880, 988];      // a cheerful pentatonic-ish set
     let freq = notes[Math.floor(Math.random() * notes.length)];
     if (excited) freq *= 1.25;
 
@@ -84,6 +87,73 @@ const Sfx = {
     osc.connect(filter).connect(gain).connect(this.master);
     osc.start(t);
     osc.stop(t + 0.08);
+  },
+
+  // A soft "plip" when a frog hops (quieter the further away it is)
+  frogHop(distance = 0) {
+    if (!this.ctx) return;
+    const volume = Math.max(0, 0.12 * (1 - distance / 8));
+    if (volume <= 0.001) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.exponentialRampToValueAtTime(140, t + 0.09);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(volume, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    osc.connect(gain).connect(this.master);
+    osc.start(t);
+    osc.stop(t + 0.13);
+  },
+
+  // A silly squeaky "bwoo-SQUEEEAK-pop" for popping a frog
+  frogPop() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    // 1. a slide-whistle "bwoop" up
+    const up = this.ctx.createOscillator();
+    const upGain = this.ctx.createGain();
+    up.type = "sine";
+    up.frequency.setValueAtTime(250, t);
+    up.frequency.exponentialRampToValueAtTime(1100, t + 0.12);
+    upGain.gain.setValueAtTime(0.0001, t);
+    upGain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+    upGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+    up.connect(upGain).connect(this.master);
+    up.start(t); up.stop(t + 0.15);
+    // 2. a wobbly rubber-toy squeak falling down
+    const sq = this.ctx.createOscillator();
+    const wob = this.ctx.createOscillator();
+    const wobDepth = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+    const sqGain = this.ctx.createGain();
+    sq.type = "square";
+    sq.frequency.setValueAtTime(1300, t + 0.12);
+    sq.frequency.exponentialRampToValueAtTime(380, t + 0.45);
+    wob.frequency.value = 32;
+    wobDepth.gain.value = 70;
+    wob.connect(wobDepth).connect(sq.frequency);
+    filter.type = "lowpass";
+    filter.frequency.value = 2200;
+    sqGain.gain.setValueAtTime(0.0001, t + 0.12);
+    sqGain.gain.exponentialRampToValueAtTime(0.16, t + 0.14);
+    sqGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.48);
+    sq.connect(filter).connect(sqGain).connect(this.master);
+    sq.start(t + 0.12); wob.start(t + 0.12);
+    sq.stop(t + 0.5); wob.stop(t + 0.5);
+    // 3. a little "pop" of noise at the start
+    const len = Math.floor(this.ctx.sampleRate * 0.05);
+    const buffer = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const pop = this.ctx.createBufferSource();
+    const popGain = this.ctx.createGain();
+    pop.buffer = buffer;
+    popGain.gain.value = 0.35;
+    pop.connect(popGain).connect(this.master);
+    pop.start(t);
   },
 
   // A sparkly three-note chime for collecting things

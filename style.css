@@ -78,6 +78,11 @@ html, body {
   transform: rotate(-3deg);
   box-shadow: 0 2px 0 #e08aa9;
 }
+/* Someone else talking (the frogs): red */
+#dialogue.enemy { border-color: #f3a3ad; box-shadow: 0 6px 0 #f3a3ad, 0 12px 26px rgba(170, 60, 80, 0.2); }
+#dialogue.enemy .name-tag { background: #e8606f; box-shadow: 0 2px 0 #c94a59; }
+#dialogue.enemy #dialogue-text { color: #d6334a; }
+
 #dialogue-text {
   margin: 0;
   min-height: 1.3em;

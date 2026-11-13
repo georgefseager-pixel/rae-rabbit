@@ -14,6 +14,7 @@ class World {
     this.scene = scene;
     this.props = []; // every Prop in the house lives in this list
     this.zones = []; // invisible areas (like "inside the bath") that main.js can check
+    this.frogSpawns = []; // where frogs start (main.js creates them)
     this.debris = new Debris(scene);
     this.onBreak = null; // main.js can set this to react when something breaks
   }
@@ -166,6 +167,11 @@ class World {
     holder.add(backing, glass, frame);
     this.scene.add(holder);
     return holder;
+  }
+
+  // A frog's home: it starts here, and comes back here when it respawns
+  addFrog(x, y, z, color) {
+    this.frogSpawns.push({ x, y, z, color });
   }
 
   // An invisible named area (from x1..x2, y1..y2, z1..z2). Use world.zoneAt(point)
