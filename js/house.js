@@ -55,7 +55,10 @@ function buildBedroom(w) {
 
   w.addWall("wall", -4.5, 4.5, 0, H, -4.5, -4, COLORS.wallA);  // bed wall
   w.addWall("wall", -4.5, -4,  0, H, -4, 4,    COLORS.wallB);
-  w.addWall("wall",  4, 4.5,   0, H, -4, 4,    COLORS.wallB);
+  // Wall with the built-in wardrobe (left of the vanity mirror): opening from z -1.8 to 2.4
+  w.addWall("wall",  4, 4.5,   0, H, -4, 4,    COLORS.wallB,
+    [{ from: -1.8, to: 2.4, top: 2.75, door: false, trim: false }]);
+  buildWardrobe(w);
   // Back wall with the door to the corridor (on the right as you face it)
   w.addWall("wall", -4.5, 4.5, 0, H, 4, 4.5, COLORS.wallA, [{ from: -3.15, to: -2.05, top: 2.1 }]);
 
@@ -67,7 +70,8 @@ function buildBedroom(w) {
   const sk = 0.12;
   w.addDeco("skirting", -4, 4, 0, sk, -4, -3.96, COLORS.skirting);
   w.addDeco("skirting", -4, -3.96, 0, sk, -4, 4, COLORS.skirting);
-  w.addDeco("skirting", 3.96, 4, 0, sk, -4, 4, COLORS.skirting);
+  w.addDeco("skirting", 3.96, 4, 0, sk, -4, -1.9, COLORS.skirting);
+  w.addDeco("skirting", 3.96, 4, 0, sk, 2.5, 4, COLORS.skirting);
   w.addDeco("skirting", -4, -3.23, 0, sk, 3.96, 4, COLORS.skirting);
   w.addDeco("skirting", -1.97, 4, 0, sk, 3.96, 4, COLORS.skirting);
 
@@ -106,6 +110,69 @@ function buildBedroom(w) {
   w.add(new Prop({ name: "rug", mesh: rug, solid: false }));
 
   w.addRoomLight(0, H - 0.3, 0.5, 0.5);
+}
+
+// The built-in wardrobe, set into the bedroom wall (x = 4), with three sliding doors
+// along z. Looking at it: the LEFT door is slid open (Rae can walk in), the MIDDLE door
+// is a full-length mirror, the RIGHT door is plain white. Inside: a shelf with boxes,
+// a rail of hanging shirts, a clothes pile and a hidden carrot.
+function buildWardrobe(w) {
+  const z1 = -1.8, z2 = 2.4, top = 2.75;       // the opening in the wall
+  const back = 5.4;                             // inside goes from x = 4 back to 5.4
+  const cream = COLORS.ceiling, silver = 0xc9c1b2; // champagne-silver door frames
+
+  // The cupboard itself: floor, back, sides and ceiling (outside the bedroom wall)
+  w.addSpan("floor", 4.5, back + 0.5, -T, 0, z1 - 0.5, z2 + 0.5, COLORS.floor);
+  w.addSpan("wall", back, back + 0.5, 0, H, z1 - 0.5, z2 + 0.5, cream);
+  w.addSpan("wall", 4, back, 0, H, z1 - 0.5, z1, cream);
+  w.addSpan("wall", 4, back, 0, H, z2, z2 + 0.5, cream);
+  w.addSpan("ceiling", 4, back + 0.5, top, top + 0.5, z1 - 0.5, z2 + 0.5, cream);
+
+  // White frame round the opening, like the photo
+  w.addDeco("wardrobe-trim", 3.96, 4.02, 0, top + 0.12, z1 - 0.12, z1, COLORS.skirting);
+  w.addDeco("wardrobe-trim", 3.96, 4.02, 0, top + 0.12, z2, z2 + 0.12, COLORS.skirting);
+  w.addDeco("wardrobe-trim", 3.96, 4.02, top, top + 0.12, z1 - 0.12, z2 + 0.12, COLORS.skirting);
+  // Sliding door tracks
+  w.addDeco("door-track", 4.0, 4.25, top - 0.08, top, z1, z2, silver);
+  w.addDeco("door-track", 4.0, 4.25, 0, 0.03, z1, z2, silver);
+
+  const dz = (z2 - z1) / 3; // each door is 1.4 wide
+  const doorTop = top - 0.08, doorBottom = 0.03;
+  // Middle door: a full-length mirror (solid, so Rae can't walk through it)
+  const mz1 = z1 + dz, mz2 = z1 + dz * 2;
+  w.addSpan("wardrobe-door", 4.06, 4.12, doorBottom, doorTop, mz1, mz2, silver);
+  w.addRectMirror(4.05, (doorBottom + doorTop) / 2, (mz1 + mz2) / 2, dz - 0.12, doorTop - doorBottom - 0.1, "-x", silver);
+  // Right door: plain white with silver edges
+  w.addSpan("wardrobe-door", 4.06, 4.12, doorBottom, doorTop, mz2, z2, COLORS.tableWhite);
+  w.addDeco("door-edge", 4.04, 4.06, doorBottom, doorTop, mz2, mz2 + 0.05, silver);
+  w.addDeco("door-edge", 4.04, 4.06, doorBottom, doorTop, z2 - 0.05, z2, silver);
+  // Left door is slid open, tucked behind the mirror door
+  w.addSpan("wardrobe-door", 4.14, 4.2, doorBottom, doorTop, mz1, mz2, COLORS.tableWhite);
+
+  // Inside: wooden shelf with boxes on top, and a hanging rail below it
+  const shelfY = 2.05;
+  w.addSpan("wardrobe-shelf", 4.2, back, shelfY, shelfY + 0.07, z1, z2, COLORS.bedWood);
+  w.addDeco("suitcase", 4.3, 5.3, shelfY + 0.07, shelfY + 0.5, z1 + 0.1, z1 + 1.2, COLORS.tvBlack);
+  w.addDeco("storage-box", 4.25, 5.2, shelfY + 0.07, shelfY + 0.33, z1 + 0.2, z1 + 1.6, COLORS.tableWhite);
+  const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, z2 - z1, 6), pastel(COLORS.steel));
+  rail.rotation.x = Math.PI / 2;
+  rail.position.set(4.8, shelfY - 0.12, (z1 + z2) / 2);
+  w.add(new Prop({ name: "rail", mesh: rail, solid: false }));
+
+  // A row of hanging shirts (decoration: Rae runs underneath them)
+  const shirtColors = [COLORS.book2, COLORS.canMint, COLORS.butter, COLORS.sofaCushion, COLORS.leaf,
+    0x8ea7c9, COLORS.bamboo, COLORS.canLilac, COLORS.tvBlack, COLORS.pillow];
+  let i = 0;
+  for (let z = z1 + 0.1; z < z2 - 0.1; z += 0.11) {
+    const bottom = 1.05 + ((i * 53) % 7) * 0.06; // some shirts are longer than others
+    w.addDeco("shirt", 4.5, 5.1, bottom, shelfY - 0.14, z, z + 0.07, shirtColors[(i * 7) % shirtColors.length]);
+    i++;
+  }
+
+  // A heap of clothes on the floor of the open side, and a carrot hiding behind the mirror
+  w.add(makeClothesPile(4.75, 0, z1 + 0.6, 7));
+  w.add(new Carrot(4.75, 0.35, (mz1 + mz2) / 2 + 0.3));
+  w.addZone("wardrobe", 4.12, back, -0.2, 1.5, z1, z2);
 }
 
 // The king-sized bed, headboard against the bed wall, centred.

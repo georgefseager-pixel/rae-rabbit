@@ -168,6 +168,7 @@ const RAE_LINES = {
   // places (zones in house.js)
   "zone-bath":         "My fur is wet!",
   "zone-mirror-table": "Who's that cute bunny?!",
+  "zone-wardrobe":     "A secret hideout! It smells like laundry.",
   "zone-living-room":  "Ooh, so cosy in here!",
   "zone-office":       "This is where the humans do work-stuff.",
   "zone-kitchen":      "Down the rabbit hole... something smells yummy!",

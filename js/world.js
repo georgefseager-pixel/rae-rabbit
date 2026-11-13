@@ -151,11 +151,7 @@ class World {
   // An oval wall mirror with a frame. (x, y, z) is its centre; 'facing' is the
   // direction it looks: "+z", "-z", "+x" or "-x". Width and height in metres.
   addOvalMirror(x, y, z, width, height, facing = "-z", frameColor = COLORS.canPink) {
-    const turn = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 }[facing];
-    const holder = new THREE.Group();
-    holder.position.set(x, y, z);
-    holder.rotation.y = turn;
-
+    const holder = this.mirrorHolder(x, y, z, facing);
     const glass = new Mirror(new THREE.CircleGeometry(0.5, 40));
     glass.scale.set(width, height, 1);
     glass.position.z = 0.012;
@@ -165,6 +161,33 @@ class World {
     const backing = new THREE.Mesh(new THREE.CircleGeometry(0.52, 32), pastel(frameColor));
     backing.scale.set(width, height, 1);
     holder.add(backing, glass, frame);
+    return holder;
+  }
+
+  // A rectangular mirror (e.g. a full-length mirror door) with a thin frame
+  addRectMirror(x, y, z, width, height, facing = "-z", frameColor = COLORS.steel) {
+    const holder = this.mirrorHolder(x, y, z, facing);
+    const glass = new Mirror(new THREE.PlaneGeometry(1, 1));
+    glass.scale.set(width, height, 1);
+    glass.position.z = 0.012;
+    const f = 0.05; // frame thickness
+    for (const [fw, fh, fx, fy] of [
+      [width + f * 2, f, 0, height / 2 + f / 2], [width + f * 2, f, 0, -height / 2 - f / 2],
+      [f, height, -width / 2 - f / 2, 0], [f, height, width / 2 + f / 2, 0],
+    ]) {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(fw, fh, 0.04), pastel(frameColor));
+      bar.position.set(fx, fy, 0.02);
+      holder.add(bar);
+    }
+    holder.add(glass);
+    return holder;
+  }
+
+  // A group placed at (x, y, z) and turned to face a direction ("+z", "-z", "+x", "-x")
+  mirrorHolder(x, y, z, facing) {
+    const holder = new THREE.Group();
+    holder.position.set(x, y, z);
+    holder.rotation.y = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 }[facing];
     this.scene.add(holder);
     return holder;
   }

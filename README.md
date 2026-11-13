@@ -108,4 +108,7 @@ w.add(new Carrot(3, 0.35, 3));
 
 // an oval mirror: centre x, y, z, width, height, which way it faces
 w.addOvalMirror(0, 1.8, -3.97, 0.9, 1.1, "+z");
+
+// a rectangular (full-length) mirror
+w.addRectMirror(0, 1.3, -3.97, 1.2, 2.4, "+z");
 ```
