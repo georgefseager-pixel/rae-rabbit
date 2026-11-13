@@ -20,6 +20,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xfbefe6);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.05, 100);
+camera.layers.enable(LAYER_EYES_ONLY); // your eyes see the paws, but not Rae's own body (see rae.js)
+scene.add(camera); // needed so things attached to the camera (the paws) get drawn
 
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -33,6 +35,11 @@ buildHouse(world); // see house.js
 
 const player = new Player(camera);
 player.attachInput(canvas);
+
+// Rae's body (seen in mirrors) and her paws (seen at the bottom of the screen)
+const raeModel = new RaeModel();
+scene.add(raeModel.root);
+const paws = new FirstPersonPaws(camera);
 
 // ---- Rae's first-time thoughts ----
 Dialogue.init();
@@ -118,10 +125,12 @@ function loop() {
     player.update(0, world); // just place the camera for the title screen
   }
   world.update(dt, time); // animates props and flying pieces
+  raeModel.update(paused ? 0 : dt, player, time);
+  paws.update(paused ? 0 : dt, player, time);
 
   renderer.render(scene, camera);
 }
 loop();
 
 // Handy for debugging in the browser console: type  game  and press Enter
-window.game = { world, player, scene, camera };
+window.game = { world, player, scene, camera, raeModel, paws };

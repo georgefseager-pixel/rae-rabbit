@@ -19,13 +19,15 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 | `js/dialogue.js` | Rae's thought bubble (top left). `Dialogue.sayOnce("id", "Text!")` |
 | `js/props.js` | The `Prop` class (every object), colours, carrots, cans, glasses, lamps |
 | `js/debris.js` | The flying pieces when something breaks |
+| `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
+| `js/mirror.js` | Real reflecting mirrors |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
 | `js/player.js` | Rae's controls, hopping, stairs and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
 
 ## The house (follows the real floorplan, at about 2x size)
-- **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed), a stool under it, two windows above the bed.
+- **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed) with an oval vanity mirror above it (hop up to see Rae!), a stool under it, two windows above the bed.
   - Breakables: a lamp and a glass on each bedside table, five cans on the white table, six little clothes piles on the floor (one kicked under the bed).
   - Carrots: above the bed, under the bed, on the white table.
 - **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
@@ -70,4 +72,7 @@ w.add(makeLamp(1.4, 0, 1));
 
 // another carrot
 w.add(new Carrot(3, 0.35, 3));
+
+// an oval mirror: centre x, y, z, width, height, which way it faces
+w.addOvalMirror(0, 1.8, -3.97, 0.9, 1.1, "+z");
 ```

@@ -147,6 +147,27 @@ class World {
     }
   }
 
+  // An oval wall mirror with a frame. (x, y, z) is its centre; 'facing' is the
+  // direction it looks: "+z", "-z", "+x" or "-x". Width and height in metres.
+  addOvalMirror(x, y, z, width, height, facing = "-z", frameColor = COLORS.canPink) {
+    const turn = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 }[facing];
+    const holder = new THREE.Group();
+    holder.position.set(x, y, z);
+    holder.rotation.y = turn;
+
+    const glass = new Mirror(new THREE.CircleGeometry(0.5, 40));
+    glass.scale.set(width, height, 1);
+    glass.position.z = 0.012;
+    const frame = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.04, 6, 32), pastel(frameColor));
+    frame.scale.set(width, height, 0.8);
+    frame.position.z = 0.012;
+    const backing = new THREE.Mesh(new THREE.CircleGeometry(0.52, 32), pastel(frameColor));
+    backing.scale.set(width, height, 1);
+    holder.add(backing, glass, frame);
+    this.scene.add(holder);
+    return holder;
+  }
+
   // An invisible named area (from x1..x2, y1..y2, z1..z2). Use world.zoneAt(point)
   // to find out which zone a position is in.
   addZone(name, x1, x2, y1, y2, z1, z2) {

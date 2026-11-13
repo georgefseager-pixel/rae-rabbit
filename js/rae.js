@@ -1,0 +1,226 @@
+// ============================================================
+// rae.js — Rae Rabbit's body
+// ============================================================
+// Two parts:
+//   RaeModel         her whole low-poly body. Only MIRRORS can see it
+//                    (it lives on "layer 1", which the main camera skips).
+//   FirstPersonPaws  the tips of her two front paws, peeking up at the bottom
+//                    corners of the screen (layer 2: main camera only).
+//
+// Based on a floppy-eared plush bunny: caramel fur, pink inner ears,
+// pink nose and foot pads, black bead eyes. She wears a black shirt with a red plus.
+
+const RAE_COLORS = {
+  fur:      0xd6a774, // caramel
+  furLight: 0xe9cba3, // muzzle
+  pink:     0xf2bcc4, // inner ears, nose, foot pads
+  eye:      0x2b2630,
+  shirt:    0x2f2b35, // soft black
+  plus:     0xe2475a, // red plus
+  tail:     0xf6e7d4,
+};
+
+const LAYER_MIRROR_ONLY = 1; // things only mirrors see (Rae's body)
+const LAYER_EYES_ONLY = 2;   // things only the main camera sees (first-person paws)
+
+// A flat-shaded ellipsoid: a low-poly sphere stretched by (sx, sy, sz)
+function blob(radius, color, sx = 1, sy = 1, sz = 1, detail = [7, 5]) {
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, detail[0], detail[1]), pastel(color));
+  mesh.scale.set(sx, sy, sz);
+  return mesh;
+}
+
+class RaeModel {
+  constructor() {
+    const C = RAE_COLORS;
+    this.root = new THREE.Group();   // stands at Rae's feet, turns with her
+    this.body = new THREE.Group();   // everything; squashes & bobs
+    this.root.add(this.body);
+
+    // ---- Torso in her black shirt, with the red plus on the front ----
+    const torso = blob(0.125, C.shirt, 1, 1.05, 0.92);
+    torso.position.y = 0.18;
+    const hips = blob(0.11, C.fur, 1, 0.8, 0.95);
+    hips.position.y = 0.1;
+    const plusA = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.022, 0.02), pastel(C.plus));
+    const plusB = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.075, 0.02), pastel(C.plus));
+    plusA.position.set(0, 0.2, -0.112);
+    plusB.position.set(0, 0.2, -0.112);
+    const tail = blob(0.035, C.tail);
+    tail.position.set(0, 0.1, 0.11);
+    this.body.add(torso, hips, plusA, plusB, tail);
+
+    // ---- Head (on a neck pivot so it can nod) ----
+    this.head = new THREE.Group();
+    this.head.position.y = 0.29;
+    const skull = blob(0.115, C.fur, 1.05, 0.95, 1);
+    skull.position.y = 0.075;
+    const muzzle = blob(0.052, C.furLight, 1.1, 0.8, 0.8);
+    muzzle.position.set(0, 0.045, -0.095);
+    const nose = blob(0.018, C.pink, 1.3, 0.9, 0.8, [6, 4]);
+    nose.position.set(0, 0.062, -0.135);
+    const eyeL = blob(0.015, C.eye, 1, 1, 0.6, [6, 4]);
+    const eyeR = eyeL.clone();
+    eyeL.position.set(-0.048, 0.1, -0.098);
+    eyeR.position.set(0.048, 0.1, -0.098);
+    this.head.add(skull, muzzle, nose, eyeL, eyeR);
+
+    // Long floppy ears, hanging down the sides of her head
+    this.ears = [-1, 1].map((side) => {
+      const pivot = new THREE.Group();
+      pivot.position.set(side * 0.075, 0.16, 0.01);
+      const outer = blob(0.05, C.fur, 0.75, 2.7, 0.38);
+      outer.position.y = -0.11;
+      const inner = blob(0.04, C.pink, 0.62, 2.4, 0.2);
+      inner.position.set(-side * 0.004, -0.11, -0.016);
+      pivot.add(outer, inner);
+      pivot.userData.side = side;
+      this.head.add(pivot);
+      return pivot;
+    });
+    this.body.add(this.head);
+
+    // ---- Arms (pivot at the shoulder) ----
+    this.arms = [-1, 1].map((side) => {
+      const pivot = new THREE.Group();
+      pivot.position.set(side * 0.115, 0.24, -0.01);
+      const arm = blob(0.04, C.fur, 1, 2.0, 1);
+      arm.position.y = -0.065;
+      pivot.add(arm);
+      pivot.userData.side = side;
+      this.body.add(pivot);
+      return pivot;
+    });
+
+    // ---- Legs with big pink-padded feet (pivot at the hip) ----
+    this.legs = [-1, 1].map((side) => {
+      const pivot = new THREE.Group();
+      pivot.position.set(side * 0.065, 0.09, 0);
+      const thigh = blob(0.05, C.fur, 1, 1.2, 1.1);
+      thigh.position.y = -0.02;
+      const foot = blob(0.045, C.fur, 1, 0.6, 1.7);
+      foot.position.set(0, -0.065, -0.035);
+      const pad = blob(0.03, C.pink, 1, 0.75, 0.35, [6, 4]);
+      pad.position.set(0, -0.062, -0.11);
+      pivot.add(thigh, foot, pad);
+      pivot.userData.side = side;
+      this.body.add(pivot);
+      return pivot;
+    });
+
+    // Only mirrors may see her body
+    this.root.traverse((o) => o.layers.set(LAYER_MIRROR_ONLY));
+
+    this.walkPhase = 0;
+    this.squash = 0;
+    this.wasOnGround = true;
+  }
+
+  // Follow the player and animate. Called every frame.
+  update(dt, player, time) {
+    this.root.position.copy(player.pos);
+    this.root.rotation.y = player.yaw;
+
+    const speed = Math.hypot(player.vel.x, player.vel.z);
+    const moving = speed > 0.1;
+    const air = !player.onGround;
+
+    // Landing squash
+    if (!air && !this.wasOnGround) this.squash = 1;
+    this.wasOnGround = !air;
+    this.squash = Math.max(0, this.squash - dt * 6);
+
+    let bob = 0, legSwing = 0, armSwing = 0, earLift = 0, armsOut = 0;
+    if (air) {
+      // Jumping: legs stretch back when rising, ears flop up as she falls
+      legSwing = player.vel.y > 0 ? -0.6 : 0.3;
+      armsOut = 0.7;
+      earLift = Math.min(1.3, Math.max(0, -player.vel.y * 0.18));
+    } else if (moving) {
+      // Hoppy walk
+      this.walkPhase += dt * 13;
+      bob = Math.abs(Math.sin(this.walkPhase)) * 0.045;
+      legSwing = Math.sin(this.walkPhase) * 0.7;
+      armSwing = Math.sin(this.walkPhase) * 0.5;
+      earLift = Math.abs(Math.sin(this.walkPhase)) * 0.25;
+    } else {
+      this.walkPhase = 0;
+    }
+
+    // Idle breathing and a gentle ear sway
+    const breathe = Math.sin(time * 2.2) * 0.018;
+    const sq = this.squash;
+    this.body.scale.set(1 + sq * 0.12, 1 + breathe - sq * 0.18, 1 + sq * 0.12);
+    this.body.position.y = bob;
+
+    this.head.rotation.x = player.pitch * 0.45; // nods to follow where you look
+    this.head.rotation.z = Math.sin(time * 0.9) * 0.04;
+
+    for (const ear of this.ears) {
+      const side = ear.userData.side;
+      ear.rotation.z = side * (0.22 + earLift + Math.sin(time * 1.7 + side) * 0.04);
+      ear.rotation.x = -earLift * 0.3;
+    }
+    for (const arm of this.arms) {
+      const side = arm.userData.side;
+      arm.rotation.x = armSwing * -side;
+      arm.rotation.z = side * (0.15 + armsOut);
+    }
+    for (const leg of this.legs) {
+      const side = leg.userData.side;
+      leg.rotation.x = air ? legSwing : legSwing * side;
+    }
+  }
+}
+
+// The two front paws you see at the bottom corners of the screen
+class FirstPersonPaws {
+  constructor(camera) {
+    this.camera = camera;
+    this.group = new THREE.Group();
+    camera.add(this.group);
+    this.paws = [-1, 1].map((side) => {
+      const paw = new THREE.Group();
+      const arm = blob(0.034, RAE_COLORS.fur, 1, 0.9, 2.4);
+      const pad = blob(0.02, RAE_COLORS.pink, 1.1, 0.75, 0.4, [6, 4]);
+      pad.position.set(0, -0.006, -0.078);
+      paw.add(arm, pad);
+      paw.rotation.x = 0.35;               // tilted up a little, pads facing forward
+      paw.rotation.y = -side * 0.25;       // angled in towards the middle
+      paw.userData.side = side;
+      this.group.add(paw);
+      return paw;
+    });
+    // Always drawn on top (so they never poke into walls), and only for the main camera
+    this.group.traverse((o) => {
+      o.layers.set(LAYER_EYES_ONLY);
+      if (o.isMesh) {
+        o.material.depthTest = false;
+        o.material.depthWrite = false;
+        o.renderOrder = 999;
+      }
+    });
+    this.phase = 0;
+    this.lift = 0;
+  }
+
+  update(dt, player, time) {
+    // Work out where the bottom corners of the screen are, at 0.25m in front
+    const dist = 0.25;
+    const halfH = dist * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+    const halfW = halfH * this.camera.aspect;
+
+    const moving = Math.hypot(player.vel.x, player.vel.z) > 0.1 && player.onGround;
+    if (moving) this.phase += dt * 13;
+    const targetLift = player.onGround ? 0 : 0.03; // paws come up when she jumps
+    this.lift += (targetLift - this.lift) * Math.min(1, dt * 10);
+
+    for (const paw of this.paws) {
+      const side = paw.userData.side;
+      const step = moving ? Math.abs(Math.sin(this.phase + (side > 0 ? Math.PI / 2 : 0))) * 0.018 : 0;
+      const idle = Math.sin(time * 2.2 + side) * 0.003;
+      // Only the tips show: most of each paw sits just below the screen edge
+      paw.position.set(side * Math.min(halfW * 0.68, 0.22), -halfH - 0.002 + step + idle + this.lift, -dist);
+    }
+  }
+}

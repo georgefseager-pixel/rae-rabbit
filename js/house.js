@@ -143,6 +143,9 @@ function buildWhiteTable(w) {
       w.addSpan("white-table-leg", x, x + leg, 0, top - thick, z, z + leg, COLORS.tableWhite);
     }
   }
+  // Oval vanity mirror on the wall above the table: hop up and say hi to yourself!
+  w.addOvalMirror(-0.5, 2.15, 3.97, 1.1, 1.3, "-z");
+
   // Stool: its seat (0.9m) is too close under the tabletop (1.27m) for Rae to fit on
   const sx = -0.2, sz = 3.4, half = 0.22, seat = 0.9, sleg = 0.05;
   w.addSpan("stool-seat", sx - half, sx + half, seat - 0.06, seat, sz - half, sz + half, COLORS.stool);
