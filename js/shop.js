@@ -177,6 +177,10 @@ class ShopStage {
   }
 }
 
+// Coming out of either shop, Rae steps out of the wardrobe into the bedroom,
+// facing the big closet mirror (so she can admire her new look!)
+const SHOP_EXIT = { x: 3.3, z: 0.3, yaw: -Math.PI / 2 };
+
 // ---- The shop menu (used by both shops) ----
 // Each shop: its title, what it sells, what Rae has now, how to use an item,
 // and where Rae steps back out of its little door.
@@ -190,7 +194,7 @@ const SHOPS = {
     lockedLabel: "Locked! Keep exploring 🔒",
     leaveLabel: "Just looking, thanks",
     sameLines: SHOP_SAME_LINES, leaveLines: SHOP_LEAVE_LINES,
-    exit: { x: 4.65, z: 0.3, yaw: Math.PI / 2 },
+    exit: SHOP_EXIT,
   },
   willow: {
     title: "WILLOW'S WEAPON MART", sub: "Purveyor of peerless armaments. Do choose judiciously.", items: WEAPONS,
@@ -201,7 +205,7 @@ const SHOPS = {
     lockedLabel: "Locked! Stomp more frogs 🔒",
     leaveLabel: "Merely perusing, thank you",
     sameLines: WILLOW_SAME_LINES, leaveLines: WILLOW_LEAVE_LINES,
-    exit: { x: 4.66, z: 1.8, yaw: 0 },
+    exit: SHOP_EXIT,
   },
 };
 
@@ -278,7 +282,7 @@ function leaveShop(item) {
     shop.apply(item);
     Sfx.chime();
   }
-  // Out of the door, facing back into the wardrobe
+  // Out in the bedroom, facing the closet mirror
   player.pos.set(shop.exit.x, 0, shop.exit.z);
   player.vel.set(0, 0, 0);
   player.knock.set(0, 0, 0);

@@ -24,6 +24,8 @@
   <div id="boss-bar" class="boss-only">👑 Jiggle Jaggle <span id="boss-hp">❤❤❤</span></div>
   <!-- Big warning banner -->
   <div id="banner"></div>
+  <!-- Tints the screen blue (washed!) or red (eaten by Ducky!) -->
+  <div id="trap-filter"></div>
   <!-- Flashes red when Rae gets hurt -->
   <div id="hurt-flash"></div>
   <div id="toast"></div>
@@ -82,7 +84,7 @@
   <div id="achievements" class="hidden">
     <div class="card ach-card">
       <h1>🏆 Achievements</h1>
-      <p class="sub" id="ach-count">0 / 4 earned</p>
+      <p class="sub" id="ach-count">0 / 6 earned</p>
       <div id="ach-grid"></div>
       <button id="ach-close"><span class="pad-only xb b">B</span> Back</button>
     </div>
@@ -109,7 +111,7 @@
   <!-- Summary screen when Rae runs out of hearts (filled in by main.js) -->
   <div id="gameover" class="hidden">
     <div class="card summary">
-      <h1>💤 Rae needs a nap!</h1>
+      <h1 id="go-title">💤 Rae needs a nap!</h1>
       <p class="sub">Here's how your adventure went:</p>
       <div class="stats">
         <div class="stat carrot-mode-only"><span class="icon">🥕</span><span class="label">Carrots collected</span><b id="go-carrots">0</b></div>

@@ -96,11 +96,15 @@ function buildWashingMachine(w, x1, x2, top) {
   door.add(handle);
   // hinge: the door's edge stays at the far side of the opening; the door swings out ~110 degrees
   const hinge = new THREE.Group();
-  hinge.position.set(x2 + 0.05, (h1 + h2) / 2, zb + 0.02);
+  hinge.position.set(x2 + 0.05, (h1 + h2) / 2, (o1 + o2) / 2 + 0.34);
   hinge.rotation.y = -0.35;
   door.position.set(0.34, 0, 0);
   hinge.add(door);
   w.add(new Prop({ name: "washer-door", mesh: hinge, solid: false }));
+  // main.js swings it shut (rotation.y to PI / 2) if Rae stays in too long...
+  w.washerDoor = hinge;
+  // The inside of the drum (main.js times how long Rae stays in there)
+  w.addZone("washer-drum", back, x2, h1 - 0.05, h2, o1, o2);
 
   // A few socks in the drum, and the 20th carrot right at the back
   w.addDeco("sock", -9.5, -9.25, h1, h1 + 0.05, o1 + 0.05, o1 + 0.18, COLORS.canPink);

@@ -362,6 +362,10 @@ function buildCorridorAndBathroom(w) {
   w.addDeco("bath-inside", bx1 + edge, bx2 - edge, 0.3, 0.31, bz1 + edge, bz2 - edge, COLORS.water);
   // Taps at the wall end
   w.addDeco("bath-tap", 3.7, 3.85, rim, rim + 0.25, 5.15, 5.35, COLORS.steel);
+  // Ducky, the toy shark who thinks he's a duck, floating in the bath (main.js animates him)
+  w.ducky = makeDucky();
+  w.ducky.position.set(1.35, 0.3, 5.25);
+  w.add(new Prop({ name: "ducky", mesh: w.ducky, solid: false }));
 
   // ---- Toilet (against the outer wall, next to the bath) ----
   w.addSpan("toilet-cistern", 3.65, 4, 0, 1.7, 7.35, 8.15, COLORS.porcelain);
@@ -810,4 +814,47 @@ function buildKitchen(w) {
   w.addRoomLight(-6.5, H - 0.3, 26.5, 0.6, 15);
   w.addRoomLight(-7, H - 0.3, 21, 0.35, 8);
   w.addRoomLight(-2, H - 0.3, 27.5, 0.4, 9);
+}
+
+// Ducky: a little blue-grey toy shark with a white tummy and a toothy grin...
+// and an orange duck bill, because he's quite sure he's a duck. His nose points along +x.
+function makeDucky() {
+  const g = new THREE.Group();
+  const blue = 0x7d9bb8, white = 0xf4f3ee;
+  const body = blob(0.09, blue, 2.0, 0.9, 0.95);
+  body.position.y = 0.06;
+  const belly = blob(0.075, white, 1.8, 0.6, 0.85);
+  belly.position.set(0.01, 0.035, 0);
+  const dorsal = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.1, 4), pastel(blue));
+  dorsal.position.set(-0.01, 0.16, 0);
+  dorsal.rotation.z = 0.35;
+  dorsal.scale.z = 0.4;
+  const tail = new THREE.Group();
+  for (const s of [-1, 1]) {
+    const lobe = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.11, 4), pastel(blue));
+    lobe.rotation.z = Math.PI / 2 + s * 0.6;
+    lobe.position.set(-0.03, s * 0.035, 0);
+    lobe.scale.z = 0.4;
+    tail.add(lobe);
+  }
+  tail.position.set(-0.2, 0.07, 0);
+  const fins = [-1, 1].map((s) => {
+    const fin = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.08, 4), pastel(blue));
+    fin.position.set(0.02, 0.03, s * 0.08);
+    fin.rotation.x = s * 1.9;
+    fin.scale.z = 0.4;
+    return fin;
+  });
+  const eyes = [-1, 1].map((s) => {
+    const eye = blob(0.016, 0x2a2730, 1, 1, 0.6, [6, 4]);
+    eye.position.set(0.12, 0.095, s * 0.06);
+    return eye;
+  });
+  const grin = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.014, 0.09), pastel(white)); // a row of teeth
+  grin.position.set(0.17, 0.045, 0);
+  const bill = blob(0.032, 0xf2a541, 1.5, 0.35, 1.1, [8, 4]); // QUACK
+  bill.position.set(0.2, 0.065, 0);
+  g.add(body, belly, dorsal, tail, ...fins, ...eyes, grin, bill);
+  g.userData.tail = tail;
+  return g;
 }

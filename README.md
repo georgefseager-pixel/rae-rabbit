@@ -113,7 +113,7 @@ are at the top of `js/weapons.js`. Both shops close in the Frogpocalypse, so it'
 
 ## Achievements
 Click **🏆 Achievements** on the main menu (or press **Y** on a controller) to see them. There's
-room for 9; four exist so far:
+room for 9; six exist so far:
 
 | Achievement | How to earn it |
 |-------------|----------------|
@@ -121,10 +121,21 @@ room for 9; four exist so far:
 | 👑 Frog Slayer | Beat Frogpocalypse (defeat Jiggle Jaggle) |
 | 🕊️ Pacifist | Beat Carrotventure without popping a single frog (no stomps, punches, pokes or zaps) |
 | 🎯 Friendly Fire | Zap a frog with the 'Rae' Gun while it's waving at Rae in her frog face shirt |
+| 🫧 Spin Cycle | Stay in the washing machine drum for 10 seconds (the door slams shut!) |
+| 🦈 Snack Time | Stay in the bath water for 10 seconds (Ducky gets hungry...) |
 
 A gold popup appears when you earn one. They're remembered on that computer and browser. Add more
 in `ACHIEVEMENTS` at the top of `js/achievements.js`, and call `Achievements.unlock("their-id")`
 wherever they're earned.
+
+## Don't stay too long...
+- **The washing machine** (kitchen): after 5 seconds in the drum Rae says she should get out. After
+  10 the door slams shut, the screen goes blue and it's game over: "Rae got washed! Poor Rae!"
+- **The bath**: Ducky (a toy shark who thinks he's a duck, with an orange bill to prove it) floats
+  in the bath and turns to watch Rae. After 5 seconds in the water he says he smells food. After 10
+  he lunges, the screen goes red, and it's game over: "Rae got eaten by Ducky! Poor Rae!"
+
+Hopping out resets the timer. The times and lines are in the "Traps" part of `js/main.js`.
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).

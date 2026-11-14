@@ -17,6 +17,10 @@ const ACHIEVEMENTS = [
     desc: "Beat Carrotventure without popping a single frog." },
   { id: "friendly-fire", icon: "🎯", name: "Friendly Fire",
     desc: "Zap a frog with the 'Rae' Gun while it's waving at you in your frog face shirt." },
+  { id: "washed", icon: "🫧", name: "Spin Cycle",
+    desc: "Stay in the washing machine until the door slams shut. Poor Rae!" },
+  { id: "eaten", icon: "🦈", name: "Snack Time",
+    desc: "Stay in the bath until Ducky gets hungry. Poor Rae!" },
 ];
 
 const Achievements = {

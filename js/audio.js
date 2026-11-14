@@ -74,6 +74,7 @@ const Sfx = {
     const t = this.ctx.currentTime;
     const notes = voice === "frog" ? [196, 220, 247, 262, 294]        // low, froggy
       : voice === "minifrog" ? [440, 494, 523, 587, 659]                // small, croaky-squeaky
+      : voice === "ducky" ? [330, 349, 392, 440, 466]                   // quacky (he's a shark)
       : voice === "willow" ? [523, 587, 659, 698, 784]                  // prim and proper
       : voice === "flopsy" ? [988, 1109, 1175, 1319, 1480]              // tiny and squeaky
       : [660, 740, 784, 880, 988];                                      // Rae: cheerful
@@ -172,6 +173,46 @@ const Sfx = {
     osc.connect(gain).connect(this.master);
     osc.start(start);
     osc.stop(start + length + 0.02);
+  },
+
+  // The washing machine door slamming shut: a heavy "THUNK"
+  slam() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(180, t);
+    osc.frequency.exponentialRampToValueAtTime(45, t + 0.25);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.6, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+    osc.connect(gain).connect(this.master);
+    osc.start(t);
+    osc.stop(t + 0.36);
+    this.note(1400, t, 0.08, 0.08, "square"); // the click of the latch
+  },
+
+  // Ducky's jaws: "CHOMP!" (two quick snaps)
+  chomp() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    for (const start of [t, t + 0.14]) {
+      const len = Math.floor(this.ctx.sampleRate * 0.08);
+      const buffer = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+      const src = this.ctx.createBufferSource();
+      src.buffer = buffer;
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 1200;
+      const gain = this.ctx.createGain();
+      gain.gain.value = 0.8;
+      src.connect(filter).connect(gain).connect(this.master);
+      src.start(start);
+      this.note(110, start, 0.12, 0.3, "square");
+    }
   },
 
   // An achievement: a bright little rising fanfare

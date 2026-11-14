@@ -84,7 +84,7 @@ function hurtRae(fromX, fromZ) {
   player.vel.y = 3.5;
   player.onGround = false;
 
-  if (hearts <= 0) setTimeout(showGameOver, 700); // out of hearts: show the summary
+  if (hearts <= 0) setTimeout(() => showGameOver("hearts"), 700); // out of hearts: show the summary
   else if (hearts === 1) raeSays("last-heart");
   else raeSays("hurt");
 }
@@ -96,9 +96,19 @@ let stompedCount = 0;  // frogs popped
 let gameOver = false;
 
 // Out of hearts: pause, and show how she did, with a button to play again
-function showGameOver() {
+// how: "hearts" (out of hearts), "washed" (washing machine) or "eaten" (Ducky)
+const GAME_OVER_TITLES = {
+  hearts: "💤 Rae needs a nap!",
+  washed: "🫧 Rae got washed! Poor Rae!",
+  eaten: "🦈 Rae got eaten by Ducky! Poor Rae!",
+};
+function showGameOver(how = "hearts") {
+  if (gameOver) return;
   gameOver = true;
   paused = true;
+  document.getElementById("go-title").textContent = GAME_OVER_TITLES[how];
+  if (how === "washed") Achievements.unlock("washed");
+  if (how === "eaten") Achievements.unlock("eaten");
   document.getElementById("go-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
   document.getElementById("go-time").textContent = formatTime(Frogpocalypse.time);
   document.getElementById("go-smashed").textContent = smashedCount;
@@ -344,7 +354,7 @@ function fallOffTree() {
   void flashEl.offsetWidth; // restart the red flash
   flashEl.classList.add("flash");
   hurtCooldown = HURT_COOLDOWN;
-  if (hearts <= 0) setTimeout(showGameOver, 700);
+  if (hearts <= 0) setTimeout(() => showGameOver("hearts"), 700);
   else Dialogue.say(FALL_LINES);
 }
 
@@ -496,6 +506,104 @@ function tooManyCarrots() {
   }, 1800);
 }
 
+// ---- Traps: don't stay too long in the washing machine, or in Ducky's bath! ----
+// After 5 seconds you get a warning; after 10 it's game over.
+const WASHER_WARN_LINES = [
+  "It's getting a bit spinny in here... I should get out!",
+  "Hmm, I don't fancy being washed. Time to hop out!",
+  "Cosy drum... but someone might press start. I'd better get out!",
+];
+const DUCKY_VOICE = { speaker: "🦈 Ducky", style: "ducky", voice: "ducky" };
+const DUCKY_HUNGRY_LINES = [
+  "Quack! ...Wait. I smell food.",
+  "Quack quack! Something smells... delicious.",
+  "Is that a bunny? QUACK. I'm suddenly very hungry.",
+];
+const TRAPS = {
+  "washer-drum": { warn: () => Dialogue.say(WASHER_WARN_LINES), end: washedAway },
+  "bath":        { warn: () => Dialogue.say(DUCKY_HUNGRY_LINES, DUCKY_VOICE), end: eatenByDucky },
+};
+const TRAP_WARN_TIME = 5, TRAP_END_TIME = 10;
+let trapZone = null, trapTime = 0, trapWarned = false, trapped = false;
+
+// Called every frame while playing
+function checkTraps(dt) {
+  if (trapped) return;
+  const zone = world.zoneAt(player.pos);
+  if (zone !== trapZone) { trapZone = zone; trapTime = 0; trapWarned = false; } // left (or hopped out): start again
+  const trap = TRAPS[zone];
+  if (!trap) return;
+  trapTime += dt;
+  if (!trapWarned && trapTime >= TRAP_WARN_TIME) { trapWarned = true; trap.warn(); }
+  if (trapTime >= TRAP_END_TIME) { trapped = true; trap.end(); }
+}
+
+// Smoothly change something over a few seconds (step gets 0 -> 1), then call done
+function tween(seconds, step, done) {
+  const start = performance.now();
+  const tick = () => {
+    const t = Math.min(1, (performance.now() - start) / 1000 / seconds);
+    step(t);
+    if (t < 1) requestAnimationFrame(tick); else if (done) done();
+  };
+  requestAnimationFrame(tick);
+}
+
+function trapFilter(color) {
+  const el = document.getElementById("trap-filter");
+  el.className = "show " + color;
+}
+
+// The washing machine door swings shut... and the spin cycle begins
+function washedAway() {
+  paused = true;
+  player.keys = {};
+  const door = world.washerDoor, from = door.rotation.y, to = Math.PI / 2;
+  tween(0.45, (t) => { door.rotation.y = from + (to - from) * t * t; }, () => {
+    Sfx.slam();
+    trapFilter("blue");
+    setTimeout(() => Sfx.flush(), 300);
+    setTimeout(() => showGameOver("washed"), 1800);
+  });
+}
+
+// Ducky lunges at Rae: CHOMP!
+function eatenByDucky() {
+  paused = true;
+  player.keys = {};
+  const ducky = world.ducky;
+  const from = ducky.position.clone();
+  const eye = new THREE.Vector3();
+  camera.getWorldPosition(eye);
+  const to = eye.clone().add(new THREE.Vector3(0, -0.12, 0)).lerp(from, 0.25);
+  ducky.rotation.y = Math.atan2(-(eye.z - from.z), eye.x - from.x); // nose towards Rae
+  Dialogue.say(["QUACK!", "Quack! (chomp)", "Snack time! QUACK!"], DUCKY_VOICE);
+  tween(0.35, (t) => {
+    ducky.position.lerpVectors(from, to, t);
+    ducky.scale.setScalar(1 + t * 1.6);
+  }, () => {
+    Sfx.chomp();
+    trapFilter("red");
+    setTimeout(() => showGameOver("eaten"), 1500);
+  });
+}
+
+// Ducky bobs about in the bath, and turns to stare at Rae when she gets in
+let duckyYaw = 0;
+function updateDucky(dt, time) {
+  const ducky = world.ducky;
+  if (!ducky || trapped) return;
+  ducky.position.y = 0.3 + Math.sin(time * 1.8) * 0.012;
+  ducky.rotation.z = Math.sin(time * 1.3) * 0.06;
+  ducky.userData.tail.rotation.y = Math.sin(time * 4) * 0.3;
+  let target = Math.sin(time * 0.25) * 1.2; // lazily drifting about
+  if (trapZone === "bath") target = Math.atan2(-(player.pos.z - ducky.position.z), player.pos.x - ducky.position.x);
+  let diff = target - duckyYaw;
+  diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+  duckyYaw += diff * Math.min(1, dt * 2);
+  ducky.rotation.y = duckyYaw;
+}
+
 // Rae hit a frog (stomp or punch). The boss takes 3 hits; others pop straight away.
 function hitFrog(frog, how) {
   if (frog.isBoss) {
@@ -503,7 +611,7 @@ function hitFrog(frog, how) {
       stompedCount++;
       Dialogue.say(RAE_LINES["boss-beaten"]);
       document.body.classList.remove("boss-fight");
-      setTimeout(showWin, 1800);
+      setTimeout(() => showWin("boss"), 1800);
     }
     return;
   }
@@ -568,6 +676,8 @@ function loop() {
     checkFrogs(Math.min(fallingSpeed, player.vel.y));
     checkCollectibles();
     checkZones();
+    if (!gameOver) checkTraps(dt); // washing machine & Ducky's bath
+    updateDucky(dt, time);
     for (const frog of frogs) frog.update(dt, player, time);
     Blaster.update(dt); // the 'Rae' Gun's green balls
     flopsy.update(dt, player, time);

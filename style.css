@@ -576,3 +576,20 @@ body:not(.pad) .pad-only { display: none !important; }
 #achievement-pop.show { transform: translate(-50%, 0); }
 #achievement-pop .ach-pop-icon { font-size: 34px; }
 #achievement-pop .ach-pop-label { display: block; font-size: 13px; color: #b08a2a; font-weight: 600; }
+
+/* Washed (blue) or eaten by Ducky (red): a tint over the whole game */
+#trap-filter {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+#trap-filter.show { opacity: 1; }
+#trap-filter.blue { background: radial-gradient(ellipse at center, rgba(120, 190, 255, 0.35) 20%, rgba(40, 110, 220, 0.7) 100%); }
+#trap-filter.red  { background: radial-gradient(ellipse at center, rgba(255, 110, 110, 0.35) 20%, rgba(200, 20, 40, 0.75) 100%); }
+
+/* Ducky talking: shark blue with an orange (duck bill!) name tag */
+.bubble.ducky { border-color: #b8cce0; box-shadow: 0 6px 0 #b8cce0, 0 12px 26px rgba(50, 90, 130, 0.18); }
+.bubble.ducky .name-tag { background: #f2a541; box-shadow: 0 2px 0 #d38a2a; }
+.bubble.ducky .bubble-text { color: #4a6a8a; }
