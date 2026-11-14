@@ -37,15 +37,36 @@ const BOSS_LINES = [
 const BOSS_HURT_LINES = ["OUCH! RIBBIT!", "You'll pay for that, bunny!", "That tickled! ...a bit."];
 const BOSS_LAST_LINES = ["GRRRIBBIT! One more and I'm toast!", "No no NO! Not my crown!", "I'm getting woozy..."];
 
-// The final boss, Fraggle Friggle: a black frog with glowing red eyes
+// Boss 2, Fraggle Friggle: a black frog with glowing red eyes. Utterly, comically EVIL.
 const FRAGGLE_LINES = [
-  "I am FRAGGLE FRIGGLE. You cannot hide, bunny.",
-  "Jiggle Jaggle was my little brother. RIBBIT.",
-  "I see you... I always see you.",
+  "Mwahahaha! I am FRAGGLE FRIGGLE, the most EVIL frog in the whole house!",
+  "I swapped the sugar for salt AND hid the TV remote. Now I'm coming for YOU! Mwahaha!",
+  "Jiggle Jaggle was just my warm-up act. Prepare for pure, slimy EVIL!",
 ];
-const FRAGGLE_HURT_LINES = ["Hah! Is that all?", "Ribbit... that stung.", "You'll have to be quicker than that!"];
-const FRAGGLE_LAST_LINES = ["No... not like this!", "One more hit... I can't...", "RIBBIIIIT!"];
-const FRAGGLE_CHASE_LINES = ["You can't hide from me!", "Found you, bunny!", "Peekaboo. RIBBIT."];
+const FRAGGLE_HURT_LINES = [
+  "Curses! That was NOT part of my evil plan!",
+  "Ow! I'll get you for that... I'm writing it in my Evil Notebook!",
+  "You'll pay for that, bunny! I'll send you an invoice! With EVIL fees!",
+];
+const FRAGGLE_LAST_LINES = [
+  "Noooo! I haven't even finished my evil laugh! Mwaha-",
+  "Defeated?! By a BUNNY?! My evil reputation!",
+  "One more hit and all my evil schemes are RUINED!",
+];
+const FRAGGLE_CHASE_LINES = [
+  "Mwahaha! Did you miss me?",
+  "Peekaboo! It's me, your favourite EVIL frog!",
+  "You can run, but I've already licked all your carrots! Mwahahaha!",
+];
+
+// Boss 3, the true final boss: Tiggle Taggle, Fraggle's tiny little brother. Brave and quick!
+const TIGGLE_LINES = [
+  "You beat my big brother! I'll fight for him! Ribbit!",
+  "I'm small but I'm SUPER brave! Big brother will be so proud of me!",
+  "For Fraggle! For the family! I'll make him proud!",
+];
+const TIGGLE_DODGE_LINES = ["Too slow! Big brother taught me that!", "Missed me! I'm making him proud!", "Hee hee! Can't catch me!"];
+const TIGGLE_DEFEAT_LINES = ["Big brother... I tried my best...", "Tell Fraggle... I was brave...", "Ribbit... did I make him proud?"];
 
 // Boss settings: name, health, size, colour and how they move
 const BOSSES = {
@@ -55,10 +76,16 @@ const BOSSES = {
     lines: BOSS_LINES, hurt: BOSS_HURT_LINES, last: BOSS_LAST_LINES,
   },
   fraggle: {
-    name: "💀 Fraggle Friggle", hp: 8, size: 1, color: 0x2b2830, redEyes: true,
+    name: "💀 Fraggle Friggle", hp: 5, size: 1, color: 0x2b2830, redEyes: true,
     hopSpeed: 3.0, hopPower: 5.6, hopRest: 0.12, // like a mini frog: fast, bouncy, zig-zagging
     zigzag: true, relentless: true,              // always knows where Rae is, and leaps up onto things
     lines: FRAGGLE_LINES, hurt: FRAGGLE_HURT_LINES, last: FRAGGLE_LAST_LINES,
+  },
+  tiggle: {
+    name: "🐸 Tiggle Taggle", hp: 1, size: 0.45, color: 0x8fdc6e, voice: "minifrog",
+    hopSpeed: 4.2, hopPower: 4.6, hopRest: 0.06, // tiny and very quick
+    zigzag: true, dodgy: true,                   // hops out of the way when Rae tries to land on him
+    lines: TIGGLE_LINES, hurt: TIGGLE_LINES, last: TIGGLE_LINES,
   },
 };
 // What frogs say when Rae's wearing the frog face shirt (they think she's one of them)
@@ -251,6 +278,8 @@ class Frog {
     this.hopRest = b.hopRest;
     this.zigzag = !!b.zigzag;
     this.relentless = !!b.relentless;
+    this.dodgy = !!b.dodgy;
+    this.dodgeCooldown = 0;
     this.respawnDistance = Infinity; // never resets
     this.hp = this.maxHp = b.hp;
     this.hitCooldown = 0;
@@ -303,7 +332,7 @@ class Frog {
     return false;
   }
 
-  bossVoice() { return { speaker: this.boss.name, style: "enemy", voice: "frog" }; }
+  bossVoice() { return { speaker: this.boss.name, style: "enemy", voice: this.boss.voice || "frog" }; }
 
   // Fraggle Friggle never gives up: if Rae gets away, he pops up somewhere close by
   reappearAt(x, y, z) {
@@ -434,6 +463,21 @@ class Frog {
     let diff = this.targetYaw - this.yaw;
     diff = Math.atan2(Math.sin(diff), Math.cos(diff));
     this.yaw += diff * Math.min(1, dt * 6);
+
+    // ---- Tiggle Taggle dodges: Rae dropping down on him? Hop sideways out of the way! ----
+    // (Then he needs a moment before he can dodge again, so keep trying.)
+    this.dodgeCooldown = Math.max(0, (this.dodgeCooldown || 0) - dt);
+    if (this.dodgy && this.onGround && this.dodgeCooldown === 0 && player.vel && player.vel.y < 0 &&
+        player.pos.y > this.pos.y + 0.15 && dist < 1.1 && dist > 0.001) {
+      const side = Math.random() < 0.5 ? -1 : 1;
+      this.vel.set((-dz / dist) * side * 3.8 - (dx / dist) * 1.5, 3.6, (dx / dist) * side * 3.8 - (dz / dist) * 1.5);
+      this.onGround = false;
+      this.crouch = 0;
+      this.hopTimer = this.hopRest;
+      this.dodgeCooldown = 1.3;
+      Sfx.frogHop(0);
+      if (this.talkCooldown === 0) { Dialogue.say(TIGGLE_DODGE_LINES, this.bossVoice()); this.talkCooldown = 4; }
+    }
 
     // ---- Hopping: crouch, then spring ----
     if (this.onGround) {

@@ -297,7 +297,8 @@ const RAE_LINES = {
   // Frogpocalypse
   "frog-mode-start": ["Uh oh... why are there SO many frogs?!", "Frogs! Frogs everywhere!", "This is a frog-tastrophe!"],
   "jiggle-beaten":   ["Jiggle Jaggle is all jiggled out!", "Down goes the crown! Bunny wins!", "Ha! Who's the boss now?"],
-  "boss-beaten":     ["I did it! Rabbits rule FOREVER!", "Fraggle Friggle is all friggled out!", "Bunny wins! Frogs lose!"],
+  "fraggle-beaten":  ["So much for your evil plan, Fraggle!", "Evil defeated! Mostly. Probably.", "Bunny beats baddie!"],
+  "boss-beaten":     ["Sorry, little guy! You were very brave. Rabbits rule!", "All three bosses beaten! Bunny wins!", "Phew! The house is frog-free... for now!"],
   // places (zones in house.js)
   "zone-bath":         ["My fur is wet!", "Splish splash, I'm soggy!", "Bath time? I didn't agree to this!"],
   "zone-mirror-table": ["Who's that cute bunny?!", "Looking good, Rae!", "Mirror mirror on the wall..."],
@@ -606,18 +607,21 @@ function updateDucky(dt, time) {
 }
 
 // Rae hit a frog (stomp, punch, poke or zap). Bosses take several hits; others pop straight away.
-// Beating Jiggle Jaggle brings out Fraggle Friggle; beating Fraggle Friggle wins the game.
+// Beating Jiggle Jaggle brings out Fraggle Friggle, then Tiggle Taggle; beating him wins the game.
+const NEXT_BOSS = { jiggle: "fraggle", fraggle: "tiggle" };
 function hitFrog(frog, how) {
   if (frog.isBoss) {
     if (frog.bossHit()) {
       stompedCount++;
       document.body.classList.remove("boss-fight");
-      if (frog.bossKind === "jiggle") {
-        Dialogue.say(RAE_LINES["jiggle-beaten"]);
-        setTimeout(() => { if (!gameOver) Frogpocalypse.spawnBoss("fraggle"); }, 2500);
+      const next = NEXT_BOSS[frog.bossKind];
+      if (frog.bossKind === "tiggle") Dialogue.say(TIGGLE_DEFEAT_LINES, frog.bossVoice());
+      if (next) {
+        Dialogue.say(RAE_LINES[frog.bossKind + "-beaten"]);
+        setTimeout(() => { if (!gameOver) Frogpocalypse.spawnBoss(next); }, 2500);
       } else {
-        Dialogue.say(RAE_LINES["boss-beaten"]);
-        setTimeout(() => showWin("boss"), 1800);
+        setTimeout(() => Dialogue.say(RAE_LINES["boss-beaten"]), 1200);
+        setTimeout(() => showWin("boss"), 3000);
       }
     }
     return;

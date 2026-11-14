@@ -12,7 +12,7 @@ const ACHIEVEMENTS = [
   { id: "carrotventure", icon: "🚽", name: "Just in Time!",
     desc: "Beat Carrotventure: eat all the carrots, then make it to the toilet." },
   { id: "frogpocalypse", icon: "👑", name: "Frog Slayer",
-    desc: "Beat Frogpocalypse: defeat Jiggle Jaggle, then Fraggle Friggle." },
+    desc: "Beat Frogpocalypse: defeat Jiggle Jaggle, Fraggle Friggle and Tiggle Taggle." },
   { id: "pacifist", icon: "🕊️", name: "Pacifist",
     desc: "Beat Carrotventure without popping a single frog." },
   { id: "friendly-fire", icon: "🎯", name: "Friendly Fire",

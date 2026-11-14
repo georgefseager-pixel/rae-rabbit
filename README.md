@@ -18,10 +18,15 @@ Pick a game mode from the main menu:
     **20 more**, a second parcel brings the **'Rae' Gun**.
   - **Boss 1**: survive **3 minutes** and **Jiggle Jaggle** (giant, with a crown) appears in the
     living room. He takes **5 hits**.
-  - **Boss 2**: beating him isn't the end! **Fraggle Friggle**, a black frog with glowing red eyes,
-    appears in the bedroom. Normal size but fast and zig-zagging like a mini frog, he always knows
-    where Rae is, leaps up onto beds, tables and worktops after her, and pops up nearby if she
-    gets away. He takes **8 hits**. Beat him for the **YOU WIN!** screen.
+  - **Boss 2**: beating him isn't the end! **Fraggle Friggle**, a black frog with glowing red eyes
+    and a comically EVIL streak, appears in the bedroom. Normal size but fast and zig-zagging like a
+    mini frog, he always knows where Rae is, leaps up onto beds, tables and worktops after her, and
+    pops up nearby if she gets away. He takes **5 hits**.
+  - **Boss 3 (final)**: **Tiggle Taggle**, Fraggle's tiny green little brother, appears in the
+    kitchen, determined to make his big brother proud. Just **1 heart**, but he's very quick and
+    hops out of the way when Rae tries to land on him (jump again straight away, before he can
+    dodge twice!). Beat him for the **YOU WIN!** screen.
+  - While a boss is out, frogs appear about half as often (`BOSS_FROGS`).
   Spawn rates, the frog limit, the boss time and the parcel count are at the top of
   `js/frogpocalypse.js`; the bosses' health, speed and lines are in `BOSSES` at the top of `js/frog.js`.
 
@@ -128,7 +133,7 @@ room for 9; six exist so far:
 | Achievement | How to earn it |
 |-------------|----------------|
 | 🚽 Just in Time! | Beat Carrotventure (all 20 carrots, then the toilet) |
-| 👑 Frog Slayer | Beat Frogpocalypse (defeat Jiggle Jaggle, then Fraggle Friggle) |
+| 👑 Frog Slayer | Beat Frogpocalypse (defeat Jiggle Jaggle, Fraggle Friggle and Tiggle Taggle) |
 | 🕊️ Pacifist | Beat Carrotventure without popping a single frog (no stomps, punches, pokes or zaps) |
 | 🎯 Friendly Fire | Zap a frog with the 'Rae' Gun while it's waving at Rae in her frog face shirt |
 | 🫧 Spin Cycle | Stay in the washing machine drum for 10 seconds (the door slams shut!) |

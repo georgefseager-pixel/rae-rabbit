@@ -34,8 +34,17 @@ const Frogpocalypse = {
   ],
 
   // How many frogs can be about, and how often a new one appears, as time goes on
-  maxAlive() { return Math.min(this.MAX_FROGS, 9 + Math.floor(this.time / 20)); },
-  spawnEvery() { return Math.max(1.0, 5 - this.time / 45); },
+  // While a boss is out, fewer frogs (BOSS_FROGS of the usual number) appear, and more slowly
+  BOSS_FROGS: 0.55,
+  bossOut() { return !!(this.boss && this.boss.alive); },
+  maxAlive() {
+    const n = Math.min(this.MAX_FROGS, 9 + Math.floor(this.time / 20));
+    return this.bossOut() ? Math.round(n * this.BOSS_FROGS) : n;
+  },
+  spawnEvery() {
+    const every = Math.max(1.0, 5 - this.time / 45);
+    return this.bossOut() ? every / this.BOSS_FROGS : every;
+  },
 
   // Turn the house into a frog-filled nightmare
   start() {
@@ -137,18 +146,19 @@ const Frogpocalypse = {
     this.updateParcels(dt, player);
   },
 
-  // kind: "jiggle" (living room) or "fraggle" (bedroom). See BOSSES in frog.js.
+  // kind: "jiggle" (living room), "fraggle" (bedroom) or "tiggle" (kitchen). See BOSSES in frog.js.
   spawnBoss(kind) {
-    const where = kind === "fraggle" ? { x: 0, z: 2.3, room: "bedroom" } : { x: 1.7, z: 13.8, room: "living room" };
-    this.boss = new Frog(world, where.x, 0, where.z, BOSSES[kind].color);
+    const where = {
+      jiggle: { x: 1.7, y: 0, z: 13.8, text: "Boss Frog Jiggle Jaggle has spawned in the living room!" },
+      fraggle: { x: 0, y: 0, z: 2.3, text: "A NEW boss has appeared in the bedroom: Fraggle Friggle!" },
+      tiggle: { x: -7.0, y: LOW, z: 24.0, text: "The FINAL boss has appeared in the kitchen: Tiggle Taggle!" },
+    }[kind];
+    this.boss = new Frog(world, where.x, where.y, where.z, BOSSES[kind].color);
     this.boss.setBoss(kind);
     frogs.push(this.boss);
     Sfx.bossRoar();
-    const text = kind === "fraggle"
-      ? "A NEW boss has appeared in the bedroom: Fraggle Friggle!"
-      : "Boss Frog Jiggle Jaggle has spawned in the living room!";
-    showBanner("⚠️ " + text);
-    Dialogue.say(text, { speaker: "⚠️ Warning", style: "enemy", voice: "frog" });
+    showBanner("⚠️ " + where.text);
+    Dialogue.say(where.text, { speaker: "⚠️ Warning", style: "enemy", voice: "frog" });
     document.body.classList.add("boss-fight");
   },
 
