@@ -41,7 +41,7 @@ function buildHouse(w) {
   w.addFrog(1.8, GROUND, 7.2, FROG_COLORS.pink);     // bathroom
   w.addFrog(2.0, GROUND, 12.0, FROG_COLORS.blue);    // living room, by the fireplace
   w.addFrog(-1.2, GROUND, 16.6, FROG_COLORS.yellow); // living room, by the sofa
-  w.addFrog(-2.0, LOW, 23.5, FROG_COLORS.teal);      // office
+  w.addFrog(-2.5, LOW, 22.5, FROG_COLORS.teal);      // office
   w.addFrog(-7.0, LOW, 24.0, FROG_COLORS.lilac);     // kitchen, by the hob
   w.addFrog(-3.0, LOW, 26.9, FROG_COLORS.peach);     // kitchen, far end
 }
@@ -494,16 +494,7 @@ function buildDeskCorner(w) {
   ]));
   w.add(makeThing("speaker", 3.75, top, 10.3, [["blob", [0.08, 1, 1.2, 1], [0, 0.09, 0], COLORS.tvBlack]]));
   // A black backpack dumped on the floor, slumped against the wall (smashable!)
-  const bag = 0x34303b, bagDark = 0x26232b;
-  w.add(makeThing("backpack", 0.55, 0, 9.93, [
-    ["blob", [0.25, 1.15, 0.88, 0.62], [0, 0.22, 0], bag],              // main body
-    ["blob", [0.15, 1.15, 0.8, 0.45], [0, 0.15, 0.14], 0x433d4a],       // front pocket
-    ["box", [0.26, 0.015, 0.02], [0, 0.2, 0.2], COLORS.steel],          // pocket zip
-    ["box", [0.03, 0.06, 0.03], [0.05, 0.19, 0.21], COLORS.steel],      // zip pull
-    ["box", [0.14, 0.03, 0.04], [0, 0.42, -0.02], bagDark],             // grab handle on top
-    ["box", [0.05, 0.34, 0.025], [-0.1, 0.2, -0.155], bagDark],         // shoulder straps (at the back)
-    ["box", [0.05, 0.34, 0.025], [0.1, 0.2, -0.155], bagDark],
-  ]));
+  w.add(makeBackpack(0.55, 0, 9.93));
   // PC tower on the floor beside the desk
   w.addSpan("pc-tower", 3.15, 3.95, 0, 0.95, 9.3, 9.95, COLORS.tvBlack);
 
@@ -601,11 +592,11 @@ function buildStairs(w) {
 // OFFICE (the small bedroom on the plan): x -5..0.6, z 21..25.6, down the stairs
 // =====================================================
 function buildOffice(w) {
-  w.addSpan("office-floor", -5, 0.6, BASE, LOW, 21, 25.6, COLORS.floor);
+  w.addSpan("office-floor", -5, 0.6, BASE, LOW, 21, 25.6, COLORS.carpet);
 
-  // West outer wall (shared with the stair hall), with a window
+  // West outer wall (shared with the stair hall), with a window above the desk
   w.addWall("wall", 0.6, 1.1, BASE, H, 18.5, 25.6, COLORS.officeWall);
-  w.addWindow({ x: 0.6 }, 22.4, 24.2, LOW + 1.2, LOW + 2.6, -1);
+  w.addWindow({ x: 0.6 }, 22.6, 24.0, LOW + 2.4, LOW + 3.7, -1);
   // Wall between the stairs and the office, with the office door at the
   // bottom of the stairs (like on the floorplan)
   w.addWall("wall", -5.5, 1.1, BASE, H, 20.5, 21, COLORS.officeWall,
@@ -614,7 +605,122 @@ function buildOffice(w) {
   w.addWall("wall", -5.5, -5, BASE, H, 21, 26.1, COLORS.officeWall);
   w.addWall("wall", -5.5, 1.1, BASE, H, 25.6, 26.1, COLORS.officeWall);
 
+  // Furniture, from the photos (looking in from the door):
+  //   opposite the door: pine shoe racks with shoes, and more shoes on the floor
+  //   on the left: the desk under the window, with a high-backed chair
+  //   right of the desk: a pile of backpacks in the corner
+  buildOfficeDesk(w);
+  buildShoeRacks(w);
+  w.add(makeBackpack(0.22, LOW, 25.2, 0x34303b, -Math.PI / 2));
+  w.add(makeBackpack(-0.35, LOW, 25.25, OUTFIT_COLORS.navy, -1.1));
+  w.add(makeBackpack(0.28, LOW, 24.78, 0x6e6a78, -2.0));
+
   w.addRoomLight(-2.2, H - 0.3, 23.3, 0.45, 9);
+}
+
+// The office desk against the window wall, and everything on and around it
+function buildOfficeDesk(w) {
+  const x1 = -0.65, x2 = 0.6, z1 = 22.15, z2 = 24.45, top = LOW + 1.6;
+  const black = COLORS.tvBlack;
+  // Wooden top on a black frame, with a black mesh drawer unit under the right-hand end
+  w.addSpan("desk", x1, x2, top - 0.08, top, z1, z2, COLORS.officeDesk);
+  w.addSpan("desk-leg", x1, x1 + 0.07, LOW, top - 0.08, z1, z1 + 0.07, black);
+  w.addSpan("desk-leg", x2 - 0.07, x2, LOW, top - 0.08, z1, z1 + 0.07, black);
+  w.addSpan("desk-drawers", x1 + 0.05, x2 - 0.05, LOW, top - 0.08, z2 - 0.6, z2 - 0.05, black);
+  for (let y = LOW + 0.25; y < top - 0.2; y += 0.12) {
+    w.addDeco("drawer-mesh", x1 + 0.03, x1 + 0.05, y, y + 0.02, z2 - 0.58, z2 - 0.07, 0x55505e);
+  }
+
+  // On the desk: computer, keyboard, a cat mouse mat with a mouse, books, a drink, a magazine
+  w.add(makeThing("computer", 0.3, top, 23.0, [
+    ["box", [0.15, 0.3, 0.2], [0.075, 0.15, 0], black],                       // stand
+    ["box", [0.1, 0.65, 1.1], [0, 0.6, 0], black],                            // monitor
+    ["box", [0.02, 0.55, 1.0], [-0.06, 0.6, 0], 0x3a3644],                    // (switched off)
+  ]));
+  w.addDeco("keyboard", -0.25, 0.05, top, top + 0.03, 22.55, 23.45, 0x3c3843);
+  w.add(makeThing("mouse-mat", -0.15, top, 24.0, [
+    ["cyl", [0.22, 0.22, 0.01], [0, 0.005, 0], 0x6e6a78],
+    ["blob", [0.03, 1, 0.3, 1], [-0.12, 0.012, -0.08], COLORS.canPink],     // rosy cat cheeks
+    ["blob", [0.03, 1, 0.3, 1], [-0.12, 0.012, 0.08], COLORS.canPink],
+    ["blob", [0.035, 1, 0.6, 1.4], [0.04, 0.025, 0], 0x2a2730],              // the mouse
+  ], { solid: false }));
+  w.add(makeThing("book", 0.2, top, 24.05, [
+    ["box", [0.3, 0.07, 0.42], [0, 0.035, 0], COLORS.leaf],
+    ["box", [0.28, 0.06, 0.4], [0.01, 0.1, 0], COLORS.book3, { ry: 0.15 }],
+  ]));
+  w.add(makeThing("bottle", 0.32, top, 24.33, [
+    ["cyl", [0.05, 0.055, 0.26], [0, 0.13, 0], COLORS.tableWhite],
+    ["cyl", [0.056, 0.056, 0.08], [0, 0.12, 0], COLORS.plus],
+    ["cyl", [0.025, 0.03, 0.05], [0, 0.285, 0], COLORS.canPink],
+  ]));
+  w.addDeco("magazine", -0.1, 0.25, top, top + 0.01, 23.5, 23.85, COLORS.book2);
+
+  // Window sill with a framed superhero poster and a little succulent on it
+  const sill = LOW + 2.32;
+  w.addSpan("window-sill", 0.42, 0.6, sill - 0.1, sill, 22.45, 24.15, COLORS.skirting);
+  w.add(makeThing("frame", 0.5, sill, 22.95, [
+    ["box", [0.04, 0.5, 0.64], [0, 0.25, 0], 0x55505e],
+    ["box", [0.01, 0.4, 0.54], [-0.025, 0.25, 0], 0x6f8fc4],                 // blue sky
+    ["blob", [0.08, 0.3, 1.6, 0.8], [-0.03, 0.22, 0.05], 0xd9483f],          // a hero in red...
+    ["blob", [0.05, 0.3, 1, 1], [-0.03, 0.36, 0.05], 0xf2c9a5],              // ...with a head
+    ["box", [0.01, 0.06, 0.5], [-0.03, 0.08, 0], COLORS.butter],             // title banner
+  ]));
+  w.add(makeThing("pot", 0.5, sill, 23.95, [
+    ["cyl", [0.07, 0.06, 0.1], [0, 0.05, 0], COLORS.tableWhite],
+    ["blob", [0.07, 1, 0.8, 1], [0, 0.13, 0], COLORS.plant],
+  ]));
+
+  // Two postcards on the wall, and a radiator by the door wall
+  w.addDeco("postcard", 0.58, 0.6, LOW + 2.35, LOW + 2.75, 24.45, 24.75, 0xf08a5d);
+  w.addDeco("postcard", 0.58, 0.6, LOW + 2.4, LOW + 2.68, 24.85, 25.3, 0x8fb4e8);
+  w.addSpan("radiator", -1.5, 0.4, LOW + 0.25, LOW + 1.25, 21, 21.14, COLORS.tableWhite);
+  for (let x = -1.4; x < 0.35; x += 0.15) {
+    w.addDeco("radiator-fin", x, x + 0.04, LOW + 0.3, LOW + 1.2, 21.14, 21.17, COLORS.skirting);
+  }
+
+  // High-backed black office chair, facing the desk
+  const cx = -1.35, cz = 23.3, black2 = 0x2c2933;
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.08, 5), pastel(black2));
+  base.position.set(cx, LOW + 0.06, cz);
+  w.add(new Prop({ name: "chair-base", mesh: base, solid: false }));
+  w.addSpan("chair-pole", cx - 0.05, cx + 0.05, LOW, LOW + 0.9, cz - 0.05, cz + 0.05, black2);
+  w.addSpan("chair-seat", cx - 0.45, cx + 0.45, LOW + 0.88, LOW + 1.0, cz - 0.45, cz + 0.45, black2);
+  w.addSpan("chair-back", cx - 0.45, cx - 0.33, LOW + 1.0, LOW + 2.4, cz - 0.4, cz + 0.4, black2);
+  w.addDeco("chair-arm", cx - 0.3, cx + 0.3, LOW + 1.25, LOW + 1.3, cz - 0.47, cz - 0.42, black2);
+  w.addDeco("chair-arm", cx - 0.3, cx + 0.3, LOW + 1.25, LOW + 1.3, cz + 0.42, cz + 0.47, black2);
+}
+
+// Two pine shoe racks against the wall opposite the door (a tall one and a low,
+// wide one), full of shoes, with a few more pairs kicked off on the floor
+function buildShoeRacks(w) {
+  const pine = 0xe3c08e, z1 = 25.05, z2 = 25.6;
+  const rack = (x1, x2, tiers) => {
+    const top = tiers[tiers.length - 1] + 0.05;
+    for (const x of [x1, x2 - 0.05]) {
+      for (const z of [z1, z2 - 0.05]) w.addSpan("rack-post", x, x + 0.05, LOW, LOW + top, z, z + 0.05, pine);
+    }
+    for (const h of tiers) w.addSpan("rack-shelf", x1, x2, LOW + h, LOW + h + 0.05, z1, z2, pine);
+  };
+  rack(-5, -3.85, [0.12, 0.52, 0.92, 1.32]);   // tall rack, in the corner
+  rack(-3.85, -2.65, [0.12, 0.52]);            // low, wide rack
+
+  const zr = 25.33, on = (h) => LOW + h + 0.05; // shoes sit on top of a shelf
+  const black = 0x2c2933, grey = 0x7d7a86, white = 0xf6f3ee, brown = 0x7a4b3a, burgundy = 0x8e3b43;
+  w.add(makeShoes(-4.7, on(1.32), zr, black, black));
+  w.add(makeShoes(-4.15, on(1.32), zr, grey, white));
+  w.add(makeShoes(-4.42, on(0.92), zr, black, black));
+  w.add(makeShoes(-4.7, on(0.52), zr, brown, brown));
+  w.add(makeShoes(-4.15, on(0.52), zr, 0x4a4652, white));
+  w.add(makeShoes(-4.42, on(0.12), zr, black, white));
+  w.add(makeShoes(-3.52, on(0.52), zr, black, black));
+  w.add(makeShoes(-2.98, on(0.52), zr, black, black));
+  w.add(makeShoes(-3.52, on(0.12), zr, white, white));
+  w.add(makeShoes(-2.98, on(0.12), zr, white, 0xdcd6cc));
+  // kicked off on the floor
+  w.add(makeShoes(-4.55, LOW, 24.45, burgundy, 0x5a2a2e, 0.5));
+  w.add(makeShoes(-3.75, LOW, 24.55, white, white, -0.7));
+  w.add(makeShoes(-3.05, LOW, 24.45, white, grey, 0.9));
+  w.add(makeShoes(-2.45, LOW, 24.1, white, white, -0.3));
 }
 
 // =====================================================

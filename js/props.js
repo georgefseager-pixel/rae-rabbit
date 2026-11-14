@@ -58,6 +58,8 @@ const COLORS = {
   door:        0xf2c9a7, // doors
   doorPanel:   0xf8dcc3, // raised panels on doors
   exitSign:    0x9edbb0, // fire exit sign
+  carpet:      0xc9c4cf, // grey office carpet
+  officeDesk:  0xb07a58, // office desk wood
   // living room furniture
   sofa:        0xf6f0e6, // big white sofa
   sofaCushion: 0xefe6d6,
@@ -185,6 +187,39 @@ function makeThing(name, x, y, z, parts, opts = { breakable: true }) {
   }
   group.position.set(x, y, z);
   return new Prop({ name, mesh: group, ...opts });
+}
+
+// A backpack lying on the floor (bottom at y), pocket facing +z unless turned with ry
+function makeBackpack(x, y, z, color = 0x34303b, ry = 0) {
+  const dark = new THREE.Color(color).multiplyScalar(0.7).getHex();
+  const pocket = new THREE.Color(color).multiplyScalar(1.25).getHex();
+  const bag = makeThing("backpack", x, y, z, [
+    ["blob", [0.25, 1.15, 0.88, 0.62], [0, 0.22, 0], color],            // main body
+    ["blob", [0.15, 1.15, 0.8, 0.45], [0, 0.15, 0.14], pocket],         // front pocket
+    ["box", [0.26, 0.015, 0.02], [0, 0.2, 0.2], COLORS.steel],          // pocket zip
+    ["box", [0.03, 0.06, 0.03], [0.05, 0.19, 0.21], COLORS.steel],      // zip pull
+    ["box", [0.14, 0.03, 0.04], [0, 0.42, -0.02], dark],                // grab handle
+    ["box", [0.05, 0.34, 0.025], [-0.1, 0.2, -0.155], dark],            // shoulder straps
+    ["box", [0.05, 0.34, 0.025], [0.1, 0.2, -0.155], dark],
+  ]);
+  bag.mesh.rotation.y = ry;
+  bag.updateBox();
+  return bag;
+}
+
+// A pair of shoes (bottom at y), toes pointing -z unless turned with ry. Smashable!
+function makeShoes(x, y, z, color, soleColor = 0xfaf7f2, ry = 0) {
+  const parts = [];
+  for (const side of [-1, 1]) {
+    const sx = side * 0.1;
+    parts.push(["box", [0.15, 0.04, 0.5], [sx, 0.02, 0], soleColor]);         // sole
+    parts.push(["blob", [0.09, 0.85, 0.75, 2.6], [sx, 0.09, 0.02], color]);   // upper
+    parts.push(["blob", [0.06, 1, 1.1, 1], [sx, 0.13, 0.15], color]);         // heel/ankle
+  }
+  const shoes = makeThing("shoes", x, y, z, parts);
+  shoes.mesh.rotation.y = ry;
+  shoes.updateBox();
+  return shoes;
 }
 
 // The living room TV (facing -x), standing on a surface at height y. Smashable!

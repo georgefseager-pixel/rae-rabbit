@@ -236,6 +236,8 @@ const RAE_LINES = {
   "smash-pot":      ["Pot-tastrophe!", "Pot luck!", "A pot-ty mistake!"],
   "smash-backpack": ["Bag smash!", "The homework escaped!", "That bag had snacks in it, right?"],
   "smash-computer": ["Blue screen of... crumbs!", "Ctrl+Alt+DESTROYED!", "Game over, computer!"],
+  "smash-shoes":    ["Shoe-per smash!", "Sole destroyer!", "These shoes were made for smashin'!"],
+  "smash-bottle":   ["Sports fuel? More like sports SPILL!", "Glug glug... splash!", "Hydration nation!"],
   // frogs and hearts
   "frog-spotted":    ["Eep! A frog!", "Oh no, froggy business!", "Ribbit yourself, mister!"],
   "frog-popped":     ["Pop goes the frog! Rabbits rule!", "Boing! Frog flattened!", "Frog? More like flop!"],

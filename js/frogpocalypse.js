@@ -30,7 +30,7 @@ const Frogpocalypse = {
     [0.2, 0, 19.8],
     // kitchen & office
     [-7.0, -1.2, 24.0], [-3.0, -1.2, 26.9], [-6.5, -1.2, 20.5], [-7.0, -1.2, 27.2],
-    [-2.0, -1.2, 23.5], [-3.5, -1.2, 24.5],
+    [-2.5, -1.2, 22.5], [-3.6, -1.2, 22.4],
   ],
 
   // How many frogs can be about, and how often a new one appears, as time goes on

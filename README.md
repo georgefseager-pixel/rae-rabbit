@@ -67,7 +67,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
   - Carrots: high above the sofa (big bounce), on the TV table, under the coffee table (on its shelf),
     on the desk (hop onto the chair seat from the side, then onto the desk).
 - **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
-- **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs, window.
+- **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs. Grey carpet; desk under the window (computer, books, drink, cat mouse mat, high-backed chair, poster and plant on the sill); pine shoe racks full of shoes opposite the door, more shoes on the floor; a pile of backpacks in the corner. Shoes, backpacks, books, the bottle, poster, plant and computer are all breakable.
 - **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
 - **Doors**: every doorway has a door that smashes to pieces when Rae touches it.
 
