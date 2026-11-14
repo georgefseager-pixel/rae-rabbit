@@ -472,6 +472,13 @@ function showWin(how = "boss") {
   document.getElementById("win").classList.remove("hidden");
   if (document.exitPointerLock) document.exitPointerLock();
   Sfx.win();
+  // Achievements (see achievements.js)
+  if (how === "toilet") {
+    Achievements.unlock("carrotventure");
+    if (stompedCount === 0) Achievements.unlock("pacifist"); // not a single frog popped!
+  } else {
+    Achievements.unlock("frogpocalypse");
+  }
 }
 document.getElementById("win-again").addEventListener("click", () => location.reload());
 
@@ -500,6 +507,8 @@ function hitFrog(frog, how) {
     }
     return;
   }
+  // Zapping a frog that's waving hello at Rae in her frog face shirt. How rude!
+  if (how === "zap" && frog.waving && raeModel.outfit === "frog") Achievements.unlock("friendly-fire");
   frog.pop();
   stompedCount++;
   if (how === "punch") raeSays("frog-punched");

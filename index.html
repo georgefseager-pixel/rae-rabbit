@@ -50,6 +50,7 @@
             <span class="mode-desc">Frogs everywhere! Survive 3 minutes... then face the boss.</span>
           </button>
         </div>
+        <button id="open-achievements"><span class="pad-only xb y">Y</span> 🏆 Achievements</button>
         <p class="pad-only menu-pad-hint"><span class="xb pill">✚</span> / <span class="xb pill">LS</span> choose &nbsp;·&nbsp; <span class="xb a">A</span> play</p>
       </div>
       <p id="overlay-title" class="big hidden"></p>
@@ -76,6 +77,18 @@
       </div>
     </div>
   </div>
+
+  <!-- Achievements (opened from the main menu; filled in by js/achievements.js) -->
+  <div id="achievements" class="hidden">
+    <div class="card ach-card">
+      <h1>🏆 Achievements</h1>
+      <p class="sub" id="ach-count">0 / 4 earned</p>
+      <div id="ach-grid"></div>
+      <button id="ach-close"><span class="pad-only xb b">B</span> Back</button>
+    </div>
+  </div>
+  <!-- "Achievement unlocked!" popup -->
+  <div id="achievement-pop"></div>
 
   <!-- Fades the screen to black (e.g. going through the Flopsy Shop door) -->
   <div id="fade"></div>
@@ -142,6 +155,7 @@
   <script src="js/shop.js"></script>
   <script src="js/frogpocalypse.js"></script>
   <script src="js/weapons.js"></script>
+  <script src="js/achievements.js"></script>
   <script src="js/gamepad.js"></script>
   <script src="js/main.js"></script>
 </body>

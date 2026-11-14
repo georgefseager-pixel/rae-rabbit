@@ -6,12 +6,13 @@
 //   Y              dance
 //   Menu (☰)       pause           B             back (shop)
 //   D-pad / stick  choose outfits in the shop, A to wear
+//   Y on the main menu   open Achievements (B to go back)
 //
 // Whatever you touched last (controller, or keyboard & mouse) decides which
 // button prompts are shown: the page gets the class "pad" while you're using
 // a controller, and the CSS swaps .kb-only / .pad-only bits around.
 //
-// Uses these from main.js / shop.js: player, overlay, started, paused, gameOver,
+// Uses these from main.js / shop.js / achievements.js: player, overlay, started, paused, gameOver,
 // inShop, punch(), showPauseScreen(), leaveShop(), selectOutfit(), shopSelected,
 // OUTFITS, isUnlocked().
 
@@ -69,10 +70,12 @@ function handleGamepad(dt) {
     !document.getElementById("win").classList.contains("hidden");
   const startOrPauseShown = !overlay.classList.contains("hidden");
   // X on the menu / pause screen switches the mirror quality
-  if (startOrPauseShown && !endShown && !inShop && pressed(BTN.X)) toggleMirrorQuality();
+  if (startOrPauseShown && !endShown && !inShop && !Achievements.isOpen() && pressed(BTN.X)) toggleMirrorQuality();
 
   if (endShown) {
     if (pressed(BTN.A) || pressed(BTN.MENU)) location.reload(); // play again
+  } else if (Achievements.isOpen()) {
+    if (pressed(BTN.B) || pressed(BTN.A) || pressed(BTN.Y)) Achievements.close();
   } else if (inShop) {
     shopWithPad(pressed, lx, ly);
   } else if (startOrPauseShown && !started) {
@@ -87,6 +90,7 @@ function handleGamepad(dt) {
     }
     if (move) selectMode(Math.max(0, Math.min(modeButtons.length - 1, current + move)));
     if (pressed(BTN.A) || pressed(BTN.MENU)) startGame(modeButtons[Math.max(0, current)].dataset.mode);
+    if (pressed(BTN.Y)) Achievements.open();
   } else if (startOrPauseShown) {
     if (pressed(BTN.A) || pressed(BTN.MENU)) resumeGame(); // carry on
   } else if (started && !paused) {

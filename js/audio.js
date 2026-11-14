@@ -174,6 +174,13 @@ const Sfx = {
     osc.stop(start + length + 0.02);
   },
 
+  // An achievement: a bright little rising fanfare
+  achievement() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [523, 659, 784, 1047, 1319].forEach((freq, i) => this.note(freq, t + i * 0.08, 0.35, 0.12, "triangle"));
+  },
+
   // A rumbly tummy: "grrrrbl-wubble" (too many carrots!)
   rumble() {
     if (!this.ctx) return;

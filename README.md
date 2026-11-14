@@ -40,6 +40,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
 | `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up both shops |
+| `js/achievements.js` | The achievements list, saving them, the popup and the Achievements screen |
 | `js/weapons.js` | Weapon stats (paws, Pokey Stick, 'Rae' Gun) and the gun's green balls |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
 | `js/shop.js` | Both shops: outfits and weapons & unlocks, the dancing stage, the menu; Flopsy and Willow |
@@ -109,6 +110,21 @@ Flopsy Shop, dressed formally, with Rae trying out each weapon on the stage.
 Click (or **X** / **RB** / **RT**) uses whatever Rae is holding. Willow calls out when a weapon unlocks.
 Change unlock rules and lines in the `WEAPONS` list in `js/shop.js`; reach, cooldowns and ball speed
 are at the top of `js/weapons.js`. Both shops close in the Frogpocalypse, so it's paws only there.
+
+## Achievements
+Click **🏆 Achievements** on the main menu (or press **Y** on a controller) to see them. There's
+room for 9; four exist so far:
+
+| Achievement | How to earn it |
+|-------------|----------------|
+| 🚽 Just in Time! | Beat Carrotventure (all 20 carrots, then the toilet) |
+| 👑 Frog Slayer | Beat Frogpocalypse (defeat Jiggle Jaggle) |
+| 🕊️ Pacifist | Beat Carrotventure without popping a single frog (no stomps, punches, pokes or zaps) |
+| 🎯 Friendly Fire | Zap a frog with the 'Rae' Gun while it's waving at Rae in her frog face shirt |
+
+A gold popup appears when you earn one. They're remembered on that computer and browser. Add more
+in `ACHIEVEMENTS` at the top of `js/achievements.js`, and call `Achievements.unlock("their-id")`
+wherever they're earned.
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).
