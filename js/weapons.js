@@ -77,6 +77,7 @@ const Blaster = {
         }
       }
       // The shopkeepers don't appreciate it either
+      if (!hit && Mice.hitAt(pos, 0.05)) hit = true; // dancing fireplace mice
       for (const keeper of [flopsy, willow]) {
         if (!hit && keeper.middle().distanceTo(pos) < 0.2) { keeper.ouch(); hit = true; }
       }

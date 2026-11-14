@@ -80,7 +80,7 @@ function isUnlocked(outfit) {
 // (weapons) calls out about it
 let announcedUnlocks = null;
 function checkUnlocks() {
-  if (Frogpocalypse.active) return; // the shopkeepers have fled the Frogpocalypse
+  if (Frogpocalypse.active || FlopsyMode.active) return; // the shops are shut in these modes
   const all = [...OUTFITS, ...WEAPONS];
   if (!announcedUnlocks) announcedUnlocks = new Set(all.filter(isUnlocked).map((o) => o.id));
   for (const item of all) {

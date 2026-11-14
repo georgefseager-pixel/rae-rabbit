@@ -410,9 +410,9 @@ function buildLivingRoom(w) {
     [{ from: -1.4, to: 0.6, bottom: GROUND, top: 2.4 },
      { from: 0.95, to: 2.65, bottom: 1.0, top: 2.4, door: false, trim: false }]); // the open window
 
-  // Chimney breast on the outer wall, with a fireplace and a mantelpiece
-  w.addSpan("chimney", 3.4, 4, 0, H, 12.7, 16.5, COLORS.livingWall);
-  w.addDeco("fireplace", 3.37, 3.4, 0, 1.2, 13.9, 15.3, COLORS.fireplace);
+  // Chimney breast on the outer wall, with a mantelpiece, and a fireplace nook
+  // Rae can walk into (there's a mouse hole at the back: see mice.js)
+  buildFireplace(w);
   w.addSpan("mantelpiece", 3.15, 3.4, 1.4, 1.5, 13.6, 15.6, COLORS.skirting);
 
   // The living room window (between the stairs door and the TV corner) is open: climb out to the tree!
@@ -858,4 +858,40 @@ function makeDucky() {
   g.add(body, belly, dorsal, tail, ...fins, ...eyes, grin, bill);
   g.userData.tail = tail;
   return g;
+}
+
+// The chimney breast, with a walk-in fireplace nook (no fire: just a sooty little room)
+// and a tiny black mouse hole in its back wall. main.js / mice.js handle the mice.
+function buildFireplace(w) {
+  const x1 = 3.4, x2 = 4, z1 = 12.7, z2 = 16.5;  // the chimney breast
+  const n1 = 14.1, n2 = 15.1, top = 0.9;        // the nook's opening (Rae fits: she's 0.45 tall)
+  w.addSpan("chimney", x1, x2, 0, H, z1, n1, COLORS.livingWall);
+  w.addSpan("chimney", x1, x2, 0, H, n2, z2, COLORS.livingWall);
+  w.addSpan("chimney", x1, x2, top, H, n1, n2, COLORS.livingWall);
+  // the fireplace surround (round the opening) and the hearth stone in front
+  const surround = COLORS.fireplace, soot = 0x4e4856;
+  w.addDeco("fireplace", x1 - 0.03, x1, 0, top + 0.3, 13.9, n1, surround);
+  w.addDeco("fireplace", x1 - 0.03, x1, 0, top + 0.3, n2, 15.3, surround);
+  w.addDeco("fireplace", x1 - 0.03, x1, top, top + 0.3, n1, n2, surround);
+  w.addDeco("hearth", 3.0, x1, 0, 0.02, 13.9, 15.3, 0x9a93a6);
+  // sooty walls, ceiling and floor inside
+  w.addDeco("soot", x1, x2, 0, top, n1, n1 + 0.01, soot);
+  w.addDeco("soot", x1, x2, 0, top, n2 - 0.01, n2, soot);
+  w.addDeco("soot", x1, x2, top - 0.01, top, n1, n2, soot);
+  w.addDeco("soot", x2 - 0.01, x2, 0, top, n1, n2, soot);
+  w.addDeco("soot", x1, x2, 0, 0.01, n1, n2, 0x3e3944);
+  // the mouse hole: a little black arch at the back
+  const hole = new THREE.Group();
+  const dark = new THREE.MeshBasicMaterial({ color: 0x050407 });
+  const arch = new THREE.Mesh(new THREE.CircleGeometry(0.13, 16, 0, Math.PI), dark);
+  arch.position.y = 0.17;
+  const base = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.17), dark);
+  base.position.y = 0.085;
+  hole.add(arch, base);
+  hole.rotation.y = -Math.PI / 2;            // facing into the room (-x)
+  hole.position.set(x2 - 0.012, 0.01, (n1 + n2) / 2);
+  w.add(new Prop({ name: "mouse-hole", mesh: hole, solid: false }));
+  w.mouseHole = { x: x2, y: 0, z: (n1 + n2) / 2 };
+  // standing in the nook (or on the hearth in front of it)
+  w.addZone("mouse-nook", 3.0, x2, -0.2, 0.6, n1, n2);
 }

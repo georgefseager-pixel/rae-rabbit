@@ -205,6 +205,8 @@ function landPunch(stats) {
   // Poor Flopsy! Poor Willow!
   if (near(flopsy.middle(), 0.15)) flopsy.ouch();
   if (near(willow.middle(), 0.15)) willow.ouch();
+  // Dancing fireplace mice go POP
+  for (const hit of spots) if (Mice.hitAt(hit, stats.radius)) break;
 }
 
 // ---- Dancing (G key / Y button) ----
@@ -290,6 +292,7 @@ const RAE_LINES = {
   "frog-popped":     ["Pop goes the frog! Rabbits rule!", "Boing! Frog flattened!", "Frog? More like flop!"],
   "minifrog-popped": ["Got you, you speedy little thing!", "Too fast? Not for me!", "Tiny frog, tiny pop!"],
   "frog-punched":    ["Hi-yah! Bunny fu!", "Pow! Right in the ribbit!", "One punch frog!"],
+  "mice-popped":     ["Oops! Sorry, mice!", "Uh oh. That was the end of the mouse party.", "Pop pop! ...I feel a bit bad about that."],
   "frog-poked":      ["Poked! Right in the ribbits!", "Stick 1, frog 0!", "Poke-a-dot!"],
   "frog-zapped":     ["ZAPPED! Pew pew!", "Frog vaporised! ...Gently!", "Bullseye from across the room!"],
   "frog-friendly":   ["They think I'm a frog! Hehe.", "Hi froggy friends!", "Undercover bunny... ribbit!"],
@@ -304,6 +307,7 @@ const RAE_LINES = {
   "boss-beaten":     ["Sorry, little guy! You were very brave. Rabbits rule!", "All three bosses beaten! Bunny wins!", "Phew! The house is frog-free... for now!"],
   // places (zones in house.js)
   "zone-bath":         ["My fur is wet!", "Splish splash, I'm soggy!", "Bath time? I didn't agree to this!"],
+  "zone-mouse-nook":   ["Ooh, that looks like a mouse hole!", "Is that... a little mouse hole?", "A teeny tiny door! It looks like a mouse hole!"],
   "zone-mirror-table": ["Who's that cute bunny?!", "Looking good, Rae!", "Mirror mirror on the wall..."],
   "zone-wardrobe":     ["A secret hideout! It smells like laundry.", "Ooh, a cosy closet!", "Narnia? No... just a wardrobe."],
   "zone-living-room":  ["Ooh, so cosy in here!", "What a comfy room!", "Sofa! TV! Snacks?"],
@@ -372,6 +376,7 @@ function fallOffTree() {
 
 // ---- The Flopsy Shop & Flopsy: see shop.js ----
 const { flopsy, willow } = makeShopKeepers(scene, world);
+Mice.init(); // the secret fireplace mice (mice.js)
 
 let collectedCount = 0;
 const totalCollectibles = world.collectibles().length;
@@ -735,6 +740,7 @@ function loop() {
     Blaster.update(dt); // the 'Rae' Gun's green balls
     flopsy.update(dt, player, time);
     willow.update(dt, player, time);
+    Mice.update(dt, time);
     checkUnlocks();
     Frogpocalypse.update(dt, player);
     frogCountEl.textContent = stompedCount;

@@ -78,6 +78,7 @@ const FLOPSY_MODE_LINES = {
   "zone-bath":     ["Splash! Flopsy fur all wet!!!", "Bath time for Flopsy?!", "Wet wet wet!!!"],
   "zone-garden":   ["So high up!!! Flopsy brave!!!", "Tree is HUGE!!!", "Fresh air for Flopsy!!!"],
   "zone-kitchen":  ["Kitchen smell so yummy!!!", "So many cupboards!!!", "Snacks somewhere here!!!"],
+  "zone-mouse-nook": ["Ooh! Little mouse hole!!! Hello in there!!!", "Mouse door!!! Flopsy wait and see!!!", "Tiny hole! Smaller than Flopsy even!!!"],
 };
 
 // ============================================================

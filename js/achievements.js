@@ -23,6 +23,8 @@ const ACHIEVEMENTS = [
     desc: "Stay in the bath until Ducky gets hungry. Poor Rae!" },
   { id: "flopsy-mode", icon: "☁️", name: "Tiny but Mighty",
     desc: "Beat Flopsy Mode: every carrot (hopping across the clouds), then the toilet." },
+  { id: "scrumbly", icon: "🐭", name: "Scrumbly Secret",
+    desc: "Wait by the mouse hole in the fireplace... and see what happens." },
 ];
 
 const Achievements = {

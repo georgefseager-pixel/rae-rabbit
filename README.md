@@ -72,6 +72,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/mirror.js` | Real reflecting mirrors |
 | `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up both shops |
 | `js/flopsymode.js` | Flopsy Mode: playing as Flopsy, and the cloud platforms |
+| `js/mice.js` | The secret fireplace mice: their model, peek and dance |
 | `js/achievements.js` | The achievements list, saving them, the popup and the Achievements screen |
 | `js/weapons.js` | Weapon stats (paws, Pokey Stick, 'Rae' Gun) and the gun's green balls |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
@@ -145,7 +146,7 @@ are at the top of `js/weapons.js`. Both shops close in the Frogpocalypse, so it'
 
 ## Achievements
 Click **🏆 Achievements** on the main menu (or press **Y** on a controller) to see them. There's
-room for 9; seven exist so far:
+room for 9; eight exist so far:
 
 | Achievement | How to earn it |
 |-------------|----------------|
@@ -156,6 +157,7 @@ room for 9; seven exist so far:
 | 🫧 Spin Cycle | Stay in the washing machine drum for 10 seconds (the door slams shut!) |
 | 🦈 Snack Time | Stay in the bath water for 10 seconds (Ducky gets hungry...) |
 | ☁️ Tiny but Mighty | Beat Flopsy Mode |
+| 🐭 Scrumbly Secret | See the fireplace mice dance (wait by the mouse hole...) |
 
 A gold popup appears when you earn one. They're remembered on that computer and browser. Add more
 in `ACHIEVEMENTS` at the top of `js/achievements.js`, and call `Achievements.unlock("their-id")`
@@ -169,6 +171,14 @@ wherever they're earned.
   he lunges, the screen goes red, and it's game over: "Rae got eaten by Ducky! Poor Rae!"
 
 Hopping out resets the timer. The times and lines are in the "Traps" part of `js/main.js`.
+
+## The fireplace mice (`js/mice.js`)
+The living room fireplace is a little sooty nook Rae can walk into, with a tiny black mouse hole at
+the back ("Ooh, that looks like a mouse hole!"). Stay there for 5 seconds and a little white mouse
+pokes its head out for a look, then ducks back in. Wait 10 seconds more and two mice scurry out
+and do a little dance (that's the 🐭 **Scrumbly Secret** achievement). Hit them while they're
+dancing and they both go POP (for good). Otherwise they scurry home afterwards, and will come out
+again if you wait. The timings are at the top of `Mice` in `js/mice.js`.
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).
