@@ -50,9 +50,10 @@ const COLORS = {
   stairs:      0xd9b38e, // stair treads
   officeWall:  0xe4dbf6, // office (lilac)
   kitchenWall: 0xfdf2d0, // kitchen (cream yellow)
-  kitchenFloor:0xeee6f3, // kitchen tiles
-  cabinet:     0xb9dcea, // kitchen cupboards (pastel blue)
-  worktop:     0xfffaf2, // kitchen worktop
+  kitchenFloor:0x75727f, // kitchen tiles (dark slate)
+  kitchenWood: 0xd9c2a3, // kitchen cupboards (light oak)
+  kitchenWoodLight: 0xe6d4ba, // cupboard door panels
+  worktop:     0x55525e, // kitchen worktop & breakfast bar (dark slate)
   hob:         0x8d88a2, // cooker top
   steel:       0xd8dce6, // sink & tap
   door:        0xf2c9a7, // doors

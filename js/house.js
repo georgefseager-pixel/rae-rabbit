@@ -43,7 +43,7 @@ function buildHouse(w) {
   w.addFrog(-1.2, GROUND, 16.6, FROG_COLORS.yellow); // living room, by the sofa
   w.addFrog(-2.5, LOW, 22.5, FROG_COLORS.teal);      // office
   w.addFrog(-7.0, LOW, 24.0, FROG_COLORS.lilac);     // kitchen, by the hob
-  w.addFrog(-3.0, LOW, 26.9, FROG_COLORS.peach);     // kitchen, far end
+  w.addFrog(-2.0, LOW, 26.6, FROG_COLORS.peach);     // kitchen, by the breakfast bar
 }
 
 // =====================================================
@@ -742,42 +742,11 @@ function buildKitchen(w) {
   w.addDeco("back-door", -6.6, -5.4, LOW, LOW + 2.1, 19, 19.04, COLORS.door);
   w.addDeco("back-door-knob", -6.45, -6.35, LOW + 1.0, LOW + 1.1, 19.04, 19.09, COLORS.steel);
 
-  // ---- Counters: 1.9m tall cupboards with a worktop ----
-  const top = LOW + 1.8, depth = 1.3;
-  // Along the far wall
-  w.addSpan("counter", 0.6, -9.85 + depth, LOW, top, 29 - depth, 29, COLORS.cabinet);
-  w.addSpan("worktop", 0.6, -9.85 + depth, top, top + 0.1, 29 - depth - 0.08, 29, COLORS.worktop);
-  // Along the side wall
-  w.addSpan("counter", -9.85, -9.85 + depth, LOW, top, 19.6, 29, COLORS.cabinet);
-  w.addSpan("worktop", -9.85, -9.85 + depth + 0.08, top, top + 0.1, 19.52, 29, COLORS.worktop);
-  // Cupboard doors (decoration): pale panels along the fronts
-  for (let x = 0.4; x > -8.4; x -= 1.1) {
-    w.addDeco("cupboard-door", x, x - 0.95, LOW + 0.15, top - 0.15, 29 - depth - 0.02, 29 - depth, COLORS.sky);
-  }
-  for (let z = 20.0; z < 27.5; z += 1.1) {
-    w.addDeco("cupboard-door", -9.85 + depth, -9.85 + depth + 0.02, LOW + 0.15, top - 0.15, z, z + 0.95, COLORS.sky);
-  }
-
-  // Sink (by the side-wall window) and tap
-  const wt = top + 0.1;
-  w.addDeco("sink", -8.8, -9.6, wt, wt + 0.02, 25.6, 27.0, COLORS.steel);
-  w.addDeco("tap", -9.7, -9.6, wt, wt + 0.35, 26.25, 26.35, COLORS.steel);
-  w.addDeco("tap-spout", -9.7, -9.35, wt + 0.3, wt + 0.35, 26.25, 26.35, COLORS.steel);
-  w.addWindow({ x: -9.85 }, 25.3, 27.3, wt + 0.25, wt + 1.6, +1);
-
-  // Hob with four rings
-  w.addDeco("hob", -8.75, -9.65, wt, wt + 0.02, 22.6, 24.2, COLORS.hob);
-  for (const x of [-8.98, -9.42]) {
-    for (const z of [23.0, 23.8]) {
-      const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.03, 8), pastel(COLORS.walnut));
-      ring.position.set(x, wt + 0.03, z);
-      w.add(new Prop({ name: "hob-ring", mesh: ring, solid: false }));
-    }
-  }
-
-  // Windows above the far counter
-  w.addWindow({ z: 29 }, -4.6, -1.4, wt + 0.25, wt + 1.6, -1);
+  // Everything else in the kitchen (from the photos) is in kitchen.js:
+  // the long counter, the high wall cupboards, and the breakfast bar
+  buildKitchenInsides(w);
 
   w.addRoomLight(-6.5, H - 0.3, 26.5, 0.6, 15);
   w.addRoomLight(-7, H - 0.3, 21, 0.35, 8);
+  w.addRoomLight(-2, H - 0.3, 27.5, 0.4, 9);
 }

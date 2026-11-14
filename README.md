@@ -43,6 +43,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
+| `js/kitchen.js` | The kitchen furniture, the high-shelf parkour route, bottles and plant pots |
 | `js/player.js` | Rae's controls, hopping, stairs and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
 
@@ -68,7 +69,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
     on the desk (hop onto the chair seat from the side, then onto the desk).
 - **Stairs**: six steps down to the kitchen level (1.2m lower). Rae walks up and down them; no hopping needed.
 - **Office** (the small bedroom on the plan): at the bottom of the stairs, door facing the stairs. Grey carpet; desk under the window (computer, books, drink, cat mouse mat, high-backed chair, poster and plant on the sill); pine shoe racks full of shoes opposite the door, more shoes on the floor; a pile of backpacks in the corner. Shoes, backpacks, books, the bottle, poster, plant and computer are all breakable.
-- **Kitchen**: L-shape wrapping round the office. Tall counters along two walls with a sink, hob and windows; a (closed) back door.
+- **Kitchen** (from photos, built in `js/kitchen.js`): L-shape wrapping round the office. The long counter (oak cupboards, dark worktop) has bottles, chopping boards, a pestle & mortar, a bag of oranges, the hob with a frying pan, the sink, the microwave and the washing machine, with windows all along. Across the aisle, tall wall cupboards: their top is the **high shelf**, with a carrot on it. Parkour route: step stool -> worktop -> microwave -> running leap across the aisle (jump right at the edge of the microwave). Round the corner, the breakfast bar with stools, a mini fridge, a bin, the step stool and lots of plants. Almost everything on the counters is breakable.
 - **Doors**: every doorway has a door that smashes to pieces when Rae touches it.
 
 ## The Flopsy Shop

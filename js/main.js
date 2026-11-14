@@ -237,7 +237,17 @@ const RAE_LINES = {
   "smash-backpack": ["Bag smash!", "The homework escaped!", "That bag had snacks in it, right?"],
   "smash-computer": ["Blue screen of... crumbs!", "Ctrl+Alt+DESTROYED!", "Game over, computer!"],
   "smash-shoes":    ["Shoe-per smash!", "Sole destroyer!", "These shoes were made for smashin'!"],
-  "smash-bottle":   ["Sports fuel? More like sports SPILL!", "Glug glug... splash!", "Hydration nation!"],
+  "smash-bottle":   ["Glug glug... SPLASH!", "That's a lot of bottles to recycle!", "Hydration nation!"],
+  "smash-pan":      ["Pan-demonium!", "Dinner's ruined!", "Frying pan? Flying pan!"],
+  "smash-jug":      ["Filter THIS!", "Water everywhere!", "Splash-tastic!"],
+  "smash-board":    ["Chop chop!", "Board? Never!", "Cutting board, cut short!"],
+  "smash-mortar":   ["Pestle? I hardly know her!", "Grind time!", "Mortar-fied!"],
+  "smash-oranges":  ["Orange you glad I did that?", "Juicy!", "Citrus chaos!"],
+  "smash-paper-towel": ["Roll with it!", "Paper towel, meet bunny paw!", "Who needs to wipe anything?"],
+  "smash-paint":    ["Paint the town pastel!", "Splat!", "That's one way to redecorate!"],
+  "smash-cereal":   ["Breakfast is served... everywhere!", "Snap, crackle, POP!", "Cereal killer!"],
+  "smash-box":      ["Boxed in? Not me!", "Out of the box!", "What was in there? Doesn't matter now!"],
+  "smash-tape":     ["That's a wrap!", "Stuck? Not anymore!", "Tape-tastrophe!"],
   // frogs and hearts
   "frog-spotted":    ["Eep! A frog!", "Oh no, froggy business!", "Ribbit yourself, mister!"],
   "frog-popped":     ["Pop goes the frog! Rabbits rule!", "Boing! Frog flattened!", "Frog? More like flop!"],
@@ -258,6 +268,7 @@ const RAE_LINES = {
   "zone-wardrobe":     ["A secret hideout! It smells like laundry.", "Ooh, a cosy closet!", "Narnia? No... just a wardrobe."],
   "zone-living-room":  ["Ooh, so cosy in here!", "What a comfy room!", "Sofa! TV! Snacks?"],
   "zone-office":       ["This is where the humans do work-stuff.", "Shh... someone's working!", "Office? More like nap room."],
+  "zone-high-shelf":   ["I made it to the top!", "King of the cupboards!", "The view from up here is amazing!"],
   "zone-kitchen":      ["Down the rabbit hole... something smells yummy!", "Kitchen! Where are the carrots kept?", "Mmm, snack headquarters!"],
 };
 // Said EVERY time a carrot heals her (not just the first time)
