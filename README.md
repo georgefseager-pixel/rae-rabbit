@@ -239,9 +239,10 @@ table, the wardrobe's mirror door, the full-length mirror on the corridor's side
 the bathroom sink, and a small one standing on the black side table by the sofa, leaning against the wall (hop onto the table from the sofa arm).
 
 **Graphics setting (for slower computers):** the main menu and pause screen have a 🖥️ Graphics switch
-(controller: X). "Detailed" has sharp mirrors that update every frame; "Faster" uses tiny, softer
-reflections that update every third frame, and draws the game at normal resolution on sharp
-(high-DPI) laptop screens. The choice is remembered on that computer.
+(controller: X cycles through them). "Detailed" has sharp mirrors that update every frame; "Faster"
+uses tiny, softer reflections that update every third frame; "Fastest" turns reflections off
+completely (mirrors become plain glazed glass). Faster and Fastest also draw the game at normal
+resolution on sharp (high-DPI) laptop screens. The choice is remembered on that computer.
 
 **What else keeps it running smoothly** (in case you add things):
 - Only the 4 room lamps nearest Rae are switched on (`World.LAMPS` in `js/world.js`); lights are the

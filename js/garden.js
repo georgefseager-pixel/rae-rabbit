@@ -127,6 +127,7 @@ function addSceneryTree(w, x, z, height, radius, colors) {
 // Route: living room window -> low branch (A) -> (B) -> the fork round the trunk (C)
 //   -> up to the high branch (E, carrot!) ... or hop across to the side branch with
 //   the bird's nest (F, carrot!) ... then down the branch (D) to the office window.
+const greens0 = [0x7fb36a, 0x9ac46f, 0x8fbf6f, 0xd9b04f]; // leaf colours
 function buildTree(w) {
   const G = GARDEN_GROUND, tx = 3.2, tz = 21.6;
   // Trunk (and a second, leaning trunk, just for looks)
@@ -144,7 +145,7 @@ function buildTree(w) {
     ["A", 1.15, 3.0, 1.0, 19.15, 19.8],   // right outside the living room window
     ["B", 1.9, 3.8, 1.7, 20.2, 20.9],
     ["C", 2.4, 4.1, 2.35, 21.1, 22.3],   // the big fork around the trunk
-    ["E", 3.6, 4.9, 3.0, 22.4, 22.95],     // the high branch
+    ["E", 3.4, 5.0, 2.85, 22.35, 23.2],    // the high branch (a comfy hop up from the fork)
     ["F", 4.3, 5.4, 1.9, 20.25, 20.9],     // the side branch with the nest
     ["D", 1.15, 2.6, 1.25, 22.85, 23.75],  // right outside the office window
   ];
@@ -159,7 +160,19 @@ function buildTree(w) {
   nest.position.set(4.95, 1.98, 20.57);
   w.add(new Prop({ name: "nest", mesh: nest, solid: false }));
   w.add(new Carrot(4.95, 2.3, 20.57));
-  w.add(new Carrot(4.6, 3.35, 22.67));   // at the end of the high branch
+  w.add(new Carrot(4.4, 3.2, 22.8));     // on the high branch
+  // A thick wall of leaves along the high branch's far edges: hop too far and Rae
+  // bumps into the leaves and drops onto the branch, instead of sailing right past it
+  const leafWall = [[5.0, 5.45, 22.35, 23.75], [3.4, 5.45, 23.3, 23.75]];
+  for (const [x1, x2, z1, z2] of leafWall) {
+    w.addSpan("leaves", x1, x2, 2.69, 3.95, z1, z2, 0x8fbf6f).mesh.visible = false;
+  }
+  for (const [x, y, z, r] of [[5.25, 3.25, 22.5, 0.42], [5.25, 3.3, 23.05, 0.45], [5.15, 3.3, 23.55, 0.45],
+                              [4.6, 3.25, 23.55, 0.42], [3.95, 3.3, 23.55, 0.45], [5.2, 3.75, 23.1, 0.4]]) {
+    const clump = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), pastel(greens0[(Math.round(x * 7 + z)) % 4]));
+    clump.position.set(x, y, z);
+    w.add(new Prop({ name: "scenery", mesh: clump, solid: false }));
+  }
   w.add(new Carrot(3.8, 2.7, 21.6));     // on the fork, by the trunk
 
   // Leaves: a big canopy above, and clumps at the ends of some branches (just for looks)
@@ -170,7 +183,7 @@ function buildTree(w) {
     leaves.position.set(tx + Math.cos(a) * 1.6, 4.3 + (i % 2) * 0.6, tz + Math.sin(a) * 1.6);
     w.add(new Prop({ name: "scenery", mesh: leaves, solid: false }));
   }
-  for (const [x, y, z] of [[5.6, 2.3, 20.55], [5.15, 3.5, 22.65], [2.9, 3.6, 19.4]]) {
+  for (const [x, y, z] of [[5.6, 2.3, 20.55], [2.9, 3.6, 19.4]]) {
     const clump = new THREE.Mesh(new THREE.IcosahedronGeometry(0.45, 0), pastel(greens[(x * 3) % 4 | 0]));
     clump.position.set(x, y, z);
     w.add(new Prop({ name: "scenery", mesh: clump, solid: false }));

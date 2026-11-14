@@ -11,6 +11,7 @@
 // Mirror quality (a setting on the menu):
 //   "high": sharp reflections, updated every frame
 //   "low":  blurry little reflections, updated every 3rd frame
+//   "off":  no reflections: mirrors become plain glazed glass (fastest)
 // Either way, mirrors don't redraw each other, and far-away mirrors keep their last photo.
 class Mirror extends THREE.Mesh {
   static quality = "high";
@@ -35,7 +36,7 @@ class Mirror extends THREE.Mesh {
     mirrorCamera.layers.enable(LAYER_MIRROR_ONLY); // sees Rae's body
     const textureMatrix = new THREE.Matrix4();
 
-    this.material = new THREE.ShaderMaterial({
+    this.reflectMaterial = this.material = new THREE.ShaderMaterial({
       uniforms: {
         tint: { value: new THREE.Color(tint) },
         tDiffuse: { value: null },
@@ -70,6 +71,7 @@ class Mirror extends THREE.Mesh {
     this.makeTarget();
 
     this.onBeforeRender = (renderer, scene, camera) => {
+      if (Mirror.quality === "off") return; // "Fastest": no reflections
       // "Low" quality: only re-take the photo every 3rd frame (mirrors take turns),
       // and never while another mirror is taking its photo. Otherwise keep the old one.
       if (Mirror.quality === "low" && this.hasPhoto && (Mirror.frame + this.index) % 3 !== 0) return;
@@ -144,11 +146,40 @@ class Mirror extends THREE.Mesh {
 
   // (Re)make the texture the mirror's photo is drawn into, at the current quality
   makeTarget() {
-    if (this.renderTarget) this.renderTarget.dispose();
+    if (this.renderTarget) { this.renderTarget.dispose(); this.renderTarget = null; }
+    this.hasPhoto = false;
+    // "Fastest": no reflection at all, just a glazed glassy surface
+    if (Mirror.quality === "off") { this.material = Mirror.glaze(); return; }
+    this.material = this.reflectMaterial;
     const low = Mirror.quality === "low";
     const size = low ? 160 : Math.min(this.baseResolution, 768);
     this.renderTarget = new THREE.WebGLRenderTarget(size, size, { samples: low ? 0 : 2 });
     this.material.uniforms.tDiffuse.value = this.renderTarget.texture;
-    this.hasPhoto = false;
+  }
+
+  // The glazed look for "Fastest" (made once, shared by every mirror): pale blue-grey glass
+  // with a soft sheen and two diagonal streaks of light. No lighting maths: very cheap.
+  static glaze() {
+    if (!Mirror.glazeMaterial) {
+      const c = document.createElement("canvas");
+      c.width = c.height = 128;
+      const x = c.getContext("2d");
+      const g = x.createLinearGradient(0, 0, 128, 128);
+      g.addColorStop(0, "#e9f1f7");
+      g.addColorStop(0.55, "#c5d3df");
+      g.addColorStop(1, "#aebfce");
+      x.fillStyle = g;
+      x.fillRect(0, 0, 128, 128);
+      x.fillStyle = "rgba(255, 255, 255, 0.55)";
+      for (const [at, width] of [[34, 16], [62, 7]]) {
+        x.beginPath();
+        x.moveTo(at, 0); x.lineTo(at + width, 0); x.lineTo(at + width - 60, 128); x.lineTo(at - 60, 128);
+        x.fill();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.encoding = THREE.sRGBEncoding;
+      Mirror.glazeMaterial = new THREE.MeshBasicMaterial({ map: tex });
+    }
+    return Mirror.glazeMaterial;
   }
 }

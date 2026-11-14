@@ -412,19 +412,19 @@ function resumeGame() {
 // Clicking the pause card carries on (before the game starts, pick a mode instead)
 overlay.addEventListener("click", () => { if (started) resumeGame(); });
 
-// ---- Graphics setting (Detailed / Faster): mirror quality and screen resolution ----
+// ---- Graphics setting (Detailed / Faster / Fastest): mirror quality and screen resolution ----
 // Remembered on this computer for next time.
 const mirrorButtons = [...document.querySelectorAll("#mirror-setting button")];
 function setMirrorQuality(quality) {
   Mirror.setQuality(quality);
-  // "Faster" also draws the game at normal resolution on sharp (high-DPI) laptop screens
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, quality === "low" ? 1 : 1.5));
+  // "Faster" and "Fastest" also draw the game at normal resolution on sharp (high-DPI) laptop screens
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, quality === "high" ? 1.5 : 1));
   renderer.setSize(window.innerWidth, window.innerHeight);
   mirrorButtons.forEach((b) => b.classList.toggle("on", b.dataset.quality === quality));
   try { localStorage.setItem("rae-mirrors", quality); } catch (e) { /* can't save: fine */ }
 }
 function toggleMirrorQuality() {
-  setMirrorQuality(Mirror.quality === "high" ? "low" : "high");
+  setMirrorQuality({ high: "low", low: "off", off: "high" }[Mirror.quality]); // Detailed -> Faster -> Fastest -> ...
 }
 mirrorButtons.forEach((b) => b.addEventListener("click", (e) => {
   e.stopPropagation(); // don't also un-pause the game
@@ -432,7 +432,7 @@ mirrorButtons.forEach((b) => b.addEventListener("click", (e) => {
 }));
 let savedMirrors = "high";
 try { savedMirrors = localStorage.getItem("rae-mirrors") || "high"; } catch (e) {}
-setMirrorQuality(savedMirrors === "low" ? "low" : "high");
+setMirrorQuality(["high", "low", "off"].includes(savedMirrors) ? savedMirrors : "high");
 
 document.addEventListener("pointerlockchange", () => {
   if (document.pointerLockElement !== canvas && started && !gameOver && !inShop) showPauseScreen();

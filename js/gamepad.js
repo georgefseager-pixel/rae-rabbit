@@ -69,7 +69,7 @@ function handleGamepad(dt) {
   const endShown = !document.getElementById("gameover").classList.contains("hidden") ||
     !document.getElementById("win").classList.contains("hidden");
   const startOrPauseShown = !overlay.classList.contains("hidden");
-  // X on the menu / pause screen switches the mirror quality
+  // X on the menu / pause screen switches the graphics setting (Detailed / Faster / Fastest)
   if (startOrPauseShown && !endShown && !inShop && !Achievements.isOpen() && pressed(BTN.X)) toggleMirrorQuality();
 
   if (endShown) {
