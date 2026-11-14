@@ -328,6 +328,33 @@ const Sfx = {
     src.start(t);
   },
 
+  // A big bird's cry: a high, wavering "skreeee-ah!" that falls away
+  screech() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const wobble = this.ctx.createOscillator();
+    const wobbleAmount = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(2300, t);
+    osc.frequency.exponentialRampToValueAtTime(3100, t + 0.12);
+    osc.frequency.exponentialRampToValueAtTime(1200, t + 0.7);
+    wobble.frequency.value = 28;
+    wobbleAmount.gain.value = 140;
+    wobble.connect(wobbleAmount).connect(osc.frequency);
+    filter.type = "bandpass";
+    filter.frequency.value = 2400;
+    filter.Q.value = 1.2;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.18, t + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.75);
+    osc.connect(filter).connect(gain).connect(this.master);
+    osc.start(t); wobble.start(t);
+    osc.stop(t + 0.8); wobble.stop(t + 0.8);
+  },
+
   // A little squeak (punching Flopsy)
   squeak() {
     if (!this.ctx) return;

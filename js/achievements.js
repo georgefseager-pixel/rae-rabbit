@@ -9,22 +9,25 @@
 
 const ACHIEVEMENT_SLOTS = 9;
 const ACHIEVEMENTS = [
+  // (The descriptions are hints, not instructions: half the fun is working them out!)
   { id: "carrotventure", icon: "🚽", name: "Just in Time!",
-    desc: "Beat Carrotventure: eat all the carrots, then make it to the toilet." },
+    desc: "Eat every last carrot in Carrotventure... then deal with the consequences." },
   { id: "frogpocalypse", icon: "👑", name: "Frog Slayer",
-    desc: "Beat Frogpocalypse: defeat Jiggle Jaggle, Fraggle Friggle and Tiggle Taggle." },
+    desc: "Outlast the Frogpocalypse, and whoever comes after it." },
   { id: "pacifist", icon: "🕊️", name: "Pacifist",
-    desc: "Beat Carrotventure without popping a single frog." },
+    desc: "Finish Carrotventure as the gentlest bunny ever." },
   { id: "friendly-fire", icon: "🎯", name: "Friendly Fire",
-    desc: "Zap a frog with the 'Rae' Gun while it's waving at you in your frog face shirt." },
+    desc: "Betray a frog who thinks you're one of the family." },
   { id: "washed", icon: "🫧", name: "Spin Cycle",
-    desc: "Stay in the washing machine until the door slams shut. Poor Rae!" },
+    desc: "Get far too comfortable somewhere in the kitchen." },
   { id: "eaten", icon: "🦈", name: "Snack Time",
-    desc: "Stay in the bath until Ducky gets hungry. Poor Rae!" },
+    desc: "Enjoy a nice long soak. Someone's watching..." },
   { id: "flopsy-mode", icon: "☁️", name: "Tiny but Mighty",
-    desc: "Beat Flopsy Mode: every carrot (hopping across the clouds), then the toilet." },
+    desc: "Find every carrot as someone much smaller than Rae." },
   { id: "scrumbly", icon: "🐭", name: "Scrumbly Secret",
-    desc: "Wait by the mouse hole in the fireplace... and see what happens." },
+    desc: "Be patient in the cosiest corner of the living room." },
+  { id: "roof", icon: "🦅", name: "Up, Up and Away",
+    desc: "Climb higher than any bunny should." },
 ];
 
 const Achievements = {

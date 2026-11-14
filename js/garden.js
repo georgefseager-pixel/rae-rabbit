@@ -90,8 +90,9 @@ function buildGarden(w) {
     w.addDeco("mortar", 2.73, 4.5, y, y + 0.02, 19.03, 19.04, 0xe2c2ae);
   }
   // a simple roof over everything
-  w.addDeco("roof", -4.6, 4.6, H + 0.5, H + 0.6, -4.6, 19.05, 0x9a94a6);    // over the bedroom...living room
-  w.addDeco("roof", -10.4, 1.15, H + 0.5, H + 0.6, 18.5, 29.6, 0x9a94a6);  // over the kitchen & office
+  // (solid, so Rae can stand on it if she makes it up there from the tree... see bird.js!)
+  w.addSpan("roof", -4.6, 4.6, H + 0.5, H + 0.6, -4.6, 19.05, 0x9a94a6);    // over the bedroom...living room
+  w.addSpan("roof", -10.4, 1.15, H + 0.5, H + 0.6, 18.5, 29.6, 0x9a94a6);  // over the kitchen & office
 
   buildTree(w);
 

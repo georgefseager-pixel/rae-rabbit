@@ -102,6 +102,7 @@ const GAME_OVER_TITLES = {
   hearts: () => `💤 ${heroName()} needs a nap!`,
   washed: () => `🫧 ${heroName()} got washed! Poor ${heroName()}!`,
   eaten: () => `🦈 ${heroName()} got eaten by Ducky! Poor ${heroName()}!`,
+  bird: () => `🦅 ${heroName()} got carried away by a bird!`,
 };
 function showGameOver(how = "hearts") {
   if (gameOver) return;
@@ -110,6 +111,7 @@ function showGameOver(how = "hearts") {
   document.getElementById("go-title").textContent = GAME_OVER_TITLES[how]();
   if (how === "washed") Achievements.unlock("washed");
   if (how === "eaten") Achievements.unlock("eaten");
+  if (how === "bird") Achievements.unlock("roof");
   document.getElementById("go-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
   document.getElementById("go-time").textContent = formatTime(Frogpocalypse.time);
   document.getElementById("go-smashed").textContent = smashedCount;
@@ -157,7 +159,7 @@ let punchSide = 1;
 // With a weapon from Willow's shop, the same button pokes the Pokey Stick or
 // fires the 'Rae' Gun instead (see weapons.js).
 function punch() {
-  if (!started || paused || gameOver || inShop || punchCooldown > 0) return;
+  if (!started || paused || gameOver || inShop || punchCooldown > 0 || Bird.active) return;
   if (player.gentle) { raeSays("no-punch"); return; } // Flopsy Mode: no punching
   const stats = WEAPON_STATS[currentWeapon];
   punchCooldown = stats.cooldown;
@@ -716,7 +718,10 @@ function loop() {
   handleGamepad(dt); // controller input (see gamepad.js)
   Mirror.frame++;    // lets "Faster" mirrors take turns updating
 
-  if (!paused) {
+  if (Bird.active) {
+    // Carried off by the bird (bird.js): it runs the camera; the game itself stops
+    if (overlay.classList.contains("hidden")) Bird.update(dt, time);
+  } else if (!paused) {
     hurtCooldown = Math.max(0, hurtCooldown - dt);
     shopCooldown = Math.max(0, shopCooldown - dt);
     punchCooldown = Math.max(0, punchCooldown - dt);
@@ -733,6 +738,7 @@ function loop() {
     checkFrogs(Math.min(fallingSpeed, player.vel.y));
     checkCollectibles();
     checkZones();
+    if (!gameOver && Bird.onRoof()) Bird.start(); // made it onto the roof... uh oh
     if (player.standingOn && player.standingOn.name === "cloud") raeSays("first-cloud");
     if (!gameOver) checkTraps(dt); // washing machine & Ducky's bath
     updateDucky(dt, time);
