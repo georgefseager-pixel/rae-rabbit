@@ -516,3 +516,23 @@ RaeModel.prototype.poseWeapon = function (player) {
   }
   arm.rotation.z = 0.12;
 };
+
+// Repaint the body in someone else's fur colours (Flopsy Mode turns Rae's body into Flopsy's)
+RaeModel.prototype.setColors = function (colors) {
+  const swap = new Map();
+  for (const key of ["fur", "furLight", "tail"]) swap.set(new THREE.Color(this.C[key]).getHex(), colors[key]);
+  this.root.traverse((o) => {
+    if (o.isMesh && o.material && o.material.color && swap.has(o.material.color.getHex())) {
+      o.material.color.set(swap.get(o.material.color.getHex()));
+    }
+  });
+  this.C = colors;
+};
+
+// First-person paws in another fur colour (and size)
+FirstPersonPaws.prototype.setColor = function (color, size = 1) {
+  for (const paw of this.paws) {
+    paw.traverse((o) => { if (o.isMesh) o.material.color.set(color); });
+    paw.scale.setScalar(size);
+  }
+};

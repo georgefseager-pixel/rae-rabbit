@@ -21,6 +21,8 @@ const ACHIEVEMENTS = [
     desc: "Stay in the washing machine until the door slams shut. Poor Rae!" },
   { id: "eaten", icon: "🦈", name: "Snack Time",
     desc: "Stay in the bath until Ducky gets hungry. Poor Rae!" },
+  { id: "flopsy-mode", icon: "☁️", name: "Tiny but Mighty",
+    desc: "Beat Flopsy Mode: every carrot (hopping across the clouds), then the toilet." },
 ];
 
 const Achievements = {

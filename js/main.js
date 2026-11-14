@@ -99,15 +99,15 @@ let gameOver = false;
 // Out of hearts: pause, and show how she did, with a button to play again
 // how: "hearts" (out of hearts), "washed" (washing machine) or "eaten" (Ducky)
 const GAME_OVER_TITLES = {
-  hearts: "💤 Rae needs a nap!",
-  washed: "🫧 Rae got washed! Poor Rae!",
-  eaten: "🦈 Rae got eaten by Ducky! Poor Rae!",
+  hearts: () => `💤 ${heroName()} needs a nap!`,
+  washed: () => `🫧 ${heroName()} got washed! Poor ${heroName()}!`,
+  eaten: () => `🦈 ${heroName()} got eaten by Ducky! Poor ${heroName()}!`,
 };
 function showGameOver(how = "hearts") {
   if (gameOver) return;
   gameOver = true;
   paused = true;
-  document.getElementById("go-title").textContent = GAME_OVER_TITLES[how];
+  document.getElementById("go-title").textContent = GAME_OVER_TITLES[how]();
   if (how === "washed") Achievements.unlock("washed");
   if (how === "eaten") Achievements.unlock("eaten");
   document.getElementById("go-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
@@ -130,7 +130,8 @@ function checkFrogs(fallingSpeed) {
     const top = frog.top();
     const stompReach = frog.radius + 0.14, bumpReach = frog.radius + 0.2; // smaller frogs are harder to land on
     if (flat < stompReach && fallingSpeed < 0 && player.pos.y <= top + 0.05 && player.pos.y >= top - 0.3) {
-      hitFrog(frog, "stomp");
+      if (player.gentle) { Sfx.boing(); raeSays("frog-bounce"); } // Flopsy can't hurt frogs: just a bounce
+      else hitFrog(frog, "stomp");
       player.pos.y = top;
       player.vel.y = 5.5;   // boing off its head
       player.onGround = false;
@@ -157,6 +158,7 @@ let punchSide = 1;
 // fires the 'Rae' Gun instead (see weapons.js).
 function punch() {
   if (!started || paused || gameOver || inShop || punchCooldown > 0) return;
+  if (player.gentle) { raeSays("no-punch"); return; } // Flopsy Mode: no punching
   const stats = WEAPON_STATS[currentWeapon];
   punchCooldown = stats.cooldown;
   if (currentWeapon === "raygun") {
@@ -313,7 +315,14 @@ const RAE_LINES = {
 // Said EVERY time a carrot heals her (not just the first time)
 const CARROT_HEAL_LINES = ["Crunchy! I feel better already!", "Carrot power! Heart restored!", "Nom nom... all better!"];
 
+// Who you're playing as
+function heroName() { return gameMode === "flopsy" ? "Flopsy" : "Rae"; }
+
 function raeSays(id) {
+  if (gameMode === "flopsy") { // Flopsy has her own lines (flopsymode.js); otherwise she stays quiet
+    if (FLOPSY_MODE_LINES[id]) Dialogue.sayOnce(id, FLOPSY_MODE_LINES[id]);
+    return;
+  }
   if (RAE_LINES[id]) Dialogue.sayOnce(id, RAE_LINES[id]);
 }
 
@@ -389,6 +398,7 @@ function startGame(mode) {
   if (started) return;
   gameMode = mode;
   if (mode === "frog") Frogpocalypse.start();
+  if (mode === "flopsy") FlopsyMode.start();
   menuEl.classList.add("hidden");
   overlayTitle.classList.remove("hidden");
   resumeGame();
@@ -504,7 +514,7 @@ function showWin(how = "boss") {
   paused = true;
   if (how === "toilet") {
     document.getElementById("win-title").textContent = "🚽 YOU WIN! 🚽";
-    document.getElementById("win-sub").textContent = "Phew! Rae made it to the toilet just in time!";
+    document.getElementById("win-sub").textContent = `Phew! ${heroName()} made it to the toilet just in time!`;
     document.getElementById("win-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
     Sfx.flush();
   }
@@ -516,8 +526,9 @@ function showWin(how = "boss") {
   Sfx.win();
   // Achievements (see achievements.js)
   if (how === "toilet") {
-    Achievements.unlock("carrotventure");
-    if (stompedCount === 0) Achievements.unlock("pacifist"); // not a single frog popped!
+    if (gameMode === "flopsy") Achievements.unlock("flopsy-mode");
+    else Achievements.unlock("carrotventure");
+    if (stompedCount === 0 && gameMode !== "flopsy") Achievements.unlock("pacifist"); // not a single frog popped!
   } else {
     Achievements.unlock("frogpocalypse");
   }
@@ -530,11 +541,11 @@ let needsToilet = false;
 function tooManyCarrots() {
   needsToilet = true;
   Sfx.rumble();
-  Dialogue.say("Uh oh - too many carrots!");
+  Dialogue.say(gameMode === "flopsy" ? "Uh oh!!! Too many carrots for this Flopsy!!!" : "Uh oh - too many carrots!");
   setTimeout(() => {
     if (gameOver) return;
-    Dialogue.say("Rae needs to get to the toilet!");
-    showBanner("🚽 Quick! Get Rae to the toilet!");
+    Dialogue.say(gameMode === "flopsy" ? "Flopsy needs to get to the toilet!!!" : "Rae needs to get to the toilet!");
+    showBanner(`🚽 Quick! Get ${heroName()} to the toilet!`);
   }, 1800);
 }
 
@@ -717,6 +728,7 @@ function loop() {
     checkFrogs(Math.min(fallingSpeed, player.vel.y));
     checkCollectibles();
     checkZones();
+    if (player.standingOn && player.standingOn.name === "cloud") raeSays("first-cloud");
     if (!gameOver) checkTraps(dt); // washing machine & Ducky's bath
     updateDucky(dt, time);
     for (const frog of frogs) frog.update(dt, player, time);

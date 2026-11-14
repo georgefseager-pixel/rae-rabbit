@@ -34,6 +34,16 @@ Pick a game mode from the main menu:
     (`FROGPOCALYPSE_CHATTER` and `FROGPOCALYPSE_QUIET` at the bottom of `js/frog.js`).
   Spawn rates, the frog limit, the boss time and the parcel count are at the top of
   `js/frogpocalypse.js`; the bosses' health, speed and lines are in `BOSSES` at the top of `js/frog.js`.
+- **☁️ Flopsy Mode** (`js/flopsymode.js`): play as tiny Flopsy. Everything feels huge: her eyes are
+  low, her hops are small (about 0.6 m, Rae's are 1.2 m) and she walks slower. The goal is the same
+  as Carrotventure (all 20 carrots, then the toilet), but she can't do Rae's usual jumps, so **fluffy
+  cloud platforms** float all over the house, in little staircases up to every high-up carrot, the
+  toilet, the bath (and back out again), the living room window and around the garden tree. Flopsy
+  can't smash things (they're solid to her; the doors start open) and can't hurt frogs (landing on
+  one just bounces her off it), so there are only 4 frogs. Both shops are shut. Most cloud
+  staircases are worked out automatically when the mode starts (`Clouds.TARGETS`: what each one
+  leads to); a few are placed by hand (`Clouds.HAND_PLACED`: the tree, the fridge, the way out of
+  the bath). If you move furniture, the automatic ones adjust themselves.
 
 - **W A S D**: move
 - **Mouse**: look around (or hold the button and drag, if the browser won't capture the mouse)
@@ -61,6 +71,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
 | `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up both shops |
+| `js/flopsymode.js` | Flopsy Mode: playing as Flopsy, and the cloud platforms |
 | `js/achievements.js` | The achievements list, saving them, the popup and the Achievements screen |
 | `js/weapons.js` | Weapon stats (paws, Pokey Stick, 'Rae' Gun) and the gun's green balls |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
@@ -134,7 +145,7 @@ are at the top of `js/weapons.js`. Both shops close in the Frogpocalypse, so it'
 
 ## Achievements
 Click **🏆 Achievements** on the main menu (or press **Y** on a controller) to see them. There's
-room for 9; six exist so far:
+room for 9; seven exist so far:
 
 | Achievement | How to earn it |
 |-------------|----------------|
@@ -144,6 +155,7 @@ room for 9; six exist so far:
 | 🎯 Friendly Fire | Zap a frog with the 'Rae' Gun while it's waving at Rae in her frog face shirt |
 | 🫧 Spin Cycle | Stay in the washing machine drum for 10 seconds (the door slams shut!) |
 | 🦈 Snack Time | Stay in the bath water for 10 seconds (Ducky gets hungry...) |
+| ☁️ Tiny but Mighty | Beat Flopsy Mode |
 
 A gold popup appears when you earn one. They're remembered on that computer and browser. Add more
 in `ACHIEVEMENTS` at the top of `js/achievements.js`, and call `Achievements.unlock("their-id")`

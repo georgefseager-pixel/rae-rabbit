@@ -124,7 +124,7 @@ class Player {
 
     // Breakable things don't stop Rae: touching them smashes them instead.
     const smashIfBreakable = (s) => {
-      if (!s.breakable) return false;
+      if (!s.breakable || this.gentle) return false; // (gentle Flopsy can't smash things: they're solid to her)
       world.breakProp(s);
       return true;
     };
@@ -137,7 +137,7 @@ class Player {
       test.y = s.box.max.y + 0.001;
       const box = this.boxAt(test);
       for (const o of solids) {
-        if (o !== s && !o.broken && !o.breakable && this.overlaps(box, o.box)) return false;
+        if (o !== s && !o.broken && (!o.breakable || this.gentle) && this.overlaps(box, o.box)) return false;
       }
       this.pos.y = test.y;
       return true;
@@ -163,6 +163,7 @@ class Player {
 
     this.onGround = false;
     let landedOn = null;
+    this.standingOn = null;
     this.pos.y += this.vel.y * dt;
     for (const s of solids) {
       if (s.broken) continue;
@@ -172,6 +173,7 @@ class Player {
           this.pos.y = s.box.max.y; // landed on top of it
           this.onGround = true;
           landedOn = s;
+          this.standingOn = s;
         } else {
           this.pos.y = s.box.min.y - this.height - eps; // bonked head
         }

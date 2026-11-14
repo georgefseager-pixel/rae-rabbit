@@ -175,8 +175,8 @@ body:not(.boss-fight) .boss-only { display: none !important; }
 .menu-sub { margin: 6px 0 14px; color: #8a7590; font-size: 18px; }
 .modes { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 14px; }
 .mode {
-  flex: 1 1 200px;
-  max-width: 260px;
+  flex: 1 1 170px;
+  max-width: 230px;
   padding: 16px 14px;
   border: 3px solid transparent;
   border-radius: 20px;
@@ -189,6 +189,8 @@ body:not(.boss-fight) .boss-only { display: none !important; }
 .mode:hover, .mode.selected { transform: translateY(-3px); border-color: #f7a8c4; box-shadow: 0 6px 0 #f7a8c4; background: #fff; }
 .mode[data-mode="frog"] { background: #e4f6dc; }
 .mode[data-mode="frog"]:hover, .mode[data-mode="frog"].selected { border-color: #8fd47c; box-shadow: 0 6px 0 #8fd47c; background: #fff; }
+.mode[data-mode="flopsy"] { background: #e6f0fb; }
+.mode[data-mode="flopsy"]:hover, .mode[data-mode="flopsy"].selected { border-color: #a9c6ea; box-shadow: 0 6px 0 #a9c6ea; background: #fff; }
 .mode-emoji { display: block; font-size: 40px; }
 .mode-name { display: block; font-size: 22px; font-weight: 700; margin: 4px 0; }
 .mode-desc { display: block; font-size: 14px; line-height: 1.35; color: #8a7590; }

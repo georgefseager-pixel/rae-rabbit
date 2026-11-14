@@ -58,38 +58,11 @@ const Frogpocalypse = {
       world.remove(door);
     }
 
-    // Board up the Flopsy Shop: no way in, and Flopsy is out hiding somewhere in the house
-    world.zones = world.zones.filter((z) => z.name !== "shop-door");
+    // Both wardrobe shops are boarded up. Flopsy is out hiding somewhere in the house
+    // (bonk her for extra hearts!) and Willow has gone.
+    boardUpShops();
     flopsy.onOuch = () => this.flopsyBoost();
     this.placeFlopsy(player);
-    const block = world.props.find((p) => p.name === "flopsy");
-    if (block) world.remove(block);
-    const doorZ = 0.3, face = 5.33;
-    world.add(makeThing("planks", face, 0, doorZ, [
-      ["box", [0.04, 0.11, 0.85], [0, 0.28, 0], COLORS.bedWood, { rx: 0.45 }],
-      ["box", [0.04, 0.11, 0.85], [0.01, 0.5, 0], COLORS.walnut, { rx: -0.4 }],
-      ["box", [0.04, 0.1, 0.8], [0.02, 0.68, 0], COLORS.bedWood, { rx: 0.08 }],
-    ], { solid: false }));
-    const closed = makeHandwrittenSign("CLOSED!!", 0.42, 0.15);
-    closed.rotation.y = -Math.PI / 2;
-    closed.rotation.z = -0.15;
-    closed.position.set(face - 0.05, 0.42, doorZ + 0.05);
-    world.add(new Prop({ name: "closed-sign", mesh: closed, solid: false }));
-
-    // Willow's Weapon Mart shuts too (very properly), and Willow departs
-    world.zones = world.zones.filter((z) => z.name !== "willow-door");
-    willow.leave();
-    const wBlock = world.props.find((p) => p.name === "willow");
-    if (wBlock) world.remove(wBlock);
-    const wx = 4.66, wFace = 2.3;
-    world.add(makeThing("planks", wx, 0, wFace, [
-      ["box", [0.6, 0.1, 0.04], [0, 0.3, 0], COLORS.bedWood, { rz: -0.35 }],
-      ["box", [0.6, 0.1, 0.04], [0, 0.55, -0.01], COLORS.walnut, { rz: 0.3 }],
-    ], { solid: false }));
-    const wClosed = makeTypedSign(["REGRETTABLY", "CLOSED"], 0.34, 0.14);
-    wClosed.rotation.y = Math.PI;
-    wClosed.position.set(wx, 0.68, wFace - 0.04);
-    world.add(new Prop({ name: "closed-sign", mesh: wClosed, solid: false }));
 
     // Show frogs stomped and the timer instead of carrots
     document.body.classList.add("frog-mode");
@@ -339,4 +312,40 @@ function makeParcel(ribbon) {
   beam.position.y = 1.2;
   g.add(box, ribbonA, ribbonB, ...bow, beam);
   return g;
+}
+
+// Board up both wardrobe shops (Frogpocalypse and Flopsy Mode): no way in, CLOSED signs,
+// and the shopkeepers' hidden "don't walk through me" boxes are cleared away.
+// (Flopsy herself is dealt with by each mode; Willow leaves.)
+function boardUpShops() {
+  world.zones = world.zones.filter((z) => z.name !== "shop-door" && z.name !== "willow-door");
+  for (const name of ["flopsy", "willow"]) {
+    const block = world.props.find((p) => p.name === name);
+    if (block) world.remove(block);
+  }
+  willow.leave();
+
+  // The Flopsy Shop's little door: planks and a scrawled sign
+  const doorZ = 0.3, face = 5.33;
+  world.add(makeThing("planks", face, 0, doorZ, [
+    ["box", [0.04, 0.11, 0.85], [0, 0.28, 0], COLORS.bedWood, { rx: 0.45 }],
+    ["box", [0.04, 0.11, 0.85], [0.01, 0.5, 0], COLORS.walnut, { rx: -0.4 }],
+    ["box", [0.04, 0.1, 0.8], [0.02, 0.68, 0], COLORS.bedWood, { rx: 0.08 }],
+  ], { solid: false }));
+  const closed = makeHandwrittenSign("CLOSED!!", 0.42, 0.15);
+  closed.rotation.y = -Math.PI / 2;
+  closed.rotation.z = -0.15;
+  closed.position.set(face - 0.05, 0.42, doorZ + 0.05);
+  world.add(new Prop({ name: "closed-sign", mesh: closed, solid: false }));
+
+  // Willow's Weapon Mart shuts too (very properly)
+  const wx = 4.66, wFace = 2.3;
+  world.add(makeThing("planks", wx, 0, wFace, [
+    ["box", [0.6, 0.1, 0.04], [0, 0.3, 0], COLORS.bedWood, { rz: -0.35 }],
+    ["box", [0.6, 0.1, 0.04], [0, 0.55, -0.01], COLORS.walnut, { rz: 0.3 }],
+  ], { solid: false }));
+  const wClosed = makeTypedSign(["REGRETTABLY", "CLOSED"], 0.34, 0.14);
+  wClosed.rotation.y = Math.PI;
+  wClosed.position.set(wx, 0.68, wFace - 0.04);
+  world.add(new Prop({ name: "closed-sign", mesh: wClosed, solid: false }));
 }
