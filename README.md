@@ -170,4 +170,4 @@ the frogs' and Jiggle Jaggle's at the top of `js/frog.js`. Punch Flopsy and she 
 ## Mirrors
 Real reflecting mirrors (Rae's body only shows up in these): the oval vanity mirror over the white
 table, the wardrobe's mirror door, the full-length mirror on the corridor's side door, the mirror over
-the bathroom sink, and a small one propped on the floor against the black side table by the sofa.
+the bathroom sink, and a small one standing on the black side table by the sofa, leaning against the wall (hop onto the table from the sofa arm).

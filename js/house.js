@@ -409,12 +409,11 @@ function buildSofa(w) {
   for (const [lx, lz] of [[-3.95, 17.6], [-3.22, 17.6], [-3.95, 18.33], [-3.22, 18.33]]) {
     w.addSpan("side-table-leg", lx, lx + 0.07, 0, 0.88, lz, lz + 0.07, COLORS.softBlack);
   }
-  // A small mirror propped on the floor, leaning back against the side table
-  // (at bunny height, so Rae sees herself walking past). A hidden box stops her walking through it.
-  const lean = 0.2, mh = 0.8;
-  w.addRectMirror(-3.02 - (mh / 2) * Math.sin(lean), 0.02 + (mh / 2) * Math.cos(lean), 18.0, 0.5, mh, "+x",
+  // A small mirror standing on the side table, leaning back against the wall
+  const lean = 0.2, mh = 0.8, tableTop = 0.95;
+  const baseX = -3.97 + mh * Math.sin(lean); // its bottom edge, so the top just touches the wall
+  w.addRectMirror(baseX - (mh / 2) * Math.sin(lean), tableTop + 0.02 + (mh / 2) * Math.cos(lean), 18.0, 0.5, mh, "+x",
     COLORS.tvBlack, { lean, resolution: 512 });
-  w.addSpan("mirror-stand", -3.2, -2.98, 0, 0.75, 17.72, 18.28, COLORS.tvBlack).mesh.visible = false;
   // Side table clutter: remote, a jar and a red notebook
   w.addDeco("remote", -3.75, -3.35, 0.95, 0.99, 17.62, 17.72, COLORS.tvBlack);
   w.add(makeThing("jar", -3.55, 0.95, 18.15, [
