@@ -168,6 +168,7 @@ function landPunch() {
   }
   // Poor Flopsy!
   if (flopsy.middle().distanceTo(hit) < PUNCH_RADIUS + 0.15) flopsy.ouch();
+  if (willow.middle().distanceTo(hit) < PUNCH_RADIUS + 0.15) willow.ouch();
 }
 
 // ---- Dancing (G key / Y button) ----
@@ -322,7 +323,7 @@ function fallOffTree() {
 }
 
 // ---- The Flopsy Shop & Flopsy: see shop.js ----
-const flopsy = new Flopsy(scene, world.flopsySpot.x, world.flopsySpot.y, world.flopsySpot.z);
+const { flopsy, willow } = makeShopKeepers(scene, world);
 
 let collectedCount = 0;
 const totalCollectibles = world.collectibles().length;
@@ -510,6 +511,7 @@ function loop() {
     checkZones();
     for (const frog of frogs) frog.update(dt, player, time);
     flopsy.update(dt, player, time);
+    willow.update(dt, player, time);
     checkUnlocks();
     Frogpocalypse.update(dt, player);
     frogCountEl.textContent = stompedCount;
@@ -527,4 +529,4 @@ function loop() {
 loop();
 
 // Handy for debugging in the browser console: type  game  and press Enter
-window.game = { world, player, scene, camera, raeModel, paws, frogs, flopsy, Frogpocalypse };
+window.game = { world, player, scene, camera, raeModel, paws, frogs, flopsy, willow, Frogpocalypse };

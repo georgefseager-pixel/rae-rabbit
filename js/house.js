@@ -161,12 +161,12 @@ function buildWardrobe(w) {
   w.add(new Prop({ name: "rail", mesh: rail, solid: false }));
 
   // A row of hanging shirts (decoration: Rae runs underneath them),
-  // with a gap in front of the Flopsy Shop door
+  // with gaps in front of the Flopsy Shop door and Willow's Weapon Mart
   const shirtColors = [COLORS.book2, COLORS.canMint, COLORS.butter, COLORS.sofaCushion, COLORS.leaf,
     0x8ea7c9, COLORS.bamboo, COLORS.canLilac, COLORS.tvBlack, COLORS.pillow];
   let i = 0;
   for (let z = z1 + 0.1; z < z2 - 0.1; z += 0.11) {
-    if (z > -0.2 && z < 0.75) continue;
+    if ((z > -0.2 && z < 0.75) || z > 1.65) continue;
     const bottom = 1.05 + ((i * 53) % 7) * 0.06; // some shirts are longer than others
     w.addDeco("shirt", 4.5, 5.1, bottom, shelfY - 0.14, z, z + 0.07, shirtColors[(i * 7) % shirtColors.length]);
     i++;
@@ -181,6 +181,11 @@ function buildWardrobe(w) {
   w.flopsySpot = { x: 5.05, y: 0, z: -0.28 };
   const flopsyBlock = w.addSpan("flopsy", 4.92, 5.18, 0, 0.36, -0.41, -0.15, COLORS.floor);
   flopsyBlock.mesh.visible = false;
+  buildWillowDoor(w, z2);
+  // Willow stands beside her door, near the back wall, with her own hidden box
+  w.willowSpot = { x: 5.17, y: 0, z: 2.08, yaw: 0.35 };
+  const willowBlock = w.addSpan("willow", 5.03, 5.31, 0, 0.45, 1.94, 2.22, COLORS.floor);
+  willowBlock.mesh.visible = false;
   w.addZone("shop-door", back - 0.35, back, -0.2, 0.4, 0.0, 0.6); // walk up to the little door
   w.addZone("wardrobe", 4.12, back, -0.2, 1.5, z1, z2);
 }
@@ -207,6 +212,36 @@ function buildFlopsyShopDoor(w, wallX, z) {
   sign.rotation.z = 0.06;          // stuck up a bit wonky
   sign.position.set(face - 0.02, top + 0.42, z);
   w.add(new Prop({ name: "shop-sign", mesh: sign, solid: false }));
+}
+
+// Willow's Weapon Mart: a formal little dark-wood door on the wardrobe's other
+// inner wall (z = wallZ, facing -z), with a brass knob and a typed brass plaque.
+// It doesn't open yet: the shop isn't ready!
+function buildWillowDoor(w, wallZ) {
+  const face = wallZ - 0.005, x = 4.66, hw = 0.24, top = 0.8;
+  const wood = 0x5b3f33, panel = 0x6e4f40, brass = 0xd8b25a;
+  w.addDeco("willow-door", x - hw, x + hw, 0, top, face - 0.05, face, wood);
+  // a little pediment on top, like a proper shop front
+  w.addDeco("willow-door", x - hw - 0.04, x + hw + 0.04, top, top + 0.05, face - 0.08, face, wood);
+  w.addDeco("willow-door", x - hw + 0.02, x + hw - 0.02, top + 0.05, top + 0.09, face - 0.06, face, wood);
+  // four raised panels
+  for (const [y1, y2] of [[0.08, 0.36], [0.44, 0.72]]) {
+    w.addDeco("willow-door-panel", x - hw + 0.05, x - 0.025, y1, y2, face - 0.065, face - 0.05, panel);
+    w.addDeco("willow-door-panel", x + 0.025, x + hw - 0.05, y1, y2, face - 0.065, face - 0.05, panel);
+  }
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.028, 8, 6), pastel(brass));
+  knob.position.set(x + hw - 0.06, 0.4, face - 0.08);
+  w.add(new Prop({ name: "willow-knob", mesh: knob, solid: false }));
+  w.addDeco("willow-mat", x - 0.28, x + 0.28, 0, 0.015, face - 0.4, face - 0.02, 0x7d2f3a); // burgundy mat
+
+  const sign = makeTypedSign(["WILLOW'S", "WEAPON MART"], 0.62, 0.24);
+  sign.rotation.y = Math.PI;  // face into the wardrobe (-z)
+  sign.position.set(x, top + 0.3, face - 0.02);
+  w.add(new Prop({ name: "willow-sign", mesh: sign, solid: false }));
+  const soon = makeTypedSign(["~ OPENING SOON ~"], 0.3, 0.07);
+  soon.rotation.y = Math.PI;
+  soon.position.set(x, 0.4, face - 0.075);
+  w.add(new Prop({ name: "willow-sign", mesh: soon, solid: false }));
 }
 
 // The king-sized bed, headboard against the bed wall, centred.

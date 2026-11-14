@@ -75,10 +75,18 @@ function buildGarden(w) {
   w.addDeco("brick", 2.73, 4.5, G, top, 19, 19.03, brick);
   w.addDeco("brick", 1.1, 2.73, G, 0.95, 19, 19.03, brick);
   w.addDeco("brick", 1.1, 2.73, 2.48, top, 19, 19.03, brick);
-  // the long side wall (living room, bathroom, bedroom)
-  w.addDeco("brick", 4.5, 4.53, G, top, -4.5, 19, brick);
+  // the long side wall (living room, bathroom, bedroom), wrapping round the
+  // bedroom wardrobe, which sticks out of this wall (x 4.5..5.9, z -2.3..2.9)
+  const wz1 = -2.3, wz2 = 2.9, wx = 5.9, wTop = 3.25;
+  w.addDeco("brick", 4.5, 4.53, G, top, -4.5, wz1, brick);
+  w.addDeco("brick", 4.5, 4.53, G, top, wz2, 19, brick);
+  w.addDeco("brick", 4.5, 4.53, wTop, top, wz1, wz2, brick);         // above the wardrobe
+  w.addDeco("brick", wx, wx + 0.03, G, wTop, wz1 - 0.03, wz2 + 0.03, brick); // wardrobe's back
+  w.addDeco("brick", 4.5, wx, G, wTop, wz1 - 0.03, wz1, brick);      // wardrobe's sides
+  w.addDeco("brick", 4.5, wx, G, wTop, wz2, wz2 + 0.03, brick);
   for (let y = G + 0.5; y < top; y += 0.5) {   // a few rows of pale mortar lines
-    w.addDeco("mortar", 4.53, 4.54, y, y + 0.02, -4.5, 19, 0xe2c2ae);
+    w.addDeco("mortar", 4.53, 4.54, y, y + 0.02, -4.5, wz1, 0xe2c2ae);
+    w.addDeco("mortar", 4.53, 4.54, y, y + 0.02, wz2, 19, 0xe2c2ae);
     w.addDeco("mortar", 2.73, 4.5, y, y + 0.02, 19.03, 19.04, 0xe2c2ae);
   }
   // a simple roof over everything
@@ -91,7 +99,9 @@ function buildGarden(w) {
   w.addZone("window-living", 0.95, 2.65, 0.85, 2.4, 18.45, 19.15);
   w.addZone("window-office", 0.5, 1.15, 1.05, 2.5, 22.6, 24.0);
   w.addZone("garden", 1.15, 25, -12, 12, 19.15, 50);
-  w.addZone("garden", 4.55, 25, -12, 12, -10, 19.15);
+  w.addZone("garden", 4.55, 25, -12, 12, -10, -2.35);   // (around the wardrobe, not inside it)
+  w.addZone("garden", 5.95, 25, -12, 12, -2.35, 2.95);
+  w.addZone("garden", 4.55, 25, -12, 12, 2.95, 19.15);
   // Where Rae pops back in if she falls (just inside each window)
   w.windowReturns = {
     "window-living": { x: 1.8, y: 0.02, z: 17.9, yaw: Math.PI },        // facing the window

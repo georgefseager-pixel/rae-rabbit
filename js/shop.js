@@ -223,38 +223,56 @@ document.getElementById("shop-leave").addEventListener("click", () => leaveShop(
 window.addEventListener("keydown", (e) => { if (inShop && e.code === "Escape") leaveShop(null); });
 
 // ============================================================
-// Flopsy: the little brown bunny who runs the shop
+// Shopkeepers: Flopsy (Flopsy Shop) and Willow (Willow's Weapon Mart)
 // ============================================================
-// She stands by the shop door. When she sees Rae come into the wardrobe,
-// she turns, waves, and says hello.
-class Flopsy {
-  constructor(scene, x, y, z) {
-    this.model = new RaeModel(FLOPSY_COLORS);
+// Little bunnies who stand by their shop doors inside the wardrobe. When one
+// sees Rae come into the wardrobe she turns, waves and says hello. Punch one
+// and she jumps up and complains.
+const WILLOW_COLORS = { ...RAE_COLORS, fur: 0xa8a5ae, furLight: 0xd9d6de, tail: 0xf4f2f6 };
+const WILLOW_VOICE = { speaker: "🐰 Willow", style: "willow", voice: "willow" };
+// Willow is frightfully erudite
+const WILLOW_HELLO = [
+  "Salutations! Welcome to Willow's Weapon Mart, purveyor of peerless armaments!",
+  "Greetings, esteemed lagomorph! Do peruse my forthcoming inventory.",
+  "Ah, a discerning clientele! Regrettably, my emporium remains in its nascent stages.",
+];
+const WILLOW_OUCH = [
+  "Ouch! Such egregious belligerence is wholly unwarranted!",
+  "Ow! I find your pugilistic proclivities most disagreeable!",
+  "Preposterous! Assaulting a proprietor is the very epitome of impropriety!",
+];
+
+class ShopKeeper {
+  // opts: { colors, scale, homeYaw, voice, hello, ouch }
+  constructor(scene, x, y, z, opts) {
+    this.opts = opts;
+    this.model = new RaeModel(opts.colors);
     this.model.setOutfit("naked");
-    // Unlike Rae's body, everyone can see Flopsy
+    if (opts.extras) opts.extras(this.model); // e.g. Willow's monocle
+    // Unlike Rae's body, everyone can see the shopkeepers
     this.model.root.traverse((o) => o.layers.set(0));
-    this.model.root.scale.setScalar(0.72); // smaller than Rae
+    this.model.root.scale.setScalar(opts.scale);
     scene.add(this.model.root);
 
-    this.fake = { pos: new THREE.Vector3(x, y, z), vel: new THREE.Vector3(), yaw: Math.PI / 2, pitch: 0, onGround: true };
+    this.fake = { pos: new THREE.Vector3(x, y, z), vel: new THREE.Vector3(), yaw: opts.homeYaw, pitch: 0, onGround: true };
     this.floorY = y;
     this.jumpVel = 0;      // for jumping when punched
     this.ouchCooldown = 0;
-    this.homeYaw = Math.PI / 2;
+    this.homeYaw = opts.homeYaw;
     this.sawRae = false;
     this.greetCooldown = 0;
   }
 
-  // Frogpocalypse: Flopsy runs away and hides
+  // Run away and hide (Flopsy, in the Frogpocalypse)
   leave() {
     this.gone = true;
     this.model.root.visible = false;
   }
 
-  // The middle of Flopsy's body (for punches)
+  // The middle of her body (for punches)
   middle() {
     if (this.gone) return new THREE.Vector3(0, -999, 0);
-    return new THREE.Vector3(this.fake.pos.x, this.fake.pos.y + 0.17, this.fake.pos.z);
+    return new THREE.Vector3(this.fake.pos.x, this.fake.pos.y + 0.24 * this.opts.scale, this.fake.pos.z);
   }
 
   // Rae punched her! She jumps up with a squeak
@@ -263,7 +281,7 @@ class Flopsy {
     this.ouchCooldown = 0.6;
     this.jumpVel = 2.8;
     Sfx.squeak();
-    Dialogue.say(FLOPSY_OUCH, FLOPSY_VOICE);
+    Dialogue.say(this.opts.ouch, this.opts.voice);
   }
 
   update(dt, player, time) {
@@ -278,13 +296,14 @@ class Flopsy {
     this.fake.onGround = this.fake.pos.y <= this.floorY;
     this.fake.vel.y = this.jumpVel;
     const dx = player.pos.x - this.fake.pos.x, dz = player.pos.z - this.fake.pos.z;
-    const insideWardrobe = player.pos.x > 4.12 && Math.abs(player.pos.y - this.fake.pos.y) < 1;
+    const insideWardrobe = player.pos.x > 4.12 && player.pos.x < 5.45 && player.pos.z > -1.85 &&
+      player.pos.z < 2.45 && Math.abs(player.pos.y - this.fake.pos.y) < 1;
     const seesRae = insideWardrobe && Math.hypot(dx, dz) < 2.8;
     this.greetCooldown = Math.max(0, this.greetCooldown - dt);
 
     if (seesRae && !this.sawRae && this.greetCooldown === 0) {
       this.model.wave();
-      Dialogue.say(FLOPSY_HELLO, FLOPSY_VOICE);
+      Dialogue.say(this.opts.hello, this.opts.voice);
       this.greetCooldown = 12;
     }
     this.sawRae = seesRae;
@@ -293,7 +312,32 @@ class Flopsy {
     const target = seesRae ? Math.atan2(-dx, -dz) : this.homeYaw;
     let diff = Math.atan2(Math.sin(target - this.fake.yaw), Math.cos(target - this.fake.yaw));
     this.fake.yaw += diff * Math.min(1, dt * 5);
-    this.fake.pitch = seesRae ? 0.25 : 0; // looks up at Rae (Flopsy is shorter)
+    this.fake.pitch = seesRae ? 0.25 : 0; // looks up at Rae (shopkeepers are shorter)
     this.model.update(dt, this.fake, time);
   }
+}
+
+// Willow's monocle: a little gold ring over her right eye, on a chain
+function willowMonocle(model) {
+  const gold = 0xe8c262;
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.026, 0.006, 4, 10), pastel(gold));
+  ring.position.set(0.048, 0.1, -0.112);
+  const chain = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.09, 0.004), pastel(gold));
+  chain.position.set(0.07, 0.055, -0.1);
+  chain.rotation.z = 0.4;
+  model.head.add(ring, chain);
+}
+
+// Make both shopkeepers (main.js calls this). Flopsy is the smaller, paler one.
+function makeShopKeepers(scene, world) {
+  const f = world.flopsySpot, w = world.willowSpot;
+  const flopsy = new ShopKeeper(scene, f.x, f.y, f.z, {
+    colors: FLOPSY_COLORS, scale: 0.58, homeYaw: Math.PI / 2,
+    voice: FLOPSY_VOICE, hello: FLOPSY_HELLO, ouch: FLOPSY_OUCH,
+  });
+  const willow = new ShopKeeper(scene, w.x, w.y, w.z, {
+    colors: WILLOW_COLORS, scale: 0.72, homeYaw: w.yaw, extras: willowMonocle,
+    voice: WILLOW_VOICE, hello: WILLOW_HELLO, ouch: WILLOW_OUCH,
+  });
+  return { flopsy, willow };
 }

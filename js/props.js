@@ -413,3 +413,40 @@ function makeLamp(x, y, z, shadeColor = COLORS.butter) {
   group.position.set(x, y, z);
   return new Prop({ name: "lamp", mesh: group, breakable: true });
 }
+
+// A smart brass-edged plaque with neat typewriter letters (like WILLOW'S WEAPON MART).
+// lines: an array of text lines. Returns a flat mesh facing +z, like makeHandwrittenSign.
+function makeTypedSign(lines, width, height) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = Math.round(512 * height / width);
+  const ctx = canvas.getContext("2d");
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.encoding = THREE.sRGBEncoding;
+
+  const draw = () => {
+    const W = canvas.width, Hc = canvas.height;
+    ctx.fillStyle = "#b8924a";                 // brass edge
+    ctx.fillRect(0, 0, W, Hc);
+    ctx.fillStyle = "#f4ecd8";                 // cream card
+    ctx.fillRect(10, 10, W - 20, Hc - 20);
+    ctx.strokeStyle = "#3a3330";               // thin inner rule
+    ctx.lineWidth = 2;
+    ctx.strokeRect(20, 20, W - 40, Hc - 40);
+    ctx.fillStyle = "#2b2624";                 // typewriter ink
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const size = Math.min((Hc - 50) / lines.length * 0.8, 52);
+    ctx.font = `${size}px "Special Elite", "Courier New", monospace`;
+    lines.forEach((line, i) => {
+      const y = Hc / 2 + (i - (lines.length - 1) / 2) * size * 1.15;
+      ctx.fillText(line.split("").join(String.fromCharCode(8202)), W / 2, y); // letters spaced out a touch
+    });
+    texture.needsUpdate = true;
+  };
+  draw();
+  // The typewriter font loads from the internet: redraw once it arrives
+  if (document.fonts) document.fonts.load('40px "Special Elite"').then(draw).catch(() => {});
+
+  return new THREE.Mesh(new THREE.PlaneGeometry(width, height), new THREE.MeshBasicMaterial({ map: texture }));
+}

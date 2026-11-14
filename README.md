@@ -39,7 +39,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/mirror.js` | Real reflecting mirrors |
 | `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up the shop |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
-| `js/shop.js` | The Flopsy Shop: outfits & unlocks, the dancing stage, the menu, and Flopsy |
+| `js/shop.js` | The Flopsy Shop: outfits & unlocks, the dancing stage, the menu; Flopsy and Willow |
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
@@ -75,7 +75,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 
 ## The Flopsy Shop
 Inside the wardrobe, behind the mirror door, is a tiny door with a scrappy hand-written FLOPSY SHOP
-sign. Flopsy (a small light-brown bunny) stands beside it and waves hello when Rae comes in.
+sign. Flopsy (a little pale-brown bunny) stands beside it and waves hello when Rae comes in.
 Walk up to the door: the screen fades to black and the shop opens, with Rae dancing on a little stage
 in whichever outfit you click. "Wear it!" and she steps back out in it, with something to say.
 
@@ -89,6 +89,14 @@ in whichever outfit you click. "Wear it!" and she steps back out in it, with som
 
 Flopsy calls out when something new unlocks. Change outfits, lines and unlock rules in the `OUTFITS`
 list at the top of `js/shop.js`; how each one looks is `setOutfit` in `js/rae.js`.
+
+## Willow's Weapon Mart (coming soon)
+On the wardrobe's other inner wall is a smart dark-wood door with a brass knob and a typewritten
+plaque: WILLOW'S WEAPON MART. It doesn't open yet. Willow, a grey bunny with a gold monocle, waits
+beside it. She waves when Rae comes in and speaks in a very erudite way (typewriter letters in her
+speech bubbles). Punch her and she objects in long words. Her lines (`WILLOW_HELLO`, `WILLOW_OUCH`)
+and both shopkeepers (`ShopKeeper`, `makeShopKeepers`) are in `js/shop.js`; her door is
+`buildWillowDoor` in `js/house.js`.
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).

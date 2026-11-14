@@ -129,6 +129,10 @@ html, body {
 .bubble.flopsy { border-color: #e2c3a4; box-shadow: 0 6px 0 #e2c3a4, 0 12px 26px rgba(120, 80, 50, 0.18); }
 .bubble.flopsy .name-tag { background: #b5835e; box-shadow: 0 2px 0 #92664a; }
 .bubble.flopsy .bubble-text { color: #8a5a3c; }
+/* Willow talking: grey and formal, typewriter letters */
+.bubble.willow { border-color: #c9c6cf; box-shadow: 0 6px 0 #c9c6cf, 0 12px 26px rgba(60, 60, 80, 0.18); }
+.bubble.willow .name-tag { background: #77737f; box-shadow: 0 2px 0 #5c5864; }
+.bubble.willow .bubble-text { color: #3d3a44; font-family: "Special Elite", "Courier New", monospace; }
 
 .bubble-text {
   margin: 0;
