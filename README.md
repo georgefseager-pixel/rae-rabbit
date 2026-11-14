@@ -7,6 +7,8 @@ Double-click `index.html` to open it in your web browser (needs internet the fir
 Pick a game mode from the main menu:
 
 - **🥕 Carrotventure**: explore the house, find carrots, smash things, dress up at the Flopsy Shop.
+  Eat all 20 carrots and... "Uh oh - too many carrots!" Get Rae to the toilet (hop onto the seat)
+  for the **YOU WIN!** screen.
 - **🐸 Frogpocalypse**: frogs pour in from all over the house, more and more as time goes on. The Flopsy
   Shop is boarded up and Flopsy has fled. The HUD shows frogs stomped and how long you've survived;
   every door starts smashed (nowhere to hide), frogs pop up even right in view. Survive **3 minutes** and **Boss Frog Jiggle Jaggle** (giant, with a crown)

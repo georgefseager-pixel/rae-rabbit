@@ -174,6 +174,54 @@ const Sfx = {
     osc.stop(start + length + 0.02);
   },
 
+  // A rumbly tummy: "grrrrbl-wubble" (too many carrots!)
+  rumble() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const wobble = this.ctx.createOscillator();
+    const wobbleAmount = this.ctx.createGain();
+    const gain = this.ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(70, t);
+    osc.frequency.linearRampToValueAtTime(110, t + 0.5);
+    osc.frequency.linearRampToValueAtTime(55, t + 1.1);
+    wobble.frequency.value = 9;
+    wobbleAmount.gain.value = 25;
+    wobble.connect(wobbleAmount).connect(osc.frequency);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.35, t + 0.08);
+    gain.gain.setValueAtTime(0.35, t + 0.9);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+    osc.connect(gain).connect(this.master);
+    osc.start(t); wobble.start(t);
+    osc.stop(t + 1.25); wobble.stop(t + 1.25);
+  },
+
+  // A toilet flush: a big watery whoosh that swirls down
+  flush() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const len = Math.floor(this.ctx.sampleRate * 1.6);
+    const buffer = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.Q.value = 1.5;
+    filter.frequency.setValueAtTime(1800, t);
+    filter.frequency.exponentialRampToValueAtTime(300, t + 1.5); // swirling down the drain
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.4, t + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.55);
+    src.connect(filter).connect(gain).connect(this.master);
+    src.start(t);
+    src.stop(t + 1.6);
+  },
+
   // The 'Rae' Gun firing: a sci-fi "pew!" that drops in pitch
   pew() {
     if (!this.ctx) return;

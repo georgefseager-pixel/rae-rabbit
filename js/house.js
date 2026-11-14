@@ -368,6 +368,7 @@ function buildCorridorAndBathroom(w) {
   w.addSpan("toilet-bowl", 2.95, 3.65, 0, 0.75, 7.5, 8.0, COLORS.porcelain);
   w.addSpan("toilet-seat", 2.8, 3.65, 0.75, 0.85, 7.4, 8.1, COLORS.porcelain);
   w.addDeco("toilet-flush", 3.6, 3.66, 1.45, 1.55, 7.65, 7.85, COLORS.steel);
+  w.addZone("toilet", 2.8, 3.65, 0.8, 1.4, 7.4, 8.1); // standing on the seat (main.js: the Carrotventure finish!)
 
   // ---- Sink (pedestal basin, with a mirror above) ----
   w.addSpan("sink-pedestal", -0.5, -0.2, 0, 1.5, 4.5, 4.85, COLORS.porcelain);

@@ -108,13 +108,14 @@
     </div>
   </div>
 
-  <!-- YOU WIN! (beating the boss in Frogpocalypse) -->
+  <!-- YOU WIN! (beating the boss in Frogpocalypse, or reaching the toilet in Carrotventure) -->
   <div id="win" class="hidden">
     <div class="card summary win-card">
-      <h1>🏆 YOU WIN! 🏆</h1>
-      <p class="sub">Boss Frog Jiggle Jaggle has been defeated!</p>
+      <h1 id="win-title">🏆 YOU WIN! 🏆</h1>
+      <p class="sub" id="win-sub">Boss Frog Jiggle Jaggle has been defeated!</p>
       <div class="stats">
-        <div class="stat"><span class="icon">⏱</span><span class="label">Time survived</span><b id="win-time">0:00</b></div>
+        <div class="stat frog-mode-only"><span class="icon">⏱</span><span class="label">Time survived</span><b id="win-time">0:00</b></div>
+        <div class="stat carrot-mode-only"><span class="icon">🥕</span><span class="label">Carrots eaten</span><b id="win-carrots">0</b></div>
         <div class="stat"><span class="icon">🐸</span><span class="label">Frogs stomped</span><b id="win-frogs">0</b></div>
         <div class="stat"><span class="icon">💥</span><span class="label">Things smashed</span><b id="win-smashed">0</b></div>
       </div>

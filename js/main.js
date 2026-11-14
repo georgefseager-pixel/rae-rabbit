@@ -284,7 +284,6 @@ const RAE_LINES = {
   "last-heart":      ["Uh oh, I need a carrot...", "One heart left... careful, Rae!", "Carrot, carrot, where's a carrot?!"],
   // carrots
   "first-carrot": ["Yummers mode!", "Crunch crunch! Delicious!", "Carrot get enough of these!"],
-  "all-carrots":  ["All the carrots! Best day ever!", "Every last carrot! I'm stuffed!", "Carrot champion!"],
   // Frogpocalypse
   "frog-mode-start": ["Uh oh... why are there SO many frogs?!", "Frogs! Frogs everywhere!", "This is a frog-tastrophe!"],
   "boss-beaten":     ["I did it! Rabbits rule FOREVER!", "Jiggle Jaggle is all jiggled out!", "Bunny wins! Frog loses!"],
@@ -317,6 +316,7 @@ world.onBreak = (prop) => {
 // Checked every frame: which invisible zone (see house.js) is Rae standing in?
 function checkZones() {
   const zone = world.zoneAt(player.pos);
+  if (zone === "toilet") { if (needsToilet) showWin("toilet"); return; } // only matters once she's eaten every carrot
   if (zone === "shop-door") openShop("flopsy");
   if (zone === "willow-door") openShop("willow");
   else if (zone && zone.startsWith("window-")) lastWindow = zone; // remember which window she used
@@ -455,9 +455,17 @@ function formatTime(seconds) {
   const t = Math.floor(seconds);
   return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 }
-function showWin() {
+// The YOU WIN! screen. how: "boss" (Frogpocalypse) or "toilet" (Carrotventure)
+function showWin(how = "boss") {
+  if (gameOver) return;
   gameOver = true;
   paused = true;
+  if (how === "toilet") {
+    document.getElementById("win-title").textContent = "🚽 YOU WIN! 🚽";
+    document.getElementById("win-sub").textContent = "Phew! Rae made it to the toilet just in time!";
+    document.getElementById("win-carrots").textContent = `${collectedCount} / ${totalCollectibles}`;
+    Sfx.flush();
+  }
   document.getElementById("win-time").textContent = formatTime(Frogpocalypse.time);
   document.getElementById("win-frogs").textContent = stompedCount;
   document.getElementById("win-smashed").textContent = smashedCount;
@@ -466,6 +474,20 @@ function showWin() {
   Sfx.win();
 }
 document.getElementById("win-again").addEventListener("click", () => location.reload());
+
+// Carrotventure ending: eat every carrot and... uh oh. Get Rae to the toilet
+// (stand on the seat) to win!
+let needsToilet = false;
+function tooManyCarrots() {
+  needsToilet = true;
+  Sfx.rumble();
+  Dialogue.say("Uh oh - too many carrots!");
+  setTimeout(() => {
+    if (gameOver) return;
+    Dialogue.say("Rae needs to get to the toilet!");
+    showBanner("🚽 Quick! Get Rae to the toilet!");
+  }, 1800);
+}
 
 // Rae hit a frog (stomp or punch). The boss takes 3 hits; others pop straight away.
 function hitFrog(frog, how) {
@@ -505,7 +527,7 @@ function checkCollectibles() {
       } else if (gameMode !== "frog") {
         raeSays("first-carrot");
       }
-      if (gameMode !== "frog" && collectedCount === totalCollectibles) raeSays("all-carrots");
+      if (gameMode !== "frog" && collectedCount === totalCollectibles) tooManyCarrots();
     }
   }
 }
