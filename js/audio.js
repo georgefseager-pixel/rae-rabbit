@@ -174,6 +174,64 @@ const Sfx = {
     osc.stop(start + length + 0.02);
   },
 
+  // The 'Rae' Gun firing: a sci-fi "pew!" that drops in pitch
+  pew() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(1800, t);
+    osc.frequency.exponentialRampToValueAtTime(220, t + 0.18);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.13, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    osc.connect(gain).connect(this.master);
+    osc.start(t);
+    osc.stop(t + 0.22);
+  },
+
+  // A green ball hitting a frog: a warbly "bzzwip!"
+  zap() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const wobble = this.ctx.createOscillator();
+    const wobbleAmount = this.ctx.createGain();
+    const gain = this.ctx.createGain();
+    osc.type = "square";
+    osc.frequency.setValueAtTime(300, t);
+    osc.frequency.exponentialRampToValueAtTime(1400, t + 0.25);
+    wobble.frequency.value = 40;
+    wobbleAmount.gain.value = 120;
+    wobble.connect(wobbleAmount).connect(osc.frequency);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+    osc.connect(gain).connect(this.master);
+    osc.start(t); wobble.start(t);
+    osc.stop(t + 0.3); wobble.stop(t + 0.3);
+  },
+
+  // A green ball fizzling out against a wall
+  fizzle() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const len = Math.floor(this.ctx.sampleRate * 0.12);
+    const buffer = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.value = 3000;
+    const gain = this.ctx.createGain();
+    gain.gain.value = 0.15;
+    src.connect(filter).connect(gain).connect(this.master);
+    src.start(t);
+  },
+
   // A little squeak (punching Flopsy)
   squeak() {
     if (!this.ctx) return;

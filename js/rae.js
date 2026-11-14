@@ -291,6 +291,7 @@ class RaeModel {
       arm.rotation.z = 2.5 + Math.sin(time * 16) * 0.35;
       arm.rotation.x = 0;
     }
+    this.poseWeapon(player);
   }
 
   wave(seconds = 2.2) { this.waveTimer = seconds; }
@@ -318,6 +319,15 @@ class FirstPersonPaws {
       this.group.add(paw);
       return paw;
     });
+    // Weapons from Willow's shop, held in the right paw (hidden until bought)
+    this.weapon = "paws";
+    this.weaponPunch = 0;
+    this.weaponViews = { stick: buildPokeyStick(), raygun: buildRaeGun() };
+    for (const v of Object.values(this.weaponViews)) {
+      v.visible = false;
+      v.rotation.order = "YXZ";
+      this.group.add(v);
+    }
     // Always drawn on top (so they never poke into walls), and only for the main camera
     this.group.traverse((o) => {
       o.layers.set(LAYER_EYES_ONLY);
@@ -327,6 +337,10 @@ class FirstPersonPaws {
         o.renderOrder = 999;
       }
     });
+    // ...and the weapon parts draw back to front, after the paws
+    for (const v of Object.values(this.weaponViews)) {
+      v.children.forEach((part, i) => { part.renderOrder = 1000 + i; });
+    }
     this.phase = 0;
     this.lift = 0;
   }
@@ -360,7 +374,34 @@ class FirstPersonPaws {
         -dist - e * 0.1);
       paw.rotation.x = 0.35 - e * 0.35;
     }
+
+    // The weapon in her right paw, pointing in towards the middle of the screen
+    this.weaponPunch = Math.max(0, this.weaponPunch - dt);
+    const e = punchCurve(this.weaponPunch);
+    const handX = Math.min(halfW * 0.62, 0.21);
+    const bob = (moving ? Math.abs(Math.sin(this.phase)) * 0.012 : 0) + this.lift;
+    const stick = this.weaponViews.stick, gun = this.weaponViews.raygun;
+    if (stick.visible) {
+      // A poke: the whole stick shoots forward
+      stick.position.set(handX * 0.8, -halfH + 0.035 + bob + e * 0.02, -0.3 - e * 0.2);
+      stick.rotation.set(0.14 + e * 0.04, 0.3 - e * 0.08, 0);
+    }
+    if (gun.visible) {
+      // Firing: a little kick back and up
+      gun.position.set(handX * 0.62, -halfH * 0.62 + bob, -0.3 + e * 0.04);
+      gun.rotation.set(0.05 + e * 0.3, 0.12, 0);
+    }
   }
+
+  // Swap what's in her paw: "paws", "stick" or "raygun"
+  setWeapon(id) {
+    this.weapon = id;
+    this.weaponViews.stick.visible = id === "stick";
+    this.weaponViews.raygun.visible = id === "raygun";
+  }
+
+  // A poke with the stick, or a shot with the gun
+  useWeapon() { this.weaponPunch = PUNCH_TIME; }
 
   // Throw a punch with the left (-1) or right (+1) paw
   punch(side) {
@@ -392,3 +433,86 @@ function punchCurve(timeLeft) {
   const t = 1 - timeLeft / PUNCH_TIME;     // 0 -> 1 through the punch
   return t < 0.3 ? t / 0.3 : 1 - (t - 0.3) / 0.7;
 }
+
+// ============================================================
+// Weapons from Willow's Weapon Mart: the Pokey Stick and the 'Rae' Gun
+// ============================================================
+// Each builder makes the weapon pointing along -z, with the grip at (0, 0, 0).
+// The same models are used for Rae's body (mirrors, shop stage) and her first-person view.
+// Returns the parts in order, back to front (the first-person view draws them in that order).
+function buildPokeyStick() {
+  const g = new THREE.Group();
+  const wood = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.013, 0.6, 6), pastel(0x9a7350));
+  wood.rotation.x = Math.PI / 2;
+  wood.position.z = -0.22;  // from just behind the paw to well in front
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.011, 0.05, 6), pastel(0xd8bb8e));
+  tip.rotation.x = -Math.PI / 2;
+  tip.position.z = -0.545;
+  const leaf = blob(0.016, 0x8fcf7a, 1.6, 0.4, 0.8, [6, 4]); // a little leaf still growing on it
+  leaf.position.set(0.016, 0.006, -0.32);
+  leaf.rotation.y = 0.5;
+  g.add(wood, leaf, tip);
+  return g;
+}
+
+function buildRaeGun() {
+  const g = new THREE.Group();
+  const glow = new THREE.MeshBasicMaterial({ color: 0x8dff5a });
+  const handle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.07, 0.035), pastel(0x5a4a7a));
+  handle.position.set(0, -0.045, 0.03);
+  handle.rotation.x = 0.3;
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.017, 0.09, 8), pastel(0x7ee0c0));
+  barrel.rotation.x = Math.PI / 2;
+  barrel.position.z = -0.11;
+  const emitter = new THREE.Mesh(new THREE.SphereGeometry(0.019, 8, 6), glow);
+  emitter.position.z = -0.16;
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.046, 0.05, 0.13), pastel(0xb79ce6));
+  body.position.z = -0.01;
+  const fins = [-1, 1].map((side) => {
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.045, 0.05), pastel(0x7ee0c0));
+    fin.position.set(side * 0.03, 0.01, 0.03);
+    fin.rotation.z = side * -0.4;
+    return fin;
+  });
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), glow);
+  dome.position.set(0, 0.024, -0.015);
+  g.add(handle, barrel, emitter, body, ...fins, dome);
+  g.userData.emitter = emitter;
+  return g;
+}
+
+// Rae's body holding a weapon: the weapon sits in her right paw, pointing out along the arm
+RaeModel.prototype.setWeapon = function (id = "paws") {
+  if (!this.weaponModels) {
+    const hand = new THREE.Group();
+    hand.position.y = -0.13;            // the end of the arm
+    hand.rotation.x = -Math.PI / 2;     // the weapon's "forward" points down the arm
+    this.arms.find((a) => a.userData.side === 1).add(hand);
+    this.weaponModels = { stick: buildPokeyStick(), raygun: buildRaeGun() };
+    for (const m of Object.values(this.weaponModels)) {
+      hand.add(m);
+      const layer = this.body.layers.mask; // same layer as her body (mirror-only for Rae)
+      m.traverse((o) => { o.layers.mask = layer; });
+    }
+  }
+  this.weapon = id;
+  this.weaponModels.stick.visible = id === "stick";
+  this.weaponModels.raygun.visible = id === "raygun";
+};
+
+// After the normal animation: hold the stick or gun out in front (and thrust / recoil)
+RaeModel.prototype.poseWeapon = function (player) {
+  const arm = this.arms.find((a) => a.userData.side === 1);
+  arm.position.z = -0.01;
+  if (!this.weapon || this.weapon === "paws") return;
+  const e = punchCurve(arm.userData.punch || 0);
+  const aim = (player.pitch || 0) * 0.7; // points where she looks
+  if (this.weapon === "stick") {
+    arm.rotation.x = 1.0 + aim + 0.55 * e;   // held forward and down; a poke lifts it level
+    arm.position.z = -0.01 - 0.07 * e;        // and lunges forward
+  } else {
+    arm.rotation.x = 1.5 + aim + 0.3 * e;     // aimed straight ahead; kicks up when it fires
+    arm.position.z = -0.01 + 0.03 * e;
+  }
+  arm.rotation.z = 0.12;
+};

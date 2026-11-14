@@ -37,9 +37,10 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/debris.js` | The flying pieces when something breaks |
 | `js/rae.js` | Rae's body & animations (seen in mirrors) and her first-person paws |
 | `js/mirror.js` | Real reflecting mirrors |
-| `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up the shop |
+| `js/frogpocalypse.js` | The Frogpocalypse mode: frog spawner, survival timer, boss, boarding up both shops |
+| `js/weapons.js` | Weapon stats (paws, Pokey Stick, 'Rae' Gun) and the gun's green balls |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
-| `js/shop.js` | The Flopsy Shop: outfits & unlocks, the dancing stage, the menu; Flopsy and Willow |
+| `js/shop.js` | Both shops: outfits and weapons & unlocks, the dancing stage, the menu; Flopsy and Willow |
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
@@ -49,7 +50,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/main.js` | Starts everything and runs the game loop |
 
 ## The house (follows the real floorplan, at about 2x size)
-- **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed) with an oval vanity mirror above it (hop up to see Rae!), a stool under it, two windows above the bed.
+- **Bedroom**: king-sized bed (run underneath, bounce on top), two bedside tables (reach them from the bed), the wide white table opposite (big bounce off the foot of the bed; an open drawer sticking out makes a handy ledge) with an oval vanity mirror above it (hop up to see Rae!), a stool under it, two windows above the bed.
   - Breakables: a lamp and a glass on each bedside table, five cans on the white table, six little clothes piles on the floor (one kicked under the bed).
   - Carrots: above the bed, under the bed, on the white table, hidden in the wardrobe.
   - Built-in wardrobe in the wall to the left of the vanity mirror: three sliding doors. The left one is
@@ -90,13 +91,22 @@ in whichever outfit you click. "Wear it!" and she steps back out in it, with som
 Flopsy calls out when something new unlocks. Change outfits, lines and unlock rules in the `OUTFITS`
 list at the top of `js/shop.js`; how each one looks is `setOutfit` in `js/rae.js`.
 
-## Willow's Weapon Mart (coming soon)
+## Willow's Weapon Mart
 On the wardrobe's other inner wall is a smart dark-wood door with a brass knob and a typewritten
-plaque: WILLOW'S WEAPON MART. It doesn't open yet. Willow, a grey bunny with a gold monocle, waits
-beside it. She waves when Rae comes in and speaks in a very erudite way (typewriter letters in her
-speech bubbles). Punch her and she objects in long words. Her lines (`WILLOW_HELLO`, `WILLOW_OUCH`)
-and both shopkeepers (`ShopKeeper`, `makeShopKeepers`) are in `js/shop.js`; her door is
-`buildWillowDoor` in `js/house.js`.
+plaque: WILLOW'S WEAPON MART. Willow, a grey bunny with a gold monocle, waits beside it. She waves
+when Rae comes in and speaks in a very erudite way (typewriter letters in her speech bubbles).
+Punch her and she objects in long words. Walk up to the door to open the shop: the same menu as the
+Flopsy Shop, dressed formally, with Rae trying out each weapon on the stage.
+
+| Weapon | How to unlock | What it does |
+|--------|---------------|--------------|
+| Paws | Always | Quick punches, short reach |
+| Pokey Stick | Stomp 4 frogs | Pokes much further, but slower between pokes |
+| 'Rae' Gun | Stomp 12 frogs | Shoots slow, bright green balls that zap frogs far away (and smash breakables) |
+
+Click (or **X** / **RB** / **RT**) uses whatever Rae is holding. Willow calls out when a weapon unlocks.
+Change unlock rules and lines in the `WEAPONS` list in `js/shop.js`; reach, cooldowns and ball speed
+are at the top of `js/weapons.js`. Both shops close in the Frogpocalypse, so it's paws only there.
 
 ## Frogs
 Seven plush frogs, each a different colour: bedroom, bathroom, living room (two), office, kitchen (two).

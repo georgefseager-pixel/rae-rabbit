@@ -142,33 +142,56 @@ const PUNCH_RADIUS = 0.3;  // how big the "hit zone" around that point is
 let punchCooldown = 0;
 let punchSide = 1;
 
+// With a weapon from Willow's shop, the same button pokes the Pokey Stick or
+// fires the 'Rae' Gun instead (see weapons.js).
 function punch() {
   if (!started || paused || gameOver || inShop || punchCooldown > 0) return;
-  punchCooldown = 0.28;
-  punchSide = -punchSide; // left, right, left, right...
-  paws.punch(punchSide);
-  raeModel.punch(punchSide);
+  const stats = WEAPON_STATS[currentWeapon];
+  punchCooldown = stats.cooldown;
+  if (currentWeapon === "raygun") {
+    paws.useWeapon();
+    raeModel.punch(1);
+    const eye = new THREE.Vector3(), aim = new THREE.Vector3();
+    camera.getWorldPosition(eye);
+    camera.getWorldDirection(aim);
+    Blaster.fire(eye, aim);
+    return;
+  }
+  if (currentWeapon === "stick") {
+    paws.useWeapon();
+    raeModel.punch(1);
+  } else {
+    punchSide = -punchSide; // left, right, left, right...
+    paws.punch(punchSide);
+    raeModel.punch(punchSide);
+  }
   Sfx.punch();
-  setTimeout(landPunch, 70); // the hit lands as the paw reaches full stretch
+  setTimeout(() => landPunch(stats), 70); // the hit lands as the paw (or stick) reaches full stretch
 }
 
-function landPunch() {
+// Smash whatever is in the hit zone. The stick checks several spots along its length.
+function landPunch(stats) {
   const eye = new THREE.Vector3(), aim = new THREE.Vector3();
   camera.getWorldPosition(eye);
   camera.getWorldDirection(aim);
-  const hit = eye.addScaledVector(aim, PUNCH_REACH);
+  const how = currentWeapon === "stick" ? "poke" : "punch";
+  const spots = [];
+  for (let d = PUNCH_REACH; d < stats.reach + 0.01; d += 0.25) spots.push(eye.clone().addScaledVector(aim, d));
+  spots.push(eye.clone().addScaledVector(aim, stats.reach));
+  const near = (point, extra) => spots.some((hit) => hit.distanceTo(point) < stats.radius + extra);
+
   for (const prop of world.props.filter((p) => p.breakable && !p.broken)) {
-    if (prop.box.distanceToPoint(hit) < PUNCH_RADIUS) world.breakProp(prop);
+    if (spots.some((hit) => prop.box.distanceToPoint(hit) < stats.radius)) world.breakProp(prop);
   }
   for (const frog of frogs) {
     if (!frog.alive) continue;
     const middle = frog.pos.clone();
     middle.y += frog.height / 2;
-    if (middle.distanceTo(hit) < PUNCH_RADIUS + frog.radius) hitFrog(frog, "punch");
+    if (near(middle, frog.radius)) hitFrog(frog, how);
   }
-  // Poor Flopsy!
-  if (flopsy.middle().distanceTo(hit) < PUNCH_RADIUS + 0.15) flopsy.ouch();
-  if (willow.middle().distanceTo(hit) < PUNCH_RADIUS + 0.15) willow.ouch();
+  // Poor Flopsy! Poor Willow!
+  if (near(flopsy.middle(), 0.15)) flopsy.ouch();
+  if (near(willow.middle(), 0.15)) willow.ouch();
 }
 
 // ---- Dancing (G key / Y button) ----
@@ -254,6 +277,8 @@ const RAE_LINES = {
   "frog-popped":     ["Pop goes the frog! Rabbits rule!", "Boing! Frog flattened!", "Frog? More like flop!"],
   "minifrog-popped": ["Got you, you speedy little thing!", "Too fast? Not for me!", "Tiny frog, tiny pop!"],
   "frog-punched":    ["Hi-yah! Bunny fu!", "Pow! Right in the ribbit!", "One punch frog!"],
+  "frog-poked":      ["Poked! Right in the ribbits!", "Stick 1, frog 0!", "Poke-a-dot!"],
+  "frog-zapped":     ["ZAPPED! Pew pew!", "Frog vaporised! ...Gently!", "Bullseye from across the room!"],
   "frog-friendly":   ["They think I'm a frog! Hehe.", "Hi froggy friends!", "Undercover bunny... ribbit!"],
   "hurt":            ["Ouch! Frogs are slimy!", "Ow! Watch the fur!", "Hey! No touching!"],
   "last-heart":      ["Uh oh, I need a carrot...", "One heart left... careful, Rae!", "Carrot, carrot, where's a carrot?!"],
@@ -292,7 +317,8 @@ world.onBreak = (prop) => {
 // Checked every frame: which invisible zone (see house.js) is Rae standing in?
 function checkZones() {
   const zone = world.zoneAt(player.pos);
-  if (zone === "shop-door") openShop();
+  if (zone === "shop-door") openShop("flopsy");
+  if (zone === "willow-door") openShop("willow");
   else if (zone && zone.startsWith("window-")) lastWindow = zone; // remember which window she used
   else if (zone) raeSays("zone-" + zone);
   if (zone === "garden" && player.pos.y < -0.8) fallOffTree();
@@ -455,6 +481,8 @@ function hitFrog(frog, how) {
   frog.pop();
   stompedCount++;
   if (how === "punch") raeSays("frog-punched");
+  else if (how === "poke") raeSays("frog-poked");
+  else if (how === "zap") raeSays("frog-zapped");
   else raeSays(frog.mini ? "minifrog-popped" : "frog-popped");
 }
 
@@ -510,6 +538,7 @@ function loop() {
     checkCollectibles();
     checkZones();
     for (const frog of frogs) frog.update(dt, player, time);
+    Blaster.update(dt); // the 'Rae' Gun's green balls
     flopsy.update(dt, player, time);
     willow.update(dt, player, time);
     checkUnlocks();

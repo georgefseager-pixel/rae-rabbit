@@ -3,9 +3,9 @@
 // ============================================================
 // Frogs pour into the house, faster and faster. Survive for 3 minutes and
 // Boss Frog Jiggle Jaggle turns up in the living room. Beat him (3 hits) to win!
-// The Flopsy Shop is boarded up and Flopsy has fled. Carrots heal a heart.
+// Both shops in the wardrobe are boarded up and the shopkeepers have fled. Carrots heal a heart.
 //
-// Uses these from main.js: world, frogs, player, flopsy, stompedCount, showWin().
+// Uses these from main.js: world, frogs, player, flopsy, willow, stompedCount, showWin().
 
 const Frogpocalypse = {
   active: false,
@@ -65,6 +65,21 @@ const Frogpocalypse = {
     closed.rotation.z = -0.15;
     closed.position.set(face - 0.05, 0.42, doorZ + 0.05);
     world.add(new Prop({ name: "closed-sign", mesh: closed, solid: false }));
+
+    // Willow's Weapon Mart shuts too (very properly), and Willow departs
+    world.zones = world.zones.filter((z) => z.name !== "willow-door");
+    willow.leave();
+    const wBlock = world.props.find((p) => p.name === "willow");
+    if (wBlock) world.remove(wBlock);
+    const wx = 4.66, wFace = 2.3;
+    world.add(makeThing("planks", wx, 0, wFace, [
+      ["box", [0.6, 0.1, 0.04], [0, 0.3, 0], COLORS.bedWood, { rz: -0.35 }],
+      ["box", [0.6, 0.1, 0.04], [0, 0.55, -0.01], COLORS.walnut, { rz: 0.3 }],
+    ], { solid: false }));
+    const wClosed = makeTypedSign(["REGRETTABLY", "CLOSED"], 0.34, 0.14);
+    wClosed.rotation.y = Math.PI;
+    wClosed.position.set(wx, 0.68, wFace - 0.04);
+    world.add(new Prop({ name: "closed-sign", mesh: wClosed, solid: false }));
 
     // Show frogs stomped and the timer instead of carrots
     document.body.classList.add("frog-mode");

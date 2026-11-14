@@ -1,5 +1,5 @@
 // ============================================================
-// shop.js — the Flopsy Shop (and Flopsy herself)
+// shop.js — the Flopsy Shop, Willow's Weapon Mart, and their shopkeepers
 // ============================================================
 // The little door inside the wardrobe opens this shop. Outfits are unlocked
 // by collecting carrots, smashing things and stomping frogs. In the shop, Rae
@@ -29,6 +29,29 @@ const OUTFITS = [
     lines: ["Honk honk! The funniest bunny in town!", "Send in the clowns!", "Boop my nose! Go on!"] },
 ];
 
+// ---- Willow's weapons (same "need" rules as the outfits) ----
+// lines: what Rae might say stepping out holding it
+const WEAPONS = [
+  { id: "paws", emoji: "🐾", name: "Paws",
+    desc: "Quick little jabs. Short reach.",
+    lines: ["Paws up! Old school!", "These paws are registered weapons!", "Who needs gadgets? Pow pow!"] },
+  { id: "stick", emoji: "🥢", name: "Pokey Stick", need: { frogs: 4 },
+    desc: "Long reach, slower pokes.",
+    lines: ["Poke poke POKE!", "En garde, frogs!", "A stick! The finest stick in all the land!"] },
+  { id: "raygun", emoji: "🔫", name: "'Rae' Gun", need: { frogs: 12 },
+    desc: "Zaps frogs from far away!",
+    lines: ["Pew pew! Alien technology!", "Zap zap! Take me to your carrot!", "The 'Rae' Gun! Frogs, beware!"] },
+];
+
+// Willow's lines in and around her shop
+const willowUnlockLine = (name) => pick([
+  `A felicitous development! The ${name} is now available for acquisition.`,
+  `Attention, esteemed customer: the ${name} has arrived at my emporium!`,
+  `Splendid news! Your froggy exploits have earned you access to the ${name}.`,
+]);
+const WILLOW_SAME_LINES = ["Remaining loyal to one's armament. Admirable!", "Sticking with that? Commendable!", "Same again! Very sensible."];
+const WILLOW_LEAVE_LINES = ["Just browsing, Willow. Bye!", "Maybe next time, Willow!", "Lovely shop, Willow. Bye!"];
+
 // Flopsy's lines
 const FLOPSY_HELLO = ["Hello this Flopsy!!!", "Hi hi! This Flopsy!!!", "Welcome welcome! This Flopsy shop!!!"];
 const FLOPSY_OUCH = ["Ouch this Flopsy!!!", "Ow ow ow! Why punch this Flopsy!!!", "Ouchie! This Flopsy not punching bag!!!"];
@@ -53,16 +76,19 @@ function isUnlocked(outfit) {
   return !p || p.have >= p.want;
 }
 
-// Called every frame: when something new unlocks, Flopsy calls out about it
+// Called every frame: when something new unlocks, Flopsy (outfits) or Willow
+// (weapons) calls out about it
 let announcedUnlocks = null;
 function checkUnlocks() {
-  if (Frogpocalypse.active) return; // Flopsy has fled the Frogpocalypse
-  if (!announcedUnlocks) announcedUnlocks = new Set(OUTFITS.filter(isUnlocked).map((o) => o.id));
-  for (const outfit of OUTFITS) {
-    if (!announcedUnlocks.has(outfit.id) && isUnlocked(outfit)) {
-      announcedUnlocks.add(outfit.id);
+  if (Frogpocalypse.active) return; // the shopkeepers have fled the Frogpocalypse
+  const all = [...OUTFITS, ...WEAPONS];
+  if (!announcedUnlocks) announcedUnlocks = new Set(all.filter(isUnlocked).map((o) => o.id));
+  for (const item of all) {
+    if (!announcedUnlocks.has(item.id) && isUnlocked(item)) {
+      announcedUnlocks.add(item.id);
       Sfx.shopBell();
-      Dialogue.say(flopsyUnlockLine(outfit.name), FLOPSY_VOICE);
+      if (WEAPONS.includes(item)) Dialogue.say(willowUnlockLine(item.name), WILLOW_VOICE);
+      else Dialogue.say(flopsyUnlockLine(item.name), FLOPSY_VOICE);
     }
   }
 }
@@ -90,12 +116,15 @@ class ShopStage {
     stage.position.y = -0.04;
     const rim = new THREE.Mesh(new THREE.TorusGeometry(0.43, 0.015, 4, 24), pastel(COLORS.butter));
     rim.rotation.x = Math.PI / 2;
+    this.curtainMat = pastel(0xd9507a);
+    this.backdropMat = pastel(0x7a4f86);
+    this.stageMat = stage.material;
     for (const side of [-1, 1]) {
-      const curtain = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.4, 0.05), pastel(0xd9507a));
+      const curtain = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.4, 0.05), this.curtainMat);
       curtain.position.set(side * 0.72, 0.5, 0.25);
       scene.add(curtain);
     }
-    const backdrop = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.6, 0.05), pastel(0x7a4f86));
+    const backdrop = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.6, 0.05), this.backdropMat);
     backdrop.position.set(0, 0.5, 0.6);
     scene.add(stage, rim, backdrop);
 
@@ -112,7 +141,20 @@ class ShopStage {
     this.fake = { pos: new THREE.Vector3(), vel: new THREE.Vector3(), yaw: 0, pitch: 0, onGround: true };
   }
 
-  show(outfitId) { this.dancer.setOutfit(outfitId); }
+  // Dress the dancer (and put a weapon in her paw)
+  show(outfitId, weaponId) {
+    this.dancer.setOutfit(outfitId);
+    this.dancer.setWeapon(weaponId);
+  }
+
+  // Flopsy's stage is pink and purple; Willow's is a sober green and grey
+  setTheme(shop) {
+    const willow = shop === SHOPS.willow;
+    this.curtainMat.color.set(willow ? 0x2f5a46 : 0xd9507a);
+    this.backdropMat.color.set(willow ? 0x5a5662 : 0x7a4f86);
+    this.stageMat.color.set(willow ? 0x9a8f80 : COLORS.canPink);
+    this.scene.background.set(willow ? 0x3a3840 : 0x4a3558);
+  }
 
   // A little dance: bouncy hops, swaying, and a twirl every few seconds
   render(dt, time) {
@@ -135,82 +177,119 @@ class ShopStage {
   }
 }
 
-// ---- The shop menu ----
+// ---- The shop menu (used by both shops) ----
+// Each shop: its title, what it sells, what Rae has now, how to use an item,
+// and where Rae steps back out of its little door.
+const SHOPS = {
+  flopsy: {
+    title: "FLOPSY SHOP", sub: "Pick an outfit, little bunny!", items: OUTFITS,
+    current: () => raeModel.outfit,
+    apply: (item) => raeModel.setOutfit(item.id),
+    stage: (item) => shopStage.show(item.id, currentWeapon), // try the outfit on
+    useLabel: (item) => `Wear the ${item.name.toLowerCase()}!`,
+    lockedLabel: "Locked! Keep exploring 🔒",
+    leaveLabel: "Just looking, thanks",
+    sameLines: SHOP_SAME_LINES, leaveLines: SHOP_LEAVE_LINES,
+    exit: { x: 4.65, z: 0.3, yaw: Math.PI / 2 },
+  },
+  willow: {
+    title: "WILLOW'S WEAPON MART", sub: "Purveyor of peerless armaments. Do choose judiciously.", items: WEAPONS,
+    current: () => currentWeapon,
+    apply: (item) => equipWeapon(item.id),
+    stage: (item) => shopStage.show(raeModel.outfit, item.id), // try the weapon out
+    useLabel: (item) => `Take the ${item.name}!`,
+    lockedLabel: "Locked! Stomp more frogs 🔒",
+    leaveLabel: "Merely perusing, thank you",
+    sameLines: WILLOW_SAME_LINES, leaveLines: WILLOW_LEAVE_LINES,
+    exit: { x: 4.66, z: 1.8, yaw: 0 },
+  },
+};
+
 let inShop = false;
+let currentShop = SHOPS.flopsy;
 let shopCooldown = 0;     // so stepping out doesn't send her straight back in
-let shopSelected = null;  // the outfit being previewed on the stage
+let shopSelected = null;  // the item being previewed on the stage
 const fadeEl = document.getElementById("fade");
 const shopEl = document.getElementById("shop");
 const shopItemsEl = document.getElementById("shop-items");
 const wearBtn = document.getElementById("shop-wear");
 const shopStage = new ShopStage(document.getElementById("shop-stage"));
 
-// Draw the outfit buttons (locked ones show what's needed)
+// Draw the item buttons (locked ones show what's needed)
 function drawShopItems() {
+  const shop = currentShop;
   shopItemsEl.innerHTML = "";
-  for (const outfit of OUTFITS) {
+  for (const item of shop.items) {
     const b = document.createElement("button");
-    const unlocked = isUnlocked(outfit);
+    const unlocked = isUnlocked(item);
     b.className = "outfit" + (unlocked ? "" : " locked") +
-      (outfit.id === raeModel.outfit ? " wearing" : "") +
-      (shopSelected && outfit.id === shopSelected.id ? " selected" : "");
-    const p = outfitProgress(outfit);
+      (item.id === shop.current() ? " wearing" : "") +
+      (shopSelected && item.id === shopSelected.id ? " selected" : "");
+    const p = outfitProgress(item);
     const lockText = unlocked ? "" : `<span class="need">🔒 ${p.icon} ${p.have}/${p.want} ${p.what}</span>`;
-    b.innerHTML = `<span class="emoji">${outfit.emoji}</span><span class="name">${outfit.name}</span>${lockText}`;
-    b.addEventListener("click", () => selectOutfit(outfit));
-    b.addEventListener("mouseenter", () => shopStage.show(outfit.id)); // peek on hover
-    b.addEventListener("mouseleave", () => shopStage.show(shopSelected.id));
+    const descText = item.desc ? `<span class="desc">${item.desc}</span>` : "";
+    b.innerHTML = `<span class="emoji">${item.emoji}</span><span class="name">${item.name}</span>${descText}${lockText}`;
+    b.addEventListener("click", () => selectOutfit(item));
+    b.addEventListener("mouseenter", () => shop.stage(item)); // peek on hover
+    b.addEventListener("mouseleave", () => shop.stage(shopSelected));
     shopItemsEl.appendChild(b);
   }
   const ok = shopSelected && isUnlocked(shopSelected);
   wearBtn.disabled = !ok;
-  wearBtn.innerHTML = `<span class="pad-only xb a">A</span> ` +
-    (ok ? `Wear the ${shopSelected.name.toLowerCase()}!` : "Locked! Keep exploring 🔒");
+  wearBtn.innerHTML = `<span class="pad-only xb a">A</span> ` + (ok ? shop.useLabel(shopSelected) : shop.lockedLabel);
 }
 
-function selectOutfit(outfit) {
-  shopSelected = outfit;
-  shopStage.show(outfit.id);
+function selectOutfit(item) {
+  shopSelected = item;
+  currentShop.stage(item);
   drawShopItems();
 }
 
-function openShop() {
+// which: "flopsy" or "willow"
+function openShop(which = "flopsy") {
   if (inShop || shopCooldown > 0 || gameOver) return;
   inShop = true;
   paused = true;
+  currentShop = SHOPS[which];
   player.keys = {};
   player.vel.set(0, 0, 0);
   Sfx.shopBell();
   fadeEl.classList.add("on"); // quick fade to black
   if (document.exitPointerLock) document.exitPointerLock();
   setTimeout(() => {
-    selectOutfit(OUTFITS.find((o) => o.id === raeModel.outfit));
+    shopEl.classList.toggle("willow", which === "willow");
+    document.querySelector("#shop .shop-title").textContent = currentShop.title;
+    document.querySelector("#shop .shop-sub").textContent = currentShop.sub;
+    document.querySelector("#shop-leave .leave-text").textContent = currentShop.leaveLabel;
+    shopStage.setTheme(currentShop);
+    selectOutfit(currentShop.items.find((o) => o.id === currentShop.current()));
     shopEl.classList.remove("hidden");
   }, 300);
 }
 
-// Wear an outfit (or null to leave as she is), then step back out of the little door
-function leaveShop(outfit) {
+// Take an item (or null to leave as she is), then step back out of the little door
+function leaveShop(item) {
   if (!inShop) return;
-  if (outfit && !isUnlocked(outfit)) return;
+  if (item && !isUnlocked(item)) return;
+  const shop = currentShop;
   shopEl.classList.add("hidden");
-  const changed = outfit && outfit.id !== raeModel.outfit;
-  if (outfit) {
-    raeModel.setOutfit(outfit.id);
+  const changed = item && item.id !== shop.current();
+  if (item) {
+    shop.apply(item);
     Sfx.chime();
   }
   // Out of the door, facing back into the wardrobe
-  player.pos.set(4.65, 0, 0.3);
+  player.pos.set(shop.exit.x, 0, shop.exit.z);
   player.vel.set(0, 0, 0);
   player.knock.set(0, 0, 0);
-  player.yaw = Math.PI / 2;
+  player.yaw = shop.exit.yaw;
   player.pitch = 0;
   shopCooldown = 1.0;
   setTimeout(() => {
     fadeEl.classList.remove("on");
     inShop = false;
     paused = false;
-    Dialogue.say(changed ? outfit.lines : outfit ? SHOP_SAME_LINES : SHOP_LEAVE_LINES);
+    Dialogue.say(changed ? item.lines : item ? shop.sameLines : shop.leaveLines);
   }, 250);
   try {
     const result = canvas.requestPointerLock(); // the click counts, so we can grab the mouse again

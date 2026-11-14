@@ -105,7 +105,7 @@ function handleGamepad(dt) {
   Pad.prev = gp.buttons.map((b) => b.pressed);
 }
 
-// In the Flopsy Shop: move between outfits, A to wear, B to leave
+// In a shop: move between items, A to take one, B to leave
 function shopWithPad(pressed, lx, ly) {
   if (document.getElementById("shop").classList.contains("hidden")) return; // still fading in
   if (pressed(BTN.B)) { leaveShop(null); return; }
@@ -130,10 +130,11 @@ function shopWithPad(pressed, lx, ly) {
     if (move) Pad.navCooldown = 0.22;
   }
   if (move) {
-    const i = OUTFITS.indexOf(shopSelected);
-    const next = Math.max(0, Math.min(OUTFITS.length - 1, i + move));
+    const items = currentShop.items;
+    const i = items.indexOf(shopSelected);
+    const next = Math.max(0, Math.min(items.length - 1, i + move));
     if (next !== i) {
-      selectOutfit(OUTFITS[next]);
+      selectOutfit(items[next]);
       Sfx.babble(false);
       const el = document.querySelectorAll("#shop-items .outfit")[next];
       if (el) el.scrollIntoView({ block: "nearest" });

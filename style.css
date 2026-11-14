@@ -336,6 +336,35 @@ body:not(.pad) .pad-only { display: none !important; }
 .outfit.locked { background: #efe7ea; color: #a898a6; }
 .outfit.locked .emoji { filter: grayscale(1); opacity: 0.6; }
 .outfit .need { display: block; font-size: 13px; margin-top: 3px; }
+.outfit .desc { display: block; font-size: 13px; margin-top: 3px; opacity: 0.85; }
+
+/* ---- Willow's Weapon Mart: the same menu, dressed formally ---- */
+#shop.willow .shop-card {
+  background: #f4ecd8;
+  border: 3px double #6b5d4a;
+  border-radius: 6px;
+  box-shadow: 0 0 0 6px #f4ecd8, 0 0 0 8px #b8924a;
+  font-family: "Special Elite", "Courier New", monospace;
+  color: #2b2624;
+}
+#shop.willow .shop-title {
+  font-family: "Special Elite", "Courier New", monospace;
+  color: #2b2624;
+  transform: none;
+  letter-spacing: 2px;
+  font-size: 30px;
+  border-bottom: 2px solid #2b2624;
+  padding-bottom: 6px;
+}
+#shop.willow .shop-sub { color: #5c5448; font-style: italic; }
+#shop.willow .outfit { background: #ebe1c9; color: #2b2624; border-radius: 4px; border-color: #c9bb9c; }
+#shop.willow .outfit:hover { border-color: #b8924a; }
+#shop.willow .outfit.selected { background: #fffaf0; border-color: #b8924a; box-shadow: 0 4px 0 #b8924a; }
+#shop.willow .outfit.locked { background: #ddd6c8; color: #8d8578; }
+#shop.willow #shop-stage { background: #3a3840; border-radius: 4px; }
+#shop.willow #shop-wear { background: #2f5a46; box-shadow: 0 5px 0 #1f3d2f; border-radius: 4px; }
+#shop.willow #shop-wear:disabled { background: #b9b2a5; box-shadow: 0 5px 0 #9a9387; }
+#shop.willow #shop-leave { color: #5c5448; }
 #shop-stage {
   display: block;
   width: 100%;

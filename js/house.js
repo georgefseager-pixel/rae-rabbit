@@ -184,6 +184,7 @@ function buildWardrobe(w) {
   buildWillowDoor(w, z2);
   // Willow stands beside her door, near the back wall, with her own hidden box
   w.willowSpot = { x: 5.17, y: 0, z: 2.08, yaw: 0.35 };
+  w.addZone("willow-door", 4.42, 4.9, -0.2, 0.4, 2.05, 2.4); // walk up to the door
   const willowBlock = w.addSpan("willow", 5.03, 5.31, 0, 0.45, 1.94, 2.22, COLORS.floor);
   willowBlock.mesh.visible = false;
   w.addZone("shop-door", back - 0.35, back, -0.2, 0.4, 0.0, 0.6); // walk up to the little door
@@ -216,7 +217,7 @@ function buildFlopsyShopDoor(w, wallX, z) {
 
 // Willow's Weapon Mart: a formal little dark-wood door on the wardrobe's other
 // inner wall (z = wallZ, facing -z), with a brass knob and a typed brass plaque.
-// It doesn't open yet: the shop isn't ready!
+// Walking up to it opens the shop (main.js).
 function buildWillowDoor(w, wallZ) {
   const face = wallZ - 0.005, x = 4.66, hw = 0.24, top = 0.8;
   const wood = 0x5b3f33, panel = 0x6e4f40, brass = 0xd8b25a;
@@ -238,7 +239,7 @@ function buildWillowDoor(w, wallZ) {
   sign.rotation.y = Math.PI;  // face into the wardrobe (-z)
   sign.position.set(x, top + 0.3, face - 0.02);
   w.add(new Prop({ name: "willow-sign", mesh: sign, solid: false }));
-  const soon = makeTypedSign(["~ OPENING SOON ~"], 0.3, 0.07);
+  const soon = makeTypedSign(["~ NOW OPEN ~"], 0.3, 0.07);
   soon.rotation.y = Math.PI;
   soon.position.set(x, 0.4, face - 0.075);
   w.add(new Prop({ name: "willow-sign", mesh: soon, solid: false }));
@@ -296,6 +297,20 @@ function buildWhiteTable(w) {
       w.addSpan("white-table-leg", x, x + leg, 0, top - thick, z, z + leg, COLORS.tableWhite);
     }
   }
+  // An open drawer sticking out towards the bed: a handy ledge to land on after
+  // bouncing off the bed (still too high to reach with a hop from the floor)
+  const dx1 = -0.9, dx2 = -0.1, dTop = 1.24, dFront = z1 - 0.38;
+  w.addDeco("drawer-case", dx1 - 0.03, dx2 + 0.03, 1.08, top - thick, z1, z1 + 0.6, COLORS.tableWhite);
+  w.addSpan("open-drawer", dx1, dx2, 1.1, dTop, dFront, z1 + 0.55, COLORS.tableWhite);
+  w.addDeco("drawer-inside", dx1 + 0.03, dx2 - 0.03, dTop, dTop + 0.003, dFront + 0.05, z1, COLORS.walnutLight);
+  w.addDeco("drawer-front", dx1 - 0.02, dx2 + 0.02, 1.08, dTop + 0.02, dFront - 0.03, dFront, COLORS.tableWhite);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), pastel(COLORS.butter));
+  knob.position.set((dx1 + dx2) / 2, 1.16, dFront - 0.05);
+  w.add(new Prop({ name: "knob", mesh: knob, solid: false }));
+  // a couple of rolled-up socks peeking out of the drawer
+  w.addDeco("socks", dx1 + 0.1, dx1 + 0.24, dTop, dTop + 0.05, dFront + 0.08, dFront + 0.18, COLORS.canPink);
+  w.addDeco("socks", dx2 - 0.3, dx2 - 0.16, dTop, dTop + 0.05, dFront + 0.12, dFront + 0.22, COLORS.canMint);
+
   // Oval vanity mirror on the wall above the table: hop up and say hi to yourself!
   w.addOvalMirror(-0.5, 2.15, 3.97, 1.1, 1.3, "-z");
 
