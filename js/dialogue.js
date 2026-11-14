@@ -10,6 +10,12 @@
 // the older ones, so you always see what was just said. Each bubble types out
 // with a babbly voice, stays a moment, then fades away on its own.
 
+// Pick one at random from a list of lines (a plain string is just itself),
+// so the same moment can be said differently each playthrough.
+function pick(lines) {
+  return Array.isArray(lines) ? lines[Math.floor(Math.random() * lines.length)] : lines;
+}
+
 const Dialogue = {
   stack: null,
   bubbles: [],      // bubbles currently on screen (oldest first)
@@ -31,7 +37,9 @@ const Dialogue = {
     this.say(text, opts);
   },
 
+  // text can be one line or a list of variations (one is picked at random)
   say(text, opts = {}) {
+    text = pick(text);
     // Make room: clear the oldest bubble if there are too many
     while (this.bubbles.length >= this.maxBubbles) this.dismiss(this.bubbles[0]);
 

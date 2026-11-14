@@ -25,8 +25,8 @@ const FROG_LINES = [
   "I'm un-frog-ettable!",
 ];
 
-// How often a frog spawns as a tiny, speedy MINI frog (0.15 = 15% of the time)
-const MINI_FROG_CHANCE = 0.15;
+// How often a frog spawns as a tiny, speedy MINI frog (0.06 = 6% of the time)
+const MINI_FROG_CHANCE = 0.06;
 
 // What Boss Frog Jiggle Jaggle shouts
 const BOSS_LINES = [
@@ -34,6 +34,11 @@ const BOSS_LINES = [
   "You can't hop away from me, bunny!",
   "Bow before the BOSS FROG!",
 ];
+const BOSS_HURT_LINES = ["OUCH! RIBBIT!", "You'll pay for that, bunny!", "That tickled! ...a bit."];
+const BOSS_LAST_LINES = ["GRRRIBBIT! One more and I'm toast!", "No no NO! Not my crown!", "I'm getting woozy..."];
+
+// What frogs say when Rae's wearing the frog face shirt (they think she's one of them)
+const FROG_FRIEND_LINES = ["Hey, cousin!", "Nice shirt, buddy!", "Ribbit, fellow frog!", "Ooh, a new frog friend!"];
 
 // Pastel colours for the frogs; each frog gets its own
 const FROG_COLORS = {
@@ -254,7 +259,7 @@ class Frog {
       this.world.debris.burst({ mesh: this.root, box });
       return true;
     }
-    Dialogue.say(this.hp === 2 ? "OUCH! RIBBIT!" : "GRRRIBBIT! One more and I'm toast!",
+    Dialogue.say(this.hp === 2 ? BOSS_HURT_LINES : BOSS_LAST_LINES,
       { speaker: "👑 Jiggle Jaggle", style: "enemy", voice: "frog" });
     return false;
   }
@@ -284,6 +289,24 @@ class Frog {
     const s = this.root.scale.x;
     if (s < this.size) this.root.scale.setScalar(Math.min(this.size, s + dt * 4));
 
+    // ---- Dancing (when Rae starts a dance party nearby) ----
+    if (this.danceTimer > 0) {
+      this.danceTimer -= dt;
+      this.dancing = true;
+      this.chasing = false;
+      this.waving = false;
+      this.yaw += dt * 3.5; // twirl
+      if (this.onGround) {
+        this.vel.x = 0; this.vel.z = 0;
+        this.danceHop = (this.danceHop || 0) - dt;
+        if (this.danceHop <= 0) { this.vel.y = 2.6; this.onGround = false; this.danceHop = 0.5; }
+      }
+      this.move(dt);
+      this.animate(dt, time);
+      return;
+    }
+    this.dancing = false;
+
     // ---- Look for Rae (a few times a second) ----
     const dx = player.pos.x - this.pos.x, dz = player.pos.z - this.pos.z;
     const dist = Math.hypot(dx, dz);
@@ -296,7 +319,20 @@ class Frog {
     }
     this.talkCooldown = Math.max(0, this.talkCooldown - dt);
     this.hitCooldown = Math.max(0, (this.hitCooldown || 0) - dt);
-    if (this.canSee && !this.chasing) {
+
+    // Rae in her frog face shirt? Frogs think she's one of them: they wave instead of chasing
+    const friendly = this.canSee && !this.isBoss && Frog.isFriendly();
+    if (friendly && !this.waving && this.talkCooldown === 0) {
+      Dialogue.say(FROG_FRIEND_LINES, this.mini
+        ? { speaker: "🐸 Mini frog", style: "enemy", voice: "minifrog" }
+        : { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
+      this.talkCooldown = 10;
+      if (typeof raeSays === "function") raeSays("frog-friendly");
+    }
+    this.waving = friendly;
+    if (friendly) this.chasing = false;
+
+    if (this.canSee && !this.chasing && !friendly) {
       this.chasing = true;
       if (this.talkCooldown === 0) {
         if (this.isBoss) {
@@ -337,8 +373,9 @@ class Frog {
       }
       if (!this.wanderDir.stay) dir = this.wanderDir;
     }
+    if (this.waving) dir = null; // stay put and wave
     if (dir) this.targetYaw = Math.atan2(-dir.x, -dir.z);
-    if (this.chasing && dist <= closeEnough) this.targetYaw = Math.atan2(-dx, -dz);
+    if ((this.chasing && dist <= closeEnough) || this.waving) this.targetYaw = Math.atan2(-dx, -dz);
 
     // Turn smoothly
     let diff = this.targetYaw - this.yaw;
@@ -435,7 +472,17 @@ class Frog {
       // In the air: arms up like the waving plush. On the ground: a little wave.
       arm.rotation.z = side * (air ? 1.2 : 0.35 + Math.sin(time * 3 + side) * 0.08);
       arm.rotation.x = air ? -0.3 : 0;
+      if (this.dancing) arm.rotation.z = side * (1.7 + Math.sin(time * 10 + side) * 0.6); // arms up, wiggling
+      if (this.waving && side === 1) arm.rotation.z = 2.4 + Math.sin(time * 14) * 0.4;  // a friendly wave
     }
   }
+
+  // Start dancing for a few seconds (Rae's dance party)
+  dance(seconds) {
+    if (!this.alive || this.isBoss) return;
+    this.danceTimer = seconds;
+    this.danceHop = Math.random() * 0.4;
+  }
 }
-Frog.sightBoost = 1; // how much further than normal all frogs can see
+Frog.sightBoost = 1;              // how much further than normal all frogs can see
+Frog.isFriendly = () => false;    // main.js: true while Rae wears the frog face shirt

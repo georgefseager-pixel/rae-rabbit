@@ -166,7 +166,32 @@ function landPunch() {
     middle.y += frog.height / 2;
     if (middle.distanceTo(hit) < PUNCH_RADIUS + frog.radius) hitFrog(frog, "punch");
   }
+  // Poor Flopsy!
+  if (flopsy.middle().distanceTo(hit) < PUNCH_RADIUS + 0.15) flopsy.ouch();
 }
+
+// ---- Dancing (G key / Y button) ----
+// Rae dances for a few seconds (moving stops her). Nearby frogs stop and dance
+// along... except in the Frogpocalypse, where they're far too busy.
+const DANCE_TIME = 4;
+let danceTime = 0;
+const danceFake = { pos: new THREE.Vector3(), vel: new THREE.Vector3(), yaw: 0, pitch: 0, onGround: true };
+
+function startDance() {
+  if (!started || paused || gameOver || inShop || danceTime > 0) return;
+  danceTime = DANCE_TIME;
+  Sfx.danceTune();
+  raeSays("dance");
+  if (!Frogpocalypse.active) {
+    for (const frog of frogs) {
+      if (frog.alive && frog.pos.distanceTo(player.pos) < 9) frog.dance(DANCE_TIME);
+    }
+  }
+}
+window.addEventListener("keydown", (e) => { if (e.code === "KeyG" && !e.repeat) startDance(); });
+
+// Frogs wave at Rae (instead of chasing) while she wears the frog face shirt
+Frog.isFriendly = () => raeModel.outfit === "frog" && !Frogpocalypse.active;
 
 // A click punches. (In click-and-drag look mode, a quick click still punches; a drag just looks.)
 let pressedAt = null;
@@ -181,50 +206,61 @@ window.addEventListener("mouseup", (e) => {
 });
 
 // ---- Rae's first-time thoughts ----
-// Each line plays only the first time it happens. Edit the words here!
+// Each one plays only the first time it happens, and Rae picks one of the
+// variations at random, so every playthrough sounds a bit different.
+// Edit or add words here!
 const RAE_LINES = {
-  // bouncing
-  "bounce-bed":   "Bounce! Bounce! BOUNCE!",
-  "bounce-sofa":  "Sofa, so good!",
+  // bouncing & dancing
+  "bounce-bed":  ["Bounce! Bounce! BOUNCE!", "Boing boing boing! Wheee!", "This bed is a trampoline now!"],
+  "bounce-sofa": ["Sofa, so good!", "Comfy AND bouncy? Perfect!", "Cushion launch!"],
+  "dance":       ["Dance party!", "Shake that fluffy tail!", "Bunny boogie time!"],
   // smashing things (by the thing's name)
-  "smash-door":    "Coming through!",
-  "smash-book":    "Who needs books anyway?",
-  "smash-bowl":    "Oopsie! Butterpaws!",
-  "smash-glass":   "Smash-tastic!",
-  "smash-lamp":    "Lights out!",
-  "smash-can":     "Pssssht!",
-  "smash-clothes": "Laundry day!",
-  "smash-plant":   "Sorry, leafy friend!",
-  "smash-tv":      "Nooo! My shows!",
-  "smash-laptop":  "Oops... that had homework on it!",
-  "smash-phone":   "No more doomscrolling!",
-  "smash-cracker": "BANG! Where's my paper hat?",
-  "smash-frame":   "Sorry, cute photo!",
-  "smash-vase":    "Flower power!",
-  "smash-jar":     "Jar-ring!",
-  "smash-notebook":"Dear diary... oops.",
-  "smash-mug":     "Mug-nificent mess!",
-  "smash-speaker": "Turn it down... forever!",
-  "smash-pot":     "Pot-tastrophe!",
+  "smash-door":     ["Coming through!", "Knock knock! Too late!", "Doors are just walls that give up!"],
+  "smash-book":     ["Who needs books anyway?", "That's one way to read!", "Chapter one: SMASH!"],
+  "smash-bowl":     ["Oopsie! Butterpaws!", "Bowl-ed over!", "That bowl was empty anyway... I think."],
+  "smash-glass":    ["Smash-tastic!", "Glass half... gone!", "Tinkle tinkle!"],
+  "smash-lamp":     ["Lights out!", "Who turned off the lights?", "Lamp-tastic mess!"],
+  "smash-can":      ["Pssssht!", "Spritz attack!", "Can't stop, won't stop!"],
+  "smash-clothes":  ["Laundry day!", "Fashion disaster!", "Sock it to me!"],
+  "smash-plant":    ["Sorry, leafy friend!", "Oops! Un-be-leaf-able!", "Leaf me alone, I'm busy!"],
+  "smash-tv":       ["Nooo! My shows!", "Screen time's over!", "Guess I'll go outside... no, wait."],
+  "smash-laptop":   ["Oops... that had homework on it!", "Ctrl+Alt+Defeat!", "That's one way to log off!"],
+  "smash-phone":    ["No more doomscrolling!", "New phone, who dis?", "Call me... never!"],
+  "smash-cracker":  ["BANG! Where's my paper hat?", "Christmas came early!", "Pull? Nah. Punch!"],
+  "smash-frame":    ["Sorry, cute photo!", "Say cheese... and crunch!", "That was a frame-tastic photo!"],
+  "smash-vase":     ["Flower power!", "Petal to the metal!", "Oops, a vase-ty mistake!"],
+  "smash-jar":      ["Jar-ring!", "Jarred it!", "Well, that's jarring!"],
+  "smash-notebook": ["Dear diary... oops.", "Notebook? No-book!", "Note to self: stop smashing."],
+  "smash-mug":      ["Mug-nificent mess!", "Tea time is cancelled!", "That's the mug life!"],
+  "smash-speaker":  ["Turn it down... forever!", "The music stopped!", "Speak no more!"],
+  "smash-pot":      ["Pot-tastrophe!", "Pot luck!", "A pot-ty mistake!"],
+  "smash-backpack": ["Bag smash!", "The homework escaped!", "That bag had snacks in it, right?"],
+  "smash-computer": ["Blue screen of... crumbs!", "Ctrl+Alt+DESTROYED!", "Game over, computer!"],
   // frogs and hearts
-  "frog-spotted":  "Eep! A frog!",
-  "frog-popped":   "Pop goes the frog! Rabbits rule!",
-  "minifrog-popped": "Got you, you speedy little thing!",
-  "frog-punched":  "Hi-yah! Bunny fu!",
-  "hurt":          "Ouch! Frogs are slimy!",
-  "last-heart":    "Uh oh, I need a carrot...",
+  "frog-spotted":    ["Eep! A frog!", "Oh no, froggy business!", "Ribbit yourself, mister!"],
+  "frog-popped":     ["Pop goes the frog! Rabbits rule!", "Boing! Frog flattened!", "Frog? More like flop!"],
+  "minifrog-popped": ["Got you, you speedy little thing!", "Too fast? Not for me!", "Tiny frog, tiny pop!"],
+  "frog-punched":    ["Hi-yah! Bunny fu!", "Pow! Right in the ribbit!", "One punch frog!"],
+  "frog-friendly":   ["They think I'm a frog! Hehe.", "Hi froggy friends!", "Undercover bunny... ribbit!"],
+  "hurt":            ["Ouch! Frogs are slimy!", "Ow! Watch the fur!", "Hey! No touching!"],
+  "last-heart":      ["Uh oh, I need a carrot...", "One heart left... careful, Rae!", "Carrot, carrot, where's a carrot?!"],
   // carrots
-  "first-carrot":  "Yummers mode!",
-  "all-carrots":   "All the carrots! Best day ever!",
-  "carrot-heal":   "Crunchy! I feel better already!",
+  "first-carrot": ["Yummers mode!", "Crunch crunch! Delicious!", "Carrot get enough of these!"],
+  "all-carrots":  ["All the carrots! Best day ever!", "Every last carrot! I'm stuffed!", "Carrot champion!"],
+  // Frogpocalypse
+  "frog-mode-start": ["Uh oh... why are there SO many frogs?!", "Frogs! Frogs everywhere!", "This is a frog-tastrophe!"],
+  "boss-beaten":     ["I did it! Rabbits rule FOREVER!", "Jiggle Jaggle is all jiggled out!", "Bunny wins! Frog loses!"],
   // places (zones in house.js)
-  "zone-bath":         "My fur is wet!",
-  "zone-mirror-table": "Who's that cute bunny?!",
-  "zone-wardrobe":     "A secret hideout! It smells like laundry.",
-  "zone-living-room":  "Ooh, so cosy in here!",
-  "zone-office":       "This is where the humans do work-stuff.",
-  "zone-kitchen":      "Down the rabbit hole... something smells yummy!",
+  "zone-bath":         ["My fur is wet!", "Splish splash, I'm soggy!", "Bath time? I didn't agree to this!"],
+  "zone-mirror-table": ["Who's that cute bunny?!", "Looking good, Rae!", "Mirror mirror on the wall..."],
+  "zone-wardrobe":     ["A secret hideout! It smells like laundry.", "Ooh, a cosy closet!", "Narnia? No... just a wardrobe."],
+  "zone-living-room":  ["Ooh, so cosy in here!", "What a comfy room!", "Sofa! TV! Snacks?"],
+  "zone-office":       ["This is where the humans do work-stuff.", "Shh... someone's working!", "Office? More like nap room."],
+  "zone-kitchen":      ["Down the rabbit hole... something smells yummy!", "Kitchen! Where are the carrots kept?", "Mmm, snack headquarters!"],
 };
+// Said EVERY time a carrot heals her (not just the first time)
+const CARROT_HEAL_LINES = ["Crunchy! I feel better already!", "Carrot power! Heart restored!", "Nom nom... all better!"];
+
 function raeSays(id) {
   if (RAE_LINES[id]) Dialogue.sayOnce(id, RAE_LINES[id]);
 }
@@ -350,7 +386,7 @@ function hitFrog(frog, how) {
   if (frog.isBoss) {
     if (frog.bossHit()) {
       stompedCount++;
-      Dialogue.say("I did it! Rabbits rule FOREVER!");
+      Dialogue.say(RAE_LINES["boss-beaten"]);
       document.body.classList.remove("boss-fight");
       setTimeout(showWin, 1800);
     }
@@ -373,14 +409,15 @@ function checkCollectibles() {
       Sfx.chime();
       collectedCount++;
       countEl.textContent = collectedCount;
-      if (gameMode === "frog") {
-        // Frogpocalypse: carrots heal a heart
-        if (hearts < MAX_HEARTS) { hearts++; drawHearts(); }
-        raeSays("carrot-heal");
-      } else {
-        if (prop.name === "carrot") raeSays("first-carrot");
-        if (collectedCount === totalCollectibles) raeSays("all-carrots");
+      // Carrots heal a heart (in every mode)
+      if (hearts < MAX_HEARTS) {
+        hearts++;
+        drawHearts();
+        Dialogue.say(CARROT_HEAL_LINES);
+      } else if (gameMode !== "frog") {
+        raeSays("first-carrot");
       }
+      if (gameMode !== "frog" && collectedCount === totalCollectibles) raeSays("all-carrots");
     }
   }
 }
@@ -398,6 +435,13 @@ function loop() {
     hurtCooldown = Math.max(0, hurtCooldown - dt);
     shopCooldown = Math.max(0, shopCooldown - dt);
     punchCooldown = Math.max(0, punchCooldown - dt);
+    if (danceTime > 0) {
+      danceTime -= dt;
+      // walking off stops the dance
+      const walking = Math.hypot(player.vel.x - player.knock.x, player.vel.z - player.knock.z) > 0.5;
+      if (walking && danceTime < DANCE_TIME - 0.3) danceTime = 0;
+    }
+    paws.dancing = danceTime > 0;
     paws.group.visible = hurtCooldown === 0 || Math.floor(hurtCooldown * 10) % 2 === 0; // blink while safe
     const fallingSpeed = player.vel.y;
     player.update(dt, world);
@@ -413,7 +457,8 @@ function loop() {
     player.update(0, world); // just place the camera for the title screen
   }
   world.update(dt, time); // animates props and flying pieces
-  raeModel.update(paused ? 0 : dt, player, time);
+  const raeMoves = danceTime > 0 ? danceMotion(danceFake, player.pos, player.yaw, time) : player;
+  raeModel.update(paused ? 0 : dt, raeMoves, time);
   paws.update(paused ? 0 : dt, player, time);
 
   if (inShop) shopStage.render(dt, time); // Rae dancing on the shop's little stage

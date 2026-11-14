@@ -149,6 +149,48 @@ const Sfx = {
     src.stop(t + 0.16);
   },
 
+  // A bouncy little 4-second dance tune (melody + bass)
+  danceTune() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime, beat = 0.25;
+    const melody = [784, 988, 1175, 988, 784, 988, 1319, 1175, 880, 1047, 1319, 1047, 880, 1175, 1568, 1319];
+    const bass = [196, 196, 247, 247, 220, 220, 262, 262];
+    melody.forEach((freq, i) => this.note(freq, t + i * beat, beat * 0.8, 0.13, "triangle"));
+    bass.forEach((freq, i) => this.note(freq, t + i * beat * 2, beat * 1.6, 0.16, "sine"));
+  },
+
+  // One plain note (used by the dance tune)
+  note(freq, start, length, volume, type) {
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + length);
+    osc.connect(gain).connect(this.master);
+    osc.start(start);
+    osc.stop(start + length + 0.02);
+  },
+
+  // A little squeak (punching Flopsy)
+  squeak() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(1400, t);
+    osc.frequency.exponentialRampToValueAtTime(2200, t + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(900, t + 0.2);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.2, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    osc.connect(gain).connect(this.master);
+    osc.start(t);
+    osc.stop(t + 0.24);
+  },
+
   // A shop doorbell: "ding-a-ling!"
   shopBell() {
     if (!this.ctx) return;

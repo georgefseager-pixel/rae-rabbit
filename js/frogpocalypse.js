@@ -1,7 +1,7 @@
 // ============================================================
 // frogpocalypse.js — the Frogpocalypse game mode
 // ============================================================
-// Frogs pour into the house, faster and faster. Survive for 5 minutes and
+// Frogs pour into the house, faster and faster. Survive for 3 minutes and
 // Boss Frog Jiggle Jaggle turns up in the living room. Beat him (3 hits) to win!
 // The Flopsy Shop is boarded up and Flopsy has fled. Carrots heal a heart.
 //
@@ -15,7 +15,7 @@ const Frogpocalypse = {
   bossWarned: false,
 
   // ---- Tweakable numbers ----
-  BOSS_TIME: 300,      // seconds until the boss appears (5 minutes)
+  BOSS_TIME: 180,      // seconds until the boss appears (3 minutes)
   MAX_FROGS: 30,       // never more frogs than this at once
 
   // Where new frogs can appear (all over the house)
@@ -43,6 +43,12 @@ const Frogpocalypse = {
     Frog.sightBoost = 1.7; // frogs see further
     for (const f of frogs) f.respawnDistance = Infinity; // the spawner handles frogs now
 
+    // Every door starts already smashed, so there's nowhere to hide
+    for (const door of world.props.filter((p) => p.name === "door")) {
+      door.broken = true;
+      world.remove(door);
+    }
+
     // Board up the Flopsy Shop: no way in, and Flopsy has gone
     world.zones = world.zones.filter((z) => z.name !== "shop-door");
     flopsy.leave();
@@ -62,15 +68,16 @@ const Frogpocalypse = {
 
     // Show frogs stomped and the timer instead of carrots
     document.body.classList.add("frog-mode");
-    Dialogue.say("Uh oh... why are there SO many frogs?!");
+    Dialogue.say(RAE_LINES["frog-mode-start"]);
     for (let i = 0; i < 3; i++) this.spawnFrog(player);
   },
 
-  // A new frog somewhere in the house: not too close to Rae, not too far either
+  // A new frog somewhere in the house, often right where Rae can see it pop in.
+  // (Never right on top of her, though.)
   spawnFrog(player) {
     const options = this.SPAWNS.filter(([x, y, z]) => {
       const d = Math.hypot(x - player.pos.x, z - player.pos.z);
-      return d > 4 && d < 16;
+      return d > 2.2 && d < 14;
     });
     if (!options.length) return;
     const [x, y, z] = options[Math.floor(Math.random() * options.length)];

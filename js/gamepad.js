@@ -3,6 +3,7 @@
 // ============================================================
 //   Left stick     move            Right stick   look
 //   A              hop             X / RB / RT   punch
+//   Y              dance
 //   Menu (☰)       pause           B             back (shop)
 //   D-pad / stick  choose outfits in the shop, A to wear
 //
@@ -95,6 +96,7 @@ function handleGamepad(dt) {
     player.pitch = Math.max(-1.5, Math.min(1.5, player.pitch));
     if (pressed(BTN.A)) player.hopQueued = 0.15;
     if (pressed(BTN.X) || pressed(BTN.RB) || pressed(BTN.RT)) punch();
+    if (pressed(BTN.Y)) startDance();
     if (pressed(BTN.MENU)) showPauseScreen();
   }
 

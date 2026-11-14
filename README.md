@@ -9,19 +9,20 @@ Pick a game mode from the main menu:
 - **🥕 Carrotventure**: explore the house, find carrots, smash things, dress up at the Flopsy Shop.
 - **🐸 Frogpocalypse**: frogs pour in from all over the house, more and more as time goes on. The Flopsy
   Shop is boarded up and Flopsy has fled. The HUD shows frogs stomped and how long you've survived;
-  carrots heal a heart. Survive **5 minutes** and **Boss Frog Jiggle Jaggle** (giant, with a crown)
+  every door starts smashed (nowhere to hide), frogs pop up even right in view. Survive **3 minutes** and **Boss Frog Jiggle Jaggle** (giant, with a crown)
   appears in the living room. He takes 3 hits (stomps or punches). Beat him for the **YOU WIN!** screen.
   Spawn rates, the frog limit and the boss time are at the top of `js/frogpocalypse.js`.
 
 - **W A S D**: move
 - **Mouse**: look around (or hold the button and drag, if the browser won't capture the mouse)
 - **Space**: hop (press it just as you land on the bed for a big bounce)
+- **G**: dance! Nearby frogs stop and dance along (not in the Frogpocalypse). Moving stops the dance.
 - **Click**: punch! Smashes breakables and pops frogs just in front of Rae (tweak `PUNCH_REACH` and
   `PUNCH_RADIUS` in `js/main.js`)
 - **Esc**: pause
 
 **With a controller** (Xbox layout; just press a button and the on-screen prompts switch over):
-left stick move, right stick look, **A** hop, **X** / **RB** / **RT** punch, **Menu (☰)** pause.
+left stick move, right stick look, **A** hop, **X** / **RB** / **RT** punch, **Y** dance, **Menu (☰)** pause.
 In the Flopsy Shop: D-pad or left stick to choose, **A** to wear, **B** to leave.
 Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 
@@ -80,7 +81,7 @@ in whichever outfit you click. "Wear it!" and she steps back out in it, with som
 |--------|---------------|
 | Just fur, Favourite shirt | Always |
 | Pink dress | Collect 3 carrots |
-| Frog face shirt | Stomp 5 frogs |
+| Frog face shirt | Stomp 5 frogs (frogs then wave at Rae instead of chasing her, but touching still hurts) |
 | Navy suit | Smash 20 things |
 | Clown face & nose | Collect 8 carrots |
 
@@ -94,12 +95,12 @@ slowly after her. Land on its head to pop it (silly squeak, and Rae bounces off)
 and Rae loses a heart. Wander about 16m away from where a frog lives and it comes back, good as new,
 in a new random colour.
 
-**Mini frogs:** each time a frog spawns there's a small chance (15%, `MINI_FROG_CHANCE` in `js/frog.js`)
+**Mini frogs:** each time a frog spawns there's a small chance (6%, `MINI_FROG_CHANCE` in `js/frog.js`)
 it's a mini frog: 60% of the size (harder to land on), about twice as fast, hops much higher, spots Rae
 from further away, zig-zags while chasing, and shouts in a squeaky voice.
 
 ## Hearts
-Rae has 3 hearts (top right). Getting hurt loses one, flashes the screen red and knocks her back; then
+Rae has 3 hearts (top right). Carrots heal a heart, in every mode. Getting hurt loses one, flashes the screen red and knocks her back; then
 she's safe for 1.5 seconds (her paws blink). Out of hearts: a summary screen ("Rae needs a nap!") shows
 carrots collected, things smashed and frogs stomped, with a "Play again" button that restarts the game.
 Tweak `MAX_HEARTS` and `HURT_COOLDOWN` in `js/main.js`.
@@ -154,3 +155,13 @@ w.addOvalMirror(0, 1.8, -3.97, 0.9, 1.1, "+z");
 // a rectangular (full-length) mirror
 w.addRectMirror(0, 1.3, -3.97, 1.2, 2.4, "+z");
 ```
+
+## Screen size (TVs)
+All the on-screen bits are scaled up for bigger screens and kept away from the edges. To make
+everything bigger or smaller, change `--ui` (in-game bits) and `--ui-card` (menus, shop, end
+screens) in the "UI SIZE" section at the bottom of `style.css`.
+
+## Dialogue
+Every line has at least three variations, picked at random, so each playthrough sounds a bit
+different. Rae's are in `RAE_LINES` (`js/main.js`), Flopsy's and the outfits' in `js/shop.js`,
+the frogs' and Jiggle Jaggle's at the top of `js/frog.js`. Punch Flopsy and she jumps and squeaks.

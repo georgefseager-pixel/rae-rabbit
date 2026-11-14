@@ -409,3 +409,24 @@ body:not(.pad) .pad-only { display: none !important; }
 #play-again:active, .play-again:active { transform: translateY(3px); box-shadow: 0 2px 0 #e08aa9; }
 .card .big { font-size: 24px; margin: 10px 0; color: #d77a9b; font-weight: 700; }
 .card .controls { margin: 0; line-height: 1.7; }
+
+/* =========================================================
+   UI SIZE: everything on screen is scaled up, more on big screens
+   (e.g. a TV), and kept well away from the edges (TVs often crop them).
+   --ui is for the in-game bits (hearts, speech bubbles...), --ui-card
+   for the menu, shop and end screens. Turn these up or down to taste!
+   ========================================================= */
+:root { --ui: 1.3; --ui-card: 1.15; }
+@media (min-width: 1500px) { :root { --ui: 1.65; --ui-card: 1.4; } }
+@media (min-width: 2200px) { :root { --ui: 2.2; --ui-card: 1.85; } }
+@media (max-height: 820px) { :root { --ui-card: 1; } }
+@media (max-width: 760px)  { :root { --ui: 1; --ui-card: 1; } }
+
+#hud, #dialogue-stack, #boss-bar, #toast, #banner { zoom: var(--ui); }
+#overlay .card, #gameover .card, #win .card { zoom: var(--ui-card); }
+.shop-card { zoom: min(var(--ui-card), 1.25); }
+
+/* further in from the edges (these numbers get scaled up by the zoom too) */
+#hud { top: 28px; right: 34px; }
+#dialogue-stack { top: 32px; left: 34px; }
+#boss-bar { top: 82px; right: 34px; }

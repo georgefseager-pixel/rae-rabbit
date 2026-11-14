@@ -478,10 +478,13 @@ function buildDeskCorner(w) {
   }
   w.addSpan("desk-back", x2 - 0.08, x2, 0, top - 0.08, z1, z2, black);
   // Monitor (facing the room) and keyboard
-  w.addSpan("monitor-stand", 3.6, 3.75, top, top + 0.25, 10.9, 11.1, COLORS.tvBlack);
-  w.addSpan("monitor", 3.55, 3.65, top + 0.2, top + 0.85, 10.45, 11.55, COLORS.tvBlack);
-  addGlow(w, "monitor-screen", 3.53, 3.55, top + 0.5, top + 0.8, 10.5, 11.5, COLORS.screenSky, 0.6);
-  addGlow(w, "monitor-screen", 3.525, 3.545, top + 0.25, top + 0.5, 10.5, 11.5, COLORS.screenGrass, 0.6);
+  // The computer (monitor on a stand, showing green hills): smashable!
+  w.add(makeThing("computer", 3.6, top, 11.0, [
+    ["box", [0.15, 0.25, 0.2], [0.075, 0.125, 0], COLORS.tvBlack],                    // stand
+    ["box", [0.1, 0.65, 1.1], [0, 0.525, 0], COLORS.tvBlack],                         // monitor
+    ["box", [0.02, 0.3, 1.0], [-0.06, 0.65, 0], COLORS.screenSky, { glow: 0.6 }],     // screen: sky
+    ["box", [0.02, 0.25, 1.0], [-0.065, 0.375, 0], COLORS.screenGrass, { glow: 0.6 }], // ...and hills
+  ]));
   w.addDeco("keyboard", 3.05, 3.35, top, top + 0.03, 10.6, 11.4, COLORS.canPink);
   w.add(new Carrot(3.2, top + 0.2, 10.35)); // on the desk: climb up via the chair
   // Desk clutter: a mug and a little speaker
@@ -490,8 +493,17 @@ function buildDeskCorner(w) {
     ["box", [0.02, 0.06, 0.05], [0.07, 0.07, 0], COLORS.book1],
   ]));
   w.add(makeThing("speaker", 3.75, top, 10.3, [["blob", [0.08, 1, 1.2, 1], [0, 0.09, 0], COLORS.tvBlack]]));
-  // A backpack dumped on the floor
-  w.addSpan("backpack", 0.25, 0.85, 0, 0.45, 9.7, 10.15, COLORS.tvBlack);
+  // A black backpack dumped on the floor, slumped against the wall (smashable!)
+  const bag = 0x34303b, bagDark = 0x26232b;
+  w.add(makeThing("backpack", 0.55, 0, 9.93, [
+    ["blob", [0.25, 1.15, 0.88, 0.62], [0, 0.22, 0], bag],              // main body
+    ["blob", [0.15, 1.15, 0.8, 0.45], [0, 0.15, 0.14], 0x433d4a],       // front pocket
+    ["box", [0.26, 0.015, 0.02], [0, 0.2, 0.2], COLORS.steel],          // pocket zip
+    ["box", [0.03, 0.06, 0.03], [0.05, 0.19, 0.21], COLORS.steel],      // zip pull
+    ["box", [0.14, 0.03, 0.04], [0, 0.42, -0.02], bagDark],             // grab handle on top
+    ["box", [0.05, 0.34, 0.025], [-0.1, 0.2, -0.155], bagDark],         // shoulder straps (at the back)
+    ["box", [0.05, 0.34, 0.025], [0.1, 0.2, -0.155], bagDark],
+  ]));
   // PC tower on the floor beside the desk
   w.addSpan("pc-tower", 3.15, 3.95, 0, 0.95, 9.3, 9.95, COLORS.tvBlack);
 

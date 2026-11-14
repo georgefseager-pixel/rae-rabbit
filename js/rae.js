@@ -350,10 +350,13 @@ class FirstPersonPaws {
       paw.userData.punch = Math.max(0, paw.userData.punch - dt);
       const e = punchCurve(paw.userData.punch);
       const restX = side * Math.min(halfW * 0.62, 0.21);
+      // Dancing: paws pump up and down in turn, waving side to side
+      const groove = this.dancing ? Math.abs(Math.sin(time * 5.5 + (side > 0 ? Math.PI / 2 : 0))) * halfH * 0.7 : 0;
+      const sway = this.dancing ? Math.sin(time * 2.75) * 0.03 : 0;
       // Only the tips show: most of each paw sits just below the screen edge
       paw.position.set(
-        restX * (1 - e * 0.75),
-        -halfH - 0.012 + step + idle + this.lift + e * (halfH * 0.75),
+        restX * (1 - e * 0.75) + sway,
+        -halfH - 0.012 + step + idle + this.lift + e * (halfH * 0.75) + groove,
         -dist - e * 0.1);
       paw.rotation.x = 0.35 - e * 0.35;
     }
@@ -364,6 +367,21 @@ class FirstPersonPaws {
     const paw = this.paws.find((p) => p.userData.side === side);
     paw.userData.punch = PUNCH_TIME;
   }
+}
+
+// Dance moves for Rae's body: give it where she's standing and the time, and it
+// fills in a pretend "player" (bouncy hops, swaying, a twirl every few seconds)
+// for RaeModel.update to animate. Used for the dance button and the shop stage.
+function danceMotion(fake, standPos, baseYaw, time) {
+  const beat = time * 5.5;
+  const hop = Math.max(0, Math.sin(beat));
+  fake.pos.set(standPos.x, standPos.y + hop * 0.06, standPos.z);
+  fake.onGround = hop < 0.05;
+  fake.vel.set(fake.onGround ? 0.5 : 0, Math.cos(beat) * 0.6, 0);
+  const twirl = time % 4;
+  fake.yaw = baseYaw + Math.sin(time * 1.6) * 0.5 + (twirl > 3.3 ? ((twirl - 3.3) / 0.7) * Math.PI * 2 : 0);
+  fake.pitch = 0.25 + Math.sin(beat) * 0.15; // head bopping to the beat
+  return fake;
 }
 
 // How long a punch takes (seconds), and its shape over time:

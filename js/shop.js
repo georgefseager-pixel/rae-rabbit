@@ -13,14 +13,33 @@
 //   { carrots: 3 }  collect 3 carrots
 //   { smashed: 20 } smash 20 things
 //   { frogs: 2 }    stomp 2 frogs
+// lines: what Rae might say stepping out in it (one is picked at random)
 const OUTFITS = [
-  { id: "naked", emoji: "🐰", name: "Just fur",          line: "Fur is the only outfit I need!" },
-  { id: "shirt", emoji: "➕", name: "Favourite shirt",   line: "Back in my favourite shirt!" },
-  { id: "dress", emoji: "👗", name: "Pink dress",        line: "I feel like a princess bunny!",               need: { carrots: 3 } },
-  { id: "frog",  emoji: "🐸", name: "Frog face shirt",   line: "Ribbit! The frogs will think I'm one of them!", need: { frogs: 5 } },
-  { id: "suit",  emoji: "👔", name: "Navy suit",         line: "Time for serious business. Carrot business.",  need: { smashed: 20 } },
-  { id: "clown", emoji: "🤡", name: "Clown face & nose", line: "Honk honk! The funniest bunny in town!",       need: { carrots: 8 } },
+  { id: "naked", emoji: "🐰", name: "Just fur",
+    lines: ["Fur is the only outfit I need!", "Au naturel, darling!", "Fluffy and free!"] },
+  { id: "shirt", emoji: "➕", name: "Favourite shirt",
+    lines: ["Back in my favourite shirt!", "Classic Rae!", "Nothing beats the old faithful!"] },
+  { id: "dress", emoji: "👗", name: "Pink dress", need: { carrots: 3 },
+    lines: ["I feel like a princess bunny!", "Twirl, twirl, TWIRL!", "Pretty in pink!"] },
+  { id: "frog",  emoji: "🐸", name: "Frog face shirt", need: { frogs: 5 },
+    lines: ["Ribbit! The frogs will think I'm one of them!", "Frog disguise: activated!", "Ribbit ribbit... I mean, hello!"] },
+  { id: "suit",  emoji: "👔", name: "Navy suit", need: { smashed: 20 },
+    lines: ["Time for serious business. Carrot business.", "The name's Rabbit. Rae Rabbit.", "Very fancy. Very important."] },
+  { id: "clown", emoji: "🤡", name: "Clown face & nose", need: { carrots: 8 },
+    lines: ["Honk honk! The funniest bunny in town!", "Send in the clowns!", "Boop my nose! Go on!"] },
 ];
+
+// Flopsy's lines
+const FLOPSY_HELLO = ["Hello this Flopsy!!!", "Hi hi! This Flopsy!!!", "Welcome welcome! This Flopsy shop!!!"];
+const FLOPSY_OUCH = ["Ouch this Flopsy!!!", "Ow ow ow! Why punch this Flopsy!!!", "Ouchie! This Flopsy not punching bag!!!"];
+const flopsyUnlockLine = (name) => pick([
+  `Psst! New at the Flopsy Shop: ${name}!`,
+  `Ooh! ${name} now in Flopsy Shop!!!`,
+  `Come see! ${name} waiting for you!!!`,
+]);
+// What Rae says leaving the shop without changing
+const SHOP_SAME_LINES = ["Still looking fab!", "Why change perfection?", "Same outfit, same fabulous me!"];
+const SHOP_LEAVE_LINES = ["Maybe next time!", "Just browsing, thanks!", "Bye Flopsy! See you soon!"];
 
 // How far along you are for an outfit's unlock
 function outfitProgress(outfit) {
@@ -43,7 +62,7 @@ function checkUnlocks() {
     if (!announcedUnlocks.has(outfit.id) && isUnlocked(outfit)) {
       announcedUnlocks.add(outfit.id);
       Sfx.shopBell();
-      Dialogue.say(`Psst! New at the Flopsy Shop: ${outfit.name}!`, FLOPSY_VOICE);
+      Dialogue.say(flopsyUnlockLine(outfit.name), FLOPSY_VOICE);
     }
   }
 }
@@ -191,7 +210,7 @@ function leaveShop(outfit) {
     fadeEl.classList.remove("on");
     inShop = false;
     paused = false;
-    Dialogue.say(changed ? outfit.line : outfit ? "Still looking fab!" : "Maybe next time!");
+    Dialogue.say(changed ? outfit.lines : outfit ? SHOP_SAME_LINES : SHOP_LEAVE_LINES);
   }, 250);
   try {
     const result = canvas.requestPointerLock(); // the click counts, so we can grab the mouse again
@@ -218,6 +237,9 @@ class Flopsy {
     scene.add(this.model.root);
 
     this.fake = { pos: new THREE.Vector3(x, y, z), vel: new THREE.Vector3(), yaw: Math.PI / 2, pitch: 0, onGround: true };
+    this.floorY = y;
+    this.jumpVel = 0;      // for jumping when punched
+    this.ouchCooldown = 0;
     this.homeYaw = Math.PI / 2;
     this.sawRae = false;
     this.greetCooldown = 0;
@@ -229,8 +251,32 @@ class Flopsy {
     this.model.root.visible = false;
   }
 
+  // The middle of Flopsy's body (for punches)
+  middle() {
+    if (this.gone) return new THREE.Vector3(0, -999, 0);
+    return new THREE.Vector3(this.fake.pos.x, this.fake.pos.y + 0.17, this.fake.pos.z);
+  }
+
+  // Rae punched her! She jumps up with a squeak
+  ouch() {
+    if (this.gone || this.ouchCooldown > 0) return;
+    this.ouchCooldown = 0.6;
+    this.jumpVel = 2.8;
+    Sfx.squeak();
+    Dialogue.say(FLOPSY_OUCH, FLOPSY_VOICE);
+  }
+
   update(dt, player, time) {
     if (this.gone) return;
+    // Jumping after a punch
+    this.ouchCooldown = Math.max(0, this.ouchCooldown - dt);
+    if (this.jumpVel !== 0 || this.fake.pos.y > this.floorY) {
+      this.jumpVel -= 14 * dt;
+      this.fake.pos.y += this.jumpVel * dt;
+      if (this.fake.pos.y <= this.floorY) { this.fake.pos.y = this.floorY; this.jumpVel = 0; }
+    }
+    this.fake.onGround = this.fake.pos.y <= this.floorY;
+    this.fake.vel.y = this.jumpVel;
     const dx = player.pos.x - this.fake.pos.x, dz = player.pos.z - this.fake.pos.z;
     const insideWardrobe = player.pos.x > 4.12 && Math.abs(player.pos.y - this.fake.pos.y) < 1;
     const seesRae = insideWardrobe && Math.hypot(dx, dz) < 2.8;
@@ -238,7 +284,7 @@ class Flopsy {
 
     if (seesRae && !this.sawRae && this.greetCooldown === 0) {
       this.model.wave();
-      Dialogue.say("Hello this Flopsy!!!", FLOPSY_VOICE);
+      Dialogue.say(FLOPSY_HELLO, FLOPSY_VOICE);
       this.greetCooldown = 12;
     }
     this.sawRae = seesRae;
