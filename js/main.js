@@ -18,7 +18,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputEncoding = THREE.sRGBEncoding;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xfbefe6);
+scene.background = new THREE.Color(0xcfe6f5); // sky blue (you can see out of the open windows)
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.05, 100);
 camera.layers.enable(LAYER_EYES_ONLY); // your eyes see the paws, but not Rae's own body (see rae.js)
@@ -268,6 +268,7 @@ const RAE_LINES = {
   "zone-wardrobe":     ["A secret hideout! It smells like laundry.", "Ooh, a cosy closet!", "Narnia? No... just a wardrobe."],
   "zone-living-room":  ["Ooh, so cosy in here!", "What a comfy room!", "Sofa! TV! Snacks?"],
   "zone-office":       ["This is where the humans do work-stuff.", "Shh... someone's working!", "Office? More like nap room."],
+  "zone-garden":       ["Fresh air! And a TREE!", "Ooh, the garden! Don't look down...", "Climbing time!"],
   "zone-high-shelf":   ["I made it to the top!", "King of the cupboards!", "The view from up here is amazing!"],
   "zone-kitchen":      ["Down the rabbit hole... something smells yummy!", "Kitchen! Where are the carrots kept?", "Mmm, snack headquarters!"],
 };
@@ -291,7 +292,33 @@ world.onBreak = (prop) => {
 function checkZones() {
   const zone = world.zoneAt(player.pos);
   if (zone === "shop-door") openShop();
+  else if (zone && zone.startsWith("window-")) lastWindow = zone; // remember which window she used
   else if (zone) raeSays("zone-" + zone);
+  if (zone === "garden" && player.pos.y < -0.8) fallOffTree();
+}
+
+// ---- Falling off the tree ----
+// The garden ground is just scenery: fall below the branches and Rae loses a
+// heart and pops back inside through the window she climbed out of.
+let lastWindow = "window-living";
+const FALL_LINES = ["Woah! Too high!", "Eek! Back inside!", "Ouch... stay on the branches, Rae!"];
+
+function fallOffTree() {
+  const spot = world.windowReturns[lastWindow] || world.windowReturns["window-living"];
+  player.pos.set(spot.x, spot.y, spot.z);
+  player.vel.set(0, 0, 0);
+  player.knock.set(0, 0, 0);
+  player.yaw = spot.yaw;
+  player.pitch = 0;
+  hearts--;
+  drawHearts(hearts);
+  Sfx.hurt();
+  flashEl.classList.remove("flash");
+  void flashEl.offsetWidth; // restart the red flash
+  flashEl.classList.add("flash");
+  hurtCooldown = HURT_COOLDOWN;
+  if (hearts <= 0) setTimeout(showGameOver, 700);
+  else Dialogue.say(FALL_LINES);
 }
 
 // ---- The Flopsy Shop & Flopsy: see shop.js ----

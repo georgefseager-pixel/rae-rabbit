@@ -229,6 +229,28 @@ class World {
     return zone ? zone.name : null;
   }
 
+  // An OPEN sash window, for a hole already cut in a wall (see addWall with door: false).
+  // Same arguments as addWindow. Draws a white frame through the wall's thickness, a
+  // sill, and the top half's glass (the bottom half is pushed up, so you can climb out).
+  addOpenWindow(face, a1, a2, y1, y2, dir) {
+    const alongX = face.z !== undefined;
+    const w0 = alongX ? face.z : face.x, w1 = w0 - dir * 0.5; // the wall's two faces
+    const lo = Math.min(w0, w1) - 0.03, hi = Math.max(w0, w1) + 0.03;
+    const t = 0.08, white = COLORS.skirting;
+    const span = (n, a, b, ya, yb, c1, c2, color) =>
+      alongX ? this.addDeco(n, a, b, ya, yb, c1, c2, color) : this.addDeco(n, c1, c2, ya, yb, a, b, color);
+    span("window-frame", a1 - t, a1, y1, y2 + t, lo, hi, white);
+    span("window-frame", a2, a2 + t, y1, y2 + t, lo, hi, white);
+    span("window-frame", a1 - t, a2 + t, y2, y2 + t, lo, hi, white);
+    span("window-sill", a1 - t - 0.05, a2 + t + 0.05, y1 - 0.05, y1, lo - 0.05, hi + 0.05, white);
+    // the raised sashes: glass in the top half, with a white bar across the middle
+    const mid = y1 + (y2 - y1) * 0.5, c = (lo + hi) / 2;
+    const glass = span("window-glass", a1, a2, mid, y2, c - 0.01, c + 0.01, COLORS.sky);
+    glass.mesh.material = new THREE.MeshStandardMaterial({ color: COLORS.sky, transparent: true, opacity: 0.35 });
+    span("window-sash", a1, a2, mid - 0.06, mid, c - 0.04, c + 0.04, white);
+    span("window-sash", (a1 + a2) / 2 - 0.03, (a1 + a2) / 2 + 0.03, mid, y2, c - 0.03, c + 0.03, white);
+  }
+
   // A warm ceiling light for a room
   addRoomLight(x, y, z, intensity = 0.45, distance = 12) {
     const lamp = new THREE.PointLight(0xffe6c7, intensity, distance);

@@ -27,6 +27,7 @@ function buildHouse(w) {
   buildStairs(w);
   buildOffice(w);
   buildKitchen(w);
+  buildGarden(w); // outside the open windows (see garden.js)
 
   // Invisible zones, so Rae can say something the first time she gets somewhere
   w.addZone("mirror-table", -1.8, 0.8, 1.3, 2.5, 2.95, 3.95);   // standing on the white table
@@ -351,14 +352,16 @@ function buildLivingRoom(w) {
   // Far wall: runs along the kitchen too, and goes down to the kitchen's
   // lower floor. The doorway on the left leads to the stairs.
   w.addWall("wall", -10.35, 4.5, BASE, H, 18.5, 19, COLORS.livingWall,
-    [{ from: -1.4, to: 0.6, bottom: GROUND, top: 2.4 }]);
+    [{ from: -1.4, to: 0.6, bottom: GROUND, top: 2.4 },
+     { from: 0.95, to: 2.65, bottom: 1.0, top: 2.4, door: false, trim: false }]); // the open window
 
   // Chimney breast on the outer wall, with a fireplace and a mantelpiece
   w.addSpan("chimney", 3.4, 4, 0, H, 12.7, 16.5, COLORS.livingWall);
   w.addDeco("fireplace", 3.37, 3.4, 0, 1.2, 13.9, 15.3, COLORS.fireplace);
   w.addSpan("mantelpiece", 3.15, 3.4, 1.4, 1.5, 13.6, 15.6, COLORS.skirting);
 
-  w.addWindow({ z: 18.5 }, 0.95, 2.65, 1.0, 2.4, -1); // between the stairs door and the TV corner
+  // The living room window (between the stairs door and the TV corner) is open: climb out to the tree!
+  w.addOpenWindow({ z: 18.5 }, 0.95, 2.65, 1.0, 2.4, -1);
 
   // Furniture, placed from the photos (standing in the corridor doorway, looking in):
   //   right-hand wall: the big white sofa, black side table in the far corner
@@ -599,8 +602,9 @@ function buildOffice(w) {
   w.addSpan("office-floor", -5, 0.6, BASE, LOW, 21, 25.6, COLORS.carpet);
 
   // West outer wall (shared with the stair hall), with a window above the desk
-  w.addWall("wall", 0.6, 1.1, BASE, H, 18.5, 25.6, COLORS.officeWall);
-  w.addWindow({ x: 0.6 }, 22.6, 24.0, LOW + 2.4, LOW + 3.7, -1);
+  w.addWall("wall", 0.6, 1.1, BASE, H, 18.5, 25.6, COLORS.officeWall,
+    [{ from: 22.6, to: 24.0, bottom: LOW + 2.4, top: LOW + 3.7, door: false, trim: false }]); // the open window
+  w.addOpenWindow({ x: 0.6 }, 22.6, 24.0, LOW + 2.4, LOW + 3.7, -1); // open: climb out to the tree!
   // Wall between the stairs and the office, with the office door at the
   // bottom of the stairs (like on the floorplan)
   w.addWall("wall", -5.5, 1.1, BASE, H, 20.5, 21, COLORS.officeWall,

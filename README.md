@@ -43,6 +43,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/frog.js` | The frogs: model, animations, spotting & chasing Rae, popping, respawning. Their lines are at the top |
 | `js/world.js` | The building toolbox: boxes, walls with doorways, windows, lights |
 | `js/house.js` | **The house itself**: one build function per room |
+| `js/garden.js` | The garden outside the open windows, and the climbing tree |
 | `js/kitchen.js` | The kitchen furniture, the high-shelf parkour route, bottles and plant pots |
 | `js/player.js` | Rae's controls, hopping, stairs and collision (tweak speed/hop here) |
 | `js/main.js` | Starts everything and runs the game loop |
@@ -176,3 +177,10 @@ the bathroom sink, and a small one standing on the black side table by the sofa,
 (controller: X). "Detailed" is sharp and updates every frame; "Faster" uses tiny, softer reflections
 that update every third frame, which roughly doubles the frame rate near mirrors. The choice is
 remembered on that computer.
+
+## The garden and the climbing tree (`js/garden.js`)
+The living room window (by the TV) and the office window (above the desk) are open. Climb out onto the
+tree that stands between them: low branch -> middle branch -> the big fork round the trunk -> the high
+branch, or hop across to the side branch with the bird's nest, then down the branch to the other window.
+Three carrots up there (the fork, the high branch, the nest). The garden below is just scenery: fall
+off and Rae loses a heart and pops back in through the window she climbed out of.
