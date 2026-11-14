@@ -21,7 +21,7 @@
     <span class="frog-mode-only">⏱ <span id="survive-time">0:00</span></span>
   </div>
   <!-- Boss health (Frogpocalypse) -->
-  <div id="boss-bar" class="boss-only">👑 Jiggle Jaggle <span id="boss-hp">❤❤❤</span></div>
+  <div id="boss-bar" class="boss-only"><span id="boss-name">👑 Jiggle Jaggle</span> <span id="boss-hp">❤❤❤❤❤</span></div>
   <!-- Big warning banner -->
   <div id="banner"></div>
   <!-- Tints the screen blue (washed!) or red (eaten by Ducky!) -->
@@ -49,7 +49,7 @@
           <button class="mode" data-mode="frog">
             <span class="mode-emoji">🐸</span>
             <span class="mode-name">Frogpocalypse</span>
-            <span class="mode-desc">Frogs everywhere! Survive 3 minutes... then face the boss.</span>
+            <span class="mode-desc">Frogs everywhere! Survive 3 minutes... then face the bosses.</span>
           </button>
         </div>
         <button id="open-achievements"><span class="pad-only xb y">Y</span> 🏆 Achievements</button>
@@ -127,7 +127,7 @@
   <div id="win" class="hidden">
     <div class="card summary win-card">
       <h1 id="win-title">🏆 YOU WIN! 🏆</h1>
-      <p class="sub" id="win-sub">Boss Frog Jiggle Jaggle has been defeated!</p>
+      <p class="sub" id="win-sub">Jiggle Jaggle and Fraggle Friggle have been defeated!</p>
       <div class="stats">
         <div class="stat frog-mode-only"><span class="icon">⏱</span><span class="label">Time survived</span><b id="win-time">0:00</b></div>
         <div class="stat carrot-mode-only"><span class="icon">🥕</span><span class="label">Carrots eaten</span><b id="win-carrots">0</b></div>

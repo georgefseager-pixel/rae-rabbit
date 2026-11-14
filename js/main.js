@@ -296,7 +296,8 @@ const RAE_LINES = {
   "first-carrot": ["Yummers mode!", "Crunch crunch! Delicious!", "Carrot get enough of these!"],
   // Frogpocalypse
   "frog-mode-start": ["Uh oh... why are there SO many frogs?!", "Frogs! Frogs everywhere!", "This is a frog-tastrophe!"],
-  "boss-beaten":     ["I did it! Rabbits rule FOREVER!", "Jiggle Jaggle is all jiggled out!", "Bunny wins! Frog loses!"],
+  "jiggle-beaten":   ["Jiggle Jaggle is all jiggled out!", "Down goes the crown! Bunny wins!", "Ha! Who's the boss now?"],
+  "boss-beaten":     ["I did it! Rabbits rule FOREVER!", "Fraggle Friggle is all friggled out!", "Bunny wins! Frogs lose!"],
   // places (zones in house.js)
   "zone-bath":         ["My fur is wet!", "Splish splash, I'm soggy!", "Bath time? I didn't agree to this!"],
   "zone-mirror-table": ["Who's that cute bunny?!", "Looking good, Rae!", "Mirror mirror on the wall..."],
@@ -604,14 +605,20 @@ function updateDucky(dt, time) {
   ducky.rotation.y = duckyYaw;
 }
 
-// Rae hit a frog (stomp or punch). The boss takes 3 hits; others pop straight away.
+// Rae hit a frog (stomp, punch, poke or zap). Bosses take several hits; others pop straight away.
+// Beating Jiggle Jaggle brings out Fraggle Friggle; beating Fraggle Friggle wins the game.
 function hitFrog(frog, how) {
   if (frog.isBoss) {
     if (frog.bossHit()) {
       stompedCount++;
-      Dialogue.say(RAE_LINES["boss-beaten"]);
       document.body.classList.remove("boss-fight");
-      setTimeout(() => showWin("boss"), 1800);
+      if (frog.bossKind === "jiggle") {
+        Dialogue.say(RAE_LINES["jiggle-beaten"]);
+        setTimeout(() => { if (!gameOver) Frogpocalypse.spawnBoss("fraggle"); }, 2500);
+      } else {
+        Dialogue.say(RAE_LINES["boss-beaten"]);
+        setTimeout(() => showWin("boss"), 1800);
+      }
     }
     return;
   }

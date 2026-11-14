@@ -9,11 +9,21 @@ Pick a game mode from the main menu:
 - **🥕 Carrotventure**: explore the house, find carrots, smash things, dress up at the Flopsy Shop.
   Eat all 20 carrots and... "Uh oh - too many carrots!" Get Rae to the toilet (hop onto the seat)
   for the **YOU WIN!** screen.
-- **🐸 Frogpocalypse**: frogs pour in from all over the house, more and more as time goes on. The Flopsy
-  Shop is boarded up and Flopsy has fled. The HUD shows frogs stomped and how long you've survived;
-  every door starts smashed (nowhere to hide), frogs pop up even right in view. Survive **3 minutes** and **Boss Frog Jiggle Jaggle** (giant, with a crown)
-  appears in the living room. He takes 3 hits (stomps or punches). Beat him for the **YOU WIN!** screen.
-  Spawn rates, the frog limit and the boss time are at the top of `js/frogpocalypse.js`.
+- **🐸 Frogpocalypse**: frogs pour in from all over the house, more and more as time goes on. Both
+  wardrobe shops are boarded up and Flopsy and Willow have fled. The HUD shows frogs stomped and how
+  long you've survived; every door starts smashed (nowhere to hide), frogs pop up even right in view.
+  - **Willow's parcels**: early on, Willow (keeping in touch from afar) hints that popping lots of
+    frogs will earn armaments. After **20 frogs** she has a parcel delivered to a random room (a
+    cardboard box with a ribbon and a beam of light): walk into it for the **Pokey Stick**. After
+    **20 more**, a second parcel brings the **'Rae' Gun**.
+  - **Boss 1**: survive **3 minutes** and **Jiggle Jaggle** (giant, with a crown) appears in the
+    living room. He takes **5 hits**.
+  - **Boss 2**: beating him isn't the end! **Fraggle Friggle**, a black frog with glowing red eyes,
+    appears in the bedroom. Normal size but fast and zig-zagging like a mini frog, he always knows
+    where Rae is, leaps up onto beds, tables and worktops after her, and pops up nearby if she
+    gets away. He takes **8 hits**. Beat him for the **YOU WIN!** screen.
+  Spawn rates, the frog limit, the boss time and the parcel count are at the top of
+  `js/frogpocalypse.js`; the bosses' health, speed and lines are in `BOSSES` at the top of `js/frog.js`.
 
 - **W A S D**: move
 - **Mouse**: look around (or hold the button and drag, if the browser won't capture the mouse)
@@ -118,7 +128,7 @@ room for 9; six exist so far:
 | Achievement | How to earn it |
 |-------------|----------------|
 | 🚽 Just in Time! | Beat Carrotventure (all 20 carrots, then the toilet) |
-| 👑 Frog Slayer | Beat Frogpocalypse (defeat Jiggle Jaggle) |
+| 👑 Frog Slayer | Beat Frogpocalypse (defeat Jiggle Jaggle, then Fraggle Friggle) |
 | 🕊️ Pacifist | Beat Carrotventure without popping a single frog (no stomps, punches, pokes or zaps) |
 | 🎯 Friendly Fire | Zap a frog with the 'Rae' Gun while it's waving at Rae in her frog face shirt |
 | 🫧 Spin Cycle | Stay in the washing machine drum for 10 seconds (the door slams shut!) |

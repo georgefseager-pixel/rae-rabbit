@@ -37,6 +37,30 @@ const BOSS_LINES = [
 const BOSS_HURT_LINES = ["OUCH! RIBBIT!", "You'll pay for that, bunny!", "That tickled! ...a bit."];
 const BOSS_LAST_LINES = ["GRRRIBBIT! One more and I'm toast!", "No no NO! Not my crown!", "I'm getting woozy..."];
 
+// The final boss, Fraggle Friggle: a black frog with glowing red eyes
+const FRAGGLE_LINES = [
+  "I am FRAGGLE FRIGGLE. You cannot hide, bunny.",
+  "Jiggle Jaggle was my little brother. RIBBIT.",
+  "I see you... I always see you.",
+];
+const FRAGGLE_HURT_LINES = ["Hah! Is that all?", "Ribbit... that stung.", "You'll have to be quicker than that!"];
+const FRAGGLE_LAST_LINES = ["No... not like this!", "One more hit... I can't...", "RIBBIIIIT!"];
+const FRAGGLE_CHASE_LINES = ["You can't hide from me!", "Found you, bunny!", "Peekaboo. RIBBIT."];
+
+// Boss settings: name, health, size, colour and how they move
+const BOSSES = {
+  jiggle: {
+    name: "👑 Jiggle Jaggle", hp: 5, size: 3, color: 0x7fc46e, crown: true,
+    hopSpeed: 1.9, hopPower: 4.2, hopRest: 0.45,
+    lines: BOSS_LINES, hurt: BOSS_HURT_LINES, last: BOSS_LAST_LINES,
+  },
+  fraggle: {
+    name: "💀 Fraggle Friggle", hp: 8, size: 1, color: 0x2b2830, redEyes: true,
+    hopSpeed: 3.0, hopPower: 5.6, hopRest: 0.12, // like a mini frog: fast, bouncy, zig-zagging
+    zigzag: true, relentless: true,              // always knows where Rae is, and leaps up onto things
+    lines: FRAGGLE_LINES, hurt: FRAGGLE_HURT_LINES, last: FRAGGLE_LAST_LINES,
+  },
+};
 // What frogs say when Rae's wearing the frog face shirt (they think she's one of them)
 const FROG_FRIEND_LINES = ["Hey, cousin!", "Nice shirt, buddy!", "Ribbit, fellow frog!", "Ooh, a new frog friend!"];
 
@@ -114,11 +138,13 @@ class Frog {
     const face = blob(0.15, color, 1.25, 0.82, 1);
     face.position.y = 0.07;
     this.head.add(face);
+    this.eyes = [];
     for (const side of [-1, 1]) {
       const bump = blob(0.06, color);
       bump.position.set(side * 0.095, 0.145, -0.025);
       const eye = blob(0.019, RAE_COLORS.eye, 1, 1, 0.6, [6, 4]);
       eye.userData.keep = true; // eyes stay black when the frog changes colour
+      this.eyes.push(eye);
       eye.position.set(side * 0.095, 0.155, -0.08);
       const nostril = blob(0.008, dark, 1, 1, 1, [4, 3]);
       nostril.userData.dark = true;
@@ -208,25 +234,39 @@ class Frog {
     return true;
   }
 
-  // ---- The BOSS: Jiggle Jaggle. Giant, crowned, takes 3 hits ----
-  setBoss() {
+  // ---- The BOSSES (see BOSSES at the top): kind is "jiggle" or "fraggle" ----
+  setBoss(kind = "jiggle") {
+    const b = BOSSES[kind];
     this.isBoss = true;
+    this.bossKind = kind;
+    this.boss = b;
     this.mini = false;
-    this.size = 3;
-    this.radius = 0.6;
-    this.height = 1.41;
+    this.size = b.size;
+    this.radius = 0.2 * b.size;
+    this.height = 0.47 * b.size;
     this.sightRange = 40;
     this.loseRange = 100;
-    this.hopSpeed = 1.9;
-    this.hopPower = 4.2;
-    this.hopRest = 0.45;
+    this.hopSpeed = b.hopSpeed;
+    this.hopPower = b.hopPower;
+    this.hopRest = b.hopRest;
+    this.zigzag = !!b.zigzag;
+    this.relentless = !!b.relentless;
     this.respawnDistance = Infinity; // never resets
-    this.hp = 3;
+    this.hp = this.maxHp = b.hp;
     this.hitCooldown = 0;
     this.flash = 0;
-    this.recolor(0x7fc46e);
-    // A golden crown on top of his head
-    if (!this.crown) {
+    this.recolor(b.color);
+    // Glowing red eyes (Fraggle Friggle)
+    if (b.redEyes) {
+      for (const eye of this.eyes) {
+        eye.material.color.set(0xff2a2a);
+        eye.material.emissive.set(0xff1a1a);
+        eye.material.emissiveIntensity = 0.9;
+        eye.scale.multiplyScalar(1.3);
+      }
+    }
+    // A golden crown on top of his head (Jiggle Jaggle)
+    if (b.crown && !this.crown) {
       this.crown = new THREE.Group();
       const band = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.08, 0.05, 8), pastel(0xf6cf5a));
       this.crown.add(band);
@@ -259,9 +299,20 @@ class Frog {
       this.world.debris.burst({ mesh: this.root, box });
       return true;
     }
-    Dialogue.say(this.hp === 2 ? BOSS_HURT_LINES : BOSS_LAST_LINES,
-      { speaker: "👑 Jiggle Jaggle", style: "enemy", voice: "frog" });
+    Dialogue.say(this.hp === 1 ? this.boss.last : this.boss.hurt, this.bossVoice());
     return false;
+  }
+
+  bossVoice() { return { speaker: this.boss.name, style: "enemy", voice: "frog" }; }
+
+  // Fraggle Friggle never gives up: if Rae gets away, he pops up somewhere close by
+  reappearAt(x, y, z) {
+    this.pos.set(x, y + 0.05, z);
+    this.vel.set(0, 0, 0);
+    this.onGround = false;
+    this.root.scale.setScalar(0.01); // pops in
+    Sfx.frogPop();
+    Dialogue.say(FRAGGLE_CHASE_LINES, this.bossVoice());
   }
 
   // Pop! Called when Rae lands on its head.
@@ -315,7 +366,7 @@ class Frog {
     if (this.sightTimer <= 0) {
       this.sightTimer = 0.25;
       const range = (this.chasing ? this.loseRange : this.sightRange) * Frog.sightBoost;
-      this.canSee = sameLevel && dist < range && this.lookFor(player);
+      this.canSee = this.relentless || (sameLevel && dist < range && this.lookFor(player));
     }
     this.talkCooldown = Math.max(0, this.talkCooldown - dt);
     this.hitCooldown = Math.max(0, (this.hitCooldown || 0) - dt);
@@ -336,8 +387,8 @@ class Frog {
       this.chasing = true;
       if (this.talkCooldown === 0) {
         if (this.isBoss) {
-          Dialogue.say(BOSS_LINES[Math.floor(Math.random() * BOSS_LINES.length)],
-            { speaker: "👑 Jiggle Jaggle", style: "enemy", voice: "frog" });
+          Dialogue.say(this.boss.lines,
+            this.bossVoice());
           this.talkCooldown = 6;
         } else {
           const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
@@ -350,13 +401,15 @@ class Frog {
       }
     }
     if (!this.canSee && this.chasing && (dist > this.loseRange || !sameLevel)) this.chasing = false;
+    if (this.relentless) this.chasing = true; // Fraggle Friggle never stops
 
     // ---- Decide where to hop ----
     let dir = null;
     const closeEnough = this.radius + 0.15;
-    if (this.chasing && dist > closeEnough) {
+    const leapUp = this.relentless && player.pos.y - this.pos.y > 0.3; // Rae's up high: go after her!
+    if (this.chasing && (dist > closeEnough || leapUp) && dist > 0.01) {
       dir = { x: dx / dist, z: dz / dist };
-      if (this.mini) {
+      if (this.mini || (this.zigzag && !leapUp)) { // (straight at her for a big leap up)
         // Mini frogs zig-zag as they chase, so they're harder to land on
         const zig = Math.sin(time * 3 + this.spawn.x) * 0.8;
         dir = { x: dir.x - dir.z * zig, z: dir.z + dir.x * zig };
@@ -390,9 +443,18 @@ class Frog {
         this.crouch += dt;
         if (this.crouch > 0.15) {
           this.crouch = 0;
+          // Fraggle Friggle springs right up onto whatever Rae is standing on: just high
+          // enough to clear it, and just far enough to land beside her
+          const above = player.pos.y - this.pos.y;
+          let speed = this.hopSpeed;
           this.vel.y = this.hopPower;
-          this.vel.x = dir.x * this.hopSpeed;
-          this.vel.z = dir.z * this.hopSpeed;
+          if (this.relentless && above > 0.2) {
+            this.vel.y = Math.min(9, Math.max(this.hopPower, Math.sqrt(2 * this.gravity * (above + 0.35))));
+            const flight = this.vel.y / this.gravity + Math.sqrt(2 * 0.35 / this.gravity);
+            speed = Math.min(this.hopSpeed, Math.max(0.8, dist / flight));
+          }
+          this.vel.x = dir.x * speed;
+          this.vel.z = dir.z * speed;
           this.onGround = false;
           this.hopTimer = (this.chasing ? this.hopRest : 1.0) + Math.random() * (this.mini ? 0.15 : 0.4);
           Sfx.frogHop(this.pos.distanceTo(player.pos));

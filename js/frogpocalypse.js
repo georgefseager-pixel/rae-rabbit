@@ -125,22 +125,145 @@ const Frogpocalypse = {
       if (alive < this.maxAlive()) this.spawnFrog(player);
     }
 
-    // Five minutes survived: here comes the boss!
-    if (!this.boss && this.time >= this.BOSS_TIME) this.spawnBoss();
+    // Three minutes survived: here comes the first boss!
+    if (!this.boss && this.time >= this.BOSS_TIME) this.spawnBoss("jiggle");
     if (this.boss) {
       const hp = Math.max(0, this.boss.hp);
-      document.getElementById("boss-hp").textContent = "❤".repeat(hp) + "♡".repeat(3 - hp);
+      document.getElementById("boss-name").textContent = this.boss.boss.name;
+      document.getElementById("boss-hp").textContent = "❤".repeat(hp) + "♡".repeat(this.boss.maxHp - hp);
+      if (this.boss.relentless && this.boss.alive) this.keepUp(dt, player);
     }
+
+    this.updateParcels(dt, player);
   },
 
-  spawnBoss() {
-    this.boss = new Frog(world, 1.7, 0, 13.8, 0x7fc46e);
-    this.boss.setBoss();
+  // kind: "jiggle" (living room) or "fraggle" (bedroom). See BOSSES in frog.js.
+  spawnBoss(kind) {
+    const where = kind === "fraggle" ? { x: 0, z: 2.3, room: "bedroom" } : { x: 1.7, z: 13.8, room: "living room" };
+    this.boss = new Frog(world, where.x, 0, where.z, BOSSES[kind].color);
+    this.boss.setBoss(kind);
     frogs.push(this.boss);
     Sfx.bossRoar();
-    showBanner("⚠️ Boss Frog Jiggle Jaggle has spawned in the living room!");
-    Dialogue.say("Boss Frog Jiggle Jaggle has spawned in the living room!",
-      { speaker: "⚠️ Warning", style: "enemy", voice: "frog" });
+    const text = kind === "fraggle"
+      ? "A NEW boss has appeared in the bedroom: Fraggle Friggle!"
+      : "Boss Frog Jiggle Jaggle has spawned in the living room!";
+    showBanner("⚠️ " + text);
+    Dialogue.say(text, { speaker: "⚠️ Warning", style: "enemy", voice: "frog" });
     document.body.classList.add("boss-fight");
   },
+
+  // Fraggle Friggle is very persistent: run away and, before long, he pops up
+  // again somewhere near Rae (but never right on top of her)
+  keepUp(dt, player) {
+    const boss = this.boss;
+    const far = boss.pos.distanceTo(player.pos) > 6;
+    this.lostTimer = far ? (this.lostTimer || 0) + dt : 0;
+    if (this.lostTimer < 5) return;
+    this.lostTimer = 0;
+    const spots = this.SPAWNS.filter(([x, y, z]) => {
+      const d = Math.hypot(x - player.pos.x, z - player.pos.z);
+      return d > 2.5 && d < 6 && Math.abs(y - player.pos.y) < 1.5;
+    });
+    if (!spots.length) return;
+    const [x, y, z] = spots[Math.floor(Math.random() * spots.length)];
+    boss.reappearAt(x, y, z);
+  },
+
+  // ---- Willow's parcels ----
+  // Willow (from her shop) sends weapons to whoever pops lots of frogs: the Pokey Stick
+  // after 20 frogs, then the 'Rae' Gun after 20 more. Each parcel lands in a random room.
+  PARCEL_FROGS: 20,
+  PARCEL_ROOMS: [
+    { room: "bedroom", x: 2.8, y: 0, z: 1.6 },
+    { room: "bathroom", x: 1.8, y: 0, z: 7.4 },
+    { room: "corridor", x: -2.95, y: 0, z: 6.5 },
+    { room: "living room", x: 2.0, y: 0, z: 12.0 },
+    { room: "office", x: -2.5, y: LOW, z: 22.5 },
+    { room: "kitchen", x: -7.0, y: LOW, z: 24.0 },
+  ],
+  nextParcel: "stick",   // then "raygun", then nothing
+  parcelGoal: 20,        // frogs popped before the next parcel arrives
+  parcel: null,          // the parcel waiting to be picked up
+
+  updateParcels(dt, player) {
+    // Early on, Willow drops a hint
+    if (!this.hinted && this.time > 8) {
+      this.hinted = true;
+      Dialogue.say(WILLOW_HINT_LINES, WILLOW_VOICE);
+    }
+    // Enough frogs: send a parcel!
+    if (!this.parcel && this.nextParcel && stompedCount >= this.parcelGoal) this.sendParcel(player);
+    if (!this.parcel) return;
+
+    // Spin and bob so it's easy to spot; walk into it to open it
+    const p = this.parcel;
+    p.mesh.rotation.y += dt * 1.5;
+    p.mesh.position.y = p.y + 0.12 + Math.sin(this.time * 3) * 0.05;
+    const flat = Math.hypot(player.pos.x - p.x, player.pos.z - p.z);
+    if (flat < 0.55 && Math.abs(player.pos.y - p.y) < 0.8) this.openParcel();
+  },
+
+  sendParcel(player) {
+    // Any room except the one Rae is standing in (so she has to go and fetch it)
+    const options = this.PARCEL_ROOMS.filter((r) => Math.hypot(r.x - player.pos.x, r.z - player.pos.z) > 4);
+    const spot = options[Math.floor(Math.random() * options.length)];
+    const mesh = makeParcel(this.nextParcel === "raygun" ? 0xb79ce6 : 0x8fcf7a);
+    mesh.position.set(spot.x, spot.y + 0.12, spot.z);
+    scene.add(mesh);
+    this.parcel = { mesh, x: spot.x, y: spot.y, z: spot.z, weapon: this.nextParcel };
+    Sfx.shopBell();
+    const name = this.nextParcel === "raygun" ? "'Rae' Gun" : "Pokey Stick";
+    Dialogue.say(willowParcelLine(name, spot.room), WILLOW_VOICE);
+    showBanner(`📦 A parcel from Willow has arrived in the ${spot.room}!`);
+  },
+
+  openParcel() {
+    const p = this.parcel;
+    scene.remove(p.mesh);
+    this.parcel = null;
+    equipWeapon(p.weapon);
+    Sfx.chime();
+    Dialogue.say(p.weapon === "raygun" ? RAE_GUN_PARCEL_LINES : RAE_STICK_PARCEL_LINES);
+    // The next parcel comes after another 20 frogs
+    this.nextParcel = p.weapon === "stick" ? "raygun" : null;
+    this.parcelGoal = stompedCount + this.PARCEL_FROGS;
+  },
 };
+
+// What Willow says (she's left her shop, but she keeps in touch)
+const WILLOW_HINT_LINES = [
+  "Willow here, communicating remotely! Dispatch a sufficient quantity of frogs and I shall furnish you with armaments.",
+  "A word from Willow: vanquish frogs in abundance and I shall reward you with superior weaponry!",
+  "Willow speaking! Pop plenty of frogs, esteemed customer, and parcels of armaments shall follow.",
+];
+const willowParcelLine = (name, room) => pick([
+  `Splendid frog-dispatching! I have had a ${name} delivered to the ${room}. Do retrieve it posthaste!`,
+  `A parcel containing a ${name} awaits you in the ${room}. Compliments of Willow's Weapon Mart!`,
+  `Your exemplary efforts merit a reward: a ${name}, delivered to the ${room}.`,
+]);
+const RAE_STICK_PARCEL_LINES = ["A Pokey Stick! Thanks, Willow!", "Ooh, a stick! Poke poke!", "Parcel for Rae! A Pokey Stick!"];
+const RAE_GUN_PARCEL_LINES = ["The 'Rae' Gun! Pew pew!", "Thank you, Willow! Time to zap some frogs!", "Alien blaster acquired!"];
+
+// A cardboard parcel tied with a coloured ribbon (green: stick, purple: 'Rae' Gun)
+function makeParcel(ribbon) {
+  const g = new THREE.Group();
+  const box = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.24, 0.34), pastel(0xd9b48a));
+  box.position.y = 0.12;
+  const ribbonA = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.25, 0.06), pastel(ribbon));
+  ribbonA.position.y = 0.12;
+  const ribbonB = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.25, 0.36), pastel(ribbon));
+  ribbonB.position.y = 0.12;
+  const bow = [-1, 1].map((s) => {
+    const loop = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.016, 4, 10), pastel(ribbon));
+    loop.position.set(s * 0.05, 0.27, 0);
+    loop.rotation.y = Math.PI / 2;
+    loop.rotation.x = s * 0.5;
+    return loop;
+  });
+  // A soft beam of light so you can spot it from across the room
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 2.2, 10, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xfff2a8, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide }));
+  beam.position.y = 1.2;
+  g.add(box, ribbonA, ribbonB, ...bow, beam);
+  return g;
+}
