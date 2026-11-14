@@ -54,8 +54,8 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
   - Built-in wardrobe in the wall to the left of the vanity mirror: three sliding doors. The left one is
     open (walk in: shelf with boxes, hanging shirts, a clothes pile), the middle one is a full-length
     mirror, the right one is plain white. Its insides run behind the other doors.
-- **Corridor**: from the bedroom door to the living room, with the (closed) fire exit.
-- **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with mirror.
+- **Corridor**: from the bedroom door to the living room. The unused side door has a full-length mirror on it.
+- **Bathroom** (off the corridor): hollow bath you can hop into, toilet (seat → cistern makes a little climb), pedestal sink with a real mirror above it (hop onto the sink to see Rae).
   - Carrots: one in the bath, one in the sink (hop from the bath's end onto the sink).
 - **Living room**: chimney breast with fireplace and a mantelpiece, window, and the doorway to the stairs.
   - Furniture (from photos): big white sofa with a black side table in the corner, black coffee table on a
@@ -166,3 +166,8 @@ screens) in the "UI SIZE" section at the bottom of `style.css`.
 Every line has at least three variations, picked at random, so each playthrough sounds a bit
 different. Rae's are in `RAE_LINES` (`js/main.js`), Flopsy's and the outfits' in `js/shop.js`,
 the frogs' and Jiggle Jaggle's at the top of `js/frog.js`. Punch Flopsy and she jumps and squeaks.
+
+## Mirrors
+Real reflecting mirrors (Rae's body only shows up in these): the oval vanity mirror over the white
+table, the wardrobe's mirror door, the full-length mirror on the corridor's side door, the mirror over
+the bathroom sink, and a small one propped on the floor against the black side table by the sofa.

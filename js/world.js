@@ -180,9 +180,12 @@ class World {
   }
 
   // A rectangular mirror (e.g. a full-length mirror door) with a thin frame
-  addRectMirror(x, y, z, width, height, facing = "-z", frameColor = COLORS.steel) {
+  // opts.lean: tilt the top back by this angle (radians), e.g. a mirror propped against something
+  // opts.resolution: sharpness of the reflection (smaller mirrors can use less, e.g. 512)
+  addRectMirror(x, y, z, width, height, facing = "-z", frameColor = COLORS.steel, opts = {}) {
     const holder = this.mirrorHolder(x, y, z, facing);
-    const glass = new Mirror(new THREE.PlaneGeometry(1, 1));
+    if (opts.lean) { holder.rotation.order = "YXZ"; holder.rotation.x = -opts.lean; }
+    const glass = new Mirror(new THREE.PlaneGeometry(1, 1), { resolution: opts.resolution || 1024 });
     glass.scale.set(width, height, 1);
     glass.position.z = 0.012;
     const f = 0.05; // frame thickness

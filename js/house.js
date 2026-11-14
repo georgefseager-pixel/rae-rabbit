@@ -297,10 +297,9 @@ function buildCorridorAndBathroom(w) {
   // Wall between this strip and the living room, with the corridor's doorway
   w.addWall("wall", -4.5, 4.5, 0, H, 8.5, 9, COLORS.livingWall, [{ from: -3.6, to: -2.3, top: 2.1 }]);
 
-  // Fire exit door on the corridor's side wall (closed: just for looks)
-  w.addDeco("fire-exit", -4, -3.96, 0, 2.1, 6.9, 8.1, COLORS.door);
-  w.addDeco("fire-exit-bar", -3.96, -3.9, 0.95, 1.05, 7.0, 8.0, COLORS.steel);
-  w.addDeco("fire-exit-sign", -4, -3.94, 2.25, 2.5, 7.15, 7.85, COLORS.exitSign);
+  // The unused side door in the corridor, with a full-length mirror on it
+  w.addDeco("side-door", -4, -3.96, 0, 2.1, 6.9, 8.1, COLORS.door);
+  w.addRectMirror(-3.95, 1.05, 7.5, 1.0, 1.85, "+x", 0xc9c1b2);
 
   // ---- Bath (along the bedroom wall, hollow so Rae can hop in) ----
   const bx1 = 0.6, bx2 = 4, bz1 = 4.5, bz2 = 6.0, rim = 1.1, edge = 0.15;
@@ -324,7 +323,8 @@ function buildCorridorAndBathroom(w) {
   w.addSpan("sink-basin", -0.95, 0.25, 1.5, 1.8, 4.5, 5.35, COLORS.porcelain);
   w.addDeco("sink-water", -0.8, 0.1, 1.8, 1.81, 4.65, 5.2, COLORS.water);
   w.addDeco("sink-tap", -0.4, -0.3, 1.8, 2.0, 4.55, 4.75, COLORS.steel);
-  w.addDeco("mirror", -0.9, 0.2, 2.05, 2.75, 4.5, 4.53, COLORS.sky);
+  // A real mirror above the sink (hop up onto the sink to see Rae in it)
+  w.addRectMirror(-0.35, 2.4, 4.53, 1.0, 0.62, "+z", COLORS.porcelain, { resolution: 512 });
 
   // Bath mat
   w.addDeco("bath-mat", 1.4, 2.8, 0, 0.02, 6.1, 6.9, COLORS.canPink);
@@ -409,8 +409,13 @@ function buildSofa(w) {
   for (const [lx, lz] of [[-3.95, 17.6], [-3.22, 17.6], [-3.95, 18.33], [-3.22, 18.33]]) {
     w.addSpan("side-table-leg", lx, lx + 0.07, 0, 0.88, lz, lz + 0.07, COLORS.softBlack);
   }
-  // Side table clutter: little mirror, remote, a jar and a red notebook
-  w.addDeco("small-mirror", -3.98, -3.93, 0.95, 1.75, 17.75, 18.35, COLORS.sky);
+  // A small mirror propped on the floor, leaning back against the side table
+  // (at bunny height, so Rae sees herself walking past). A hidden box stops her walking through it.
+  const lean = 0.2, mh = 0.8;
+  w.addRectMirror(-3.02 - (mh / 2) * Math.sin(lean), 0.02 + (mh / 2) * Math.cos(lean), 18.0, 0.5, mh, "+x",
+    COLORS.tvBlack, { lean, resolution: 512 });
+  w.addSpan("mirror-stand", -3.2, -2.98, 0, 0.75, 17.72, 18.28, COLORS.tvBlack).mesh.visible = false;
+  // Side table clutter: remote, a jar and a red notebook
   w.addDeco("remote", -3.75, -3.35, 0.95, 0.99, 17.62, 17.72, COLORS.tvBlack);
   w.add(makeThing("jar", -3.55, 0.95, 18.15, [
     ["cyl", [0.08, 0.08, 0.14], [0, 0.07, 0], COLORS.book2],
