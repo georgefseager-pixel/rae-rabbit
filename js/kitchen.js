@@ -52,13 +52,71 @@ function makePotPlant(x, y, z, potColor, style = "leafy", size = 1) {
   return makeThing("plant", x, y, z, parts);
 }
 
+// The washing machine under the worktop, with its round door left wide open.
+// Rae can hop up into the drum (just big enough for a rabbit!), where the last
+// carrot is hiding among the socks.
+function buildWashingMachine(w, x1, x2, top) {
+  const za = 26.75, zb = 27.6;                 // the machine's sides
+  const h1 = LOW + 0.42, h2 = LOW + 1.02;      // bottom and top of the drum opening
+  const o1 = 26.9, o2 = 27.5;                  // its sides
+  const back = -9.6, drum = 0xb9c2cc;
+  // The solid body around the drum (its inner faces are the steel drum walls)
+  w.addSpan("washer", x1, x2, LOW, h1, za, zb, drum);
+  w.addSpan("washer", x1, x2, h2, top, za, zb, drum);
+  w.addSpan("washer", x1, x2, h1, h2, za, o1, drum);
+  w.addSpan("washer", x1, x2, h1, h2, o2, zb, drum);
+  w.addSpan("washer", x1, back, h1, h2, o1, o2, drum);
+  // White front panel, with a square cut out for the porthole...
+  const front = COLORS.tableWhite, fx1 = x2, fx2 = x2 + 0.03;
+  w.addDeco("washer-front", fx1, fx2, LOW + 0.05, h1, za, zb, front);
+  w.addDeco("washer-front", fx1, fx2, h2, top - 0.05, za, zb, front);
+  w.addDeco("washer-front", fx1, fx2, h1, h2, za, o1, front);
+  w.addDeco("washer-front", fx1, fx2, h1, h2, o2, zb, front);
+  // ...a grey rubber ring round the opening, and a dial and buttons up top
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.035, 6, 20), pastel(0x6f7480));
+  ring.rotation.y = Math.PI / 2;
+  ring.position.set(x2 + 0.03, (h1 + h2) / 2, (o1 + o2) / 2);
+  ring.scale.set(1, 0.92, 1);
+  w.add(new Prop({ name: "washer-ring", mesh: ring, solid: false }));
+  const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.03, 10), pastel(COLORS.steel));
+  dial.rotation.z = Math.PI / 2;
+  dial.position.set(x2 + 0.045, top - 0.17, zb - 0.15);
+  w.add(new Prop({ name: "washer-dial", mesh: dial, solid: false }));
+  w.addDeco("washer-panel", x2 + 0.03, x2 + 0.04, top - 0.22, top - 0.12, za + 0.08, za + 0.4, 0x9fd0ef);
+
+  // The round glass door, swung wide open on its hinge (to the far side), sticking out into the room
+  const door = new THREE.Group();
+  const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16),
+    new THREE.MeshStandardMaterial({ color: 0xbfd9e8, transparent: true, opacity: 0.55, roughness: 0.2 }));
+  glass.rotation.x = Math.PI / 2;
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.31, 0.04, 6, 20), pastel(0xdfe3e8));
+  door.add(glass, rim);
+  const handle = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.14, 0.04), pastel(0x6f7480));
+  handle.position.set(0.33, 0, 0);
+  door.add(handle);
+  // hinge: the door's edge stays at the far side of the opening; the door swings out ~110 degrees
+  const hinge = new THREE.Group();
+  hinge.position.set(x2 + 0.05, (h1 + h2) / 2, zb + 0.02);
+  hinge.rotation.y = -0.35;
+  door.position.set(0.34, 0, 0);
+  hinge.add(door);
+  w.add(new Prop({ name: "washer-door", mesh: hinge, solid: false }));
+
+  // A few socks in the drum, and the 20th carrot right at the back
+  w.addDeco("sock", -9.5, -9.25, h1, h1 + 0.05, o1 + 0.05, o1 + 0.18, COLORS.canPink);
+  w.addDeco("sock", -9.0, -8.8, h1, h1 + 0.04, o2 - 0.2, o2 - 0.06, COLORS.butter);
+  w.add(new Carrot(-9.3, h1 + 0.15, (o1 + o2) / 2));
+}
+
 // The long counter along the side wall, from the stairs to the far corner (like
 // the first photo): wood cupboards, dark worktop, with (near to far) bottles and
 // chopping boards, the hob with a frying pan, the sink, the microwave, and the
 // washing machine underneath. Windows all along above it.
 function buildKitchenCounter(w) {
   const x1 = -9.85, x2 = -8.55, z1 = 19.6, z2 = 29, top = LOW + 1.8, wt = top + 0.1;
-  w.addSpan("counter", x1, x2, LOW, top, z1, z2, COLORS.kitchenWood);
+  // (the counter is solid, except for the washing machine's drum, which Rae can climb into)
+  w.addSpan("counter", x1, x2, LOW, top, z1, 26.75, COLORS.kitchenWood);
+  w.addSpan("counter", x1, x2, LOW, top, 27.6, z2, COLORS.kitchenWood);
   w.addSpan("worktop", x1, x2 + 0.08, top, wt, z1 - 0.08, z2, COLORS.worktop);
   // Cupboard doors with long silver handles (leaving a gap for the washing machine)
   for (let z = 19.75; z < 28.8; z += 0.9) {
@@ -66,12 +124,7 @@ function buildKitchenCounter(w) {
     w.addDeco("cupboard-door", x2, x2 + 0.02, LOW + 0.12, top - 0.12, z, z + 0.84, COLORS.kitchenWoodLight);
     w.addDeco("handle", x2 + 0.02, x2 + 0.05, top - 0.5, top - 0.2, z + 0.7, z + 0.74, COLORS.steel);
   }
-  // Washing machine (its front shows under the worktop)
-  w.addDeco("washer", x2, x2 + 0.03, LOW + 0.05, top - 0.05, 26.75, 27.6, COLORS.tableWhite);
-  const door = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.04, 14), pastel(0x9aa7b8));
-  door.rotation.z = Math.PI / 2;
-  door.position.set(x2 + 0.05, LOW + 0.75, 27.17);
-  w.add(new Prop({ name: "washer-door", mesh: door, solid: false }));
+  buildWashingMachine(w, x1, x2, top);
 
   // Hob with four rings, and a frying pan on it
   w.addDeco("hob", -8.75, -9.65, wt, wt + 0.02, 22.6, 24.2, COLORS.tvBlack);
