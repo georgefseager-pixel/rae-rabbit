@@ -444,8 +444,34 @@ function showPauseScreen() {
   overlayTitle.innerHTML = `<span class="kb-only">Paused — click to continue</span>` +
     `<span class="pad-only">Paused — press <span class="xb a">A</span> to continue</span>`;
   overlay.classList.remove("hidden");
+  restartBtn.classList.remove("hidden");
+  resetRestartButton();
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
 }
+
+// ---- Restart (pause screen): back to the main menu to pick a game mode ----
+// The first press asks "Sure?", so a stray click doesn't throw away your game.
+const restartBtn = document.getElementById("restart-game");
+let restartSure = false;
+function resetRestartButton() {
+  restartSure = false;
+  restartBtn.classList.remove("sure");
+  restartBtn.querySelector(".restart-text").textContent = "↺ Restart (choose a mode)";
+}
+function pressRestart() {
+  if (!restartSure) {
+    restartSure = true;
+    restartBtn.classList.add("sure");
+    restartBtn.querySelector(".restart-text").textContent = "Sure? Press again to restart";
+    Sfx.babble(false);
+    return;
+  }
+  location.reload(); // a fresh start, at the main menu
+}
+restartBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); // don't also un-pause the game
+  pressRestart();
+});
 
 // ---- Little pop-up message ----
 let toastTimer = null;

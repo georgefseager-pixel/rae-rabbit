@@ -30,6 +30,8 @@ Pick a game mode from the main menu:
     hops out of the way when Rae tries to land on him (jump again straight away, before he can
     dodge twice!). Beat him for the **YOU WIN!** screen.
   - While a boss is out, frogs appear about half as often (`BOSS_FROGS`).
+  - So many frogs would mean non-stop chatter, so ordinary frogs only speak now and then here
+    (`FROGPOCALYPSE_CHATTER` and `FROGPOCALYPSE_QUIET` at the bottom of `js/frog.js`).
   Spawn rates, the frog limit, the boss time and the parcel count are at the top of
   `js/frogpocalypse.js`; the bosses' health, speed and lines are in `BOSSES` at the top of `js/frog.js`.
 
@@ -39,7 +41,8 @@ Pick a game mode from the main menu:
 - **G**: dance! Nearby frogs stop and dance along (not in the Frogpocalypse). Moving stops the dance.
 - **Click**: punch! Smashes breakables and pops frogs just in front of Rae (tweak `PUNCH_REACH` and
   `PUNCH_RADIUS` in `js/main.js`)
-- **Esc**: pause
+- **Esc**: pause. The pause screen has a **↺ Restart** button (press it twice) that takes you back to
+  the main menu to pick a game mode (controller: **Y** twice)
 
 **With a controller** (Xbox layout; just press a button and the on-screen prompts switch over):
 left stick move, right stick look, **A** hop, **X** / **RB** / **RT** punch, **Y** dance, **Menu (☰)** pause.

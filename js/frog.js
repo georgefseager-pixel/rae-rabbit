@@ -421,10 +421,13 @@ class Frog {
             this.bossVoice());
           this.talkCooldown = 6;
         } else {
-          const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
-          Dialogue.say(this.mini ? line.toUpperCase() : line, this.mini
-            ? { speaker: "🐸 Mini frog", style: "enemy", voice: "minifrog" }
-            : { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
+          // (In the Frogpocalypse there are SO many frogs that only the odd one pipes up)
+          if (Frog.mayChatter()) {
+            const line = FROG_LINES[Math.floor(Math.random() * FROG_LINES.length)];
+            Dialogue.say(this.mini ? line.toUpperCase() : line, this.mini
+              ? { speaker: "🐸 Mini frog", style: "enemy", voice: "minifrog" }
+              : { speaker: "🐸 Frog", style: "enemy", voice: "frog" });
+          }
           this.talkCooldown = 10;
         }
         if (typeof raeSays === "function") raeSays("frog-spotted"); // Rae's reply, the first time
@@ -593,3 +596,17 @@ Frog.sightBoost = 1;              // how much further than normal all frogs can 
 Frog.ray = new THREE.Ray();       // (scratch values for lookFor)
 Frog.hitPoint = new THREE.Vector3();
 Frog.isFriendly = () => false;    // main.js: true while Rae wears the frog face shirt
+
+// Should an ordinary frog say something when it spots Rae? Always, normally. In the
+// Frogpocalypse: only now and then (FROGPOCALYPSE_CHATTER of the time), and never
+// within FROGPOCALYPSE_QUIET seconds of the last frog line, so speech doesn't pile up.
+const FROGPOCALYPSE_CHATTER = 0.25;
+const FROGPOCALYPSE_QUIET = 9;
+Frog.lastChatter = -Infinity;
+Frog.mayChatter = () => {
+  if (typeof Frogpocalypse === "undefined" || !Frogpocalypse.active) return true;
+  const now = performance.now() / 1000;
+  if (now - Frog.lastChatter < FROGPOCALYPSE_QUIET || Math.random() > FROGPOCALYPSE_CHATTER) return false;
+  Frog.lastChatter = now;
+  return true;
+};

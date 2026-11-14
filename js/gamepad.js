@@ -7,6 +7,7 @@
 //   Menu (☰)       pause           B             back (shop)
 //   D-pad / stick  choose outfits in the shop, A to wear
 //   Y on the main menu   open Achievements (B to go back)
+//   Y on the pause screen   restart (press twice)
 //
 // Whatever you touched last (controller, or keyboard & mouse) decides which
 // button prompts are shown: the page gets the class "pad" while you're using
@@ -93,6 +94,7 @@ function handleGamepad(dt) {
     if (pressed(BTN.Y)) Achievements.open();
   } else if (startOrPauseShown) {
     if (pressed(BTN.A) || pressed(BTN.MENU)) resumeGame(); // carry on
+    if (pressed(BTN.Y)) pressRestart(); // restart (press twice)
   } else if (started && !paused) {
     // Playing!
     player.padMove.x = lx;

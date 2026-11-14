@@ -593,3 +593,20 @@ body:not(.pad) .pad-only { display: none !important; }
 .bubble.ducky { border-color: #b8cce0; box-shadow: 0 6px 0 #b8cce0, 0 12px 26px rgba(50, 90, 130, 0.18); }
 .bubble.ducky .name-tag { background: #f2a541; box-shadow: 0 2px 0 #d38a2a; }
 .bubble.ducky .bubble-text { color: #4a6a8a; }
+
+/* Restart button on the pause screen */
+#restart-game {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  padding: 7px 18px;
+  border: 3px solid #f1dbe3;
+  border-radius: 999px;
+  background: #fff;
+  color: #8a7590;
+  cursor: pointer;
+}
+#restart-game:hover { border-color: #f7a8c4; color: #6b5070; }
+#restart-game.sure { background: #fde7ee; border-color: #e8606f; color: #c94a59; }
+#restart-game.hidden { display: none; }
