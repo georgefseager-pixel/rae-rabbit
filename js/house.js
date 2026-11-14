@@ -654,6 +654,7 @@ function buildOfficeDesk(w) {
     ["cyl", [0.025, 0.03, 0.05], [0, 0.285, 0], COLORS.canPink],
   ]));
   w.addDeco("magazine", -0.1, 0.25, top, top + 0.01, 23.5, 23.85, COLORS.book2);
+  w.add(new Carrot(-0.35, top + 0.35, 22.4)); // carrot on the desk (hop onto the chair seat, then the desk)
 
   // Window sill with a framed superhero poster and a little succulent on it
   const sill = LOW + 2.32;
@@ -702,6 +703,7 @@ function buildShoeRacks(w) {
     for (const h of tiers) w.addSpan("rack-shelf", x1, x2, LOW + h, LOW + h + 0.05, z1, z2, pine);
   };
   rack(-5, -3.85, [0.12, 0.52, 0.92, 1.32]);   // tall rack, in the corner
+  w.add(new Carrot(-4.42, LOW + 1.77, 25.3));  // carrot on top of the tall rack (climb the low rack first)
   rack(-3.85, -2.65, [0.12, 0.52]);            // low, wide rack
 
   const zr = 25.33, on = (h) => LOW + h + 0.05; // shoes sit on top of a shelf

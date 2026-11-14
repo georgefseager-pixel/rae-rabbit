@@ -191,13 +191,19 @@ function buildBreakfastBar(w) {
     w.addWindow({ z: 29 }, a, b, top + 0.3, H - 0.35, -1);
   }
 
-  // Mini fridge (with magnets) and a bin under the far end
-  w.addSpan("fridge", -0.65, 0.55, LOW, LOW + 1.7, 27.75, 28.95, COLORS.tableWhite);
+  // Mini fridge tucked into the corner (office wall + end wall), out from under
+  // the bar, its door (with magnets) facing into the kitchen. A carrot on top!
+  const fx1 = -0.6, fx2 = 0.58, fz1 = 26.12, fz2 = 27.3;
+  w.addSpan("fridge", fx1, fx2, LOW, LOW + 1.7, fz1, fz2, COLORS.tableWhite);
+  w.addDeco("fridge-handle", fx1 - 0.04, fx1, LOW + 0.9, LOW + 1.5, fz2 - 0.15, fz2 - 0.1, COLORS.steel);
   const magnetColors = [COLORS.plus, COLORS.book2, COLORS.butter, COLORS.canMint, COLORS.book1, COLORS.canLilac];
   for (let i = 0; i < 6; i++) {
-    const mx = -0.5 + (i % 3) * 0.32, my = LOW + 1.0 + Math.floor(i / 3) * 0.3;
-    w.addDeco("magnet", mx, mx + 0.16, my, my + 0.2, 27.72, 27.75, magnetColors[i]);
+    const mz = fz1 + 0.12 + (i % 3) * 0.3, my = LOW + 1.0 + Math.floor(i / 3) * 0.3;
+    w.addDeco("magnet", fx1 - 0.03, fx1, my, my + 0.2, mz, mz + 0.16, magnetColors[i]);
   }
+  w.add(new Carrot(0.0, LOW + 1.7 + 0.35, 26.7));
+  // ...and a carrot dropped on the floor under the bar, between the stools
+  w.add(new Carrot(-3.3, LOW + 0.3, 28.3));
   const bin = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.25, 0.95, 10), pastel(COLORS.tvBlack));
   bin.position.set(-1.25, LOW + 0.475, 28.3);
   w.add(new Prop({ name: "bin", mesh: bin }));
@@ -213,16 +219,18 @@ function buildBreakfastBar(w) {
     w.addSpan("stool-back", sx - 0.22, sx + 0.22, LOW + 1.42, LOW + 2.1, sz - 0.27, sz - 0.23, black);
   }
 
-  // The white folding step stool near the corner: step 1 at 0.85m, step 2 at 1.7m
-  // (solid underneath, so each step is a block Rae can hop straight onto)
-  const kx = -7.5, white = COLORS.tableWhite, grey = 0xd8d4dc;
-  w.addSpan("step-stool", kx - 0.4, kx + 0.4, LOW, LOW + 0.85, 26.3, 26.75, white);
-  w.addSpan("step-stool", kx - 0.4, kx + 0.4, LOW, LOW + 1.7, 26.75, 27.2, white);
-  w.addDeco("step-tread", kx - 0.38, kx + 0.38, LOW + 0.85, LOW + 0.87, 26.32, 26.73, grey);
-  w.addDeco("step-tread", kx - 0.38, kx + 0.38, LOW + 1.7, LOW + 1.72, 26.77, 27.18, grey);
+  // The white folding step stool, pushed partly under the bar, near the bar stools:
+  // step 1 at 0.85m, step 2 at 1.7m (its back half tucks under the bar's edge).
+  // Solid underneath, so each step is a block Rae can hop straight onto.
+  // Climbing route: step stool -> breakfast bar -> along to the worktop -> microwave -> leap!
+  const kx = -6.6, kz = 26.65, white = COLORS.tableWhite, grey = 0xd8d4dc;
+  w.addSpan("step-stool", kx - 0.4, kx + 0.4, LOW, LOW + 0.85, kz, kz + 0.45, white);
+  w.addSpan("step-stool", kx - 0.4, kx + 0.4, LOW, LOW + 1.7, kz + 0.45, kz + 0.9, white);
+  w.addDeco("step-tread", kx - 0.38, kx + 0.38, LOW + 0.85, LOW + 0.87, kz + 0.02, kz + 0.43, grey);
+  w.addDeco("step-tread", kx - 0.38, kx + 0.38, LOW + 1.7, LOW + 1.72, kz + 0.47, kz + 0.88, grey);
   for (const sx of [kx - 0.42, kx + 0.38]) {
-    w.addDeco("step-rail", sx, sx + 0.04, LOW, LOW + 1.75, 27.14, 27.2, COLORS.steel);
-    w.addDeco("step-rail", sx, sx + 0.04, LOW, LOW + 0.9, 26.3, 26.36, COLORS.steel);
+    w.addDeco("step-rail", sx, sx + 0.04, LOW, LOW + 1.75, kz + 0.84, kz + 0.9, COLORS.steel);
+    w.addDeco("step-rail", sx, sx + 0.04, LOW, LOW + 0.9, kz, kz + 0.06, COLORS.steel);
   }
 
   // Lots of plants along the window, and breakfast things
