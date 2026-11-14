@@ -9,14 +9,15 @@
 // so she appears in mirrors even though you can't see her body directly.
 
 // Mirror quality (a setting on the menu):
-//   "high": sharp reflections, updated every frame (how they've always looked)
-//   "low":  blurry little reflections, updated every 3rd frame, and mirrors don't
-//           redraw each other: much faster on older laptops
+//   "high": sharp reflections, updated every frame
+//   "low":  blurry little reflections, updated every 3rd frame
+// Either way, mirrors don't redraw each other, and far-away mirrors keep their last photo.
 class Mirror extends THREE.Mesh {
   static quality = "high";
   static all = [];     // every mirror in the house
   static frame = 0;    // counts frames (main.js), so "low" mirrors can take turns
   static busy = false; // true while a mirror is taking its photo
+  static FAR = 9;      // further away than this (metres), a mirror stops updating
 
   static setQuality(quality) {
     Mirror.quality = quality;
@@ -71,11 +72,15 @@ class Mirror extends THREE.Mesh {
     this.onBeforeRender = (renderer, scene, camera) => {
       // "Low" quality: only re-take the photo every 3rd frame (mirrors take turns),
       // and never while another mirror is taking its photo. Otherwise keep the old one.
-      if (Mirror.quality === "low" && this.hasPhoto &&
-          (Mirror.busy || (Mirror.frame + this.index) % 3 !== 0)) return;
+      if (Mirror.quality === "low" && this.hasPhoto && (Mirror.frame + this.index) % 3 !== 0) return;
+      // Mirrors seen inside another mirror just show their last photo (redrawing the
+      // whole house again for a reflection-in-a-reflection is very slow)
+      if (Mirror.busy && this.hasPhoto) return;
 
       mirrorPos.setFromMatrixPosition(this.matrixWorld);
       eyePos.setFromMatrixPosition(camera.matrixWorld);
+      // Far away? It's tiny on screen: keep the old photo
+      if (this.hasPhoto && mirrorPos.distanceTo(eyePos) > Mirror.FAR) return;
       rotation.extractRotation(this.matrixWorld);
       normal.set(0, 0, 1).applyMatrix4(rotation);
 
@@ -125,7 +130,11 @@ class Mirror extends THREE.Mesh {
       renderer.setRenderTarget(this.renderTarget);
       renderer.state.buffers.depth.setMask(true);
       if (renderer.autoClear === false) renderer.clear();
+      // Everything's already been positioned for this frame: don't work it all out again
+      const auto = scene.matrixWorldAutoUpdate;
+      scene.matrixWorldAutoUpdate = false;
       renderer.render(scene, mirrorCamera);
+      scene.matrixWorldAutoUpdate = auto;
       renderer.setRenderTarget(previousTarget);
       Mirror.busy = wasBusy;
       this.visible = true;
@@ -137,8 +146,8 @@ class Mirror extends THREE.Mesh {
   makeTarget() {
     if (this.renderTarget) this.renderTarget.dispose();
     const low = Mirror.quality === "low";
-    const size = low ? 160 : this.baseResolution;
-    this.renderTarget = new THREE.WebGLRenderTarget(size, size, { samples: low ? 0 : 4 });
+    const size = low ? 160 : Math.min(this.baseResolution, 768);
+    this.renderTarget = new THREE.WebGLRenderTarget(size, size, { samples: low ? 0 : 2 });
     this.material.uniforms.tDiffuse.value = this.renderTarget.texture;
     this.hasPhoto = false;
   }

@@ -74,9 +74,19 @@ const COLORS = {
   book1: 0xf3a6b8, book2: 0xa6cdf0, book3: 0xf4d58f, book4: 0xb9a6ea, book5: 0x9fd8b4,
 };
 
-// Makes a flat-shaded pastel material (the "low-poly" look)
+// Makes a flat-shaded pastel material (the "low-poly" look).
+// (Lambert = simple matte lighting: looks the same on these soft colours, but is much
+// cheaper for the graphics card than the shiny "Standard" kind.)
 function pastel(color) {
-  return new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.9, metalness: 0 });
+  return new THREE.MeshLambertMaterial({ color, flatShading: true });
+}
+
+// The same, but SHARED: every wall, floor and bit of furniture of one colour uses one
+// material, which is quicker to draw. Only for things whose colour never changes!
+const sharedPastels = new Map();
+function sharedPastel(color) {
+  if (!sharedPastels.has(color)) sharedPastels.set(color, pastel(color));
+  return sharedPastels.get(color);
 }
 
 class Prop {

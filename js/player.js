@@ -117,7 +117,9 @@ class Player {
     this.vel.y -= this.gravity * dt;
 
     // ---- 3. Move one axis at a time, pushing out of anything solid ----
-    const solids = world.solids();
+    // (only the solid things near Rae: much quicker than checking the whole house)
+    const reach = this.radius + 0.5 + (Math.abs(this.vel.x) + Math.abs(this.vel.z)) * dt;
+    const solids = world.solidsNear(this.pos.x - reach, this.pos.x + reach, this.pos.z - reach, this.pos.z + reach);
     const eps = 0.0001;
 
     // Breakable things don't stop Rae: touching them smashes them instead.

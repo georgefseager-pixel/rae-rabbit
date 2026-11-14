@@ -17,6 +17,29 @@ class World {
     this.frogSpawns = []; // where frogs start (main.js creates them)
     this.debris = new Debris(scene);
     this.onBreak = null; // main.js can set this to react when something breaks
+
+    // Room lights: every room has a lamp spot (addRoomLight), but only LAMPS real lights
+    // exist. Each frame they move to the lamp spots nearest Rae (updateLights). Lights
+    // are costly to draw, and far-away rooms barely get any light from them anyway.
+    this.lampSpots = [];
+    this.lamps = [];
+    for (let i = 0; i < World.LAMPS; i++) {
+      const lamp = new THREE.PointLight(0xffe6c7, 0, 12);
+      scene.add(lamp);
+      this.lamps.push(lamp);
+    }
+  }
+
+  // Put the real lights at the room lamps closest to (x, y, z)
+  updateLights(x, y, z) {
+    const near = this.lampSpots
+      .map((s) => ({ s, d: (s.x - x) ** 2 + (s.y - y) ** 2 + (s.z - z) ** 2 }))
+      .sort((a, b) => a.d - b.d);
+    this.lamps.forEach((lamp, i) => {
+      const spot = near[i] && near[i].s;
+      lamp.intensity = spot ? spot.intensity : 0;
+      if (spot) { lamp.position.set(spot.x, spot.y, spot.z); lamp.distance = spot.distance; }
+    });
   }
 
   // Smash a breakable prop into pieces
@@ -32,7 +55,7 @@ class World {
   // Called every frame from main.js
   update(dt, time) {
     for (const prop of this.props) prop.update(dt, time);
-    this.debris.update(dt, this.props.filter((p) => p.solid && !p.breakable));
+    if (this.debris.pieces.length) this.debris.update(dt, this.stillSolids());
   }
 
   // Add any Prop to the world
@@ -64,14 +87,60 @@ class World {
     }
     return this.blockersCache;
   }
-  changed() { this.solidsCache = null; this.blockersCache = null; }
+  changed() { this.solidsCache = null; this.blockersCache = null; this.grid = null; this.stillCache = null; }
+
+  // Just the solid things near an area (x1..x2, z1..z2), all heights. Much faster than
+  // checking every solid in the house: they're sorted into a grid of 2m squares
+  // (rebuilt whenever something is added, removed or broken).
+  solidsNear(x1, x2, z1, z2) {
+    const C = 2, key = (cx, cz) => cx * 1000 + cz;
+    if (!this.grid) {
+      this.grid = new Map();
+      for (const p of this.solids()) {
+        const b = p.box;
+        for (let cx = Math.floor(b.min.x / C); cx <= Math.floor(b.max.x / C); cx++) {
+          for (let cz = Math.floor(b.min.z / C); cz <= Math.floor(b.max.z / C); cz++) {
+            const k = key(cx, cz);
+            if (!this.grid.has(k)) this.grid.set(k, []);
+            this.grid.get(k).push(p);
+          }
+        }
+      }
+    }
+    const found = [], stamp = (this.stamp = (this.stamp || 0) + 1);
+    for (let cx = Math.floor(x1 / C); cx <= Math.floor(x2 / C); cx++) {
+      for (let cz = Math.floor(z1 / C); cz <= Math.floor(z2 / C); cz++) {
+        const cell = this.grid.get(key(cx, cz));
+        if (!cell) continue;
+        for (const p of cell) if (p.stamp !== stamp) { p.stamp = stamp; found.push(p); }
+      }
+    }
+    return found;
+  }
+
+  // Solid things that never break (for flying debris to land on)
+  stillSolids() {
+    if (!this.stillCache) this.stillCache = this.solids().filter((p) => !p.breakable);
+    return this.stillCache;
+  }
+
+  // After the house is built: things that never move don't need their position
+  // re-worked-out every frame (a big saving with mirrors, which redraw the house too)
+  freezeStatic() {
+    const MOVING = new Set(["ducky", "washer-door"]);
+    for (const p of this.props) {
+      if (p.constructor !== Prop || MOVING.has(p.name)) continue; // carrots spin, Ducky bobs...
+      p.mesh.traverse((o) => { o.updateMatrix(); o.matrixAutoUpdate = false; });
+      p.mesh.updateMatrixWorld(true);
+    }
+  }
   collectibles() { return this.props.filter((p) => p.collectible && !p.collected); }
 
   // ---------- Shape helpers ----------
 
   // A box with its CENTRE at (x, y, z) and size (w, h, d). Solid by default.
   addBox(name, x, y, z, w, h, d, color, opts = {}) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), pastel(color));
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), sharedPastel(color));
     mesh.position.set(x, y, z);
     return this.add(new Prop({ name, mesh, ...opts }));
   }
@@ -252,10 +321,9 @@ class World {
   }
 
   // A warm ceiling light for a room
+  // (just remembers the spot: see updateLights)
   addRoomLight(x, y, z, intensity = 0.45, distance = 12) {
-    const lamp = new THREE.PointLight(0xffe6c7, intensity, distance);
-    lamp.position.set(x, y, z);
-    this.scene.add(lamp);
+    this.lampSpots.push({ x, y, z, intensity, distance });
   }
 
   // Soft light for the whole house (call once)
@@ -266,3 +334,4 @@ class World {
     this.scene.add(sun);
   }
 }
+World.LAMPS = 4; // how many room lights are switched on at once (the nearest ones)

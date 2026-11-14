@@ -436,6 +436,7 @@ function buildLivingRoom(w) {
 // Glowing decoration (screens)
 function addGlow(w, name, x1, x2, y1, y2, z1, z2, color, strength = 0.7) {
   const p = w.addDeco(name, x1, x2, y1, y2, z1, z2, color);
+  p.mesh.material = p.mesh.material.clone(); // its own material, so only this one glows
   p.mesh.material.emissive = new THREE.Color(color);
   p.mesh.material.emissiveIntensity = strength;
   return p;

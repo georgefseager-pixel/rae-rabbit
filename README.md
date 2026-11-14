@@ -238,10 +238,19 @@ Real reflecting mirrors (Rae's body only shows up in these): the oval vanity mir
 table, the wardrobe's mirror door, the full-length mirror on the corridor's side door, the mirror over
 the bathroom sink, and a small one standing on the black side table by the sofa, leaning against the wall (hop onto the table from the sofa arm).
 
-**Mirror quality (for slower computers):** the main menu and pause screen have a 🪞 Mirrors switch
-(controller: X). "Detailed" is sharp and updates every frame; "Faster" uses tiny, softer reflections
-that update every third frame, which roughly doubles the frame rate near mirrors. The choice is
-remembered on that computer.
+**Graphics setting (for slower computers):** the main menu and pause screen have a 🖥️ Graphics switch
+(controller: X). "Detailed" has sharp mirrors that update every frame; "Faster" uses tiny, softer
+reflections that update every third frame, and draws the game at normal resolution on sharp
+(high-DPI) laptop screens. The choice is remembered on that computer.
+
+**What else keeps it running smoothly** (in case you add things):
+- Only the 4 room lamps nearest Rae are switched on (`World.LAMPS` in `js/world.js`); lights are the
+  most expensive thing to draw.
+- Mirrors never redraw each other, and mirrors more than 9 m away keep their last picture (`Mirror.FAR`).
+- Walls, floors and furniture of the same colour share one material (`sharedPastel` in `js/props.js`),
+  and things that never move are "frozen" after the house is built (`world.freezeStatic()`). If you
+  add something that moves, make it a `Prop` subclass (like `Carrot`) or add its name to `MOVING`.
+- Rae and the frogs only check for bumping into things near them (`world.solidsNear`).
 
 ## The garden and the climbing tree (`js/garden.js`)
 The living room window (by the TV) and the office window (above the desk) are open. Climb out onto the

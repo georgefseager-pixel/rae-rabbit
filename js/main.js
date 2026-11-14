@@ -13,7 +13,7 @@ const frogCountEl = document.getElementById("frog-count");
 // ---- Three.js basics: renderer, scene, camera ----
 THREE.ColorManagement.legacyMode = false; // makes our pastel colours show up true-to-life
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // (the Graphics setting may lower this)
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputEncoding = THREE.sRGBEncoding;
 
@@ -33,6 +33,7 @@ window.addEventListener("resize", () => {
 // ---- Build the world and the player ----
 const world = new World(scene);
 buildHouse(world); // see house.js
+world.freezeStatic(); // things that never move: skip re-working-out their positions each frame
 
 const player = new Player(camera);
 player.attachInput(canvas);
@@ -411,11 +412,14 @@ function resumeGame() {
 // Clicking the pause card carries on (before the game starts, pick a mode instead)
 overlay.addEventListener("click", () => { if (started) resumeGame(); });
 
-// ---- Mirror quality setting (Detailed / Faster) ----
+// ---- Graphics setting (Detailed / Faster): mirror quality and screen resolution ----
 // Remembered on this computer for next time.
 const mirrorButtons = [...document.querySelectorAll("#mirror-setting button")];
 function setMirrorQuality(quality) {
   Mirror.setQuality(quality);
+  // "Faster" also draws the game at normal resolution on sharp (high-DPI) laptop screens
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, quality === "low" ? 1 : 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight);
   mirrorButtons.forEach((b) => b.classList.toggle("on", b.dataset.quality === quality));
   try { localStorage.setItem("rae-mirrors", quality); } catch (e) { /* can't save: fine */ }
 }
@@ -700,6 +704,7 @@ function loop() {
     player.update(0, world); // just place the camera for the title screen
   }
   world.update(dt, time); // animates props and flying pieces
+  world.updateLights(player.pos.x, player.pos.y, player.pos.z); // the nearest room lamps
   const raeMoves = danceTime > 0 ? danceMotion(danceFake, player.pos, player.yaw, time) : player;
   raeModel.update(paused ? 0 : dt, raeMoves, time);
   paws.update(paused ? 0 : dt, player, time);

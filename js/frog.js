@@ -252,11 +252,12 @@ class Frog {
     const from = new THREE.Vector3(this.pos.x, this.pos.y + 0.35, this.pos.z);
     const to = new THREE.Vector3(player.pos.x, player.pos.y + 0.35, player.pos.z);
     const dist = from.distanceTo(to);
-    const blockers = this.world.sightBlockers();
-    const point = new THREE.Vector3();
-    for (let d = 0.3; d < dist - 0.2; d += 0.3) {
-      point.lerpVectors(from, to, d / dist);
-      if (blockers.some((b) => b.box.containsPoint(point))) return false;
+    // One straight line from frog to Rae: does it pass through a wall, door or floor first?
+    const ray = Frog.ray, hit = Frog.hitPoint;
+    ray.origin.copy(from);
+    ray.direction.subVectors(to, from).normalize();
+    for (const b of this.world.sightBlockers()) {
+      if (ray.intersectBox(b.box, hit) && hit.distanceTo(from) < dist - 0.2) return false;
     }
     return true;
   }
@@ -514,28 +515,26 @@ class Frog {
   move(dt) {
     const wasInAir = !this.onGround;
     this.vel.y -= this.gravity * dt;
-    const solids = this.world.solids();
-    const box = (p) => ({
-      minX: p.x - this.radius, maxX: p.x + this.radius,
-      minY: p.y, maxY: p.y + this.height,
-      minZ: p.z - this.radius, maxZ: p.z + this.radius,
-    });
-    const hit = (a, b) => a.minX < b.max.x && a.maxX > b.min.x && a.minY < b.max.y &&
-      a.maxY > b.min.y && a.minZ < b.max.z && a.maxZ > b.min.z;
+    const reach = this.radius + 0.5 + (Math.abs(this.vel.x) + Math.abs(this.vel.z)) * dt; // only nearby solids
+    const solids = this.world.solidsNear(this.pos.x - reach, this.pos.x + reach, this.pos.z - reach, this.pos.z + reach);
+    // (a direct overlap test against the frog's box, without making new objects: quicker)
+    const r = this.radius, h = this.height, pos = this.pos;
+    const hit = (b) => pos.x - r < b.max.x && pos.x + r > b.min.x && pos.y < b.max.y &&
+      pos.y + h > b.min.y && pos.z - r < b.max.z && pos.z + r > b.min.z;
 
     this.pos.x += this.vel.x * dt;
-    for (const s of solids) if (hit(box(this.pos), s.box)) {
+    for (const s of solids) if (hit(s.box)) {
       if (s.box.max.y - this.pos.y <= 0.25) this.pos.y = s.box.max.y + 0.001;
       else this.pos.x = this.vel.x > 0 ? s.box.min.x - this.radius - 0.001 : s.box.max.x + this.radius + 0.001;
     }
     this.pos.z += this.vel.z * dt;
-    for (const s of solids) if (hit(box(this.pos), s.box)) {
+    for (const s of solids) if (hit(s.box)) {
       if (s.box.max.y - this.pos.y <= 0.25) this.pos.y = s.box.max.y + 0.001;
       else this.pos.z = this.vel.z > 0 ? s.box.min.z - this.radius - 0.001 : s.box.max.z + this.radius + 0.001;
     }
     this.onGround = false;
     this.pos.y += this.vel.y * dt;
-    for (const s of solids) if (hit(box(this.pos), s.box)) {
+    for (const s of solids) if (hit(s.box)) {
       if (this.vel.y <= 0) { this.pos.y = s.box.max.y; this.onGround = true; }
       else this.pos.y = s.box.min.y - this.height - 0.001;
       this.vel.y = 0;
@@ -591,4 +590,6 @@ class Frog {
   }
 }
 Frog.sightBoost = 1;              // how much further than normal all frogs can see
+Frog.ray = new THREE.Ray();       // (scratch values for lookFor)
+Frog.hitPoint = new THREE.Vector3();
 Frog.isFriendly = () => false;    // main.js: true while Rae wears the frog face shirt
