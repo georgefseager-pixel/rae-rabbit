@@ -612,3 +612,4 @@ body:not(.pad) .pad-only { display: none !important; }
 #restart-game:hover { border-color: #f7a8c4; color: #6b5070; }
 #restart-game.sure { background: #fde7ee; border-color: #e8606f; color: #c94a59; }
 #restart-game.hidden { display: none; }
+.settings.settings-2 { margin-top: 6px; padding-top: 0; border-top: none; }

@@ -74,6 +74,7 @@ Settings (dead zone, look speed) are at the top of `js/gamepad.js`.
 | `js/flopsymode.js` | Flopsy Mode: playing as Flopsy, and the cloud platforms |
 | `js/mice.js` | The secret fireplace mice: their model, peek and dance |
 | `js/bird.js` | The roof secret: the big bird and its swoop-and-carry-off cutscene |
+| `js/music.js` | The background music: the tunes and the little music player |
 | `js/achievements.js` | The achievements list, saving them, the popup and the Achievements screen |
 | `js/weapons.js` | Weapon stats (paws, Pokey Stick, 'Rae' Gun) and the gun's green balls |
 | `js/gamepad.js` | Controller support and switching between keyboard and Xbox button prompts |
@@ -271,6 +272,12 @@ the frogs' and Jiggle Jaggle's at the top of `js/frog.js`. Punch Flopsy and she 
 Real reflecting mirrors (Rae's body only shows up in these): the oval vanity mirror over the white
 table, the wardrobe's mirror door, the full-length mirror on the corridor's side door, the mirror over
 the bathroom sink, and a small one standing on the black side table by the sofa, leaning against the wall (hop onto the table from the sofa arm).
+
+**Music:** three little looping tunes, made with code like the sound effects (`js/music.js`): a
+gentle, bouncy one for Carrotventure, a twinkly music-box version for Flopsy Mode, and a hoppy,
+cheeky one for Frogpocalypse. It goes quiet while paused or in a shop, ducks under the dance tune,
+and stops for the end screens. The menu and pause screen have a 🎵 Music On/Off switch
+(controller: LB), remembered on that computer. Write your own tune in `TUNES`!
 
 **Graphics setting (for slower computers):** the main menu and pause screen have a 🖥️ Graphics switch
 (controller: X cycles through them). "Detailed" has sharp mirrors that update every frame; "Faster"

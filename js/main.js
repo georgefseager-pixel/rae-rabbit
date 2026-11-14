@@ -118,6 +118,7 @@ function showGameOver(how = "hearts") {
   document.getElementById("go-frogs").textContent = stompedCount;
   document.getElementById("gameover").classList.remove("hidden");
   if (document.exitPointerLock) document.exitPointerLock(); // give the mouse back
+  Music.stop();
   Sfx.gameOver();
 }
 document.getElementById("play-again").addEventListener("click", () => location.reload());
@@ -222,6 +223,7 @@ function startDance() {
   if (!started || paused || gameOver || inShop || danceTime > 0) return;
   danceTime = DANCE_TIME;
   Sfx.danceTune();
+  Music.duck(DANCE_TIME); // (the dance tune takes over for a moment)
   raeSays("dance");
   if (!Frogpocalypse.active) {
     for (const frog of frogs) {
@@ -409,10 +411,12 @@ function startGame(mode) {
   menuEl.classList.add("hidden");
   overlayTitle.classList.remove("hidden");
   resumeGame();
+  Music.play(mode === "frog" ? "frog" : mode === "flopsy" ? "musicbox" : "cosy"); // (music.js)
 }
 
 // Hide the menu/pause card and play
 function resumeGame() {
+  if (typeof Music !== "undefined") Music.setQuiet(false);
   Sfx.init();                 // sound is allowed now that the player clicked
   started = true;
   paused = false;
@@ -451,6 +455,22 @@ let savedMirrors = "high";
 try { savedMirrors = localStorage.getItem("rae-mirrors") || "high"; } catch (e) {}
 setMirrorQuality(["high", "low", "off"].includes(savedMirrors) ? savedMirrors : "high");
 
+// ---- Music On/Off (also remembered on this computer) ----
+const musicButtons = [...document.querySelectorAll("#music-setting button")];
+function setMusic(on) {
+  Music.setOn(on);
+  musicButtons.forEach((b) => b.classList.toggle("on", (b.dataset.music === "on") === on));
+  try { localStorage.setItem("rae-music", on ? "on" : "off"); } catch (e) { /* can't save: fine */ }
+}
+function toggleMusic() { setMusic(!Music.on); }
+musicButtons.forEach((b) => b.addEventListener("click", (e) => {
+  e.stopPropagation(); // don't also un-pause the game
+  setMusic(b.dataset.music === "on");
+}));
+let savedMusic = "on";
+try { savedMusic = localStorage.getItem("rae-music") || "on"; } catch (e) {}
+setMusic(savedMusic !== "off");
+
 document.addEventListener("pointerlockchange", () => {
   if (document.pointerLockElement !== canvas && started && !gameOver && !inShop) showPauseScreen();
 });
@@ -461,6 +481,7 @@ function showPauseScreen() {
   overlayTitle.innerHTML = `<span class="kb-only">Paused — click to continue</span>` +
     `<span class="pad-only">Paused — press <span class="xb a">A</span> to continue</span>`;
   overlay.classList.remove("hidden");
+  Music.setQuiet(true); // the music goes quiet while paused
   restartBtn.classList.remove("hidden");
   resetRestartButton();
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
@@ -530,6 +551,7 @@ function showWin(how = "boss") {
   document.getElementById("win-smashed").textContent = smashedCount;
   document.getElementById("win").classList.remove("hidden");
   if (document.exitPointerLock) document.exitPointerLock();
+  Music.stop();
   Sfx.win();
   // Achievements (see achievements.js)
   if (how === "toilet") {

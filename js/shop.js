@@ -258,6 +258,7 @@ function openShop(which = "flopsy") {
   player.keys = {};
   player.vel.set(0, 0, 0);
   Sfx.shopBell();
+  Music.setQuiet(true);
   fadeEl.classList.add("on"); // quick fade to black
   if (document.exitPointerLock) document.exitPointerLock();
   setTimeout(() => {
@@ -293,6 +294,7 @@ function leaveShop(item) {
     fadeEl.classList.remove("on");
     inShop = false;
     paused = false;
+    Music.setQuiet(false);
     Dialogue.say(changed ? item.lines : item ? shop.sameLines : shop.leaveLines);
   }, 250);
   try {

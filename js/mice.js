@@ -127,6 +127,7 @@ const Mice = {
       if (k >= 1) {
         this.go("dance");
         Sfx.danceTune();
+        Music.duck(this.DANCE_TIME);
         Achievements.unlock("scrumbly");
         Dialogue.say(MICE_DANCE_LINES);
       }

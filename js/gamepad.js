@@ -72,6 +72,7 @@ function handleGamepad(dt) {
   const startOrPauseShown = !overlay.classList.contains("hidden");
   // X on the menu / pause screen switches the graphics setting (Detailed / Faster / Fastest)
   if (startOrPauseShown && !endShown && !inShop && !Achievements.isOpen() && pressed(BTN.X)) toggleMirrorQuality();
+  if (startOrPauseShown && !endShown && !inShop && !Achievements.isOpen() && pressed(BTN.LB)) toggleMusic();
 
   if (endShown) {
     if (pressed(BTN.A) || pressed(BTN.MENU)) location.reload(); // play again
