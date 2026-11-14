@@ -46,16 +46,16 @@ const paws = new FirstPersonPaws(camera);
 const frogs = world.frogSpawns.map((s) => new Frog(world, s.x, s.y, s.z, s.color));
 
 // ---- Hearts ----
-const MAX_HEARTS = 3;
+let maxHearts = 3;         // goes up (to 6) by bonking Flopsy in the Frogpocalypse
 const HURT_COOLDOWN = 1.5; // seconds Rae is safe after getting hurt
-let hearts = MAX_HEARTS;
+let hearts = maxHearts;
 let hurtCooldown = 0;
 const heartsEl = document.getElementById("hearts");
 const flashEl = document.getElementById("hurt-flash");
 
 function drawHearts(lostIndex = -1) {
   heartsEl.innerHTML = "";
-  for (let i = 0; i < MAX_HEARTS; i++) {
+  for (let i = 0; i < maxHearts; i++) {
     const h = document.createElement("span");
     h.className = "heart" + (i < hearts ? "" : " empty") + (i === lostIndex ? " lost" : "");
     h.textContent = "♥";
@@ -648,7 +648,7 @@ function checkCollectibles() {
       collectedCount++;
       countEl.textContent = collectedCount;
       // Carrots heal a heart (in every mode)
-      if (hearts < MAX_HEARTS) {
+      if (hearts < maxHearts) {
         hearts++;
         drawHearts();
         Dialogue.say(CARROT_HEAL_LINES);

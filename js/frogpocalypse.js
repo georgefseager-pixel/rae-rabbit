@@ -58,9 +58,10 @@ const Frogpocalypse = {
       world.remove(door);
     }
 
-    // Board up the Flopsy Shop: no way in, and Flopsy has gone
+    // Board up the Flopsy Shop: no way in, and Flopsy is out hiding somewhere in the house
     world.zones = world.zones.filter((z) => z.name !== "shop-door");
-    flopsy.leave();
+    flopsy.onOuch = () => this.flopsyBoost();
+    this.placeFlopsy(player);
     const block = world.props.find((p) => p.name === "flopsy");
     if (block) world.remove(block);
     const doorZ = 0.3, face = 5.33;
@@ -181,8 +182,8 @@ const Frogpocalypse = {
 
   // ---- Willow's parcels ----
   // Willow (from her shop) sends weapons to whoever pops lots of frogs: the Pokey Stick
-  // after 20 frogs, then the 'Rae' Gun after 20 more. Each parcel lands in a random room.
-  PARCEL_FROGS: 20,
+  // after 15 frogs, then the 'Rae' Gun after 15 more. Each parcel lands in a random room.
+  PARCEL_FROGS: 15,
   PARCEL_ROOMS: [
     { room: "bedroom", x: 2.8, y: 0, z: 1.6 },
     { room: "bathroom", x: 1.8, y: 0, z: 7.4 },
@@ -192,7 +193,7 @@ const Frogpocalypse = {
     { room: "kitchen", x: -7.0, y: LOW, z: 24.0 },
   ],
   nextParcel: "stick",   // then "raygun", then nothing
-  parcelGoal: 20,        // frogs popped before the next parcel arrives
+  parcelGoal: 15,        // frogs popped before the next parcel arrives
   parcel: null,          // the parcel waiting to be picked up
 
   updateParcels(dt, player) {
@@ -234,11 +235,73 @@ const Frogpocalypse = {
     equipWeapon(p.weapon);
     Sfx.chime();
     Dialogue.say(p.weapon === "raygun" ? RAE_GUN_PARCEL_LINES : RAE_STICK_PARCEL_LINES);
-    // The next parcel comes after another 20 frogs
+    // The next parcel comes after another 15 frogs
     this.nextParcel = p.weapon === "stick" ? "raygun" : null;
     this.parcelGoal = stompedCount + this.PARCEL_FROGS;
   },
 };
+
+// ---- Flopsy's power-up ----
+// Flopsy hides in a random room. Bonk her and Rae feels stronger: hearts back to full,
+// plus one more heart (up to FLOPSY_BOOSTS times: 3 -> 6 hearts). Then Flopsy hops off
+// to hide in another room... until she's all bonked out.
+Object.assign(Frogpocalypse, {
+  FLOPSY_BOOSTS: 3,
+  FLOPSY_ROOMS: [
+    { room: "bedroom", x: -2.6, y: 0, z: 1.8 },
+    { room: "bathroom", x: 0.0, y: 0, z: 7.6 },
+    { room: "corridor", x: -2.95, y: 0, z: 5.2 },
+    { room: "living room", x: -1.5, y: 0, z: 10.5 },
+    { room: "office", x: -3.6, y: LOW, z: 22.4 },
+    { room: "kitchen", x: -6.5, y: LOW, z: 20.5 },
+  ],
+  flopsyBoosts: 0,
+  flopsyRoom: null,
+
+  // Somewhere new (not where she just was, and not right next to Rae)
+  placeFlopsy(player) {
+    const options = this.FLOPSY_ROOMS.filter((r) => r !== this.flopsyRoom &&
+      Math.hypot(r.x - player.pos.x, r.z - player.pos.z) > 3);
+    const spot = options[Math.floor(Math.random() * options.length)];
+    this.flopsyRoom = spot;
+    flopsy.moveTo(spot.x, spot.y, spot.z, FLOPSY_HIDING_LINES);
+  },
+
+  flopsyBoost() {
+    if (!this.active || this.flopsyBoosting) return;
+    this.flopsyBoosting = true; // (one bonk at a time)
+    this.flopsyBoosts++;
+    maxHearts++;
+    hearts = maxHearts;
+    drawHearts();
+    Sfx.chime();
+    setTimeout(() => Dialogue.say(RAE_FLOPSY_POWER_LINES), 600);
+    showToast(`💪 Max hearts up! ${maxHearts} ♥`);
+    // A moment later she hops off to hide somewhere else (or, after the last bonk, for good)
+    setTimeout(() => {
+      this.flopsyBoosting = false;
+      if (this.flopsyBoosts >= this.FLOPSY_BOOSTS) {
+        Dialogue.say(FLOPSY_BYE_LINES, FLOPSY_VOICE);
+        flopsy.leave();
+      } else {
+        this.placeFlopsy(player);
+      }
+      Sfx.frogPop();
+    }, 1400);
+  },
+});
+
+const FLOPSY_HIDING_LINES = [
+  "Hello this Flopsy!!! Flopsy hiding from frogs!!!",
+  "Psst! This Flopsy!!! Flopsy very bonkable today!!!",
+  "Eek! Frogs everywhere!!! This Flopsy staying right here!!!",
+];
+const FLOPSY_BYE_LINES = ["This Flopsy all bonked out!!! Bye bye!!!", "Flopsy going to nap now!!! Good luck Rae!!!", "No more bonks for this Flopsy!!!"];
+const RAE_FLOPSY_POWER_LINES = [
+  "Hitting Flopsy makes me feel stronger!",
+  "Sorry Flopsy! ...but wow, I feel STRONGER!",
+  "Bonk! Flopsy power! I feel amazing!",
+];
 
 // What Willow says (she's left her shop, but she keeps in touch)
 const WILLOW_HINT_LINES = [

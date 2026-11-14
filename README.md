@@ -10,12 +10,15 @@ Pick a game mode from the main menu:
   Eat all 20 carrots and... "Uh oh - too many carrots!" Get Rae to the toilet (hop onto the seat)
   for the **YOU WIN!** screen.
 - **🐸 Frogpocalypse**: frogs pour in from all over the house, more and more as time goes on. Both
-  wardrobe shops are boarded up and Flopsy and Willow have fled. The HUD shows frogs stomped and how
+  wardrobe shops are boarded up and Willow has fled. The HUD shows frogs stomped and how
   long you've survived; every door starts smashed (nowhere to hide), frogs pop up even right in view.
   - **Willow's parcels**: early on, Willow (keeping in touch from afar) hints that popping lots of
-    frogs will earn armaments. After **20 frogs** she has a parcel delivered to a random room (a
+    frogs will earn armaments. After **15 frogs** she has a parcel delivered to a random room (a
     cardboard box with a ribbon and a beam of light): walk into it for the **Pokey Stick**. After
-    **20 more**, a second parcel brings the **'Rae' Gun**.
+    **15 more**, a second parcel brings the **'Rae' Gun**.
+  - **Flopsy power-up**: Flopsy hides in a random room. Bonk her ("Ouch this Flopsy!!!") and Rae
+    feels stronger: hearts refill and Rae gets **one more heart**. Flopsy then hops off to hide in
+    another room. Up to 3 times (3 → 6 hearts), then she's all bonked out and goes for a nap.
   - **Boss 1**: survive **3 minutes** and **Jiggle Jaggle** (giant, with a crown) appears in the
     living room. He takes **5 hits**.
   - **Boss 2**: beating him isn't the end! **Fraggle Friggle**, a black frog with glowing red eyes

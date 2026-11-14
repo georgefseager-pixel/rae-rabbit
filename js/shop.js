@@ -346,10 +346,25 @@ class ShopKeeper {
     this.greetCooldown = 0;
   }
 
-  // Run away and hide (Flopsy, in the Frogpocalypse)
+  // Run away and hide (Willow in the Frogpocalypse, and Flopsy once she's all bonked out)
   leave() {
     this.gone = true;
     this.model.root.visible = false;
+  }
+
+  // Pop up somewhere else in the house (Flopsy, in the Frogpocalypse). Out there she
+  // waves at Rae whenever Rae comes near (greeting with `hello` lines).
+  moveTo(x, y, z, hello) {
+    this.gone = false;
+    this.roaming = true;
+    this.model.root.visible = true;
+    this.fake.pos.set(x, y, z);
+    this.floorY = y;
+    this.jumpVel = 0;
+    this.homeYaw = Math.random() * Math.PI * 2;
+    this.sawRae = false;
+    this.greetCooldown = 0;
+    if (hello) this.opts.hello = hello;
   }
 
   // The middle of her body (for punches)
@@ -365,6 +380,7 @@ class ShopKeeper {
     this.jumpVel = 2.8;
     Sfx.squeak();
     Dialogue.say(this.opts.ouch, this.opts.voice);
+    if (this.onOuch) this.onOuch(); // e.g. the Frogpocalypse's Flopsy power-up
   }
 
   update(dt, player, time) {
@@ -381,7 +397,8 @@ class ShopKeeper {
     const dx = player.pos.x - this.fake.pos.x, dz = player.pos.z - this.fake.pos.z;
     const insideWardrobe = player.pos.x > 4.12 && player.pos.x < 5.45 && player.pos.z > -1.85 &&
       player.pos.z < 2.45 && Math.abs(player.pos.y - this.fake.pos.y) < 1;
-    const seesRae = insideWardrobe && Math.hypot(dx, dz) < 2.8;
+    const near = Math.hypot(dx, dz) < 2.8 && Math.abs(player.pos.y - this.fake.pos.y) < 1;
+    const seesRae = this.roaming ? near : insideWardrobe && near;
     this.greetCooldown = Math.max(0, this.greetCooldown - dt);
 
     if (seesRae && !this.sawRae && this.greetCooldown === 0) {
