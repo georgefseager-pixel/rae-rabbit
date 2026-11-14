@@ -8,20 +8,36 @@
 // The mirror camera can also see "layer 1", which is where Rae's body lives,
 // so she appears in mirrors even though you can't see her body directly.
 
+// Mirror quality (a setting on the menu):
+//   "high": sharp reflections, updated every frame (how they've always looked)
+//   "low":  blurry little reflections, updated every 3rd frame, and mirrors don't
+//           redraw each other: much faster on older laptops
 class Mirror extends THREE.Mesh {
+  static quality = "high";
+  static all = [];     // every mirror in the house
+  static frame = 0;    // counts frames (main.js), so "low" mirrors can take turns
+  static busy = false; // true while a mirror is taking its photo
+
+  static setQuality(quality) {
+    Mirror.quality = quality;
+    for (const m of Mirror.all) m.makeTarget();
+  }
+
   constructor(geometry, { resolution = 1024, tint = 0xf2f7ff, clipBias = 0.003 } = {}) {
     super(geometry);
     this.isMirror = true;
+    this.baseResolution = resolution;
+    this.index = Mirror.all.length;
+    Mirror.all.push(this);
 
     const mirrorCamera = new THREE.PerspectiveCamera();
     mirrorCamera.layers.enable(LAYER_MIRROR_ONLY); // sees Rae's body
-    const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution, { samples: 4 });
     const textureMatrix = new THREE.Matrix4();
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         tint: { value: new THREE.Color(tint) },
-        tDiffuse: { value: renderTarget.texture },
+        tDiffuse: { value: null },
         textureMatrix: { value: textureMatrix },
       },
       vertexShader: `
@@ -50,7 +66,14 @@ class Mirror extends THREE.Mesh {
     const view = new THREE.Vector3(), target = new THREE.Vector3();
     const clipPlane = new THREE.Vector4(), q = new THREE.Vector4();
 
+    this.makeTarget();
+
     this.onBeforeRender = (renderer, scene, camera) => {
+      // "Low" quality: only re-take the photo every 3rd frame (mirrors take turns),
+      // and never while another mirror is taking its photo. Otherwise keep the old one.
+      if (Mirror.quality === "low" && this.hasPhoto &&
+          (Mirror.busy || (Mirror.frame + this.index) % 3 !== 0)) return;
+
       mirrorPos.setFromMatrixPosition(this.matrixWorld);
       eyePos.setFromMatrixPosition(camera.matrixWorld);
       rotation.extractRotation(this.matrixWorld);
@@ -96,13 +119,27 @@ class Mirror extends THREE.Mesh {
 
       // Take the photo (with the mirror itself hidden)
       this.visible = false;
+      const wasBusy = Mirror.busy;
+      Mirror.busy = true;
       const previousTarget = renderer.getRenderTarget();
-      renderer.setRenderTarget(renderTarget);
+      renderer.setRenderTarget(this.renderTarget);
       renderer.state.buffers.depth.setMask(true);
       if (renderer.autoClear === false) renderer.clear();
       renderer.render(scene, mirrorCamera);
       renderer.setRenderTarget(previousTarget);
+      Mirror.busy = wasBusy;
       this.visible = true;
+      this.hasPhoto = true;
     };
+  }
+
+  // (Re)make the texture the mirror's photo is drawn into, at the current quality
+  makeTarget() {
+    if (this.renderTarget) this.renderTarget.dispose();
+    const low = Mirror.quality === "low";
+    const size = low ? 160 : this.baseResolution;
+    this.renderTarget = new THREE.WebGLRenderTarget(size, size, { samples: low ? 0 : 4 });
+    this.material.uniforms.tDiffuse.value = this.renderTarget.texture;
+    this.hasPhoto = false;
   }
 }

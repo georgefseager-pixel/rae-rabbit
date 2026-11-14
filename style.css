@@ -430,3 +430,28 @@ body:not(.pad) .pad-only { display: none !important; }
 #hud { top: 28px; right: 34px; }
 #dialogue-stack { top: 32px; left: 34px; }
 #boss-bar { top: 82px; right: 34px; }
+
+/* ---- Settings row on the menu / pause card (e.g. mirror quality) ---- */
+.settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 2px dashed #f1dbe3;
+  font-size: 16px;
+}
+.setting-label { font-weight: 600; }
+.seg { display: inline-flex; border-radius: 999px; background: #f6e8ee; padding: 3px; }
+.seg button {
+  font: inherit;
+  border: none;
+  background: none;
+  color: #8a7590;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.seg button.on { background: #f7a8c4; color: #fff; font-weight: 600; box-shadow: 0 2px 0 #e08aa9; }
+.setting-hint { font-size: 14px; color: #8a7590; }

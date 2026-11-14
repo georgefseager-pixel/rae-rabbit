@@ -68,6 +68,8 @@ function handleGamepad(dt) {
   const endShown = !document.getElementById("gameover").classList.contains("hidden") ||
     !document.getElementById("win").classList.contains("hidden");
   const startOrPauseShown = !overlay.classList.contains("hidden");
+  // X on the menu / pause screen switches the mirror quality
+  if (startOrPauseShown && !endShown && !inShop && pressed(BTN.X)) toggleMirrorQuality();
 
   if (endShown) {
     if (pressed(BTN.A) || pressed(BTN.MENU)) location.reload(); // play again

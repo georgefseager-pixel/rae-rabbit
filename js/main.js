@@ -345,6 +345,25 @@ function resumeGame() {
 // Clicking the pause card carries on (before the game starts, pick a mode instead)
 overlay.addEventListener("click", () => { if (started) resumeGame(); });
 
+// ---- Mirror quality setting (Detailed / Faster) ----
+// Remembered on this computer for next time.
+const mirrorButtons = [...document.querySelectorAll("#mirror-setting button")];
+function setMirrorQuality(quality) {
+  Mirror.setQuality(quality);
+  mirrorButtons.forEach((b) => b.classList.toggle("on", b.dataset.quality === quality));
+  try { localStorage.setItem("rae-mirrors", quality); } catch (e) { /* can't save: fine */ }
+}
+function toggleMirrorQuality() {
+  setMirrorQuality(Mirror.quality === "high" ? "low" : "high");
+}
+mirrorButtons.forEach((b) => b.addEventListener("click", (e) => {
+  e.stopPropagation(); // don't also un-pause the game
+  setMirrorQuality(b.dataset.quality);
+}));
+let savedMirrors = "high";
+try { savedMirrors = localStorage.getItem("rae-mirrors") || "high"; } catch (e) {}
+setMirrorQuality(savedMirrors === "low" ? "low" : "high");
+
 document.addEventListener("pointerlockchange", () => {
   if (document.pointerLockElement !== canvas && started && !gameOver && !inShop) showPauseScreen();
 });
@@ -443,6 +462,7 @@ function loop() {
   const time = clock.elapsedTime;
 
   handleGamepad(dt); // controller input (see gamepad.js)
+  Mirror.frame++;    // lets "Faster" mirrors take turns updating
 
   if (!paused) {
     hurtCooldown = Math.max(0, hurtCooldown - dt);
