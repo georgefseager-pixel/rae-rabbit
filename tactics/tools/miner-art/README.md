@@ -7,5 +7,5 @@ files from a scratch folder, so they are kept as a record of how the masks were 
 not as a ready-to-run tool. In order: rembg (u2net) alpha → `cutout.py` (cut along the
 ink outline, which removes the gap between arm and body) → `masks.py` (split the cloth
 area at its ink lines) → `fixp*.py` (hand corrections on the portrait: thigh fur between
-the ropes, torn edges) → `final.py` (ear linings by pinkness, nose, eyes; crop, resize, save).
+the ropes, torn edges) → `final.py` (ear linings by pinkness, nose, eyes; crop, resize, save) → `apply_*.py` (hand-picked rope regions and the shaded tops of the ear linings, edited directly on the final masks; `regions.py` labels the areas between ink lines, `mov.py` previews a mask).
 If the generic art is replaced, the masks have to be redone.
