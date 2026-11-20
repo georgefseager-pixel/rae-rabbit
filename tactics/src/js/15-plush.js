@@ -23,7 +23,10 @@ function bunny(g, cx, cy, s, L){
     g.fillStyle = '#e8a6a6'; ell(g, 0, L.ears === 'up' ? -.04*s : .06*s, .15*s, .6*s); g.fill();
     g.restore();
   };
-  ear(-1); ear(1);
+  ear(-1);
+  if (L.oneEar){   // a torn stump where the right ear was
+    g.fillStyle = L.fur; g.beginPath(); g.ellipse(cx + .45*s, cy - .82*s, .2*s, .22*s, .3, 0, Math.PI*2); g.fill(); stitchStroke(g, L.dark, s);
+  } else ear(1);
   const gr = g.createRadialGradient(cx - .3*s, cy - .45*s, s*.1, cx, cy, s*1.15);
   gr.addColorStop(0, L.light); gr.addColorStop(1, L.fur);
   g.fillStyle = gr; ell(g, cx, cy, s, .92*s); g.fill(); stitchStroke(g, L.dark, s);

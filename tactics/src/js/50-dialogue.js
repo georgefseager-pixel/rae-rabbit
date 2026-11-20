@@ -45,8 +45,8 @@ function talk(rawLines){
         nm.className = 'tname f-' + sp.faction; nm.textContent = l.as || speakerName(l.who);
         por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, sp.look, 'talk');
         if (sceneMode){
-          // The lead stands on the left; whoever she is talking to stands on the right.
-          const side = l.who === CAMPAIGNS.rae.lord ? 'L' : 'R';
+          // The campaign's lead stands on the left; whoever they are talking to stands on the right.
+          const side = l.who === CAMPAIGNS[SAVE.current].lord ? 'L' : 'R';
           if (onStage[side] !== l.who){
             onStage[side] = l.who; actors[side].innerHTML = actorHTML(l.who, side);
             anim(actors[side], [{opacity: 0, transform: `translateX(${side === 'L' ? -30 : 30}px)`}, {opacity: 1, transform: 'none'}], 300);

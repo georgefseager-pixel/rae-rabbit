@@ -24,6 +24,8 @@ const CLASSES = {
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
   // Frogs
+  prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Rapier',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
+  lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
   lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
   bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
   reed:      {name: 'Tower Archer',   w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Reedbow',           base: {mhp:17,atk:10,def:3, spd:5,skl:6,mov:5}, g: {mhp:55,atk:45,def:20,spd:40,skl:50}},
@@ -62,7 +64,13 @@ const LOOKS = {
   workerLop: {sp:'bun', ears:'lop', fur:'#9c9a96', light:'#c4c2be', dark:'#62605c', scarf:'#5a4a3a', gear:'none'},
   workerBig: {sp:'bun', ears:'up',  fur:'#6e4a30', light:'#8e6a4c', dark:'#422c1a', gear:'bandana', band:'#5a4a3a'},
   workerMend:{sp:'bun', ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#7a6a58', gear:'heart'},
+  stayer:    {sp:'bun', ears:'up',  fur:'#8a7a6a', light:'#a89888', dark:'#54483c', scarf:'#7a2a24', gear:'none', oneEar:true},
+  thin:      {sp:'bun', ears:'lop', fur:'#cfc4b4', light:'#e6ddd0', dark:'#8a7e70', gear:'none', small:true},
   // Frogs
+  tiggle:    {sp:'frog', skin:'#7bc043', light:'#a6dc72', dark:'#3d6a1e', belly:'#dcf0a8', gear:'circlet', small:true},
+  biggle:    {sp:'frog', skin:'#467a2e', light:'#679a4a', dark:'#203a12', belly:'#b8cc84', gear:'kettle', big:true},
+  king:      {sp:'frog', skin:'#26262c', light:'#45454f', dark:'#0b0b0e', belly:'#55555f', eye:'#e02424', gear:'crown', big:true},
+  scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
   headsman:  {sp:'frog', skin:'#46603a', light:'#647e52', dark:'#1f2c18', belly:'#a9b68c', gear:'hood', hood:'#151214', big:true},
   guard:     {sp:'frog', skin:'#5e8a3c', light:'#80aa5a', dark:'#2f4a1e', belly:'#bfd38a', gear:'kettle'},
@@ -71,7 +79,6 @@ const LOOKS = {
   duelist:   {sp:'frog', skin:'#66a83e', light:'#8cc862', dark:'#33591d', belly:'#d0e79a', gear:'bandana', band:'#2e5f9a'},
   toadknight:{sp:'frog', skin:'#557a36', light:'#76984f', dark:'#2a3f17', belly:'#b6c681', gear:'kettle', big:true},
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
-  commander: {sp:'frog', skin:'#3d6b2c', light:'#5f8f45', dark:'#1e3a12', belly:'#c9d98e', gear:'circlet'},
 };
 const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -91,8 +98,9 @@ const CHARACTERS = {
   swift:   {name:'Swift Rabbit', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
   patched: {name:'Patched Rabbit', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   willow:  {name:'Willow', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
-  // Friggliarchy (placeholder until the frog story is written)
-  frogcmd: {name:'Frog Commander', faction:'frog', look:'commander', cls:'lily', lv:3, stats:{mhp:23,atk:12,def:6,spd:6,skl:7,mov:5}, lord:true},
+  // Friggliarchy
+  tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
+  biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({
@@ -102,6 +110,10 @@ const SPEAKERS = Object.assign({
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
   executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
+  king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
+  scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
+  stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer'},
+  thin:        {name:'Thin Rabbit', faction:'rae', look:'thin'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Generic recruits. Camp rabbits have no names, so they are known by how they look.

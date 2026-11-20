@@ -93,7 +93,32 @@ const MAPS = {
     "........",
     "..F..F..",
     "........"]},
-  // Meadow maps kept for the placeholder Friggliarchy battles
+  outerCamp: {theme: 'camp', rows: [
+    "X......X",
+    "..F..F..",
+    ".XX..XX.",
+    "........",
+    "F..MM..F",
+    "........",
+    ".XX..XX.",
+    ".XX..XX.",
+    "........",
+    "..F..F..",
+    "...T....",
+    "X......X"]},
+  ridge: {theme: 'meadow', names: {'M': ['Ridge Rocks', 'Felt boulders on the ridge. Hard going, harder to hit.']}, rows: [
+    "M.F..M.M",
+    "..F...F.",
+    "F..M....",
+    "..MM.F..",
+    "......MM",
+    ".F..F...",
+    "M...MM.F",
+    "..F.....",
+    ".M..F.M.",
+    "...F....",
+    "F..T...F",
+    "M......M"]},
   ford: {theme: 'meadow', rows: [
     "MM.FT.MM",
     "M..F...M",
@@ -107,19 +132,6 @@ const MAPS = {
     ".F..F...",
     "..T....F",
     "F......M"]},
-  wall: {theme: 'meadow', rows: [
-    "M..TT..M",
-    "........",
-    ".F....F.",
-    "XX.XX.XX",
-    "........",
-    "F.F..F.F",
-    "........",
-    ".F.MM.F.",
-    "........",
-    "F..F...F",
-    "..F..F..",
-    "........"]},
 };
 let mapDef = null;   // the map being played (set by the battle engine)
 const tileInfo = ch => (mapDef?.names?.[ch]) || THEMES[mapDef?.theme || 'meadow'][ch];

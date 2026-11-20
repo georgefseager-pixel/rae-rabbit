@@ -326,3 +326,18 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   linear-gradient(90deg, transparent 6%, #10180f 6% 11%, transparent 11% 27%, #121b10 27% 31%, transparent 31% 68%, #0f170e 68% 74%, transparent 74% 88%, #131c11 88% 92%, transparent 92%),
   linear-gradient(180deg,#26341f,#1a2716 40%,#2a3a24 58%,#0e140c 100%)}
 .sbg[data-bg=legend]{background:radial-gradient(ellipse at 50% 60%, #5a1610, #1a0806 70%)}
+
+.sbg[data-bg=court]{background:
+  radial-gradient(ellipse 45% 30% at 50% 28%, rgba(240,200,90,.28), transparent 70%),
+  linear-gradient(90deg, transparent 9%, #3a4a22 9% 15%, transparent 15% 85%, #3a4a22 85% 91%, transparent 91%),
+  linear-gradient(90deg, transparent 9%, #c9a24a 9% 9.6%, transparent 9.6% 90.4%, #c9a24a 90.4% 91%, transparent 91%) 0 0/100% 55% no-repeat,
+  linear-gradient(180deg, transparent 54%, #5a3270 54% 56%, transparent 56%),
+  linear-gradient(180deg,#1a2614 0%,#2a3c1e 54%,#3e2052 54.5%,#22102e 100%)}
+.sbg[data-bg=ridge]{background:
+  radial-gradient(ellipse 34% 10% at 62% 64%, rgba(255,140,60,.55), transparent 70%),
+  radial-gradient(circle at 20% 12%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+  radial-gradient(circle at 74% 8%, rgba(255,255,255,.7) 0 1px, transparent 2px),
+  radial-gradient(circle at 46% 20%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+  radial-gradient(circle at 88% 26%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+  radial-gradient(ellipse 80% 22% at 30% 60%, #141a10 60%, transparent 61%),
+  linear-gradient(180deg,#0b0f22 0%,#1c2140 50%,#2a2030 60%,#10140c 61%,#080a06 100%)}

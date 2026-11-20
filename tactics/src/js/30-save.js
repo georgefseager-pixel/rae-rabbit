@@ -17,7 +17,7 @@ function recordFor(key){
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
-  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, 2));
+  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, c.startLevel || 1));
   return SAVE;
 }
 // Story renames (Rabbit becomes Rae Rabbit). Speakers in later scenes pick the new name up from the roster.

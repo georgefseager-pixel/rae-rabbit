@@ -38,8 +38,9 @@ which starts with a guide to every field.
 - **Shared flags**: rewards and bonus objectives can set flags, and either campaign's
   enemies, reinforcements or lines (`if: 'flag'`) can react to them.
 
-The Friggliarchy side currently has two story-free placeholder battles, and the gate on
-Raepublic Chapter Two points at them only to show how the link works.
+Chapter One of each side is written and the two lock together at the mines: Rae's
+assault on Rhubarb's Tower (R1-4) waits for Tiggle Taggle's army to reach the ridge
+(F1-3), and Tiggle's recapture of the mines (F1-4) waits for Rae's escape (R1-4).
 
 ## Adding art
 

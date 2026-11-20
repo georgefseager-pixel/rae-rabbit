@@ -334,6 +334,21 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   linear-gradient(180deg,#26341f,#1a2716 40%,#2a3a24 58%,#0e140c 100%)}
 .sbg[data-bg=legend]{background:radial-gradient(ellipse at 50% 60%, #5a1610, #1a0806 70%)}
 
+.sbg[data-bg=court]{background:
+  radial-gradient(ellipse 45% 30% at 50% 28%, rgba(240,200,90,.28), transparent 70%),
+  linear-gradient(90deg, transparent 9%, #3a4a22 9% 15%, transparent 15% 85%, #3a4a22 85% 91%, transparent 91%),
+  linear-gradient(90deg, transparent 9%, #c9a24a 9% 9.6%, transparent 9.6% 90.4%, #c9a24a 90.4% 91%, transparent 91%) 0 0/100% 55% no-repeat,
+  linear-gradient(180deg, transparent 54%, #5a3270 54% 56%, transparent 56%),
+  linear-gradient(180deg,#1a2614 0%,#2a3c1e 54%,#3e2052 54.5%,#22102e 100%)}
+.sbg[data-bg=ridge]{background:
+  radial-gradient(ellipse 34% 10% at 62% 64%, rgba(255,140,60,.55), transparent 70%),
+  radial-gradient(circle at 20% 12%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+  radial-gradient(circle at 74% 8%, rgba(255,255,255,.7) 0 1px, transparent 2px),
+  radial-gradient(circle at 46% 20%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+  radial-gradient(circle at 88% 26%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+  radial-gradient(ellipse 80% 22% at 30% 60%, #141a10 60%, transparent 61%),
+  linear-gradient(180deg,#0b0f22 0%,#1c2140 50%,#2a2030 60%,#10140c 61%,#080a06 100%)}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -493,6 +508,8 @@ const CLASSES = {
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
   // Frogs
+  prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Rapier',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
+  lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
   lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
   bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
   reed:      {name: 'Tower Archer',   w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Reedbow',           base: {mhp:17,atk:10,def:3, spd:5,skl:6,mov:5}, g: {mhp:55,atk:45,def:20,spd:40,skl:50}},
@@ -531,7 +548,13 @@ const LOOKS = {
   workerLop: {sp:'bun', ears:'lop', fur:'#9c9a96', light:'#c4c2be', dark:'#62605c', scarf:'#5a4a3a', gear:'none'},
   workerBig: {sp:'bun', ears:'up',  fur:'#6e4a30', light:'#8e6a4c', dark:'#422c1a', gear:'bandana', band:'#5a4a3a'},
   workerMend:{sp:'bun', ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#7a6a58', gear:'heart'},
+  stayer:    {sp:'bun', ears:'up',  fur:'#8a7a6a', light:'#a89888', dark:'#54483c', scarf:'#7a2a24', gear:'none', oneEar:true},
+  thin:      {sp:'bun', ears:'lop', fur:'#cfc4b4', light:'#e6ddd0', dark:'#8a7e70', gear:'none', small:true},
   // Frogs
+  tiggle:    {sp:'frog', skin:'#7bc043', light:'#a6dc72', dark:'#3d6a1e', belly:'#dcf0a8', gear:'circlet', small:true},
+  biggle:    {sp:'frog', skin:'#467a2e', light:'#679a4a', dark:'#203a12', belly:'#b8cc84', gear:'kettle', big:true},
+  king:      {sp:'frog', skin:'#26262c', light:'#45454f', dark:'#0b0b0e', belly:'#55555f', eye:'#e02424', gear:'crown', big:true},
+  scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
   headsman:  {sp:'frog', skin:'#46603a', light:'#647e52', dark:'#1f2c18', belly:'#a9b68c', gear:'hood', hood:'#151214', big:true},
   guard:     {sp:'frog', skin:'#5e8a3c', light:'#80aa5a', dark:'#2f4a1e', belly:'#bfd38a', gear:'kettle'},
@@ -540,7 +563,6 @@ const LOOKS = {
   duelist:   {sp:'frog', skin:'#66a83e', light:'#8cc862', dark:'#33591d', belly:'#d0e79a', gear:'bandana', band:'#2e5f9a'},
   toadknight:{sp:'frog', skin:'#557a36', light:'#76984f', dark:'#2a3f17', belly:'#b6c681', gear:'kettle', big:true},
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
-  commander: {sp:'frog', skin:'#3d6b2c', light:'#5f8f45', dark:'#1e3a12', belly:'#c9d98e', gear:'circlet'},
 };
 const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -560,8 +582,9 @@ const CHARACTERS = {
   swift:   {name:'Swift Rabbit', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
   patched: {name:'Patched Rabbit', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   willow:  {name:'Willow', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
-  // Friggliarchy (placeholder until the frog story is written)
-  frogcmd: {name:'Frog Commander', faction:'frog', look:'commander', cls:'lily', lv:3, stats:{mhp:23,atk:12,def:6,spd:6,skl:7,mov:5}, lord:true},
+  // Friggliarchy
+  tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
+  biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({
@@ -571,6 +594,10 @@ const SPEAKERS = Object.assign({
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
   executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
+  king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
+  scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
+  stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer'},
+  thin:        {name:'Thin Rabbit', faction:'rae', look:'thin'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Generic recruits. Camp rabbits have no names, so they are known by how they look.
@@ -605,7 +632,10 @@ function bunny(g, cx, cy, s, L){
     g.fillStyle = '#e8a6a6'; ell(g, 0, L.ears === 'up' ? -.04*s : .06*s, .15*s, .6*s); g.fill();
     g.restore();
   };
-  ear(-1); ear(1);
+  ear(-1);
+  if (L.oneEar){   // a torn stump where the right ear was
+    g.fillStyle = L.fur; g.beginPath(); g.ellipse(cx + .45*s, cy - .82*s, .2*s, .22*s, .3, 0, Math.PI*2); g.fill(); stitchStroke(g, L.dark, s);
+  } else ear(1);
   const gr = g.createRadialGradient(cx - .3*s, cy - .45*s, s*.1, cx, cy, s*1.15);
   gr.addColorStop(0, L.light); gr.addColorStop(1, L.fur);
   g.fillStyle = gr; ell(g, cx, cy, s, .92*s); g.fill(); stitchStroke(g, L.dark, s);
@@ -893,7 +923,32 @@ const MAPS = {
     "........",
     "..F..F..",
     "........"]},
-  // Meadow maps kept for the placeholder Friggliarchy battles
+  outerCamp: {theme: 'camp', rows: [
+    "X......X",
+    "..F..F..",
+    ".XX..XX.",
+    "........",
+    "F..MM..F",
+    "........",
+    ".XX..XX.",
+    ".XX..XX.",
+    "........",
+    "..F..F..",
+    "...T....",
+    "X......X"]},
+  ridge: {theme: 'meadow', names: {'M': ['Ridge Rocks', 'Felt boulders on the ridge. Hard going, harder to hit.']}, rows: [
+    "M.F..M.M",
+    "..F...F.",
+    "F..M....",
+    "..MM.F..",
+    "......MM",
+    ".F..F...",
+    "M...MM.F",
+    "..F.....",
+    ".M..F.M.",
+    "...F....",
+    "F..T...F",
+    "M......M"]},
   ford: {theme: 'meadow', rows: [
     "MM.FT.MM",
     "M..F...M",
@@ -907,19 +962,6 @@ const MAPS = {
     ".F..F...",
     "..T....F",
     "F......M"]},
-  wall: {theme: 'meadow', rows: [
-    "M..TT..M",
-    "........",
-    ".F....F.",
-    "XX.XX.XX",
-    "........",
-    "F.F..F.F",
-    "........",
-    ".F.MM.F.",
-    "........",
-    "F..F...F",
-    "..F..F..",
-    "........"]},
 };
 let mapDef = null;   // the map being played (set by the battle engine)
 const tileInfo = ch => (mapDef?.names?.[ch]) || THEMES[mapDef?.theme || 'meadow'][ch];
@@ -1085,6 +1127,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 4 ----------------
         {
           id: 'R1-4', title: 'Rhubarb\'s Tower', map: 'tower', enemyFaction: 'frog',
+          requires: ['F1-3'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
@@ -1096,6 +1139,7 @@ const CAMPAIGNS = {
           ],
           pre: [
             {scene: 'yard', place: 'The Overseer\'s Tower'},
+            {who: 'guard', text: 'Hold the tower! The prince\'s column is on the ridge! Hold until dawn!'},
             {who: 'rhubarb', text: 'Is that what you are now? A name? Rae was a monster. That is all the word has ever meant.'},
             {who: 'rae', text: 'You told us that story every morning of our lives. You made Rae the worst thing a rabbit could be.'},
             {who: 'rae', text: 'And now you\'re scared of her.'},
@@ -1106,51 +1150,180 @@ const CAMPAIGNS = {
           post: [
             {who: 'narr', text: 'The tower comes down. For the first time anyone can remember, the camp gate stands open.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
-            {who: 'rae', text: 'I know.'},
-            {scene: 'woods', place: 'The Edge of the Woods · Dusk'},
-            {who: 'narr', text: 'At the edge of the woods, an old rabbit is waiting, leaning on a longbow.'},
+            {who: 'rae', text: 'Let them come.'},
+            {scene: 'yard', place: 'The Camp Gate · Night'},
+            {who: 'narr', text: 'An old rabbit pushes through the cheering crowd, leaning on a longbow.'},
             {who: 'willow', text: 'So. You\'re the one they\'re calling Rae.'},
             {who: 'rae', text: 'Rae Rabbit. Who are you?'},
-            {who: 'willow', text: 'My name is Willow. I chose it, a long time ago. Out here, rabbits choose their own names.'},
-            {who: 'willow', text: 'There are more of us. Many more, hidden in the woods. We call ourselves the Republic.'},
-            {who: 'willow', text: 'Your camp is free tonight. Tomorrow the frogs will come back with an army. Bring your rabbits into the woods, Rae Rabbit. Join us.'},
-            {who: 'rae', text: '…Everyone pack what you can carry. We march at dark.'},
+            {who: 'willow', text: 'My name is Willow. I chose it, a long time ago. Out in the woods, rabbits choose their own names.'},
+            {who: 'willow', text: 'Listen to me. There are frog torches on the ridge. The king\'s own brother leads them. They\'ll be in this yard by dawn.'},
+            {who: 'rae', text: 'Then we hold the yard. We just won it.'},
+            {who: 'willow', text: 'You won it from twenty guards. That is an army. If you stay, you die here, and the name dies with you. Again.'},
+            {who: 'willow', text: 'There are more of us. Many more, hidden in the woods. We call ourselves the Republic, and we need you alive.'},
+            {who: 'rae', text: 'I\'m not leaving anyone behind for them.'},
+            {who: 'stayer', text: 'You\'re not. A few of us will stay and slow them down. The rest go with you.'},
+            {who: 'rae', text: 'No. I\'m not asking anyone to—'},
+            {who: 'stayer', text: 'You didn\'t ask. Go, Rae Rabbit. Make it count.'},
+            {who: 'rae', thought: true, text: 'Everything in me wants to stay and fight.'},
+            {who: 'rae', text: '…Everyone who can walk, take what you can carry. We go now.'},
+            {scene: 'woods', place: 'The Edge of the Woods · Night'},
+            {who: 'narr', text: 'Behind them, frog drums on the ridge. Ahead, the dark of the woods.'},
+            {who: 'sister', text: 'Will they be all right? The ones who stayed?'},
+            {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
           reward: {res: 500, joins: ['willow']},
         },
       ]},
-      {id: 'RC2', title: 'Chapter Two', name: 'Into the woods', stub: true, requires: ['F1-2'],
-       brief: 'Still to be written. (Placeholder gate: waits on the Friggliarchy\'s placeholder battles, to show how the stories link.)'},
+      {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', stub: true, brief: 'Still to be written.'},
     ],
   },
 
-  // The Friggliarchy story is not written yet. These story-free battles keep the side playable.
   frog: {
-    faction: 'frog', name: 'The Friggliarchy', lord: 'frogcmd',
-    start: ['frogcmd'], startRecruits: ['lily', 'bruiser', 'reed', 'croaker', 'toadknight'], startRes: 0,
-    recruits: [{cls: 'lily', after: null, cost: 250}, {cls: 'reed', after: 'F1-1', cost: 300}],
+    faction: 'frog', name: 'The Friggliarchy', lord: 'tiggle',
+    start: ['tiggle', 'biggle'], startRecruits: ['lily', 'lily', 'bruiser', 'reed', 'croaker'], startLevel: 1, startRes: 0,
+    recruits: [{cls: 'lily', after: null, cost: 250}, {cls: 'reed', after: 'F1-1', cost: 280}, {cls: 'bruiser', after: 'F1-2', cost: 300}],
     chapters: [
-      {id: 'FC1', title: 'Chapter One', name: 'Story to come', stages: [
+      {id: 'FC1', title: 'Chapter One', name: 'The Prince', stages: [
+
+        // ---------------- Stage 1 ----------------
         {
-          id: 'F1-1', title: 'Placeholder Battle I', map: 'ford', enemyFaction: 'rae',
+          id: 'F1-1', title: 'The Mine Road', map: 'ford', enemyFaction: 'rae',
           objective: {type: 'rout'}, maxDeploy: 6,
           deploy: [[4,0],[3,1],[5,1],[2,1],[4,1],[6,1],[2,2],[6,2]],
-          brief: 'A story-free battle so this side can be played while its story is written.',
-          enemies: () => [E('digger',2,1,6), E('hauler',2,6,6), E('pebbler',2,3,7,'guard'), E('digger',2,4,8,'guard'), E('runner',2,5,9), E('hauler',2,2,10,'guard')],
+          brief: 'Runaway rabbits have stopped a supply cart on the road to the mines. Clear the road.',
+          enemies: () => [E('digger',1,1,6), E('hauler',1,6,6), E('pebbler',1,3,7,'guard'), E('digger',1,4,8,'guard'), E('runner',1,5,9), E('hauler',1,2,10,'guard')],
+          pre: [
+            {card: 'Chapter One', sub: 'The Prince'},
+            {scene: 'court', place: 'The Lily Court'},
+            {who: 'narr', text: 'In the Lily Court, the king holds audience.'},
+            {who: 'king', text: 'Little brother. Come here. Stand up straight.'},
+            {who: 'tiggle', text: 'Your Majesty.'},
+            {who: 'king', text: 'There are stories coming out of the mines. Tools going missing. Ropes cut. Rabbits whispering in the dark.'},
+            {who: 'king', text: 'Rabbits whisper. That is what they do. But whispers become shouting, and shouting becomes fire. You know the story.'},
+            {who: 'tiggle', text: 'The story of Rae. Everyone knows it.'},
+            {who: 'king', text: 'Then you know why it must never happen again. Go to the mines. Remind them what order looks like.'},
+            {who: 'tiggle', text: 'Me? On my own?'},
+            {who: 'biggle', text: 'Not on your own. I\'ll be right there to make sure you don\'t trip over your own sword.'},
+            {who: 'king', text: 'Biggle Baggle goes with you. Listen to him. This is your chance to prove you are worth the crown on your head, Tiggle Taggle.'},
+            {who: 'tiggle', thought: true, text: 'Order keeps everyone safe. Frogs and rabbits both. I\'ll show him I understand that.'},
+            {scene: 'woods', place: 'The Mine Road'},
+            {who: 'scout', text: 'Your Highness! Runaway rabbits on the road ahead. They\'ve stopped a supply cart.'},
+            {who: 'biggle', text: 'Runaways. It\'s started already. Well, little brother? Give the order.'},
+            {who: 'tiggle', text: 'Advance. And… try not to hurt them more than we have to.'},
+            {who: 'biggle', text: 'We\'ll hurt them exactly as much as we have to.'},
+          ],
+          post: [
+            {who: 'narr', text: 'When it is over, Tiggle Taggle looks at the rabbits they have caught.'},
+            {who: 'tiggle', text: 'They\'re so thin. Are they always this thin?'},
+            {who: 'biggle', text: 'They\'re hungry because they\'re idle. Don\'t look at them too long. That\'s how it started last time. Someone felt sorry for Rae.'},
+            {who: 'tiggle', text: '…Of course. Order first.'},
+          ],
           reward: {res: 300},
         },
+
+        // ---------------- Stage 2 ----------------
         {
-          id: 'F1-2', title: 'Placeholder Battle II', map: 'wall', enemyFaction: 'rae',
+          id: 'F1-2', title: 'The Outer Camp', map: 'outerCamp', enemyFaction: 'rae',
+          objective: {type: 'rout'}, maxDeploy: 6,
+          deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
+          brief: 'The rabbits of the outer camp have barricaded themselves in. Take the camp back.',
+          enemies: () => [E('digger',2,3,1,'guard'), E('hauler',1,1,3), E('hauler',1,6,3), E('pebbler',2,2,0,'guard'), E('runner',2,5,5), E('patcher',1,4,0,'guard'), E('digger',2,3,4,'guard')],
+          pre: [
+            {scene: 'yard', place: 'The Outer Camp'},
+            {who: 'narr', text: 'The outer camp feeds ore to the great mines. Its rabbits have barricaded the gate.'},
+            {who: 'thin', text: 'We only want water! There\'s been no water for three days!'},
+            {who: 'tiggle', text: 'No water? Biggle, is that true?'},
+            {who: 'biggle', text: 'It\'s a punishment. They earned it. And now they\'re in open rebellion, which is exactly why they earned it.'},
+            {who: 'tiggle', thought: true, text: 'Three days without water…'},
+            {who: 'tiggle', text: 'Open the gate! If you surrender, no one gets hurt!'},
+            {who: 'thin', text: 'Rae\'s coming back! You\'ll see! She\'s coming back!'},
+            {who: 'biggle', text: 'There it is. Do you understand now? Take the camp.'},
+          ],
+          post: [
+            {who: 'tiggle', text: 'Give them water. All of them. Today.'},
+            {who: 'biggle', text: 'Generous. Fine, it costs us nothing. But the ones who shouted that name go in chains.'},
+            {who: 'tiggle', text: '…Agreed.'},
+            {who: 'tiggle', thought: true, text: 'When this is over, I\'ll ask the king to change things. Properly. Once there\'s order.'},
+          ],
+          reward: {res: 350},
+        },
+
+        // ---------------- Stage 3 ----------------
+        {
+          id: 'F1-3', title: 'The Ridge', map: 'ridge', enemyFaction: 'rae',
           objective: {type: 'survive', turns: 5}, maxDeploy: 6,
-          deploy: [[3,0],[4,0],[2,1],[5,1],[3,1],[4,1],[1,1],[6,1]],
-          brief: 'Hold the wall for five turns. Another story-free placeholder.',
-          enemies: () => [E('digger',2,1,8), E('digger',2,6,8), E('runner',2,0,6), E('pebbler',2,5,10)],
-          reinforce: () => [{turn: 2, units: [E('hauler',2,2,11), E('hauler',2,5,11)]}, {turn: 3, units: [E('digger',3,3,11), E('pebbler',2,6,11)]}],
+          deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
+          brief: 'Rebel scouts are climbing the ridge. Hold it for five turns until the main column arrives.',
+          enemies: () => [E('runner',2,2,3), E('runner',2,6,2), E('pebbler',2,4,5), E('digger',2,1,6)],
+          reinforce: () => [
+            {turn: 2, units: [E('hauler',2,3,0), E('digger',2,6,0)]},
+            {turn: 3, units: [E('runner',3,1,0), E('pebbler',2,4,0)]},
+            {turn: 4, units: [E('digger',3,0,1), E('hauler',3,7,1)]},
+          ],
+          pre: [
+            {scene: 'ridge', place: 'The Ridge Above the Mines · Night'},
+            {who: 'narr', text: 'From the ridge they can see the great mine camp. Every bunkhouse is lit. The bell is ringing.'},
+            {who: 'scout', text: 'Your Highness. The camp has risen. The guards are dead or fled. Overseer Rhubarb is trapped in the tower.'},
+            {who: 'scout', text: 'And the rabbits are chanting a name.'},
+            {who: 'tiggle', text: 'What name?'},
+            {who: 'scout', text: '…Rae, Your Highness.'},
+            {who: 'biggle', text: 'So the stories were true. Good. Now it\'s a fight, not a rumour.'},
+            {who: 'scout', text: 'Rebel scouts are coming up the ridge!'},
+            {who: 'biggle', text: 'Hold the ridge until the main column comes up. Then we go down.'},
+          ],
+          post: [
+            {who: 'narr', text: 'The column arrives. Below, the bell has stopped ringing.'},
+            {who: 'tiggle', text: 'Biggle… what if all they wanted was water?'},
+            {who: 'biggle', text: 'Then they should have asked before they killed the guards. We march at dawn, little brother. You lead.'},
+            {who: 'tiggle', text: '…We march at dawn.'},
+          ],
           reward: {res: 400},
         },
+
+        // ---------------- Stage 4 ----------------
+        {
+          id: 'F1-4', title: 'Retaking the Mines', map: 'tower', enemyFaction: 'rae',
+          requires: ['R1-4'], convergence: 'The Mines',
+          objective: {type: 'boss'}, maxDeploy: 6,
+          deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
+          brief: 'The rebels have fled into the woods and left a rearguard in the yard. Break it and retake the mines.',
+          enemies: () => [
+            E('digger',4,4,0,'hold',{boss: true, key: 'stayer', name: 'One-Eared Rabbit', look: 'stayer', bonus: {mhp: 4}}),
+            E('hauler',3,3,0,'guard'), E('pebbler',3,1,1,'guard'), E('pebbler',3,6,1,'guard'), E('patcher',3,4,1,'guard'),
+            E('digger',3,3,3,'guard'), E('hauler',3,4,3,'guard'), E('runner',3,1,5), E('runner',3,6,5),
+          ],
+          pre: [
+            {scene: 'yard', place: 'The Mine Camp · Dawn'},
+            {who: 'narr', text: 'By the time the Friggliarchy comes down from the ridge, the tower has fallen and the gate stands open.'},
+            {who: 'scout', text: 'Most of them are gone, Your Highness. Into the woods. A few stayed behind to hold the yard.'},
+            {who: 'biggle', text: 'A rearguard. Brave of them. Pointless, but brave. Take it.'},
+            {who: 'tiggle', text: 'Where did the rest go?'},
+            {who: 'biggle', text: 'It doesn\'t matter. Win this first.'},
+          ],
+          bossTalk: [
+            {who: 'stayer', text: 'Come on, then, little prince. Every turn you spend on me is a turn she gets further away.'},
+            {who: 'tiggle', text: 'Who? Who is she?'},
+          ],
+          post: [
+            {scene: 'gallows', place: 'The Gallows · Evening'},
+            {who: 'narr', text: 'By nightfall the mines belong to the Friggliarchy again. The rabbits who stayed behind are led to the gallows.'},
+            {who: 'biggle', text: 'Read the sentence, little brother. You took the camp. This is part of taking it.'},
+            {who: 'tiggle', text: 'For rebellion against the crown… you are to be unstitched.'},
+            {who: 'stayer', text: 'Go on, then. It doesn\'t matter any more.'},
+            {who: 'stayer', text: 'Rae Rabbit is reborn. And while you\'re busy with us, she\'s already on her way to end you. All of you.'},
+            {who: 'tiggle', text: 'Rae is a story. A story for frightening rabbits.'},
+            {who: 'stayer', text: 'Not any more.'},
+            {who: 'narr', text: 'The sentence is carried out. Tiggle Taggle does not look away. Afterwards, he cannot stop seeing it.'},
+            {who: 'biggle', text: 'Last words. They all say something like that. Forget it.'},
+            {who: 'tiggle', thought: true, text: 'They weren\'t afraid. At the very end, they weren\'t afraid at all.'},
+            {who: 'tiggle', text: 'If she\'s real, she\'s out there, and she\'s coming. Then I\'ll be the one who stops her.'},
+            {card: 'End of Chapter One', sub: 'The Prince'},
+          ],
+          reward: {res: 500},
+        },
       ]},
-      {id: 'FC2', title: 'Chapter Two', name: 'Story to come', stub: true, brief: 'Still to be written.'},
+      {id: 'FC2', title: 'Chapter Two', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
     ],
   },
 };
@@ -1182,7 +1355,7 @@ function recordFor(key){
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
-  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, 2));
+  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, c.startLevel || 1));
   return SAVE;
 }
 // Story renames (Rabbit becomes Rae Rabbit). Speakers in later scenes pick the new name up from the roster.
@@ -2172,8 +2345,8 @@ function talk(rawLines){
         nm.className = 'tname f-' + sp.faction; nm.textContent = l.as || speakerName(l.who);
         por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, sp.look, 'talk');
         if (sceneMode){
-          // The lead stands on the left; whoever she is talking to stands on the right.
-          const side = l.who === CAMPAIGNS.rae.lord ? 'L' : 'R';
+          // The campaign's lead stands on the left; whoever they are talking to stands on the right.
+          const side = l.who === CAMPAIGNS[SAVE.current].lord ? 'L' : 'R';
           if (onStage[side] !== l.who){
             onStage[side] = l.who; actors[side].innerHTML = actorHTML(l.who, side);
             anim(actors[side], [{opacity: 0, transform: `translateX(${side === 'L' ? -30 : 30}px)`}, {opacity: 1, transform: 'none'}], 300);
