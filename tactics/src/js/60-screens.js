@@ -44,7 +44,7 @@ function nodeHTML(ck, ch, i){
 function renderHub(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
   const lord = st.roster.find(r => r.lord), alive = living(ck);
-  const art = ART[camp.lord]?.portrait || plushPortrait(lord.look);
+  const art = artFor(camp.lord, 'portrait') || plushPortrait(lord.look);
   const avg = Math.round(alive.reduce((a, r) => a + r.lv, 0)/alive.length*10)/10;
   $('#hub').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><h1>RAEPUBLIC</h1><button class="btn" data-go="title" type="button">Title</button></div>
@@ -160,6 +160,7 @@ function togglePick(uid){
 async function playChapter(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
+  applyOutfits(ck, ch.chapter.outfits);
   await talk(ch.pre);
   if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   const res = await runBattle(ck, ch, recs);

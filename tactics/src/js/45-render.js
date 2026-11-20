@@ -185,7 +185,7 @@ function tokenFor(u, variant){
   g.fillStyle = F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, F.stitch, T*.5);
   const icon = artImage(u.key, 'token');
-  if (ART[u.key]?.token && !icon) return c;   // art still decoding: draw nothing yet and don't cache
+  if (artFor(u.key, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
   if (icon){
     // Real token art: fit it to the tile, sitting on the felt coaster.
     const w = T*1.16, h = w*icon.height/icon.width;

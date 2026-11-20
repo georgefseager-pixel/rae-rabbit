@@ -7,7 +7,7 @@ const linesFor = lines => (lines || []).filter(l => (!l.if || SAVE.flags[l.if]) 
 function actorHTML(who, side){
   const sp = SPEAKERS[who];
   if (!sp) return '';
-  const art = ART[who]?.portrait;
+  const art = artFor(who, 'portrait');
   if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
   return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
 }

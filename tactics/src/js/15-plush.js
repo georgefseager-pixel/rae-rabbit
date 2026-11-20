@@ -219,7 +219,7 @@ function glyph(g, w, cx, cy, r, col){
 
 // Portrait markup for panels, cards and dialogue. Uses real art when art/<key>-portrait.png exists.
 function portraitInner(key, look, where = 'panel'){
-  const art = ART[key]?.portrait, crop = CHARACTERS[key]?.crop?.[where];
+  const ak = artKey(key, 'portrait'), art = ART[ak]?.portrait, crop = ART_CROP[ak]?.[where];
   if (art) return `<div class="porart" style="background-image:url(${art});background-size:${crop ? crop[0] : '200% auto'};background-position:${crop ? crop[1] : '50% 0%'}"></div>`;
   return `<img alt="" src="${plushPortrait(look)}">`;
 }

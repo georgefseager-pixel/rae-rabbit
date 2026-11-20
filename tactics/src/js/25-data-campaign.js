@@ -17,6 +17,7 @@
 //   reward        {res, joins:[characterKeys], flags:[...]}
 //   bonus         {type:'noLosses', text, flag}  optional objective that sets a shared world flag
 // A chapter with stub:true is a placeholder for story not written yet.
+// A chapter can set outfits: {characterKey: 'outfit'}, applied when any of its stages starts (see art/ naming in README).
 //
 // Scene lines
 //   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
@@ -34,7 +35,7 @@ const CAMPAIGNS = {
     faction: 'rae', name: 'The Raepublic', lord: 'rae',
     start: ['rae', 'tall', 'burly', 'old'], startRes: 0,
     chapters: [
-      {id: 'RC1', title: 'Chapter One', name: 'Rabbit', stages: [
+      {id: 'RC1', title: 'Chapter One', name: 'Rabbit', outfits: {rae: 'camp'}, stages: [
 
         // ---------------- Stage 1 ----------------
         {
@@ -196,6 +197,8 @@ const CAMPAIGNS = {
           reward: {res: 500, joins: ['willow']},
         },
       ]},
+      // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
+      // Give the chapter outfits: {rae: ''} so she switches back to the uniform art (art/rae-portrait.png, rae-battle.png).
       {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', stub: true, brief: 'Still to be written.'},
     ],
   },

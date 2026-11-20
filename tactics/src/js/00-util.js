@@ -32,12 +32,21 @@ for (const [key, set] of Object.entries(window.GAME_ART || {})){
   for (const [kind, d] of Object.entries(set)) ART[key][kind] = dataToURL(d);
 }
 
+// Outfits: a character can have alternate art, named art/<key><outfit>-<kind>.png (e.g. raecamp-portrait.png).
+// The outfit a character is wearing is kept on their army record and set by chapters (see 25-data-campaign.js).
+function outfitOf(key){
+  for (const c of Object.values((typeof SAVE !== 'undefined' && SAVE?.camps) || {})){ const r = c.roster.find(r => r.key === key); if (r) return r.outfit ?? CHARACTERS[key]?.outfit ?? ''; }
+  return CHARACTERS[key]?.outfit || '';
+}
+function artKey(key, kind){ const o = outfitOf(key); return o && ART[key + o]?.[kind] ? key + o : key; }
+const artFor = (key, kind) => ART[artKey(key, kind)]?.[kind];
+
 // Decoded art for drawing on the map canvas (art/<key>-token.png). Returns null until loaded.
 const artImages = {};
 function artImage(key, kind){
-  const url = ART[key]?.[kind];
+  const url = artFor(key, kind);
   if (!url) return null;
-  const id = key + '|' + kind;
+  const id = url;
   if (!artImages[id]){
     const img = new Image();
     img.onload = () => { img.ready = true; if (typeof tokenCache !== 'undefined') tokenCache.clear(); };

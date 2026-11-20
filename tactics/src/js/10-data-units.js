@@ -97,8 +97,8 @@ const CLASS_LOOK = {
 // crop: how front-portrait art is framed in the small panel and in dialogue.
 const CHARACTERS = {
   // Raepublic
-  rae:     {name:'Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true,
-            crop:{panel:['225% auto','33% 2%'], talk:['190% auto','33% 2%']}, retort:'Come and find out.'},
+  rae:     {name:'Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true, outfit:'camp',
+            retort:'Come and find out.'},
   tall:    {name:'Tall Rabbit', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
   burly:   {name:'Burly Rabbit', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
   old:     {name:'Old Rabbit', faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
@@ -129,6 +129,12 @@ const SPEAKERS = Object.assign({
   stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer'},
   thin:        {name:'Thin Rabbit', faction:'rae', look:'thin'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
+
+// How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
+const ART_CROP = {
+  rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
+  raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
+};
 
 // Generic recruits. Camp rabbits have no names, so they are known by how they look.
 const RECRUIT_NAMES = {

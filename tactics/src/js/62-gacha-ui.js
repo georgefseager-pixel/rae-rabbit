@@ -4,7 +4,7 @@ const stars = n => '★'.repeat(n || 1);
 
 function bannerArt(ck, b){
   const keys = b.featured || GACHA_ARMY[ck].rares;
-  return keys.map((k, i) => `<div class="bfig${b.featured ? ' big' : ''}" style="--i:${i}">${ART[k]?.portrait ? `<img alt="" src="${ART[k].portrait}">` : `<img alt="" src="${plushPortrait(CHARACTERS[k].look || k)}">`}</div>`).join('');
+  return keys.map((k, i) => `<div class="bfig${b.featured ? ' big' : ''}" style="--i:${i}">${artFor(k, 'portrait') ? `<img alt="" src="${artFor(k, 'portrait')}">` : `<img alt="" src="${plushPortrait(CHARACTERS[k].look || k)}">`}</div>`).join('');
 }
 function recruitTabHTML(ck){
   const army = GACHA_ARMY[ck], g = gachaState(ck), st = SAVE.camps[ck], F = FACTIONS[CAMPAIGNS[ck].faction];
@@ -46,7 +46,7 @@ function recruitTabHTML(ck){
 
 // ---------- Pull reveal ----------
 function cardHTML(r, i){
-  const rec = r.rec, look = rec.look, art = ART[rec.key]?.portrait;
+  const rec = r.rec, look = rec.look, art = artFor(rec.key, 'portrait');
   const tag = r.kind === 'new' ? 'New' : r.kind === 'bond' ? `Bond ${rec.bond}` : `+${r.refund}`;
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
@@ -61,7 +61,7 @@ function cardHTML(r, i){
     </div></button>`;
 }
 function spotlight(r){
-  const rec = r.rec, art = ART[rec.key]?.portrait;
+  const rec = r.rec, art = artFor(rec.key, 'portrait');
   const sp = $('#gspot');
   sp.innerHTML = `<div class="spin"><div class="sray"></div>
       <div class="sart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>

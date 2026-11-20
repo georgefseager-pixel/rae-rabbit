@@ -150,7 +150,7 @@ let duelSides = {};
 const sideOf = u => duelSides[u.id] || (u.team === 'p' ? 'L' : 'R');
 function sprite(u, side){
   // Battle poses face right; flip them when the unit stands on the right as the defender.
-  const art = ART[u.key]?.battle;
+  const art = artFor(u.key, 'battle');
   if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
   return `<img alt="" class="plush" src="${plushPortrait(u.look)}">`;
 }

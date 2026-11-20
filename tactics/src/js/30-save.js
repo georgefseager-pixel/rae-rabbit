@@ -12,7 +12,11 @@ function scaledStats(cls, lv, bonus){
 function recordFor(key){
   const c = CHARACTERS[key];
   return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},
-          wtier: 0, wname: c.wname || CLASSES[c.cls].wname, lord: !!c.lord, dead: false};
+          wtier: 0, wname: c.wname || CLASSES[c.cls].wname, lord: !!c.lord, dead: false, outfit: c.outfit || ''};
+}
+// A chapter can dress its characters: {rae: 'camp'} uses art/raecamp-*.png, {rae: ''} goes back to the default art.
+function applyOutfits(ck, outfits){
+  for (const [key, o] of Object.entries(outfits || {})) for (const r of SAVE.camps[ck].roster) if (r.key === key) r.outfit = o;
 }
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
