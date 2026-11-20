@@ -1,0 +1,795 @@
+<title>Emberfall Tactics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: portrait stack. Status bar on top, the battlefield fills the middle, the command panel sits under the thumb. */
+:root{
+  --bg:#12161d; --panel:#1c222c; --panel2:#283141; --line:rgba(255,255,255,.09);
+  --ink:#ece6d6; --muted:#98a2b3; --gold:#e3b54c; --blue:#4d82e6; --red:#d6553f; --green:#62c27f;
+  --display:'Pixelify Sans', ui-monospace, Menlo, monospace;
+  --body:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);overflow:hidden;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+#app{height:100%;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;
+  padding-block:8px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+#top{display:flex;align-items:center;gap:8px}
+#turn{font-family:var(--display);font-size:20px;letter-spacing:.02em;white-space:nowrap}
+#phase{font-family:var(--display);font-size:13px;padding:3px 9px;border-radius:99px;background:var(--blue);color:#fff;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+#phase.e{background:var(--red)}
+#top .sp{flex:1}
+.btn{font-family:var(--display);font-size:16px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 14px;cursor:pointer;min-height:42px}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn:disabled{opacity:.4}
+.btn.primary{background:var(--gold);color:#22180a;border-color:transparent;font-weight:700}
+.btn.on{background:#5a3220;border-color:#e0743c;color:#ffd2b8}
+#board{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+#cv{display:block;border-radius:6px;touch-action:none;box-shadow:0 0 0 1px var(--line),0 10px 30px rgba(0,0,0,.45)}
+#panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:150px;box-sizing:border-box;
+  display:flex;flex-direction:column;gap:8px}
+.hint{color:var(--muted);font-size:14px;line-height:1.45}
+.hint b{color:var(--ink)}
+.uhead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.uhead .nm{font-family:var(--display);font-size:20px}
+.uhead .cl{color:var(--muted);font-size:13px}
+.uhead .tr{margin-left:auto;font-size:12px;color:var(--muted);background:var(--panel2);padding:2px 8px;border-radius:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--blue);align-self:center}
+.dot.e{background:var(--red)}
+.hprow{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:15px;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:8px;background:#0c0f14;border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+.stats div{background:var(--panel2);border-radius:8px;padding:4px 0}
+.stats small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stats span{font-family:var(--display);font-size:17px;font-variant-numeric:tabular-nums}
+.meta{font-size:12px;color:var(--muted)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.acts .btn{flex:1;min-width:70px}
+.fc{display:grid;grid-template-columns:1fr auto 1fr;gap:3px 10px;align-items:center;text-align:center;font-family:var(--display);font-variant-numeric:tabular-nums}
+.fc .h{font-size:16px}
+.fc .l{font-family:var(--body);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.fc .v{font-size:19px}
+.fc .pc{color:#9cc0ff}.fc .ec{color:#ff9e8c}
+.adv{color:var(--green)}.dis{color:var(--red)}
+.ov{position:fixed;inset:0;display:flex;align-items:safe center;justify-content:center;overflow-y:auto;background:rgba(8,10,14,.72);z-index:5;padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));box-sizing:border-box}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:340px;width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px}
+.card h1{font-family:var(--display);font-size:32px;margin:0;line-height:1;color:var(--gold);text-wrap:balance}
+.card h2{font-family:var(--display);font-size:18px;margin:0;font-weight:400;color:var(--muted)}
+.card p,.card li{font-size:14px;line-height:1.5;color:#cfd5df;margin:0}
+.card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.lv{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
+.lv div{background:var(--panel2);border-radius:8px;padding:6px 0;font-family:var(--display)}
+.lv small{display:block;font-family:var(--body);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.lv .up{color:var(--gold)}
+@media (prefers-reduced-motion: reduce){ #cv{transition:none} }
+</style>
+
+<div id="app">
+  <div id="top">
+    <span id="turn">Turn 1</span><span id="phase">Player</span>
+    <span class="sp"></span>
+    <button class="btn" id="dangerBtn" type="button">Danger</button>
+    <button class="btn primary" id="endBtn" type="button">End Turn</button>
+  </div>
+  <div id="board"><canvas id="cv"></canvas>
+    <div class="ov" id="title">
+      <div class="card">
+        <h1>Emberfall Tactics</h1>
+        <h2>Chapter 1 · The Wendmere Crossing</h2>
+        <p>Bandits hold the river. Defeat their chief, Varn, who waits in the northern fort. If Aren falls, the battle is lost.</p>
+        <ul>
+          <li>Tap a <b>blue</b> unit, then a blue tile to move. Red tiles show reach.</li>
+          <li>Swords beat axes, axes beat lances, lances beat swords.</li>
+          <li>Forests, mountains and forts give cover. Forts heal.</li>
+          <li>Tap an enemy to see its range. <b>Danger</b> shows every enemy's reach.</li>
+          <li>Fallen allies do not come back.</li>
+        </ul>
+        <button class="btn primary" id="startBtn" type="button">Begin Battle</button>
+      </div>
+    </div>
+    <div class="ov" id="lvl" hidden><div class="card" id="lvlCard"></div></div>
+    <div class="ov" id="over" hidden><div class="card" id="overCard"></div></div>
+  </div>
+  <div id="panel"><div class="hint">Loading…</div></div>
+</div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const cvs = $('#cv'), ctx = cvs.getContext('2d'), boardEl = $('#board'), panel = $('#panel');
+
+// ---------- Map ----------
+const COLS = 8, ROWS = 12;
+const MAP = [
+  "MM.FT.MM",
+  "M..F...M",
+  "F...FF..",
+  "..F....F",
+  "WWBWWWBW",
+  "F......F",
+  ".FF..M..",
+  "...F.MF.",
+  "M......F",
+  ".F..F...",
+  "..T....F",
+  "F......M",
+];
+const TER = {
+  '.': {n:'Plain', def:0, avo:0, cost:1},
+  'F': {n:'Forest', def:1, avo:20, cost:2},
+  'M': {n:'Mountain', def:2, avo:30, cost:3},
+  'W': {n:'River', def:0, avo:0, cost:99},
+  'B': {n:'Bridge', def:0, avo:0, cost:1},
+  'T': {n:'Fort', def:2, avo:20, cost:1, heal:true},
+};
+const ter = (x,y) => TER[MAP[y][x]];
+
+const CLASSES = {
+  lord:    {name:'Lord',     w:'sword', rng:[1,1], mt:'foot',    g:{mhp:70,atk:45,def:30,spd:50,skl:45}},
+  knight:  {name:'Knight',   w:'lance', rng:[1,1], mt:'armor',   g:{mhp:80,atk:45,def:55,spd:20,skl:35}},
+  cav:     {name:'Cavalier', w:'sword', rng:[1,1], mt:'mounted', g:{mhp:70,atk:45,def:35,spd:45,skl:40}},
+  archer:  {name:'Archer',   w:'bow',   rng:[2,2], mt:'foot',    g:{mhp:60,atk:45,def:25,spd:45,skl:55}},
+  cleric:  {name:'Cleric',   w:'staff', rng:[1,1], mt:'foot',    g:{mhp:50,atk:45,def:20,spd:50,skl:40}},
+  fighter: {name:'Fighter',  w:'axe',   rng:[1,1], mt:'foot',    g:{mhp:85,atk:55,def:25,spd:35,skl:35}},
+  brigand: {name:'Brigand',  w:'axe',   rng:[1,1], mt:'brigand'},
+  soldier: {name:'Soldier',  w:'lance', rng:[1,1], mt:'foot'},
+  merc:    {name:'Mercenary',w:'sword', rng:[1,1], mt:'foot'},
+  earcher: {name:'Archer',   w:'bow',   rng:[2,2], mt:'foot'},
+  chief:   {name:'Bandit Chief', w:'axe', rng:[1,1], mt:'brigand'},
+};
+const WNAME = {sword:'Iron Sword', lance:'Iron Lance', axe:'Iron Axe', bow:'Iron Bow', staff:'Heal Staff'};
+const BEATS = {sword:'axe', axe:'lance', lance:'sword'};
+const triangle = (a,b) => BEATS[a]===b ? 1 : BEATS[b]===a ? -1 : 0;
+
+function moveCost(u, x, y){
+  const ch = MAP[y][x], c = TER[ch].cost;
+  if (c >= 99) return 99;
+  if (u.mt === 'mounted'){ if (ch==='F') return 3; if (ch==='M') return 99; }
+  if (u.mt === 'armor' && ch==='M') return 99;
+  if (u.mt === 'brigand' && ch==='M') return 2;
+  return c;
+}
+
+// ---------- State ----------
+let units = [], turn = 1, phase = 'p', mode = 'title', busy = false;
+let sel = null, orig = null, reachMap = null, moveKeys = new Set(), atkKeys = new Set(), healKeys = new Set();
+let targets = [], tmode = null, fc = null, inspect = null, showDanger = false, dangerKeys = new Set(), cursor = null;
+let nextId = 1;
+
+const K = (x,y) => y*COLS + x, KX = k => k % COLS, KY = k => Math.floor(k / COLS);
+const man = (a,b) => Math.abs(a.x-b.x) + Math.abs(a.y-b.y);
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const alive = () => units.filter(u => !u.dead);
+const team = t => alive().filter(u => u.team === t);
+const unitAt = (x,y) => units.find(u => !u.dead && u.x===x && u.y===y);
+
+function mk(teamId, name, cls, x, y, lv, s, extra={}){
+  const c = CLASSES[cls];
+  return Object.assign({id: nextId++, team: teamId, name, cls, x, y, lv, exp: 0,
+    hp: s.mhp, mhp: s.mhp, atk: s.atk, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
+    w: c.w, rng: c.rng, mt: c.mt, ai: 'charge', moved: false, dead: false,
+    px: x, py: y, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp}, extra);
+}
+
+function newBattle(){
+  nextId = 1;
+  units = [
+    mk('p','Aren','lord',   3,11,1,{mhp:20,atk:11,def:5, spd:8,skl:7,mov:5},{lord:true}),
+    mk('p','Bram','knight', 4,10,1,{mhp:24,atk:12,def:10,spd:2,skl:5,mov:4}),
+    mk('p','Cass','cav',    4,11,1,{mhp:21,atk:11,def:6, spd:7,skl:6,mov:7}),
+    mk('p','Wren','archer', 2,11,1,{mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}),
+    mk('p','Ivy','cleric',  3,10,1,{mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}),
+    mk('p','Garr','fighter',5,10,1,{mhp:26,atk:13,def:4, spd:5,skl:4,mov:5}),
+
+    mk('e','Brigand','brigand',1,6,1,{mhp:20,atk:11,def:3,spd:4,skl:3,mov:5}),
+    mk('e','Brigand','brigand',6,7,1,{mhp:20,atk:11,def:3,spd:4,skl:3,mov:5}),
+    mk('e','Mercenary','merc', 4,6,2,{mhp:20,atk:11,def:4,spd:8,skl:7,mov:5},{ai:'guard'}),
+    mk('e','Archer','earcher', 6,5,1,{mhp:17,atk:10,def:3,spd:5,skl:6,mov:5},{ai:'guard'}),
+    mk('e','Soldier','soldier',2,3,1,{mhp:19,atk:10,def:5,spd:4,skl:4,mov:5},{ai:'guard'}),
+    mk('e','Soldier','soldier',6,3,2,{mhp:20,atk:11,def:5,spd:4,skl:5,mov:5},{ai:'guard'}),
+    mk('e','Brigand','brigand',3,2,2,{mhp:22,atk:12,def:3,spd:5,skl:4,mov:5},{ai:'guard'}),
+    mk('e','Archer','earcher', 5,1,2,{mhp:18,atk:11,def:3,spd:5,skl:7,mov:5},{ai:'guard'}),
+    mk('e','Varn','chief',     4,0,5,{mhp:28,atk:14,def:5,spd:5,skl:6,mov:4},{ai:'hold',boss:true}),
+  ];
+  turn = 1; phase = 'p'; clearSel(); inspect = null; showDanger = false; updateDanger();
+}
+
+// ---------- Movement ----------
+function reach(u){
+  const map = new Map([[K(u.x,u.y), {d:0, prev:-1}]]);
+  const open = [K(u.x,u.y)];
+  while (open.length){
+    open.sort((a,b) => map.get(a).d - map.get(b).d);
+    const cur = open.shift(), cd = map.get(cur).d, cx = KX(cur), cy = KY(cur);
+    for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx = cx+dx, ny = cy+dy;
+      if (nx<0||ny<0||nx>=COLS||ny>=ROWS) continue;
+      const c = moveCost(u,nx,ny); if (c>=99) continue;
+      const o = unitAt(nx,ny); if (o && o.team !== u.team) continue;
+      const nd = cd + c; if (nd > u.mov) continue;
+      const nk = K(nx,ny), prev = map.get(nk);
+      if (!prev || nd < prev.d){ map.set(nk, {d:nd, prev:cur}); open.push(nk); }
+    }
+  }
+  return map;
+}
+function destinations(u, map){
+  return [...map.keys()].filter(k => { const o = unitAt(KX(k),KY(k)); return !o || o === u; });
+}
+function rangeTiles(fromKeys, rng){
+  const out = new Set();
+  for (const k of fromKeys){
+    const x = KX(k), y = KY(k);
+    for (let dy=-rng[1]; dy<=rng[1]; dy++) for (let dx=-rng[1]; dx<=rng[1]; dx++){
+      const d = Math.abs(dx)+Math.abs(dy), nx = x+dx, ny = y+dy;
+      if (d<rng[0]||d>rng[1]||nx<0||ny<0||nx>=COLS||ny>=ROWS) continue;
+      out.add(K(nx,ny));
+    }
+  }
+  return out;
+}
+function pathTo(map, k){ const p = []; while (k !== -1){ p.unshift(k); k = map.get(k).prev; } return p; }
+function threat(u){
+  if (u.w === 'staff') return new Set();
+  const dests = u.ai === 'hold' ? [K(u.x,u.y)] : destinations(u, reach(u));
+  return rangeTiles(dests, u.rng);
+}
+function updateDanger(){
+  dangerKeys = new Set();
+  if (showDanger) for (const e of team('e')) for (const k of threat(e)) dangerKeys.add(k);
+}
+
+// ---------- Combat math ----------
+function calc(a, d, ap, dp){
+  if (a.w === 'staff') return {can:false, dmg:0, hit:0, crit:0, dbl:false, tri:0};
+  const t = ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);
+  return {
+    can: dist >= a.rng[0] && dist <= a.rng[1],
+    dmg: Math.max(0, a.atk + tri - (d.def + t.def)),
+    hit: clamp(75 + a.skl*2 + tri*15 - (d.spd*2 + t.avo), 0, 100),
+    crit: clamp(Math.floor(a.skl/2) - Math.floor(d.skl/4), 0, 100),
+    dbl: a.spd - d.spd >= 4, tri,
+  };
+}
+const healAmt = u => 8 + Math.floor(u.atk/2);
+
+// ---------- Animation ----------
+let tweens = [], popups = [], shots = [], banner = null, shake = 0;
+const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+const tween = (dur, fn) => new Promise(res => tweens.push({t0: performance.now(), dur, fn, res}));
+const wait = ms => tween(ms, () => {});
+function popup(u, text, color){ popups.push({x:u.x+.5, y:u.y+.3, text, color, t0: performance.now(), dur: 950}); }
+
+async function moveAlong(u, path){
+  for (let i=1; i<path.length; i++){
+    const fx = KX(path[i-1]), fy = KY(path[i-1]), tx = KX(path[i]), ty = KY(path[i]);
+    await tween(75, t => { u.px = fx + (tx-fx)*t; u.py = fy + (ty-fy)*t; });
+  }
+  const last = path[path.length-1];
+  u.x = u.px = KX(last); u.y = u.py = KY(last);
+}
+function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
+
+async function strike(a, d, f){
+  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx,dy), ranged = man(a,d) > 1;
+  const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
+  await tween(120, t => { a.ox = lx*t; a.oy = ly*t; });
+  if (ranged){
+    const s = {x0:a.x+.5, y0:a.y+.5, x1:d.x+.5, y1:d.y+.5, t:0}; shots.push(s);
+    await tween(170, t => { s.t = t; }); shots.splice(shots.indexOf(s), 1);
+  }
+  const roll = (Math.random()*100 + Math.random()*100) / 2;
+  if (roll < f.hit){
+    const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
+    const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
+    popup(d, crit ? `Crit! ${dmg}` : dmg === 0 ? 'No damage' : String(dmg), crit ? '#ffd166' : '#ffffff');
+    if (crit) shake = 1;
+    tween(260, t => { d.flash = 1 - t; d.shp = from + (d.hp - from)*t; });
+  } else popup(d, 'Miss', '#9fb3c8');
+  await tween(140, t => { a.ox = lx*(1-t); a.oy = ly*(1-t); });
+  await wait(220);
+  if (d.hp <= 0){ await tween(380, t => { d.alpha = 1 - t; }); d.dead = true; }
+}
+
+async function doCombat(a, d){
+  const A = calc(a, d, a, d), D = calc(d, a, d, a);
+  const seq = [[a,d,A]];
+  if (D.can) seq.push([d,a,D]);
+  if (A.dbl) seq.push([a,d,A]); else if (D.can && D.dbl) seq.push([d,a,D]);
+  const hp0 = {a: a.hp, d: d.hp};
+  for (const [x,y,f] of seq){ if (a.dead || d.dead) break; await strike(x,y,f); }
+  const p = a.team==='p' ? a : d, e = p === a ? d : a;
+  if (!p.dead){
+    const dealt = (p===a ? hp0.d - d.hp : hp0.a - a.hp) > 0;
+    let xp = e.dead ? Math.max(10, 30 + (e.lv - p.lv)*3 + (e.boss ? 40 : 0)) : dealt ? Math.max(1, 10 + (e.lv - p.lv)) : 1;
+    await giveExp(p, xp);
+  }
+}
+async function doHeal(h, t){
+  const amt = Math.min(healAmt(h), t.mhp - t.hp), from = t.hp;
+  t.hp += amt; popup(t, `+${amt}`, '#7ff0a2');
+  await tween(380, k => { t.shp = from + amt*k; t.flash = (1-k)*.6; });
+  await wait(200);
+  await giveExp(h, 12);
+}
+async function giveExp(u, xp){
+  popup(u, `+${xp} EXP`, '#e3b54c');
+  u.exp += xp;
+  await wait(450);
+  while (u.exp >= 100){ u.exp -= 100; await levelUp(u); }
+}
+async function levelUp(u){
+  const g = CLASSES[u.cls].g, keys = ['mhp','atk','def','spd','skl'], ups = {};
+  for (const s of keys) ups[s] = Math.random()*100 < g[s] ? 1 : 0;
+  if (!keys.some(s => ups[s])) ups[keys[Math.floor(Math.random()*keys.length)]] = 1;
+  u.lv++; for (const s of keys) u[s] += ups[s];
+  if (ups.mhp){ u.hp += 1; u.shp = u.hp; }
+  const label = {mhp:'HP', atk:u.w==='staff'?'Mag':'Atk', def:'Def', spd:'Spd', skl:'Skl'};
+  $('#lvlCard').innerHTML = `<h1>Level Up</h1><h2>${u.name} · ${CLASSES[u.cls].name} · Lv ${u.lv}</h2>
+    <div class="lv">${keys.map(s => `<div class="${ups[s]?'up':''}"><small>${label[s]}</small>${u[s]}${ups[s]?' ▲':''}</div>`).join('')}</div>
+    <p class="meta">Tap to continue</p>`;
+  $('#lvl').hidden = false;
+  await new Promise(res => {
+    const done = () => { $('#lvl').hidden = true; $('#lvl').removeEventListener('click', done); clearTimeout(tm); res(); };
+    const tm = setTimeout(done, 2600);
+    setTimeout(() => $('#lvl').addEventListener('click', done), 250);
+  });
+}
+
+// ---------- Panel ----------
+const W_ICON = {sword:'Sword', lance:'Lance', axe:'Axe', bow:'Bow', staff:'Staff'};
+function unitHTML(u){
+  const t = ter(u.x,u.y), pct = u.hp/u.mhp*100;
+  const col = pct > 50 ? 'var(--green)' : pct > 25 ? 'var(--gold)' : 'var(--red)';
+  const atkLabel = u.w==='staff' ? 'Mag' : 'Atk';
+  return `<div class="uhead"><span class="dot ${u.team}"></span><span class="nm">${u.name}</span>
+      <span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team==='p'?` · EXP ${u.exp}`:''}</span>
+      <span class="tr">${t.n}${t.def||t.avo?` +${t.def} Def +${t.avo} Avo`:''}</span></div>
+    <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
+    <div class="stats">${[[atkLabel,u.atk],['Def',u.def],['Spd',u.spd],['Skl',u.skl],['Mov',u.mov]].map(([l,v])=>`<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>
+    <div class="meta">${WNAME[u.w]} · Range ${u.rng[0]===u.rng[1]?u.rng[0]:u.rng.join('–')}${u.w==='staff'?` · Heals ${healAmt(u)} to an adjacent ally`:''}${u.boss?' · Holds the fort':''}${u.ai==='guard'&&!u.triggered?' · Waits until you come close':''}</div>`;
+}
+function setPanel(html){ panel.innerHTML = html; }
+function panelIdle(){
+  if (phase !== 'p'){ setPanel(`<div class="hint">Enemy phase…</div>`); return; }
+  const left = team('p').filter(u => !u.moved).length;
+  setPanel(`<div class="hint"><b>${left} unit${left===1?'':'s'} ready.</b> Tap a blue unit to move it. Tap an enemy to see where it can reach. Defeat <b>Varn</b> in the northern fort to win.</div>`);
+}
+function panelSelected(u){
+  setPanel(unitHTML(u) + `<div class="hint">Tap a blue tile to move, or tap ${u.name} again to act from here.</div>`);
+}
+function panelActions(u){
+  const atk = u.w !== 'staff' && enemiesInRange(u).length;
+  const heal = u.w === 'staff' && healTargets(u).length;
+  setPanel(unitHTML(u) + `<div class="acts">
+    ${atk ? '<button class="btn primary" data-act="attack" type="button">Attack</button>' : ''}
+    ${heal ? '<button class="btn primary" data-act="heal" type="button">Heal</button>' : ''}
+    <button class="btn" data-act="wait" type="button">Wait</button>
+    <button class="btn" data-act="cancel" type="button">Undo</button></div>`);
+}
+function panelForecast(a, d){
+  const A = calc(a,d,a,d), D = calc(d,a,d,a);
+  const tri = A.tri > 0 ? '<span class="adv">▲</span>' : A.tri < 0 ? '<span class="dis">▼</span>' : '';
+  const tri2 = D.tri > 0 ? '<span class="adv">▲</span>' : D.tri < 0 ? '<span class="dis">▼</span>' : '';
+  const row = (l, a1, d1) => `<div class="v pc">${a1}</div><div class="l">${l}</div><div class="v ec">${d1}</div>`;
+  setPanel(`<div class="fc">
+      <div class="h pc">${a.name} ${tri}</div><div></div><div class="h ec">${d.name} ${tri2}</div>
+      ${row('HP', `${a.hp}/${a.mhp}`, `${d.hp}/${d.mhp}`)}
+      ${row('Dmg', A.dmg + (A.dbl?' ×2':''), D.can ? D.dmg + (D.dbl?' ×2':'') : '–')}
+      ${row('Hit', A.hit, D.can ? D.hit : '–')}
+      ${row('Crit', A.crit, D.can ? D.crit : '–')}
+    </div>
+    <div class="acts"><button class="btn primary" data-act="confirm" type="button">Attack</button>
+    <button class="btn" data-act="back" type="button">Back</button></div>`);
+}
+function panelHeal(h, t){
+  const amt = Math.min(healAmt(h), t.mhp - t.hp);
+  setPanel(unitHTML(t) + `<div class="hint">Heal <b>${t.name}</b> for ${amt} HP (${t.hp} → ${t.hp+amt}).</div>
+    <div class="acts"><button class="btn primary" data-act="confirm" type="button">Heal</button>
+    <button class="btn" data-act="back" type="button">Back</button></div>`);
+}
+function refreshTop(){
+  $('#turn').textContent = `Turn ${turn}`;
+  $('#phase').textContent = phase === 'p' ? 'Player' : 'Enemy';
+  $('#phase').className = phase === 'p' ? '' : 'e';
+  $('#endBtn').disabled = phase !== 'p' || busy || !(mode === 'idle' || mode === 'selected');
+  $('#dangerBtn').classList.toggle('on', showDanger);
+}
+
+// ---------- Player flow ----------
+const enemiesInRange = u => team(u.team==='p'?'e':'p').filter(o => { const d = man(u,o); return d>=u.rng[0] && d<=u.rng[1]; });
+const healTargets = u => team(u.team).filter(o => o !== u && man(u,o) === 1 && o.hp < o.mhp);
+
+function clearSel(){ sel = null; orig = null; reachMap = null; moveKeys = new Set(); atkKeys = new Set(); healKeys = new Set(); targets = []; fc = null; tmode = null; }
+
+function select(u){
+  clearSel(); inspect = null;
+  sel = u; orig = {x:u.x, y:u.y}; reachMap = reach(u);
+  moveKeys = new Set(destinations(u, reachMap));
+  const r = rangeTiles(moveKeys, u.rng);
+  for (const k of r) if (!moveKeys.has(k)) (u.w === 'staff' ? healKeys : atkKeys).add(k);
+  mode = 'selected'; panelSelected(u); refreshTop();
+}
+function openActions(){
+  mode = 'action'; moveKeys = new Set(); atkKeys = new Set(); healKeys = new Set(); targets = []; fc = null;
+  const r = rangeTiles([K(sel.x,sel.y)], sel.rng);
+  for (const k of r) (sel.w === 'staff' ? healKeys : atkKeys).add(k);
+  panelActions(sel); refreshTop();
+}
+function startTargeting(kind){
+  mode = 'target'; tmode = kind;
+  targets = kind === 'attack' ? enemiesInRange(sel) : healTargets(sel);
+  if (targets.length === 1) chooseTarget(targets[0]);
+  else setPanel(`<div class="hint">Tap a highlighted ${kind==='attack'?'enemy':'ally'}.</div><div class="acts"><button class="btn" data-act="back" type="button">Back</button></div>`);
+}
+function chooseTarget(t){
+  fc = t;
+  tmode === 'attack' ? panelForecast(sel, t) : panelHeal(sel, t);
+}
+async function finishUnit(u){
+  u.moved = true; clearSel(); mode = 'idle'; updateDanger();
+  if (checkEnd()) return;
+  panelIdle(); refreshTop();
+  if (team('p').every(p => p.moved)){ await wait(350); enemyPhase(); }
+}
+
+async function onTap(x, y){
+  if (busy || phase !== 'p') return;
+  cursor = {x, y};
+  const u = unitAt(x, y), k = K(x, y);
+  if (mode === 'idle' || mode === 'selected'){
+    if (mode === 'selected'){
+      if (u === sel){ openActions(); return; }
+      if (moveKeys.has(k) && !u){
+        busy = true; refreshTop();
+        await moveAlong(sel, pathTo(reachMap, k));
+        busy = false; openActions(); return;
+      }
+    }
+    if (u && u.team === 'p' && !u.moved){ select(u); return; }
+    clearSel(); mode = 'idle';
+    if (u){
+      inspect = u.team === 'e' && inspect !== u ? u : null;
+      setPanel(unitHTML(u));
+    } else {
+      inspect = null;
+      const t = ter(x,y);
+      setPanel(`<div class="uhead"><span class="nm">${t.n}</span><span class="cl">${t.cost>=99?'Impassable':`Move cost ${t.cost}`}</span></div>
+        <div class="hint">${t.def||t.avo?`Units here gain <b>+${t.def} Def</b> and <b>+${t.avo} Avoid</b>.`:'No cover.'}${t.heal?' Restores 20% HP at the start of each phase.':''}${MAP[y][x]==='F'?' Cavaliers pay 3 to enter.':''}${MAP[y][x]==='M'?' Cavaliers and Knights cannot climb.':''}</div>`);
+    }
+    refreshTop(); return;
+  }
+  if (mode === 'action'){
+    if (u && enemiesInRange(sel).includes(u)){ startTargeting('attack'); chooseTarget(u); }
+    else if (u && sel.w === 'staff' && healTargets(sel).includes(u)){ startTargeting('heal'); chooseTarget(u); }
+    return;
+  }
+  if (mode === 'target'){
+    if (u && targets.includes(u)){ if (fc === u) act('confirm'); else chooseTarget(u); }
+  }
+}
+
+async function act(a){
+  if (busy) return;
+  if (a === 'attack') startTargeting('attack');
+  else if (a === 'heal') startTargeting('heal');
+  else if (a === 'wait') finishUnit(sel);
+  else if (a === 'cancel'){ const u = sel; place(u, orig.x, orig.y); select(u); }
+  else if (a === 'back') openActions();
+  else if (a === 'confirm' && fc){
+    busy = true; refreshTop();
+    const u = sel, t = fc; mode = 'busy'; targets = []; atkKeys = new Set(); healKeys = new Set();
+    setPanel(`<div class="hint">${tmode==='attack'?`${u.name} attacks ${t.name}…`:`${u.name} heals ${t.name}…`}</div>`);
+    if (tmode === 'attack') await doCombat(u, t); else await doHeal(u, t);
+    busy = false;
+    if (u.dead){ clearSel(); mode = 'idle'; updateDanger(); if (checkEnd()) return; panelIdle(); refreshTop();
+      if (team('p').every(p => p.moved)){ await wait(350); enemyPhase(); } return; }
+    finishUnit(u);
+  }
+}
+panel.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b) act(b.dataset.act); });
+
+// ---------- Phases ----------
+async function showBanner(text, color){ banner = {text, color, t0: performance.now(), dur: 1100}; await wait(1100); banner = null; }
+async function fortHeal(t){
+  for (const u of team(t)){
+    if (ter(u.x,u.y).heal && u.hp < u.mhp){
+      const amt = Math.min(u.mhp - u.hp, Math.max(1, Math.round(u.mhp*.2))), from = u.hp;
+      u.hp += amt; popup(u, `+${amt}`, '#7ff0a2'); tween(300, k => { u.shp = from + amt*k; });
+    }
+  }
+  await wait(300);
+}
+async function startPlayerPhase(){
+  phase = 'p'; busy = true; mode = 'busy';
+  for (const u of team('p')) u.moved = false;
+  refreshTop(); panelIdle();
+  await showBanner('Player Phase', '#7fa8ff');
+  await fortHeal('p');
+  busy = false; mode = 'idle'; updateDanger(); panelIdle(); refreshTop();
+}
+async function enemyPhase(){
+  clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
+  await showBanner('Enemy Phase', '#ff8f7a');
+  await fortHeal('e');
+  for (const e of team('e')){
+    if (e.dead) continue;
+    await aiAct(e);
+    if (checkEnd()) return;
+  }
+  turn++; busy = false;
+  startPlayerPhase();
+}
+
+// ---------- Enemy AI ----------
+function distField(e){
+  const f = new Array(COLS*ROWS).fill(Infinity), open = [];
+  for (const p of team('p')){ const k = K(p.x,p.y); f[k] = 0; open.push(k); }
+  while (open.length){
+    open.sort((a,b) => f[a]-f[b]);
+    const cur = open.shift(), cx = KX(cur), cy = KY(cur);
+    const step = f[cur] === 0 ? 1 : moveCost(e, cx, cy);
+    if (step >= 99) continue;
+    for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx = cx+dx, ny = cy+dy; if (nx<0||ny<0||nx>=COLS||ny>=ROWS) continue;
+      if (moveCost(e,nx,ny) >= 99) continue;
+      const nk = K(nx,ny), nd = f[cur] + step;
+      if (nd < f[nk]){ f[nk] = nd; open.push(nk); }
+    }
+  }
+  return f;
+}
+async function aiAct(e){
+  if (e.ai === 'guard' && !e.triggered){
+    const th = threat(e);
+    if (team('p').some(p => th.has(K(p.x,p.y)))) e.triggered = true; else return;
+  }
+  const map = e.ai === 'hold' ? new Map([[K(e.x,e.y), {d:0, prev:-1}]]) : reach(e);
+  const dests = destinations(e, map);
+  let best = null;
+  for (const dk of dests){
+    const pos = {x:KX(dk), y:KY(dk)};
+    for (const p of team('p')){
+      const d = man(pos, p); if (d < e.rng[0] || d > e.rng[1]) continue;
+      const A = calc(e, p, pos, p), D = calc(p, e, p, pos);
+      const hits = A.dbl ? 2 : 1;
+      let score = A.dmg * A.hit/100 * hits;
+      if (A.dmg * hits >= p.hp) score += 40 * A.hit/100;
+      if (D.can) score -= D.dmg * D.hit/100 * (D.dbl ? 2 : 1) * .4;
+      score += ter(pos.x,pos.y).def * 1.5 + (p.lord ? 2 : 0) - map.get(dk).d * .05;
+      if (!best || score > best.score) best = {score, dk, p};
+    }
+  }
+  inspect = e;
+  if (best){
+    await wait(250);
+    if (best.dk !== K(e.x,e.y)) await moveAlong(e, pathTo(map, best.dk));
+    await wait(150);
+    inspect = null;
+    await doCombat(e, best.p);
+    updateDanger();
+    return;
+  }
+  if (e.ai === 'hold'){ inspect = null; return; }
+  const f = distField(e);
+  let bk = K(e.x,e.y);
+  for (const dk of dests) if (f[dk] < f[bk] || (f[dk] === f[bk] && map.get(dk).d < map.get(bk).d)) bk = dk;
+  if (bk !== K(e.x,e.y)){ await wait(200); await moveAlong(e, pathTo(map, bk)); await wait(120); }
+  inspect = null; updateDanger();
+}
+
+// ---------- End conditions ----------
+function checkEnd(){
+  const lord = units.find(u => u.lord);
+  const boss = units.find(u => u.boss);
+  if (lord.dead || !team('p').length){ endScreen(false); return true; }
+  if (boss.dead || !team('e').length){ endScreen(true); return true; }
+  return false;
+}
+function endScreen(win){
+  busy = true; mode = 'over'; refreshTop();
+  const fallen = units.filter(u => u.team==='p' && u.dead).map(u => u.name);
+  $('#overCard').innerHTML = win
+    ? `<h1>Victory</h1><h2>The Wendmere Crossing is clear · Turn ${turn}</h2>
+       <p>${fallen.length ? `Fallen: ${fallen.join(', ')}.` : 'Every ally survived.'}</p>
+       <button class="btn primary" id="again" type="button">Play Again</button>`
+    : `<h1>Defeat</h1><h2>${units.find(u=>u.lord).dead ? 'Aren has fallen' : 'Your army is lost'}</h2>
+       <p>Try drawing enemies out one at a time, and keep Ivy behind the front line.</p>
+       <button class="btn primary" id="again" type="button">Try Again</button>`;
+  $('#over').hidden = false;
+  $('#again').onclick = () => { $('#over').hidden = true; newBattle(); busy = false; startPlayerPhase(); };
+  setPanel(`<div class="hint">${win ? 'Victory!' : 'Defeat.'}</div>`);
+}
+
+// ---------- Rendering ----------
+let T = 40, dpr = 1, terrCv = document.createElement('canvas');
+function hash(x,y,s=0){ let h = (x*374761393 + y*668265263 + s*1442695041) | 0; h = Math.imul(h ^ (h>>>13), 1274126177); return ((h ^ (h>>>16)) >>> 0) / 4294967295; }
+
+function resize(){
+  const r = boardEl.getBoundingClientRect();
+  T = Math.max(20, Math.floor(Math.min(r.width/COLS, r.height/ROWS)));
+  dpr = Math.min(3, window.devicePixelRatio || 1);
+  cvs.width = COLS*T*dpr; cvs.height = ROWS*T*dpr;
+  cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
+  terrCv.width = cvs.width; terrCv.height = cvs.height;
+  const g = terrCv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+  for (let y=0; y<ROWS; y++) for (let x=0; x<COLS; x++) drawTile(g, x, y, MAP[y][x]);
+}
+function tri(g, x1,y1,x2,y2,x3,y3, c){ g.fillStyle = c; g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.lineTo(x3,y3); g.closePath(); g.fill(); }
+function drawTile(g, x, y, ch){
+  const X = x*T, Y = y*T, v = hash(x,y);
+  g.fillStyle = v < .33 ? '#6c9a4c' : v < .66 ? '#73a052' : '#78a657'; g.fillRect(X,Y,T,T);
+  g.strokeStyle = 'rgba(40,70,30,.45)'; g.lineWidth = Math.max(1, T*.03);
+  for (let i=0; i<3; i++){ const gx = X + hash(x,y,i+1)*T*.8 + T*.1, gy = Y + hash(x,y,i+7)*T*.8 + T*.1;
+    g.beginPath(); g.moveTo(gx-T*.04, gy); g.lineTo(gx, gy-T*.07); g.lineTo(gx+T*.04, gy); g.stroke(); }
+  if (ch === 'W' || ch === 'B'){
+    g.fillStyle = '#3a72a6'; g.fillRect(X,Y,T,T);
+    g.strokeStyle = '#6aa2d4'; g.lineWidth = Math.max(1, T*.04);
+    for (const [a,b] of [[.25,.3],[.65,.7]]){ g.beginPath(); g.arc(X+T*a, Y+T*b, T*.1, Math.PI*1.1, Math.PI*1.9); g.stroke(); }
+    if (ch === 'B'){
+      g.fillStyle = '#9b6b3f'; g.fillRect(X+T*.16, Y, T*.68, T);
+      g.strokeStyle = '#6e4826'; g.lineWidth = Math.max(1, T*.035);
+      for (let i=1; i<5; i++){ g.beginPath(); g.moveTo(X+T*.16, Y+T*i/5); g.lineTo(X+T*.84, Y+T*i/5); g.stroke(); }
+      g.fillStyle = '#5a3a1f'; g.fillRect(X+T*.12, Y, T*.07, T); g.fillRect(X+T*.81, Y, T*.07, T);
+    }
+  }
+  if (ch === 'F'){
+    for (const [a,b,s] of [[.3,.45,.9],[.72,.4,1],[.52,.8,.85]]){
+      const cx = X+T*a, cy = Y+T*b, h = T*.34*s;
+      g.fillStyle = '#5a3d22'; g.fillRect(cx-T*.03, cy, T*.06, T*.12*s);
+      tri(g, cx, cy-h, cx-h*.6, cy+h*.15, cx+h*.6, cy+h*.15, '#2e5a2b');
+      tri(g, cx, cy-h, cx-h*.18, cy-h*.2, cx+h*.32, cy+h*.05, '#3e7136');
+    }
+  }
+  if (ch === 'M'){
+    tri(g, X+T*.32, Y+T*.2, X+T*.02, Y+T*.9, X+T*.64, Y+T*.9, '#7e7666');
+    tri(g, X+T*.64, Y+T*.12, X+T*.3, Y+T*.92, X+T*.98, Y+T*.92, '#9a917f');
+    tri(g, X+T*.64, Y+T*.12, X+T*.55, Y+T*.3, X+T*.73, Y+T*.3, '#ece8dd');
+    tri(g, X+T*.32, Y+T*.2, X+T*.25, Y+T*.36, X+T*.39, Y+T*.36, '#ece8dd');
+  }
+  if (ch === 'T'){
+    const s = T*.13;
+    g.fillStyle = '#6a6254'; g.fillRect(X+s, Y+s*1.6, T-s*2, T-s*2.6);
+    g.fillStyle = '#a99e88'; g.fillRect(X+s*1.3, Y+s*1.9, T-s*2.6, T-s*3.2);
+    g.fillStyle = '#6a6254';
+    for (let i=0; i<4; i++) g.fillRect(X+s + i*(T-s*2)/3.5, Y+s*1.1, (T-s*2)/7, s*.7);
+    g.fillStyle = '#3b2f24'; g.beginPath(); g.arc(X+T/2, Y+T*.7, T*.11, Math.PI, 0); g.fillRect(X+T/2-T*.11, Y+T*.7, T*.22, T*.13); g.fill();
+    g.strokeStyle = '#3b2f24'; g.lineWidth = Math.max(1,T*.025); g.beginPath(); g.moveTo(X+T*.72, Y+s*1.1); g.lineTo(X+T*.72, Y+T*.02); g.stroke();
+    tri(g, X+T*.72, Y+T*.02, X+T*.72, Y+T*.14, X+T*.9, Y+T*.08, '#e3b54c');
+  }
+  g.strokeStyle = 'rgba(0,0,0,.13)'; g.lineWidth = 1; g.strokeRect(X+.5, Y+.5, T-1, T-1);
+}
+
+function glyph(w, cx, cy, r){
+  ctx.save(); ctx.translate(cx, cy); ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff';
+  ctx.lineWidth = Math.max(1.5, T*.055); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const L = (a,b,c,d) => { ctx.beginPath(); ctx.moveTo(a,b); ctx.lineTo(c,d); ctx.stroke(); };
+  if (w === 'sword'){ ctx.rotate(Math.PI/4); L(0,-.62*r,0,.2*r); L(-.28*r,.2*r,.28*r,.2*r); L(0,.2*r,0,.52*r); }
+  if (w === 'lance'){ ctx.rotate(Math.PI/4); L(0,.62*r,0,-.3*r); ctx.beginPath(); ctx.moveTo(0,-.72*r); ctx.lineTo(-.16*r,-.28*r); ctx.lineTo(.16*r,-.28*r); ctx.closePath(); ctx.fill(); }
+  if (w === 'axe'){ ctx.rotate(Math.PI/7); L(-.05*r,.62*r,-.05*r,-.6*r); ctx.beginPath(); ctx.arc(0,-.3*r,.36*r,-Math.PI/2,Math.PI/2); ctx.closePath(); ctx.fill(); }
+  if (w === 'bow'){ ctx.beginPath(); ctx.arc(-.3*r,0,.62*r,-1.05,1.05); ctx.stroke(); ctx.lineWidth *= .5;
+    const ex = -.3*r + .62*r*Math.cos(1.05), ey = .62*r*Math.sin(1.05); L(ex,-ey,ex,ey); ctx.lineWidth *= 2; L(-.15*r,0,.55*r,0); }
+  if (w === 'staff'){ L(0,.62*r,0,-.25*r); ctx.beginPath(); ctx.arc(0,-.43*r,.18*r,0,Math.PI*2); ctx.stroke(); L(-.22*r,.1*r,.22*r,.1*r); }
+  ctx.restore();
+}
+function drawUnit(u, now){
+  const cx = (u.px + .5 + u.ox)*T, cy = (u.py + .45 + u.oy)*T, r = T*.33;
+  ctx.save(); ctx.globalAlpha = u.alpha;
+  ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.beginPath(); ctx.ellipse(cx, cy + r*.95, r*.85, r*.28, 0, 0, Math.PI*2); ctx.fill();
+  let fill = u.team === 'p' ? '#3f74d6' : u.boss ? '#8e2b25' : '#c64a39';
+  if (u.team === 'p' && u.moved && phase === 'p') fill = '#6b7280';
+  if (u === sel){ const p = .5 + .5*Math.sin(now/180); ctx.strokeStyle = `rgba(227,181,76,${.5+.5*p})`; ctx.lineWidth = T*.06; ctx.beginPath(); ctx.arc(cx, cy, r + T*.07, 0, Math.PI*2); ctx.stroke(); }
+  ctx.fillStyle = fill; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.beginPath(); ctx.arc(cx, cy - r*.2, r*.78, Math.PI*1.1, Math.PI*1.9); ctx.fill();
+  ctx.lineWidth = u.mt === 'armor' ? T*.085 : T*.045; ctx.strokeStyle = u.boss ? '#e3b54c' : 'rgba(10,12,18,.6)';
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+  if (u.mt === 'mounted'){ ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = T*.03; ctx.beginPath(); ctx.arc(cx, cy, r*1.18, Math.PI*.15, Math.PI*.85); ctx.stroke(); }
+  glyph(u.w, cx, cy, r);
+  if (u.flash > 0){ ctx.globalAlpha = u.alpha * u.flash; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = u.alpha; }
+  if (u.boss){ const by = cy - r - T*.02; ctx.fillStyle = '#e3b54c'; ctx.beginPath();
+    ctx.moveTo(cx - T*.15, by); ctx.lineTo(cx - T*.15, by - T*.12); ctx.lineTo(cx - T*.07, by - T*.05); ctx.lineTo(cx, by - T*.15);
+    ctx.lineTo(cx + T*.07, by - T*.05); ctx.lineTo(cx + T*.15, by - T*.12); ctx.lineTo(cx + T*.15, by); ctx.closePath(); ctx.fill(); }
+  const bw = T*.7, bh = Math.max(3, T*.08), bx = cx - bw/2, by = (u.py + u.oy)*T + T*.88;
+  ctx.fillStyle = '#111'; ctx.fillRect(bx-1, by-1, bw+2, bh+2);
+  const ratio = clamp(u.shp/u.mhp, 0, 1);
+  ctx.fillStyle = ratio > .5 ? '#62c27f' : ratio > .25 ? '#e3b54c' : '#e0533d';
+  ctx.fillRect(bx, by, bw*ratio, bh);
+  ctx.restore();
+}
+function fillKeys(keys, c){ ctx.fillStyle = c; for (const k of keys) ctx.fillRect(KX(k)*T+1, KY(k)*T+1, T-2, T-2); }
+
+function render(now){
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0, 0, COLS*T, ROWS*T);
+  let sx = 0, sy = 0;
+  if (shake > 0){ sx = (Math.random()-.5)*T*.15*shake; sy = (Math.random()-.5)*T*.15*shake; shake = Math.max(0, shake - .06); }
+  ctx.translate(sx, sy);
+  ctx.drawImage(terrCv, 0, 0, COLS*T, ROWS*T);
+  if (showDanger) fillKeys(dangerKeys, 'rgba(255,110,40,.26)');
+  if (inspect && !inspect.dead){
+    const m = inspect.ai === 'hold' ? [K(inspect.x,inspect.y)] : destinations(inspect, reach(inspect));
+    const r = rangeTiles(m, inspect.rng);
+    fillKeys([...r].filter(k => !m.includes(k)), 'rgba(230,60,50,.38)');
+    fillKeys(m, 'rgba(230,110,90,.32)');
+  }
+  fillKeys(moveKeys, 'rgba(70,135,255,.45)');
+  fillKeys(atkKeys, mode === 'selected' ? 'rgba(235,70,55,.32)' : 'rgba(235,70,55,.22)');
+  fillKeys(healKeys, mode === 'selected' ? 'rgba(80,220,120,.3)' : 'rgba(80,220,120,.2)');
+  if (mode === 'target'){
+    const p = .55 + .25*Math.sin(now/160);
+    for (const t of targets){ ctx.fillStyle = tmode === 'attack' ? `rgba(240,60,50,${p})` : `rgba(80,230,120,${p})`; ctx.fillRect(t.x*T+1, t.y*T+1, T-2, T-2); }
+    if (fc){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.strokeRect(fc.x*T+2, fc.y*T+2, T-4, T-4); }
+  }
+  if (cursor && phase === 'p' && !busy){ ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 2; ctx.strokeRect(cursor.x*T+2, cursor.y*T+2, T-4, T-4); }
+  const draw = units.filter(u => !u.dead).sort((a,b) => a.py - b.py);
+  for (const u of draw) drawUnit(u, now);
+  for (const s of shots){
+    const x = (s.x0 + (s.x1-s.x0)*s.t)*T, y = (s.y0 + (s.y1-s.y0)*s.t)*T, a = Math.atan2(s.y1-s.y0, s.x1-s.x0);
+    ctx.strokeStyle = '#f3ead2'; ctx.lineWidth = Math.max(1.5, T*.04);
+    ctx.beginPath(); ctx.moveTo(x - Math.cos(a)*T*.25, y - Math.sin(a)*T*.25); ctx.lineTo(x, y); ctx.stroke();
+  }
+  popups = popups.filter(p => now - p.t0 < p.dur);
+  for (const p of popups){
+    const t = (now - p.t0)/p.dur, y = (p.y - t*.55)*T;
+    ctx.globalAlpha = 1 - t*t; ctx.font = `700 ${Math.round(T*.4)}px 'Pixelify Sans', monospace`; ctx.textAlign = 'center';
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.strokeText(p.text, p.x*T, y);
+    ctx.fillStyle = p.color; ctx.fillText(p.text, p.x*T, y); ctx.globalAlpha = 1;
+  }
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  if (banner){
+    const t = (now - banner.t0)/banner.dur, a = t < .18 ? t/.18 : t > .8 ? Math.max(0,(1-t)/.2) : 1;
+    const h = T*1.5, y = ROWS*T/2 - h/2;
+    ctx.globalAlpha = a; ctx.fillStyle = 'rgba(10,12,18,.85)'; ctx.fillRect(0, y, COLS*T, h);
+    ctx.fillStyle = banner.color; ctx.fillRect(0, y, COLS*T, 2); ctx.fillRect(0, y+h-2, COLS*T, 2);
+    ctx.font = `700 ${Math.round(T*.62)}px 'Pixelify Sans', monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(banner.text, COLS*T/2 + (1-a)*T*(t<.5?-1:1), y + h/2); ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1;
+  }
+}
+function frame(now){
+  for (const tw of tweens.slice()){
+    const t = Math.min(1, (now - tw.t0)/tw.dur); tw.fn(ease(t));
+    if (t >= 1){ tweens.splice(tweens.indexOf(tw), 1); tw.res(); }
+  }
+  for (const u of units) if (!tweens.length) u.shp = u.hp;
+  render(now);
+  requestAnimationFrame(frame);
+}
+
+// ---------- Input & boot ----------
+cvs.addEventListener('click', e => {
+  const r = cvs.getBoundingClientRect();
+  const x = Math.floor((e.clientX - r.left)/T), y = Math.floor((e.clientY - r.top)/T);
+  if (x>=0 && y>=0 && x<COLS && y<ROWS) onTap(x, y);
+});
+$('#endBtn').addEventListener('click', () => {
+  if (busy || phase !== 'p' || !(mode === 'idle' || mode === 'selected')) return;
+  clearSel(); inspect = null; mode = 'idle'; enemyPhase();
+});
+$('#dangerBtn').addEventListener('click', () => { showDanger = !showDanger; updateDanger(); refreshTop(); });
+$('#startBtn').addEventListener('click', () => { $('#title').hidden = true; startPlayerPhase(); });
+new ResizeObserver(resize).observe(boardEl);
+
+function start(data){
+  newBattle();
+  if (data && Array.isArray(data.units) && data.units.length){
+    units = data.units.map(u => Object.assign(u, {px:u.x, py:u.y, ox:0, oy:0, flash:0, alpha:u.dead?0:1, shp:u.hp}));
+    turn = data.turn || 1; phase = 'p'; mode = 'idle'; busy = false;
+    for (const u of units) if (u.team === 'p' && data.phase !== 'p') u.moved = false;
+    $('#title').hidden = true; panelIdle();
+  } else {
+    setPanel(`<div class="hint">Tap <b>Begin Battle</b> to start.</div>`);
+  }
+  resize(); refreshTop(); requestAnimationFrame(frame);
+}
+window.claude?.hot?.snapshot?.(() => mode === 'title' ? {} : {
+  units: units.map(u => ({...u, ox:0, oy:0, flash:0})), turn, phase,
+});
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
