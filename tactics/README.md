@@ -68,3 +68,14 @@ Rae wears `camp` through Chapter One; Chapter Two should set `outfits: {rae: ''}
 her in the uniform. Character keys are the
 ones in `CHARACTERS` (`rae`, `willow`, `fraggle`, `tiggle`, ...). Anyone without art
 uses their drawn plush placeholder.
+
+
+### Generic mine rabbits
+
+`art/miner-portrait.png`, `miner-battle.png` and `miner-token.png` are the shared art for
+every rabbit without art of their own: recruits, enemy rabbits, and named characters who
+are still waiting for art. At load the game recolours the fur into each coat in `FURS`
+(`src/js/10-data-units.js`), keeping the ear linings and the loincloth as drawn (those
+areas are traced in `FUR_PROTECT`). A character can pick a coat with `fur: 'grey'`;
+generic rabbits get one from their id, so each keeps the same coat. Once a character has
+their own art, it replaces the generic art automatically.

@@ -99,18 +99,18 @@ const CHARACTERS = {
   // Raepublic
   rae:     {name:'Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true, outfit:'camp',
             retort:'Come and find out.'},
-  tall:    {name:'Tall Rabbit', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
-  burly:   {name:'Burly Rabbit', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
-  old:     {name:'Old Rabbit', faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
-  swift:   {name:'Swift Rabbit', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
-  patched: {name:'Patched Rabbit', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
-  willow:  {name:'Willow', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
+  tall:    {name:'Tall Rabbit', fur:'sandy', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
+  burly:   {name:'Burly Rabbit', fur:'chocolate', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
+  old:     {name:'Old Rabbit', fur:'grey', faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
+  swift:   {name:'Swift Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
+  patched: {name:'Patched Rabbit', fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
+  willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
   // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; all are placeholders for now.
-  lantern:  {name:'Lantern Rabbit', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.'},
-  masked:   {name:'Masked Rabbit', faction:'rae', cls:'digger', lv:3, stars:3, placeholder:true, stats:{mhp:27,atk:15,def:6,spd:6,skl:6,mov:5}},
-  ironear:  {name:'Iron-Eared Rabbit', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5}},
+  lantern:  {name:'Lantern Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.'},
+  masked:   {name:'Masked Rabbit', fur:'sooty', faction:'rae', cls:'digger', lv:3, stars:3, placeholder:true, stats:{mhp:27,atk:15,def:6,spd:6,skl:6,mov:5}},
+  ironear:  {name:'Iron-Eared Rabbit', fur:'grey', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5}},
   duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4}},
   glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5}},
   bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5}},
@@ -119,19 +119,34 @@ const CHARACTERS = {
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({
   narr:        {name:''},
-  sister:      {name:'Little Sister', faction:'rae', look:'sister'},
-  rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop'},
+  sister:      {name:'Little Sister', faction:'rae', look:'sister', fur:'white'},
+  rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop', fur:'grey'},
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
   executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
   king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
   scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
-  stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer'},
-  thin:        {name:'Thin Rabbit', faction:'rae', look:'thin'},
+  stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer', fur:'sooty'},
+  thin:        {name:'Thin Rabbit', faction:'rae', look:'thin', fur:'cream'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
+
+// Fur colours for the generic mine-rabbit art (art/miner-*.png): [hue shift°, saturation ×, lightness shift].
+// Positive lightness moves toward white, negative toward black. 'tan' is the art as drawn.
+const FURS = {
+  tan: null, grey: [0, .12, .05], cream: [4, .55, .38], white: [0, .1, .6],
+  chocolate: [-4, .85, -.38], sooty: [0, .15, -.6], ginger: [-6, 1.45, -.02], sandy: [10, .75, .16],
+};
+// Hand-traced areas the recolour leaves alone, in each image's own pixel size:
+// cloth = loincloth and rope (never recoloured); ears = ear linings (only clearly tan pixels recoloured).
+const FUR_PROTECT = {
+  portrait: {size: [433, 900], cloth: [[[148,396],[210,400],[270,410],[330,418],[334,460],[307,515],[300,560],[278,602],[257,648],[238,612],[223,566],[205,536],[180,542],[150,542],[134,506],[110,548],[90,552],[114,495],[138,444]]], ears: [[[100,78],[122,140],[108,232],[72,288],[38,272],[58,178]],[[308,118],[342,150],[382,258],[398,334],[360,304],[330,200]]]},
+  battle:   {size: [453, 640], cloth: [[[150,392],[165,373],[210,383],[262,376],[342,373],[348,395],[332,432],[320,472],[302,502],[286,534],[270,502],[256,472],[236,462],[216,467],[205,442],[185,422],[160,417]]], ears: [[[18,242],[90,190],[150,148],[206,118],[218,150],[202,202],[172,242],[122,266],[60,270]],[[112,266],[165,234],[207,212],[218,262],[192,288],[140,298]]]},
+  token:    {size: [512, 379], ears: [[[98,162],[126,200],[112,282],[82,352],[42,346],[58,250]],[[414,162],[470,250],[470,346],[430,352],[400,282],[386,200]]]},
+};
 
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
+  miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
 };

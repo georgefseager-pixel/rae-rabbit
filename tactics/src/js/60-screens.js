@@ -44,7 +44,7 @@ function nodeHTML(ck, ch, i){
 function renderHub(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
   const lord = st.roster.find(r => r.lord), alive = living(ck);
-  const art = artFor(camp.lord, 'portrait') || plushPortrait(lord.look);
+  const art = artFor(lord, 'portrait') || plushPortrait(lord.look);
   const avg = Math.round(alive.reduce((a, r) => a + r.lv, 0)/alive.length*10)/10;
   $('#hub').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><h1>RAEPUBLIC</h1><button class="btn" data-go="title" type="button">Title</button></div>
@@ -72,7 +72,7 @@ function statsGrid(rec){
 function recCard(rec, actions = '', extraClass = ''){
   const c = CLASSES[rec.cls];
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
-    <div class="por f-${rec.faction}">${portraitInner(rec.key, rec.look, 'panel')}</div>
+    <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
       <div class="ustat"><b>${weaponName(rec)}</b> · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>

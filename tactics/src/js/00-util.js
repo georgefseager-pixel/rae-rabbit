@@ -39,12 +39,30 @@ function outfitOf(key){
   return CHARACTERS[key]?.outfit || '';
 }
 function artKey(key, kind){ const o = outfitOf(key); return o && ART[key + o]?.[kind] ? key + o : key; }
-const artFor = (key, kind) => ART[artKey(key, kind)]?.[kind];
+
+// Which art to show for a character or unit. `ent` is a character key, or anything with {key, look, uid, name, fur}.
+// Order: the character's own art (in their current outfit), then the generic mine-rabbit art in their fur colour.
+function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
+function furOf(ent){
+  if (ent.fur) return ent.fur;
+  const f = CHARACTERS[ent.key]?.fur || SPEAKERS[ent.key]?.fur;
+  if (f) return f;
+  if (LOOKS[ent.look]?.sp !== 'bun') return null;                       // only rabbits share the mine-rabbit art
+  const furs = Object.keys(FURS); return furs[strHash(ent.uid || ent.name || ent.key) % furs.length];
+}
+function artResolve(ent, kind){
+  if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || ent};
+  const k = artKey(ent.key, kind);
+  if (ART[k]?.[kind]) return k;
+  const fur = furOf(ent);
+  return fur && ART['miner' + fur]?.[kind] ? 'miner' + fur : null;
+}
+const artFor = (ent, kind) => { const k = artResolve(ent, kind); return k ? ART[k][kind] : undefined; };
 
 // Decoded art for drawing on the map canvas (art/<key>-token.png). Returns null until loaded.
 const artImages = {};
-function artImage(key, kind){
-  const url = artFor(key, kind);
+function artImage(ent, kind){
+  const url = artFor(ent, kind);
   if (!url) return null;
   const id = url;
   if (!artImages[id]){
@@ -53,6 +71,71 @@ function artImage(key, kind){
     img.src = url; artImages[id] = img;
   }
   return artImages[id].ready ? artImages[id] : null;
+}
+
+// Recolour the generic mine-rabbit art into every fur in FURS, once, at load.
+// The fur is picked out by colour (tan, not pink, not the pale cloth) and FUR_PROTECT
+// marks the loincloth and ear linings by hand. Results become ART['miner<fur>'].
+let furReady = false;
+function rgbToHsl(r, g, b){
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn)/2, d = mx - mn;
+  if (!d) return [0, 0, l];
+  const s = d/(l > .5 ? 2 - mx - mn : mx + mn);
+  const h = mx === r ? ((g - b)/d + 6) % 6 : mx === g ? (b - r)/d + 2 : (r - g)/d + 4;
+  return [h*60, s, l];
+}
+function hslToRgb(h, s, l){
+  const c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, k = Math.floor(h/60) % 6;
+  const [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][k];
+  return [r + m, g + m, b + m];
+}
+function polyMask(W, H, size, polys){
+  // Drawn small and scaled up, which feathers the edges without canvas filters (not supported everywhere).
+  const sc = 1/6, m = document.createElement('canvas'); m.width = Math.ceil(W*sc); m.height = Math.ceil(H*sc);
+  const g = m.getContext('2d'); g.fillStyle = '#fff';
+  for (const p of polys){ g.beginPath(); p.forEach(([x, y], i) => g[i ? 'lineTo' : 'moveTo'](x/size[0]*W*sc, y/size[1]*H*sc)); g.closePath(); g.fill(); }
+  const big = document.createElement('canvas'); big.width = W; big.height = H;
+  const bg = big.getContext('2d'); bg.imageSmoothingEnabled = true; bg.drawImage(m, 0, 0, W, H);
+  const d = bg.getImageData(0, 0, W, H).data, out = new Float32Array(W*H);
+  for (let i = 0; i < out.length; i++) out[i] = d[i*4 + 3]/255;
+  return out;
+}
+const loadImg = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+async function buildFurVariants(){
+  if (!ART.miner) return;
+  for (const kind of Object.keys(ART.miner)){
+    try {
+      const img = await loadImg(ART.miner[kind]), W = img.naturalWidth, H = img.naturalHeight;
+      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      const src = g.getImageData(0, 0, W, H), px = src.data, n = W*H;
+      const pr = FUR_PROTECT[kind] || {size: [W, H]};
+      const cloth = polyMask(W, H, pr.size, pr.cloth || []), ears = polyMask(W, H, pr.size, pr.ears || []);
+      const w = new Float32Array(n), hsl = new Float32Array(n*3);
+      for (let i = 0; i < n; i++){
+        const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2];
+        const rg = clamp((r - gg - 14)/14, 0, 1), loose = rg*clamp((gg - b - 6)/14, 0, 1), strict = rg*clamp((gg - b - 20)/10, 0, 1);
+        const [h, s, l] = rgbToHsl(r/255, gg/255, b/255);
+        w[i] = (loose*(1 - ears[i]) + strict*ears[i])*(1 - cloth[i])*clamp((l - .14)/.12, 0, 1);
+        hsl[i*3] = h; hsl[i*3 + 1] = s; hsl[i*3 + 2] = l;
+      }
+      for (const [fur, f] of Object.entries(FURS)){
+        ART['miner' + fur] = ART['miner' + fur] || {};
+        if (!f){ ART['miner' + fur][kind] = ART.miner[kind]; continue; }
+        const [dh, sm, dl] = f, out = new ImageData(new Uint8ClampedArray(px), W, H), o = out.data;
+        for (let i = 0; i < n; i++){
+          if (w[i] <= 0) continue;
+          const l = hsl[i*3 + 2], nl = dl >= 0 ? l + dl*(1 - l) : l*(1 + dl);
+          const [r, gg, b] = hslToRgb((hsl[i*3] + dh + 360) % 360, clamp(hsl[i*3 + 1]*sm, 0, 1), nl);
+          o[i*4] += (r*255 - o[i*4])*w[i]; o[i*4 + 1] += (gg*255 - o[i*4 + 1])*w[i]; o[i*4 + 2] += (b*255 - o[i*4 + 2])*w[i];
+        }
+        g.putImageData(out, 0, 0);
+        const blob = await new Promise(res => c.toBlob(res, 'image/png'));
+        ART['miner' + fur][kind] = blob ? URL.createObjectURL(blob) : c.toDataURL();
+      }
+    } catch (e){ console.warn('fur recolour failed for', kind, e); }
+  }
+  furReady = true;
 }
 
 function toast(msg){

@@ -7,7 +7,7 @@ const linesFor = lines => (lines || []).filter(l => (!l.if || SAVE.flags[l.if]) 
 function actorHTML(who, side){
   const sp = SPEAKERS[who];
   if (!sp) return '';
-  const art = artFor(who, 'portrait');
+  const art = artFor(who, 'portrait');   // falls back to the mine-rabbit art in the speaker's fur
   if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
   return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
 }
@@ -43,7 +43,7 @@ function talk(rawLines){
       nm.hidden = narr;
       if (!narr){
         nm.className = 'tname f-' + sp.faction; nm.textContent = l.as || speakerName(l.who);
-        por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, sp.look, 'talk');
+        por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, 'talk');
         if (sceneMode){
           // The campaign's lead stands on the left; whoever they are talking to stands on the right.
           const side = l.who === CAMPAIGNS[SAVE.current].lord ? 'L' : 'R';
@@ -68,7 +68,7 @@ function talk(rawLines){
 // u is anything with name, lv, key, look, faction, w and flat stats (a battle unit, or a record's stats spread in).
 function showLevelUp(u, ups){
   const label = {mhp: 'HP', atk: u.w === 'staff' ? 'Mag' : 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl'};
-  $('#lvlCard').innerHTML = `<div class="urow"><div class="por f-${u.faction}">${portraitInner(u.key, u.look, 'panel')}</div>
+  $('#lvlCard').innerHTML = `<div class="urow"><div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>
     <div class="uinfo"><h1>LEVEL UP</h1><h2>${u.name} · Level ${u.lv}</h2></div></div>
     <div class="lv">${STAT_KEYS.map(s => `<div class="${ups[s] ? 'up' : ''}"><small>${label[s]}</small>${u[s]}${ups[s] ? ' ▲' : ''}</div>`).join('')}</div>
     <p class="meta">Tap to continue.</p>`;

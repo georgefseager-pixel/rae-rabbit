@@ -218,8 +218,10 @@ function glyph(g, w, cx, cy, r, col){
 }
 
 // Portrait markup for panels, cards and dialogue. Uses real art when art/<key>-portrait.png exists.
-function portraitInner(key, look, where = 'panel'){
-  const ak = artKey(key, 'portrait'), art = ART[ak]?.portrait, crop = ART_CROP[ak]?.[where];
+function portraitInner(ent, where = 'panel'){
+  if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || ent};
+  const look = ent.look, ak = artResolve(ent, 'portrait'), art = ak && ART[ak].portrait;
+  const crop = ak && (ART_CROP[ak] || (ak.startsWith('miner') ? ART_CROP.miner : null))?.[where];
   if (art) return `<div class="porart" style="background-image:url(${art});background-size:${crop ? crop[0] : '200% auto'};background-position:${crop ? crop[1] : '50% 0%'}"></div>`;
   return `<img alt="" src="${plushPortrait(look)}">`;
 }

@@ -7,6 +7,12 @@ function boot(data){
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update
   requestAnimationFrame(frame);
   document.fonts?.ready?.then(() => { tokenCache.clear(); resize(); });
+  // Recolour the mine-rabbit art, then redraw whatever is showing so placeholders become art.
+  buildFurVariants().then(() => {
+    tokenCache.clear(); for (const k in portraitCache) delete portraitCache[k];
+    if (!$('#hub').hidden) renderHub(); else if (!$('#army').hidden) renderArmy(); else if (!$('#prep').hidden) renderPrep();
+    else if (B && !$('#app').hidden){ resize(); if (phase === 'p' && mode === 'idle') panelIdle(); }
+  });
 }
 // Keep the campaign when the page is updated while open (a battle in progress restarts from the hub).
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});

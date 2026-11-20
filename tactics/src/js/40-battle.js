@@ -29,7 +29,8 @@ function moveCost(u, x, y){
 // ---------- Setup ----------
 function battleUnit(rec, teamId){
   const c = CLASSES[rec.cls], s = rec.stats, tb = WEAPON_TIERS[rec.wtier || 0].bonus;
-  return {id: nextId++, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, name: rec.name, cls: rec.cls,
+  const id = nextId++;
+  return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, name: rec.name, cls: rec.cls,
     wname: weaponName(rec), tb, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
     w: c.w, rng: c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
@@ -150,7 +151,7 @@ let duelSides = {};
 const sideOf = u => duelSides[u.id] || (u.team === 'p' ? 'L' : 'R');
 function sprite(u, side){
   // Battle poses face right; flip them when the unit stands on the right as the defender.
-  const art = artFor(u.key, 'battle');
+  const art = artFor(u, 'battle');
   if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
   return `<img alt="" class="plush" src="${plushPortrait(u.look)}">`;
 }
@@ -271,7 +272,7 @@ async function levelUp(u){
 }
 
 // ---------- Panel ----------
-function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u.key, u.look, 'panel')}</div>`; }
+function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>`; }
 function objectiveText(){
   const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
