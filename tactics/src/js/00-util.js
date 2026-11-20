@@ -74,8 +74,8 @@ function artImage(ent, kind){
 }
 
 // Recolour the generic mine-rabbit art into every fur in FURS, once, at load.
-// The fur is picked out by colour (tan, not pink, not the pale cloth) and FUR_PROTECT
-// marks the loincloth and ear linings by hand. Results become ART['miner<fur>'].
+// The fur is picked out by colour (tan, not pink). art/minermask-<kind>.png marks the loincloth
+// and rope, which are never recoloured, and FUR_PROTECT traces the ear linings. Results become ART['miner<fur>'].
 let furReady = false;
 function rgbToHsl(r, g, b){
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn)/2, d = mx - mn;
@@ -110,7 +110,14 @@ async function buildFurVariants(){
       const g = c.getContext('2d'); g.drawImage(img, 0, 0);
       const src = g.getImageData(0, 0, W, H), px = src.data, n = W*H;
       const pr = FUR_PROTECT[kind] || {size: [W, H]};
-      const cloth = polyMask(W, H, pr.size, pr.cloth || []), ears = polyMask(W, H, pr.size, pr.ears || []);
+      const ears = polyMask(W, H, pr.size, pr.ears || []);
+      let cloth = new Float32Array(W*H);
+      if (ART.minermask?.[kind]){
+        const mi = await loadImg(ART.minermask[kind]), mc = document.createElement('canvas'); mc.width = W; mc.height = H;
+        const mg = mc.getContext('2d'); mg.drawImage(mi, 0, 0, W, H);
+        const md = mg.getImageData(0, 0, W, H).data;
+        for (let i = 0; i < cloth.length; i++) cloth[i] = md[i*4 + 3]/255;
+      }
       const w = new Float32Array(n), hsl = new Float32Array(n*3);
       for (let i = 0; i < n; i++){
         const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2];

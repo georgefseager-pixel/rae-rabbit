@@ -18,4 +18,4 @@ function boot(data){
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
-if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE};
+if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady};
