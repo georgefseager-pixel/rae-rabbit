@@ -64,6 +64,8 @@ function drawTile(g, x, y, ch){
     }
     return;
   }
+  const theme = mapDef?.theme || 'meadow';
+  if (theme !== 'meadow') return drawThemedTile(g, x, y, ch, theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -114,12 +116,72 @@ function drawTile(g, x, y, ch){
   }
 }
 
+// Mine and camp tiles: felt rocks, crates, ore heaps and palisades instead of meadow and spools.
+function drawFort(g, X, Y, x, y){
+  const f = FACTIONS[fortOwner.get(K(x, y)) || 'rae'];
+  const blk = (bx, by, bw, bh, c, top) => {
+    g.fillStyle = c; g.fillRect(X + bx*T, Y + by*T, bw*T, bh*T);
+    g.fillStyle = 'rgba(255,255,255,.22)'; g.fillRect(X + bx*T, Y + by*T, bw*T, T*.035);
+    g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(X + (bx + bw)*T - T*.035, Y + by*T, T*.035, bh*T);
+    if (top) for (let i = 0; i < 2; i++){ g.fillStyle = c; g.fillRect(X + (bx + i*bw*.6)*T, Y + (by - .08)*T, bw*.4*T, .08*T); }
+  };
+  g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, X + T*.5, Y + T*.88, T*.42, T*.08); g.fill();
+  blk(.1, .34, .26, .54, f.fort[0], true); blk(.64, .34, .26, .54, f.fort[1], true); blk(.33, .48, .34, .4, '#e9dcc0');
+  g.fillStyle = '#3a2a1e'; g.beginPath(); g.arc(X + T*.5, Y + T*.74, T*.09, Math.PI, 0); g.lineTo(X + T*.59, Y + T*.88); g.lineTo(X + T*.41, Y + T*.88); g.closePath(); g.fill();
+  g.fillStyle = f.fort[0]; g.font = `${Math.round(T*.16)}px 'Saira Stencil One', Impact, sans-serif`; g.textAlign = 'center'; g.fillText(f.letter, X + T*.5, Y + T*.62);
+  g.strokeStyle = '#3a2a1e'; g.lineWidth = Math.max(1, T*.025); g.beginPath(); g.moveTo(X + T*.77, Y + T*.26); g.lineTo(X + T*.77, Y + T*.02); g.stroke();
+  g.fillStyle = f.band; g.beginPath(); g.moveTo(X + T*.77, Y + T*.03); g.lineTo(X + T*.98, Y + T*.08); g.lineTo(X + T*.77, Y + T*.15); g.closePath(); g.fill();
+}
+function stones(g, X, Y, list, cols, stitch){
+  list.forEach(([a, b, r], i) => {
+    g.fillStyle = 'rgba(0,0,0,.28)'; ell(g, X + T*a + T*.02, Y + T*b + T*.03, T*r, T*r*.75); g.fill();
+    g.fillStyle = cols[i % cols.length]; ell(g, X + T*a, Y + T*b, T*r, T*r*.78); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.12)'; ell(g, X + T*a - T*r*.3, Y + T*b - T*r*.3, T*r*.4, T*r*.25); g.fill();
+    g.beginPath(); g.ellipse(X + T*a, Y + T*b, T*r*.82, T*r*.62, 0, 0, Math.PI*2); stitchStroke(g, stitch, T*.45, .7);
+  });
+}
+function drawThemedTile(g, x, y, ch, theme){
+  const X = x*T, Y = y*T, mine = theme === 'mine';
+  const floor = mine ? ['#5a4434', '#634b39', '#53402f', '#6a503c'] : ['#7a6448', '#836c4e', '#725d42', '#8a7352'];
+  if (ch === 'X' && mine){
+    g.fillStyle = '#2a221c'; g.fillRect(X, Y, T, T);
+    stones(g, X, Y, [[.28, .3, .26], [.72, .28, .24], [.5, .66, .3], [.15, .78, .18], [.86, .74, .17]], ['#4a423b', '#56504a', '#3f3833'], 'rgba(20,16,12,.8)');
+    return;
+  }
+  patch(g, X, Y, ch === 'M' ? (mine ? '#4e4036' : '#6e5a42') : floor[Math.floor(hash(x, y)*4)], x, y);
+  if (ch === 'F'){
+    if (mine) stones(g, X, Y, [[.3, .6, .16], [.62, .52, .19], [.48, .8, .14], [.78, .8, .11]], ['#8a8580', '#9c968e', '#7c7772'], 'rgba(50,45,40,.7)');
+    else for (const [a, b, w] of [[.12, .3, .42], [.5, .5, .4]]){   // ore crates
+      const cx = X + T*a, cy = Y + T*b, s = T*w;
+      g.fillStyle = 'rgba(0,0,0,.3)'; g.fillRect(cx + T*.03, cy + T*.04, s, s);
+      g.fillStyle = '#9a6e42'; g.fillRect(cx, cy, s, s);
+      g.strokeStyle = '#6a4626'; g.lineWidth = Math.max(1, T*.03); g.strokeRect(cx, cy, s, s);
+      g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + s, cy + s); g.moveTo(cx + s, cy); g.lineTo(cx, cy + s); g.stroke();
+      g.fillStyle = 'rgba(255,255,255,.15)'; g.fillRect(cx, cy, s, T*.03);
+    }
+  }
+  if (ch === 'M'){
+    hump(g, X + T*.62, Y + T*.84, T*.38, T*.58, mine ? '#6e6a66' : '#8e7050', 'rgba(40,35,30,.6)');
+    hump(g, X + T*.33, Y + T*.9, T*.3, T*.4, mine ? '#8a857e' : '#a3845e', 'rgba(50,40,30,.55)');
+    if (mine){ g.fillStyle = '#e3b54c'; for (let i = 0; i < 6; i++){ ell(g, X + T*(.3 + hash(x, y, i)*.5), Y + T*(.5 + hash(x, y, i + 9)*.35), T*.025, T*.025); g.fill(); } }
+  }
+  if (ch === 'X'){   // palisade
+    for (let i = 0; i < 5; i++){
+      const sx = X + T*(.04 + i*.19), w = T*.15;
+      g.fillStyle = i % 2 ? '#6e4e30' : '#7a5838';
+      g.beginPath(); g.moveTo(sx, Y + T*.95); g.lineTo(sx, Y + T*.2); g.lineTo(sx + w/2, Y + T*.04); g.lineTo(sx + w, Y + T*.2); g.lineTo(sx + w, Y + T*.95); g.closePath(); g.fill();
+      g.fillStyle = 'rgba(0,0,0,.2)'; g.fillRect(sx + w*.7, Y + T*.2, w*.3, T*.75);
+    }
+    g.fillStyle = '#c9a46a'; g.fillRect(X, Y + T*.38, T, T*.06); g.fillRect(X, Y + T*.7, T, T*.06);
+  }
+  if (ch === 'T') drawFort(g, X, Y, x, y);
+}
 function tokenFor(u, variant){
   const key = `${u.look}|${u.faction}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const L = LOOKS[u.look] || LOOKS.rebel, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
+  const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   g.fillStyle = F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, F.stitch, T*.5);
   const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);

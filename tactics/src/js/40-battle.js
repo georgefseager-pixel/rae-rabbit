@@ -2,7 +2,7 @@
 // runBattle(campKey, chapter, deployedRecords) plays one chapter and resolves with
 // {win, retreated, turn, survivors, lost}. Team 'p' is whoever the player controls
 // (rabbits or frogs); team 'e' is the AI.
-let B = null;   // {ch, campKey, pf, ef, kills, waves, resolve, done}
+let B = null;   // {ch (the stage), campKey, pf, ef, kills, waves, resolve, done}
 let MAP = [], COLS = 8, ROWS = 12;
 let units = [], turn = 1, phase = 'p', mode = 'idle', busy = false, bossTalked = false, nextId = 1;
 let sel = null, orig = null, reachMap = null, moveKeys = new Set(), atkKeys = new Set(), healKeys = new Set();
@@ -56,7 +56,7 @@ function freeTileNear(x, y){
 function runBattle(campKey, ch, records){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : []};
-  MAP = MAPS[ch.map]; ROWS = MAP.length; COLS = MAP[0].length;
+  mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
@@ -71,10 +71,10 @@ function runBattle(campKey, ch, records){
   showScreen('app'); resize(); refreshTop();
   return new Promise(res => { B.resolve = res; startPlayerPhase(); });
 }
-function finishBattle(win, retreated = false){
+function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
-  B.resolve({win, retreated, turn, survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -231,8 +231,8 @@ async function strike(a, d, f){
 async function doCombat(a, d){
   if ((a.boss || d.boss) && !bossTalked && B.ch.bossTalk){
     bossTalked = true;
-    const r = a.boss ? d : a, retort = CHARACTERS[r.key]?.retort;
-    await talk([...B.ch.bossTalk, ...(retort ? [{who: r.key, text: retort}] : [])]);
+    const r = a.boss ? d : a, retort = CHARACTERS[r.key]?.retort, answered = B.ch.bossTalk.some(l => l.who === r.key);
+    await talk([...B.ch.bossTalk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
   }
   const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
   if (D.can) seq.push([d, a, D]);
@@ -274,19 +274,19 @@ async function levelUp(u){
 function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u.key, u.look, 'panel')}</div>`; }
 function objectiveText(){
   const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
-  const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}.`
+  const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
   return `${goal} ${lord ? lord.name + ' must not fall.' : ''}`;
 }
 function unitHTML(u){
-  const t = ter(u.x, u.y), pct = u.hp/u.mhp*100;
+  const t = ter(u.x, u.y), tn = tileInfo(MAP[u.y][u.x])[0], pct = u.hp/u.mhp*100;
   const col = pct > 50 ? '#6fbf6a' : pct > 25 ? '#e0b44c' : '#e0533d';
   const note = u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
       <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0]}${note}</div>
-      <div class="tr">${t.n}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
+      <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
     </div></div>
     <div class="stats">${[[u.w === 'staff' ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -386,9 +386,9 @@ async function onTap(x, y){
     if (u){ inspect = u.team === 'e' && inspect !== u ? u : null; setPanel(unitHTML(u)); }
     else {
       inspect = null;
-      const t = ter(x, y), ch = MAP[y][x];
-      setPanel(`<div class="uhead"><span class="nm">${t.n}</span><span class="cl">${t.cost >= 99 ? 'Impassable' : `Move cost ${t.cost}`}</span></div>
-        <div class="hint"><em>${t.note}</em></div>
+      const t = ter(x, y), ch = MAP[y][x], [tn, note] = tileInfo(ch);
+      setPanel(`<div class="uhead"><span class="nm">${tn}</span><span class="cl">${t.cost >= 99 ? 'Impassable' : `Move cost ${t.cost}`}</span></div>
+        <div class="hint"><em>${note}</em></div>
         <div class="hint">${t.def || t.avo ? `Units here gain <b>+${t.def} Def</b> and <b>+${t.avo} Avoid</b>.` : 'No cover.'}${ch === 'F' ? ' Mounted units pay 3 to enter.' : ''}${ch === 'M' ? ' Mounted and armoured units cannot climb.' : ''}</div>`);
     }
     refreshTop(); return;
@@ -431,6 +431,8 @@ async function fortHeal(t){
   await wait(300);
 }
 async function startPlayerPhase(){
+  const ob = B.ch.objective;
+  if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
   refreshTop(); panelIdle();

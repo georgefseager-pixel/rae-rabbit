@@ -7,20 +7,21 @@ function showScreen(id){
 const campOf = () => CAMPAIGNS[SAVE.current];
 const stOf = () => SAVE.camps[SAVE.current];
 const otherCamp = ck => Object.keys(CAMPAIGNS).find(k => k !== ck);
-const objectiveLabel = ob => ob.type === 'boss' ? 'Defeat the commander' : ob.type === 'survive' ? `Survive ${ob.turns} turns` : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? `Survive ${ob.turns} turns` : 'Rout the enemy';
 function chapterRef(id){
-  const f = findChapter(id); if (!f) return id;
-  return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${ROMAN(f.i + 1)}. ${f.ch.title}`;
+  const f = findStage(id); if (!f) return id;
+  return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
 }
+const stageLabel = sg => sg.stub ? sg.chapter.title : `${sg.chapter.title.replace('Chapter ', 'Ch. ')}, Stage ${sg.si + 1}`;
 function progressLabel(ck){
-  const chs = CAMPAIGNS[ck].chapters.filter(c => !c.stub), done = SAVE.camps[ck].cleared.length;
-  const i = currentChapterIndex(ck), s = chapterState(ck, i).s;
+  const chs = CAMPAIGNS[ck].stages.filter(c => !c.stub), done = SAVE.camps[ck].cleared.length;
+  const i = currentStageIndex(ck), s = stageState(ck, i).s;
   return s === 'gate' ? `${done}/${chs.length} · waiting` : `${done}/${chs.length} cleared`;
 }
 
 // ---------- Hub ----------
 function nodeHTML(ck, ch, i){
-  const st = chapterState(ck, i), n = ROMAN(i + 1);
+  const st = stageState(ck, i), n = ch.stub ? '…' : ch.si + 1;
   const conv = ch.convergence ? `<span class="chip conv">Convergence · ${ch.convergence}</span>` : '';
   if (st.s === 'done'){
     const bonus = ch.bonus ? (SAVE.flags[ch.bonus.flag] ? `<span class="chip bonus">★ ${ch.bonus.text}</span>` : '') : '';
@@ -31,10 +32,10 @@ function nodeHTML(ck, ch, i){
       <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${conv}${ch.bonus ? `<span class="chip bonus">Bonus: ${ch.bonus.text}</span>` : ''}</div>
       <button class="btn primary" data-play="${i}" type="button">Prepare for Battle</button></div></div>`;
   if (st.s === 'gate'){
-    const other = findChapter(st.missing[0]).camp;
+    const other = findStage(st.missing[0]).camp;
     return `<div class="node"><div class="pin gate">${n}</div><div class="ncard">
       <h3>${ch.title}</h3><div class="chips">${conv}</div>
-      <div class="gatebox"><span>The stories meet here. Before this chapter can begin, the other side must reach the same moment. Clear <b>${st.missing.map(chapterRef).join('</b> and <b>')}</b>.</span>
+      ${ch.stub ? `<div class="nmeta">${ch.brief}</div>` : ''}<div class="gatebox"><span>The stories meet here. Before this can begin, the other side must reach the same moment. Clear <b>${st.missing.map(chapterRef).join('</b> and <b>')}</b>.</span>
       <button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div></div></div>`;
   }
   if (st.s === 'stub') return `<div class="node"><div class="pin stub">${n}</div><div class="ncard dim"><h3>${ch.title}</h3><div class="nmeta">${ch.brief}</div></div></div>`;
@@ -51,12 +52,12 @@ function renderHub(){
       `<button class="f-${c.faction}${k === ck ? ' on' : ''}" data-camp="${k}" role="tab" aria-selected="${k === ck}" type="button">${FACTIONS[c.faction].name}<small>${progressLabel(k)}</small></button>`).join('')}</div>
     <div class="hero f-${camp.faction}">
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
-      <div><h2>${camp.name}</h2><div class="tagl">${camp.tagline}</div>
+      <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         <button class="btn" data-go="army" type="button">Army &amp; Armoury</button></div>
     </div>
-    <div class="sec">Chapters</div>
-    <div class="track">${camp.chapters.map((ch, i) => nodeHTML(ck, ch, i)).join('')}</div>
+    ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
+      <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
   </div>`;
   showScreen('hub');
 }
@@ -132,7 +133,7 @@ function recruit(cls){
 // ---------- Battle preparation ----------
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
-  const ch = CAMPAIGNS[ck].chapters[i], alive = living(ck);
+  const ch = CAMPAIGNS[ck].stages[i], alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
   const order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
   if (!prep || prep.ck !== ck || prep.i !== i) prep = {ck, i, picks: new Set(order.slice(0, max).map(r => r.uid))};
@@ -140,11 +141,11 @@ function openPrep(ck, i){
   renderPrep();
 }
 function renderPrep(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.chapters[i], alive = living(ck);
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
-    <div class="brief"><div class="kick">${camp.name} · Chapter ${ROMAN(i + 1)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
+    <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
       <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${ch.bonus ? `<span class="chip bonus">Bonus: ${ch.bonus.text}</span>` : ''}</div></div>
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     <div class="ulist">${order.map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
@@ -153,7 +154,7 @@ function renderPrep(){
   showScreen('prep');
 }
 function togglePick(uid){
-  const ch = CAMPAIGNS[prep.ck].chapters[prep.i], rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
+  const ch = CAMPAIGNS[prep.ck].stages[prep.i], rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
   if (!rec) return;
   if (rec.lord){ toast(`${rec.name} leads every battle.`); return; }
   if (prep.picks.has(uid)) prep.picks.delete(uid);
@@ -164,9 +165,10 @@ function togglePick(uid){
 
 // ---------- Playing a chapter ----------
 async function playChapter(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.chapters[i], st = SAVE.camps[ck];
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
   await talk(ch.pre);
+  if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   const res = await runBattle(ck, ch, recs);
   const kills = B.kills;
   if (!res.win){
@@ -196,12 +198,12 @@ async function playChapter(){
 }
 
 function renderResult(r){
-  const camp = CAMPAIGNS[r.ck], ch = camp.chapters[r.i], F = FACTIONS[camp.faction];
+  const camp = CAMPAIGNS[r.ck], ch = camp.stages[r.i], F = FACTIONS[camp.faction];
   let html;
   if (r.win){
-    const other = otherCamp(r.ck), opened = CAMPAIGNS[other].chapters
-      .map((c, j) => ({c, j})).filter(({c, j}) => (c.requires || []).includes(ch.id) && chapterState(other, j).s === 'next');
-    html = `<div class="brief"><div class="kick">Victory · ${camp.name} · Chapter ${ROMAN(r.i + 1)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
+    const other = otherCamp(r.ck), opened = CAMPAIGNS[other].stages
+      .map((c, j) => ({c, j})).filter(({c, j}) => (c.requires || []).includes(ch.id) && stageState(other, j).s === 'next');
+    html = `<div class="brief"><div class="kick">Victory · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
@@ -213,7 +215,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : `${CHARACTERS[camp.lord].name} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : `${speakerName(camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;
@@ -241,10 +243,10 @@ document.addEventListener('click', e => {
 });
 
 // ---------- Title ----------
+// How the two-campaign structure works, shown once when a new game starts.
 const INTRO = [
-  {who: 'narr', text: 'This is a chronicle of one war, told from both sides of it.'},
-  {who: 'narr', text: 'Lead the Raepublic or the Friggliarchy, and switch between them whenever you like.'},
-  {who: 'narr', text: 'At certain crossroads the two stories meet. Neither can go on until both have reached that moment.'},
+  {who: 'narr', text: 'There are two stories here: the Raepublic and the Friggliarchy. Switch between them whenever you like.'},
+  {who: 'narr', text: 'Sometimes the stories meet. When they do, neither can go on until both have reached that point.'},
 ];
 $('#contBtn').addEventListener('click', () => {
   SAVE = SAVE || Store.load();
@@ -253,7 +255,7 @@ $('#contBtn').addEventListener('click', () => {
 });
 $('#newBtn').addEventListener('click', async e => {
   if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again to erase your save')) return;
-  SAVE = newSave(); saveGame(); prep = null;
+  newSave(); saveGame(); prep = null;
   $('#title').hidden = true; renderHub();
   await talk(INTRO);
 });

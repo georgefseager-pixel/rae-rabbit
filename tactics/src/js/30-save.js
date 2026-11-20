@@ -11,12 +11,22 @@ function scaledStats(cls, lv, bonus){
 }
 function recordFor(key){
   const c = CHARACTERS[key];
-  return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: key, lv: c.lv, exp: 0, stats: {...c.stats},
+  return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},
           wtier: 0, wname: c.wname || CLASSES[c.cls].wname, lord: !!c.lord, dead: false};
 }
 function newSave(){
-  return {v: 1, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
+  SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
+  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, 2));
+  return SAVE;
+}
+// Story renames (Rabbit becomes Rae Rabbit). Speakers in later scenes pick the new name up from the roster.
+function applyRename(ck, map){
+  for (const [key, name] of Object.entries(map || {})) for (const r of SAVE.camps[ck].roster) if (r.key === key) r.name = name;
+}
+function speakerName(who){
+  for (const c of Object.values(SAVE?.camps || {})){ const r = c.roster.find(r => r.key === who); if (r) return r.name; }
+  return SPEAKERS[who]?.name || '';
 }
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
@@ -24,25 +34,25 @@ const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[rec.cls].g;
 const weaponName = rec => WEAPON_TIERS[rec.wtier || 0].prefix + rec.wname;
 const living = campKey => SAVE.camps[campKey].roster.filter(r => !r.dead);
 
-function findChapter(id){
+function findStage(id){
   for (const [camp, c] of Object.entries(CAMPAIGNS)){
-    const i = c.chapters.findIndex(ch => ch.id === id);
-    if (i >= 0) return {camp, i, ch: c.chapters[i]};
+    const i = c.stages.findIndex(s => s.id === id);
+    if (i >= 0) return {camp, i, st: c.stages[i]};
   }
   return null;
 }
 // done | next | gate (waiting on the other story) | stub (not written yet) | future
-function chapterState(campKey, i){
-  const camp = CAMPAIGNS[campKey], ch = camp.chapters[i], st = SAVE.camps[campKey];
-  if (st.cleared.includes(ch.id)) return {s: 'done'};
-  if (i > 0 && !st.cleared.includes(camp.chapters[i - 1].id)) return {s: 'future'};
-  if (ch.stub) return {s: 'stub'};
-  const missing = (ch.requires || []).filter(r => !isCleared(r));
-  return missing.length ? {s: 'gate', missing} : {s: 'next'};
+function stageState(campKey, i){
+  const camp = CAMPAIGNS[campKey], sg = camp.stages[i], st = SAVE.camps[campKey];
+  if (st.cleared.includes(sg.id)) return {s: 'done'};
+  if (i > 0 && !st.cleared.includes(camp.stages[i - 1].id)) return {s: 'future'};
+  const missing = (sg.requires || []).filter(r => !isCleared(r));
+  if (missing.length) return {s: 'gate', missing};
+  return sg.stub ? {s: 'stub'} : {s: 'next'};
 }
-function currentChapterIndex(campKey){
-  const n = CAMPAIGNS[campKey].chapters.length;
-  for (let i = 0; i < n; i++) if (chapterState(campKey, i).s !== 'done') return i;
+function currentStageIndex(campKey){
+  const n = CAMPAIGNS[campKey].stages.length;
+  for (let i = 0; i < n; i++) if (stageState(campKey, i).s !== 'done') return i;
   return n - 1;
 }
 
@@ -53,10 +63,10 @@ function recruitLevel(campKey){
   const lv = living(campKey).map(r => r.lv);
   return Math.max(1, Math.floor(lv.reduce((a, b) => a + b, 0)/lv.length) - 1);
 }
-function makeRecruit(campKey, cls){
+function makeRecruit(campKey, cls, fixedLv){
   const st = SAVE.camps[campKey], faction = CAMPAIGNS[campKey].faction, used = new Set(st.roster.map(r => r.name));
   const name = RECRUIT_NAMES[faction].find(n => !used.has(n)) || `${CLASSES[cls].name} ${st.recruited + 1}`;
-  const lv = recruitLevel(campKey);
+  const lv = fixedLv || recruitLevel(campKey);
   st.recruited++;
   return {uid: `${cls}-${Date.now().toString(36)}-${st.recruited}`, key: 'recruit', name, faction, cls, look: CLASS_LOOK[cls],
           lv, exp: 0, stats: scaledStats(cls, lv), wtier: 0, wname: CLASSES[cls].wname, lord: false, dead: false};

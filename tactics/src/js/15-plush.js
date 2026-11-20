@@ -70,7 +70,7 @@ function frog(g, cx, cy, s, L){
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
   const by = cy + .15*s;
   if (L.gear === 'hood'){   // drawn behind the body
-    g.fillStyle = '#3e2a52'; g.beginPath(); g.ellipse(cx, cy - .05*s, 1.3*s, 1.15*s, 0, Math.PI*.92, Math.PI*2.08); g.closePath(); g.fill();
+    g.fillStyle = L.hood || '#3e2a52'; g.beginPath(); g.ellipse(cx, cy - .05*s, 1.3*s, 1.15*s, 0, Math.PI*.92, Math.PI*2.08); g.closePath(); g.fill();
     g.beginPath(); g.ellipse(cx, cy - .05*s, 1.3*s, 1.15*s, 0, Math.PI*.92, Math.PI*2.08); stitchStroke(g, '#c9a8e0', s, .7);
   }
   const gr = g.createRadialGradient(cx - .3*s, by - .4*s, s*.1, cx, by, s*1.3);
@@ -132,6 +132,15 @@ function frog(g, cx, cy, s, L){
       g.fillStyle = '#e6d2a0'; ell(g, cx, by + .62*s, .14*s, .14*s); g.fill();
       g.fillStyle = '#7a5aa0'; for (const a of [0, 1.26, 2.51, 3.77, 5.03]){ ell(g, cx + Math.cos(a)*.13*s, by + .62*s + Math.sin(a)*.13*s, .07*s, .07*s); g.fill(); }
       break;
+    case 'cap': {   // overseer's peaked cap, with a tally-mark badge
+      g.fillStyle = '#1e1a22'; g.beginPath(); g.ellipse(cx, cy - .74*s, .62*s, .3*s, 0, Math.PI, 0); g.closePath(); g.fill();
+      g.fillStyle = '#2c2630'; g.fillRect(cx - .62*s, cy - .78*s, 1.24*s, .14*s);
+      g.fillStyle = '#121014'; g.beginPath(); g.ellipse(cx + .1*s, cy - .62*s, .7*s, .12*s, .05, 0, Math.PI); g.fill();
+      g.fillStyle = '#d9b04a'; ell(g, cx, cy - .86*s, .12*s, .12*s); g.fill();
+      g.strokeStyle = '#3a2a10'; g.lineWidth = s*.025; for (const k of [-.05, 0, .05]){ g.beginPath(); g.moveTo(cx + k*s, cy - .93*s); g.lineTo(cx + k*s, cy - .79*s); g.stroke(); }
+      g.strokeStyle = '#3b2a1e'; g.lineWidth = s*.07; g.beginPath(); g.moveTo(cx + .95*s, by + .1*s); g.quadraticCurveTo(cx + 1.4*s, by - .4*s, cx + 1.15*s, by - .95*s); g.stroke();
+      break;
+    }
     case 'kettle': {
       const hg = g.createLinearGradient(cx, cy - 1.15*s, cx, cy - .7*s); hg.addColorStop(0, '#d6dbe2'); hg.addColorStop(1, '#7c838e');
       g.fillStyle = hg; g.beginPath(); g.ellipse(cx, cy - .76*s, .42*s, .36*s, 0, Math.PI, 0); g.closePath(); g.fill();
@@ -174,14 +183,14 @@ function mouse(g, cx, cy, s, L){
 }
 
 function drawPlush(g, look, cx, cy, s){
-  const L = LOOKS[look] || LOOKS.rebel;
+  const L = LOOKS[look] || LOOKS.worker;
   ({bun: bunny, frog, mouse})[L.sp](g, cx, cy, s, L);
 }
 const portraitCache = {};
 function plushPortrait(look){
   if (portraitCache[look]) return portraitCache[look];
   const c = document.createElement('canvas'); c.width = 300; c.height = 360;
-  const L = LOOKS[look] || LOOKS.rebel;
+  const L = LOOKS[look] || LOOKS.worker;
   drawPlush(c.getContext('2d'), look, 150, L.sp === 'bun' ? 175 : 200, L.sp === 'bun' ? 92 : 100);
   return portraitCache[look] = c.toDataURL();
 }

@@ -1,31 +1,67 @@
-// ================= Dialogue & level-up cards =================
-// Lines: {who, text, if?:flag, unless?:flag}. Lines whose flag test fails are skipped.
+// ================= Story scenes, dialogue & level-up cards =================
+// talk(lines) plays a list of scene lines (see 25-data-campaign.js). If any line sets a {scene},
+// it plays as a full story scene with a backdrop and characters on stage; otherwise it is a short
+// exchange over the battlefield (boss lines).
 const linesFor = lines => (lines || []).filter(l => (!l.if || SAVE.flags[l.if]) && (!l.unless || !SAVE.flags[l.unless]));
+
+function actorHTML(who, side){
+  const sp = SPEAKERS[who];
+  if (!sp) return '';
+  const art = ART[who]?.portrait;
+  if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
+  return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
+}
 
 function talk(rawLines){
   const lines = linesFor(rawLines);
   if (!lines.length) return Promise.resolve();
+  const sceneMode = lines.some(l => l.scene || l.card);
   return new Promise(res => {
     const ov = $('#talk'), txt = $('#ttext'), box = $('#tbody'), por = $('#tpor'), nm = $('#tname'), skip = $('#skip');
+    const card = $('#tcard'), wrap = $('#tboxWrap'), actors = {L: $('#actorL'), R: $('#actorR')}, onStage = {L: null, R: null};
     let i = -1, typing = null, full = '';
-    const finish = () => { ov.hidden = true; skip.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
+    ov.classList.toggle('scene', sceneMode);
+    for (const a of Object.values(actors)){ a.className = a.className.replace(/ on| dim/g, ''); a.innerHTML = ''; }
+    const finish = () => { ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
     const show = () => {
       i++; if (i >= lines.length) return finish();
-      const l = lines[i], sp = SPEAKERS[l.who] || SPEAKERS.narr, narr = l.who === 'narr';
-      box.className = 'tbody' + (narr ? ' narr' : '');
-      por.hidden = narr; nm.hidden = narr;
-      if (!narr){
-        por.className = 'tpor f-' + sp.faction;
-        por.innerHTML = portraitInner(l.who, sp.look, 'talk');
-        nm.className = 'tname f-' + sp.faction; nm.textContent = sp.name;
+      const l = lines[i];
+      if (l.scene){   // change the backdrop and clear the stage
+        $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
+        for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
+        anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);
+        return show();
       }
+      if (l.card){
+        card.hidden = false; wrap.hidden = true; $('#tc1').textContent = l.card; $('#tc2').textContent = l.sub || '';
+        anim(card, [{opacity: 0}, {opacity: 1}], 600);
+        return;
+      }
+      card.hidden = true; wrap.hidden = false;
+      const narr = l.who === 'narr', sp = SPEAKERS[l.who] || SPEAKERS.narr;
+      box.className = 'tbody' + (narr ? ' narr' : '') + (l.thought ? ' thought' : '');
+      nm.hidden = narr;
+      if (!narr){
+        nm.className = 'tname f-' + sp.faction; nm.textContent = l.as || speakerName(l.who);
+        por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, sp.look, 'talk');
+        if (sceneMode){
+          // The lead stands on the left; whoever she is talking to stands on the right.
+          const side = l.who === CAMPAIGNS.rae.lord ? 'L' : 'R';
+          if (onStage[side] !== l.who){
+            onStage[side] = l.who; actors[side].innerHTML = actorHTML(l.who, side);
+            anim(actors[side], [{opacity: 0, transform: `translateX(${side === 'L' ? -30 : 30}px)`}, {opacity: 1, transform: 'none'}], 300);
+          }
+          actors[side].classList.add('on'); actors[side].classList.remove('dim');
+          const other = side === 'L' ? 'R' : 'L'; if (onStage[other]) actors[other].classList.add('dim');
+        }
+      } else if (sceneMode){ for (const s of ['L', 'R']) if (onStage[s]) actors[s].classList.add('dim'); }
       full = l.text; let n = 0; txt.textContent = '';
       clearInterval(typing);
       typing = setInterval(() => { n += 2; txt.textContent = full.slice(0, n); if (n >= full.length){ clearInterval(typing); typing = null; } }, 22);
     };
     ov.onclick = () => { if (typing){ clearInterval(typing); typing = null; txt.textContent = full; } else show(); };
     skip.onclick = e => { e.stopPropagation(); finish(); };
-    ov.hidden = false; skip.hidden = false; show();
+    ov.hidden = false; skip.hidden = false; card.hidden = true; wrap.hidden = false; show();
   });
 }
 
@@ -35,7 +71,7 @@ function showLevelUp(u, ups){
   $('#lvlCard').innerHTML = `<div class="urow"><div class="por f-${u.faction}">${portraitInner(u.key, u.look, 'panel')}</div>
     <div class="uinfo"><h1>LEVEL UP</h1><h2>${u.name} · Level ${u.lv}</h2></div></div>
     <div class="lv">${STAT_KEYS.map(s => `<div class="${ups[s] ? 'up' : ''}"><small>${label[s]}</small>${u[s]}${ups[s] ? ' ▲' : ''}</div>`).join('')}</div>
-    <p class="meta">The cause grows stronger. Tap to continue.</p>`;
+    <p class="meta">Tap to continue.</p>`;
   $('#lvl').hidden = false;
   return new Promise(res => {
     const done = () => { $('#lvl').hidden = true; $('#lvl').removeEventListener('click', done); clearTimeout(tm); res(); };

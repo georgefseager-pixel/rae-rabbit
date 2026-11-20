@@ -279,6 +279,61 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   padding:10px 16px;border-radius:8px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.5);outline:1px dashed var(--thread);outline-offset:-4px;max-width:86vw;text-align:center}
 #menu .card .btn{width:100%}
 
+/* ================= Story scenes ================= */
+.chead{display:flex;align-items:baseline;gap:10px;font-family:var(--fell-i);font-style:italic;font-size:18px;color:var(--brass-hi);margin:6px 0 -2px}
+.chead span{font-family:var(--fell);font-style:normal;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+#talk{overflow:hidden}
+.sbg{position:absolute;inset:0;display:none}
+#talk.scene{background:#0b0807}
+#talk.scene .sbg{display:block}
+.splace{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));left:max(16px, env(safe-area-inset-left, 0px));font-family:var(--fell);font-size:13px;letter-spacing:.2em;
+  text-transform:uppercase;color:#e8d8b4;text-shadow:0 2px 6px rgba(0,0,0,.8);display:none;max-width:calc(100% - 110px)}
+#talk.scene .splace{display:block}
+.actor{position:absolute;bottom:150px;height:min(58vh, 520px);width:62%;display:none;align-items:flex-end;pointer-events:none;transition:filter .25s, opacity .25s, transform .25s}
+#talk.scene .actor.on{display:flex}
+.actor.L{left:-4%;justify-content:flex-start}.actor.R{right:-4%;justify-content:flex-end}
+.actor img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(0,0,0,.7))}
+.actor img.plush{max-height:62%;max-width:90%}
+.actor.R img.flip{transform:scaleX(-1)}
+.actor.dim{filter:brightness(.38) saturate(.6);transform:translateY(8px)}
+#talk.scene .tpor{display:none}
+#talk.scene .tname{left:18px}
+.tbody.thought .ttext{font-style:italic;color:#c9bfe0}
+.tcard{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(ellipse at 50% 50%, #2a1210, #070505 75%);z-index:3;text-align:center;padding:24px}
+.tc1{font-family:var(--fell);font-size:15px;letter-spacing:.34em;text-transform:uppercase;color:var(--brass-hi)}
+.tc2{font-family:var(--stencil);font-size:clamp(40px, 13vw, 72px);line-height:1;color:var(--cream);text-shadow:0 3px 0 #6e1b16}
+.tcard::after{content:"";width:min(260px,70%);height:10px;background:var(--red);clip-path:polygon(0 30%,3% 0,97% 10%,100% 45%,98% 100%,2% 85%)}
+/* backdrops */
+.sbg[data-bg=yard]{background:
+  linear-gradient(180deg, transparent 52%, rgba(0,0,0,.25) 52.4%, transparent 53%),
+  repeating-linear-gradient(90deg, #2b1e15 0 16px, #3a2a1d 16px 18px, transparent 18px 26px) 0 33%/100% 22% no-repeat,
+  linear-gradient(180deg,#4a4e66 0%,#9c7a68 34%,#c99a6e 46%,#5e4630 52%,#3a2a1e 70%,#1d140f 100%)}
+.sbg[data-bg=yard]::after{content:"";position:absolute;left:0;right:0;top:30%;height:6%;
+  background:linear-gradient(135deg, transparent 50%, #2b1e15 50%) 0 0/26px 100% repeat-x, linear-gradient(225deg, transparent 50%, #2b1e15 50%) 13px 0/26px 100% repeat-x;opacity:.9}
+.sbg[data-bg=mine]{background:
+  radial-gradient(ellipse 40% 30% at 30% 30%, rgba(255,176,80,.45), transparent 70%),
+  radial-gradient(ellipse 30% 22% at 78% 40%, rgba(255,150,60,.25), transparent 70%),
+  linear-gradient(90deg, transparent 8%, #3b2616 8% 12%, transparent 12% 88%, #3b2616 88% 92%, transparent 92%),
+  linear-gradient(180deg, #3b2616 0 4%, transparent 4%),
+  repeating-radial-gradient(circle at 20% 80%, rgba(255,255,255,.02) 0 3px, transparent 3px 9px),
+  linear-gradient(180deg,#2a1c14,#160e09 60%,#0d0806)}
+.sbg[data-bg=quarters]{background:
+  radial-gradient(ellipse 22% 16% at 70% 26%, rgba(255,190,110,.35), transparent 70%),
+  repeating-linear-gradient(0deg, transparent 0 46px, rgba(0,0,0,.35) 46px 48px),
+  repeating-linear-gradient(90deg, transparent 0 120px, rgba(0,0,0,.25) 120px 124px),
+  linear-gradient(180deg,#24233a,#16151f 60%,#0c0b12)}
+.sbg[data-bg=gallows]{background:
+  linear-gradient(#0e0806,#0e0806) 62% 14%/7px 40% no-repeat,
+  linear-gradient(#0e0806,#0e0806) 50% 14%/24% 7px no-repeat,
+  linear-gradient(#0e0806,#0e0806) 41% 15%/3px 12% no-repeat,
+  linear-gradient(#0e0806,#0e0806) 50% 52%/48% 6% no-repeat,
+  linear-gradient(180deg,#3a1414 0%,#a2462a 30%,#e0904a 44%,#3a2016 54%,#1a0f0b 100%)}
+.sbg[data-bg=woods]{background:
+  radial-gradient(ellipse 60% 20% at 50% 62%, rgba(200,220,200,.18), transparent 70%),
+  linear-gradient(90deg, transparent 6%, #10180f 6% 11%, transparent 11% 27%, #121b10 27% 31%, transparent 31% 68%, #0f170e 68% 74%, transparent 74% 88%, #131c11 88% 92%, transparent 92%),
+  linear-gradient(180deg,#26341f,#1a2716 40%,#2a3a24 58%,#0e140c 100%)}
+.sbg[data-bg=legend]{background:radial-gradient(ellipse at 50% 60%, #5a1610, #1a0806 70%)}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -319,10 +374,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   <div class="tl">
     <img class="art" id="titleArt" alt="Rae Rabbit in patchwork armour, holding a sword, red scarf flowing">
     <div class="txt">
-      <div class="kicker">A Chronicle of the Toybox War</div>
       <h1 class="logo">RAEPUBLIC</h1>
       <div class="rule"></div>
-      <p class="tag">Soft things are hard to break.</p>
       <div class="tbtns">
         <button class="btn primary" id="contBtn" type="button">Continue</button>
         <button class="btn" id="newBtn" type="button">New Campaign</button>
@@ -331,7 +384,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   </div>
 </div>
 <div class="ov" id="talk" hidden>
-  <div class="tbox"><div class="tpor" id="tpor"></div><div class="tname" id="tname"></div>
+  <div class="sbg" id="sbg"></div>
+  <div class="splace" id="splace"></div>
+  <div class="actor L" id="actorL"></div><div class="actor R" id="actorR"></div>
+  <div class="tcard" id="tcard" hidden><div class="tc1" id="tc1"></div><div class="tc2" id="tc2"></div></div>
+  <div class="tbox" id="tboxWrap"><div class="tpor" id="tpor"></div><div class="tname" id="tname"></div>
     <div class="tbody" id="tbody"><div class="ttext" id="ttext"></div><div class="tmore">▼</div></div></div>
 </div>
 <button class="btn" id="skip" type="button" hidden>Skip</button>
@@ -361,7 +418,7 @@ function hash(x, y, s = 0){ let h = (x*374761393 + y*668265263 + s*1442695041) |
 // Per-viewer save slot. Browser storage can be missing or throw (private windows,
 // previews), so every access is guarded and the game still runs without it.
 const Store = {
-  key: 'raepublic-save-v1',
+  key: 'raepublic-save-v2',
   load(){ try { const s = localStorage.getItem(this.key); return s ? JSON.parse(s) : null; } catch (e){ return null; } },
   save(d){ try { localStorage.setItem(this.key, JSON.stringify(d)); } catch (e){} },
   clear(){ try { localStorage.removeItem(this.key); } catch (e){} },
@@ -427,27 +484,23 @@ const FACTIONS = {
 // ================= Classes =================
 // base = level 1 stats; g = growth % per level. Generic units scale from base by expected growth.
 const CLASSES = {
-  // Raepublic
-  captain:   {name: 'Banner-Captain', w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Darning Blade',     base: {mhp:20,atk:11,def:5, spd:8,skl:7,mov:5}, g: {mhp:70,atk:45,def:30,spd:50,skl:45}},
-  bulwark:   {name: 'Bulwark',        w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Knitting Lance',    base: {mhp:24,atk:12,def:10,spd:2,skl:5,mov:4}, g: {mhp:80,atk:45,def:55,spd:20,skl:35}},
-  outrider:  {name: 'Outrider',       w: 'sword', rng: [1,1], mt: 'mounted', wname: 'Pinking Sabre',     base: {mhp:21,atk:11,def:6, spd:7,skl:6,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:40}},
-  quarter:   {name: 'Quartermaster',  w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Elastic Longbow',   base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
-  mender:    {name: 'Mender',         w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Mending Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
-  breaker:   {name: 'Millbreaker',    w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Seam-Ripper Axe',   base: {mhp:26,atk:13,def:4, spd:5,skl:4,mov:5}, g: {mhp:85,atk:55,def:25,spd:35,skl:35}},
-  conscript: {name: 'Mill Hand',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Broom-Handle Pike', base: {mhp:18,atk:10,def:4, spd:5,skl:4,mov:5}, g: {mhp:65,atk:40,def:30,spd:40,skl:40}},
-  // Friggliarchy
-  prince:    {name: 'Crown Prince',   w: 'lance', rng: [1,1], mt: 'foot',    wname: 'The Black Tongue',  base: {mhp:21,atk:12,def:6, spd:7,skl:7,mov:5}, g: {mhp:70,atk:50,def:35,spd:45,skl:40}},
-  bruiser:   {name: 'Bog Bruiser',    w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Lilycleaver',       base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
-  lily:      {name: 'Lilyguard',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Reed Pike',         base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
-  reed:      {name: 'Reedshot',       w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Reedbow',           base: {mhp:17,atk:10,def:3, spd:5,skl:6,mov:5}, g: {mhp:55,atk:45,def:20,spd:40,skl:50}},
-  blade:     {name: 'Pond Duellist',  w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Pondsword',         base: {mhp:19,atk:11,def:4, spd:9,skl:8,mov:6}, g: {mhp:60,atk:40,def:25,spd:55,skl:55}},
-  toadknight:{name: 'Toad Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Reed Pike',         base: {mhp:25,atk:12,def:10,spd:2,skl:5,mov:4}, g: {mhp:85,atk:45,def:55,spd:15,skl:35}},
-  croaker:   {name: 'Court Croaker',  w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Silt Censer',       base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
-  baron:     {name: 'Baron of the Ford', w: 'axe', rng: [1,1], mt: 'bog',    wname: 'The Gilded Cleaver',base: {mhp:28,atk:14,def:5, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},
-  // Scrumbly mice
-  nibbler:   {name: 'Nibbler',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Pin Rapier',        base: {mhp:15,atk:9, def:2, spd:9,skl:7,mov:6}, g: {mhp:50,atk:35,def:15,spd:60,skl:50}},
-  slinger:   {name: 'Crumb Slinger',  w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Crumb Sling',       base: {mhp:14,atk:9, def:2, spd:8,skl:7,mov:5}, g: {mhp:45,atk:40,def:15,spd:55,skl:50}},
-  chewer:    {name: 'Rope Chewer',    w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Chewed Hatchet',    base: {mhp:18,atk:10,def:3, spd:6,skl:4,mov:5}, g: {mhp:70,atk:45,def:20,spd:40,skl:30}},
+  // Rabbits: mine workers with whatever they can grab
+  captain:   {name: 'Ringleader',     w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Stolen Sword',      base: {mhp:20,atk:11,def:5, spd:8,skl:7,mov:5}, g: {mhp:70,atk:45,def:30,spd:50,skl:45}},
+  digger:    {name: 'Digger',         w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Pickaxe',           base: {mhp:22,atk:11,def:4, spd:5,skl:4,mov:5}, g: {mhp:80,atk:50,def:25,spd:35,skl:35}},
+  hauler:    {name: 'Hauler',         w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Cart Prod',         base: {mhp:20,atk:10,def:6, spd:4,skl:5,mov:5}, g: {mhp:75,atk:40,def:45,spd:25,skl:35}},
+  pebbler:   {name: 'Slinger',        w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Pebble Sling',      base: {mhp:17,atk:9, def:3, spd:6,skl:7,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
+  patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
+  quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
+  // Frogs
+  lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
+  bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
+  reed:      {name: 'Tower Archer',   w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Reedbow',           base: {mhp:17,atk:10,def:3, spd:5,skl:6,mov:5}, g: {mhp:55,atk:45,def:20,spd:40,skl:50}},
+  blade:     {name: 'Duellist',       w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Pondsword',         base: {mhp:19,atk:11,def:4, spd:9,skl:8,mov:6}, g: {mhp:60,atk:40,def:25,spd:55,skl:55}},
+  toadknight:{name: 'Armoured Guard', w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Halberd',           base: {mhp:25,atk:12,def:10,spd:2,skl:5,mov:4}, g: {mhp:85,atk:45,def:55,spd:15,skl:35}},
+  croaker:   {name: 'Croaker',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Silt Censer',       base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  headsman:  {name: 'Executioner',    w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Headsman\'s Axe',   base: {mhp:26,atk:13,def:5, spd:4,skl:5,mov:4}, g: {mhp:80,atk:50,def:30,spd:25,skl:35}},
+  overseer:  {name: 'Overseer',       w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Tally Club',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
 const STAT_KEYS = ['mhp','atk','def','spd','skl'];
 const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff'};
@@ -465,81 +518,65 @@ const TRAIN = {cost: 150, exp: 40};   // Drill Yard: spend currency for experien
 // ================= Plush looks (placeholder art drawn in code) =================
 // Used for tokens everywhere, and for portraits until real art exists in art/.
 const LOOKS = {
-  // Raepublic
+  // Rabbits
   rae:       {sp:'bun', ears:'lop', fur:'#e2c79c', light:'#f4e3c2', dark:'#9c8058', scarf:'#b5302a', gear:'fist'},
-  thimble:   {sp:'bun', ears:'lop', fur:'#8f8279', light:'#b2a69c', dark:'#5a4f48', scarf:'#2e3d66', gear:'helm'},
-  clover:    {sp:'bun', ears:'up',  fur:'#c99a6c', light:'#e3bf96', dark:'#87613f', scarf:'#2e3d66', gear:'shoe'},
-  willow:    {sp:'bun', ears:'up',  fur:'#a9a8a6', light:'#cfcecb', dark:'#6c6b69', scarf:'#5b2a52', gear:'monocle'},
-  flopsy:    {sp:'bun', ears:'lop', fur:'#d4b48c', light:'#ead2ae', dark:'#977651', scarf:'#d77a8c', gear:'heart', small:true},
-  bramble:   {sp:'bun', ears:'up',  fur:'#7a5538', light:'#9c7452', dark:'#4a3220', scarf:'#b5302a', gear:'bandana', band:'#3b2a6b'},
-  pip:       {sp:'bun', ears:'lop', fur:'#c7b49a', light:'#e0d2bc', dark:'#8a7860', scarf:'#7a5a3a', gear:'none', small:true},
-  rebel:     {sp:'bun', ears:'up',  fur:'#b08a64', light:'#cfae88', dark:'#755a3e', scarf:'#b5302a', gear:'none'},
-  rebelLead: {sp:'bun', ears:'lop', fur:'#d8c2a0', light:'#efdfc4', dark:'#9a8462', scarf:'#b5302a', gear:'fist'},
-  rebelBow:  {sp:'bun', ears:'lop', fur:'#9c9a96', light:'#c4c2be', dark:'#62605c', scarf:'#5b2a52', gear:'none'},
-  rebelBrute:{sp:'bun', ears:'up',  fur:'#6e4a30', light:'#8e6a4c', dark:'#422c1a', scarf:'#b5302a', gear:'bandana', band:'#b5302a'},
-  rebelRider:{sp:'bun', ears:'up',  fur:'#bfa07a', light:'#dcc0a0', dark:'#806444', scarf:'#2e3d66', gear:'shoe'},
-  rebelMender:{sp:'bun',ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#d77a8c', gear:'heart'},
-  rebelShield:{sp:'bun',ears:'lop', fur:'#8a7c70', light:'#ab9e92', dark:'#564a40', scarf:'#2e3d66', gear:'helm'},
-  // Friggliarchy
-  fraggle:   {sp:'frog', skin:'#2c2c33', light:'#4c4c58', dark:'#0b0b0e', belly:'#5d5d68', eye:'#e02424', gear:'circlet'},
-  king:      {sp:'frog', skin:'#3d6b2c', light:'#5f8f45', dark:'#1e3a12', belly:'#c9d98e', gear:'crown', big:true},
-  jiggle:    {sp:'frog', skin:'#5b8a2f', light:'#7fae4c', dark:'#2b4415', belly:'#c9d98e', gear:'crown', big:true},
-  tiggle:    {sp:'frog', skin:'#7bc043', light:'#a1db6a', dark:'#3d6a1e', belly:'#d8ee9c', gear:'eyepatch', small:true},
-  murk:      {sp:'frog', skin:'#5a7a3a', light:'#7c9c58', dark:'#2c4019', belly:'#b9c98a', gear:'hood'},
-  gulp:      {sp:'frog', skin:'#4a7530', light:'#6a9448', dark:'#243c14', belly:'#a9c46c', gear:'collar', big:true},
-  lilyworth: {sp:'frog', skin:'#5e9a3c', light:'#80b85a', dark:'#2f5320', belly:'#bfd98a', gear:'kettle'},
-  quill:     {sp:'frog', skin:'#6f9440', light:'#92b25c', dark:'#36501c', belly:'#cddb94', gear:'reed'},
+  sister:    {sp:'bun', ears:'lop', fur:'#efe0c4', light:'#fbf3e3', dark:'#a8987a', gear:'none', small:true},
+  willow:    {sp:'bun', ears:'up',  fur:'#a9a8a6', light:'#cfcecb', dark:'#6c6b69', scarf:'#3f5a3a', gear:'monocle'},
+  tall:      {sp:'bun', ears:'up',  fur:'#b9a58c', light:'#d6c5ae', dark:'#7c6a54', scarf:'#6b5a48', gear:'none'},
+  burly:     {sp:'bun', ears:'up',  fur:'#7a5a42', light:'#9a7a60', dark:'#4a3424', gear:'bandana', band:'#5a4a3a', big:true},
+  old:       {sp:'bun', ears:'lop', fur:'#a8a29a', light:'#c8c2ba', dark:'#6a645c', scarf:'#4a4038', gear:'none'},
+  swift:     {sp:'bun', ears:'up',  fur:'#c9a06a', light:'#e3c094', dark:'#8a6a42', scarf:'#6b5a48', gear:'none', small:true},
+  patched:   {sp:'bun', ears:'lop', fur:'#d8c8b0', light:'#efe4d2', dark:'#9a8a72', scarf:'#7a6a58', gear:'heart'},
+  worker:    {sp:'bun', ears:'up',  fur:'#b08a64', light:'#cfae88', dark:'#755a3e', scarf:'#6b5a48', gear:'none'},
+  workerLop: {sp:'bun', ears:'lop', fur:'#9c9a96', light:'#c4c2be', dark:'#62605c', scarf:'#5a4a3a', gear:'none'},
+  workerBig: {sp:'bun', ears:'up',  fur:'#6e4a30', light:'#8e6a4c', dark:'#422c1a', gear:'bandana', band:'#5a4a3a'},
+  workerMend:{sp:'bun', ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#7a6a58', gear:'heart'},
+  // Frogs
+  rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
+  headsman:  {sp:'frog', skin:'#46603a', light:'#647e52', dark:'#1f2c18', belly:'#a9b68c', gear:'hood', hood:'#151214', big:true},
+  guard:     {sp:'frog', skin:'#5e8a3c', light:'#80aa5a', dark:'#2f4a1e', belly:'#bfd38a', gear:'kettle'},
   bruiser:   {sp:'frog', skin:'#4f7f33', light:'#6f9c48', dark:'#2a4519', belly:'#a9c46c', gear:'collar'},
-  lily:      {sp:'frog', skin:'#5e9a3c', light:'#80b85a', dark:'#2f5320', belly:'#bfd98a', gear:'lilypad'},
   reed:      {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed'},
   duelist:   {sp:'frog', skin:'#66a83e', light:'#8cc862', dark:'#33591d', belly:'#d0e79a', gear:'bandana', band:'#2e5f9a'},
-  toadknight:{sp:'frog', skin:'#557a36', light:'#76984f', dark:'#2a3f17', belly:'#b6c681', gear:'kettle'},
+  toadknight:{sp:'frog', skin:'#557a36', light:'#76984f', dark:'#2a3f17', belly:'#b6c681', gear:'kettle', big:true},
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
-  // Scrumbly mice
-  scrumbly:  {sp:'mouse', fur:'#ece7de', light:'#faf7f1', dark:'#9a948a', gear:'thimble', big:true},
-  mouse:     {sp:'mouse', fur:'#d9d4cb', light:'#f2eee8', dark:'#8f897f', gear:'none', scarf:'#5a7fa8'},
-  mouseSling:{sp:'mouse', fur:'#bdb4a8', light:'#dad3ca', dark:'#7a7268', gear:'bandana', band:'#8a5a2a'},
-  mouseBrute:{sp:'mouse', fur:'#9a9088', light:'#bab1a9', dark:'#5e5650', gear:'none', scarf:'#7a2a2a', big:true},
+  commander: {sp:'frog', skin:'#3d6b2c', light:'#5f8f45', dark:'#1e3a12', belly:'#c9d98e', gear:'circlet'},
 };
 const CLASS_LOOK = {
-  captain:'rebelLead', bulwark:'rebelShield', outrider:'rebelRider', quarter:'rebelBow', mender:'rebelMender', breaker:'rebelBrute', conscript:'rebel',
-  prince:'fraggle', bruiser:'bruiser', lily:'lily', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', baron:'jiggle',
-  nibbler:'mouse', slinger:'mouseSling', chewer:'mouseBrute',
+  captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb',
 };
 
 // ================= Named characters =================
-// Names marked (placeholder) are stand-ins until the real toys are cast.
-// crop: how the front portrait art is framed in the small panel and in dialogue.
+// Rabbits in the camps are not allowed names; the descriptors below are how the player tells them apart.
+// crop: how front-portrait art is framed in the small panel and in dialogue.
 const CHARACTERS = {
   // Raepublic
-  rae:     {name:'Rae Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true,
-            crop:{panel:['225% auto','33% 2%'], talk:['190% auto','33% 2%']}, retort:'Then come and try to hold me.'},
-  thimble: {name:'Thimble', faction:'rae', cls:'bulwark', lv:1, stats:{mhp:24,atk:12,def:10,spd:2,skl:5,mov:4}, retort:'I was made to stand in the way. I am standing in it.'},   // (placeholder)
-  clover:  {name:'Clover', faction:'rae', cls:'outrider', lv:1, stats:{mhp:21,atk:11,def:6,spd:7,skl:6,mov:7}, retort:'Made to be held? I was made to run.'},               // (placeholder)
-  willow:  {name:'Willow', faction:'rae', cls:'quarter', lv:1, stats:{mhp:18,atk:10,def:3,spd:7,skl:8,mov:5}, retort:'Noted. Firing.'},
-  flopsy:  {name:'Flopsy', faction:'rae', cls:'mender', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}, retort:'I was made to fix things. I will fix you.'},
-  bramble: {name:'Bramble', faction:'rae', cls:'breaker', lv:1, stats:{mhp:26,atk:13,def:4,spd:5,skl:4,mov:5}, retort:'I was made in a mill. Same as this axe.'},          // (placeholder)
-  pip:     {name:'Pip', faction:'rae', cls:'conscript', lv:2, stats:{mhp:19,atk:10,def:4,spd:6,skl:5,mov:5}, retort:'Four years at a loom. I can manage four minutes of you.'}, // (placeholder)
-  // Friggliarchy
-  fraggle: {name:'Fraggle Friggle', faction:'frog', cls:'prince', lv:3, stats:{mhp:23,atk:13,def:6,spd:8,skl:8,mov:5}, lord:true,
-            retort:'Order is not cruelty. It only looks like it from below.'},
-  tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'blade', lv:2, stats:{mhp:18,atk:11,def:4,spd:10,skl:9,mov:6}, retort:'Big brother says I am not allowed to lose.'},
-  murk:    {name:'Mother Murk', faction:'frog', cls:'croaker', lv:3, stats:{mhp:17,atk:5,def:3,spd:5,skl:6,mov:5}, retort:'The pond remembers everything, child.'},          // (placeholder)
-  gulp:    {name:'Gulp', faction:'frog', cls:'bruiser', lv:3, stats:{mhp:24,atk:13,def:4,spd:4,skl:3,mov:5}, retort:'Gulp.'},                                               // (placeholder)
-  lilyworth:{name:'Sir Lilyworth', faction:'frog', cls:'toadknight', lv:3, stats:{mhp:26,atk:12,def:10,spd:2,skl:5,mov:4}, retort:'I have held this line since before your mother was stitched.'}, // (placeholder)
-  quill:   {name:'Quill', faction:'frog', cls:'reed', lv:2, stats:{mhp:17,atk:10,def:3,spd:6,skl:8,mov:5}, retort:'Hold still. This is the polite part.'},                   // (placeholder)
+  rae:     {name:'Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true,
+            crop:{panel:['225% auto','33% 2%'], talk:['190% auto','33% 2%']}, retort:'Come and find out.'},
+  tall:    {name:'Tall Rabbit', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
+  burly:   {name:'Burly Rabbit', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
+  old:     {name:'Old Rabbit', faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
+  swift:   {name:'Swift Rabbit', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
+  patched: {name:'Patched Rabbit', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
+  willow:  {name:'Willow', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
+  // Friggliarchy (placeholder until the frog story is written)
+  frogcmd: {name:'Frog Commander', faction:'frog', look:'commander', cls:'lily', lv:3, stats:{mhp:23,atk:12,def:6,spd:6,skl:7,mov:5}, lord:true},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({
-  narr:     {name:''},
-  king:     {name:'King Friggle Fraggle', faction:'frog', look:'king'},
-  jiggle:   {name:'Baron Jiggle Jaggle', faction:'frog', look:'jiggle'},
-  scrumbly: {name:'Scrumbly', faction:'mouse', look:'scrumbly'},
-}, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: k}])));
+  narr:        {name:''},
+  sister:      {name:'Little Sister', faction:'rae', look:'sister'},
+  rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop'},
+  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
+  guard:       {name:'Guard', faction:'frog', look:'guard'},
+  executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
+}, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
+// Generic recruits. Camp rabbits have no names, so they are known by how they look.
 const RECRUIT_NAMES = {
-  rae:  ['Hazel', 'Tansy', 'Bracken', 'Sorrel', 'Juniper', 'Burdock', 'Teasel', 'Yarrow', 'Nettle', 'Campion', 'Sedge', 'Briar'],
-  frog: ['Glub', 'Murkle', 'Bogwort', 'Puddle', 'Ribbet', 'Sludge', 'Duckweed', 'Croakley', 'Mire', 'Pondsby', 'Squelch', 'Gloop'],
+  rae:  ['Grey Rabbit', 'Scarred Rabbit', 'Small Rabbit', 'Lop-Eared Rabbit', 'Dusty Rabbit', 'Quiet Rabbit', 'Long-Eared Rabbit', 'Spotted Rabbit', 'Sooty Rabbit', 'Bent-Eared Rabbit'],
+  frog: ['Glub', 'Murkle', 'Bogwort', 'Puddle', 'Ribbet', 'Sludge', 'Duckweed', 'Croakley', 'Mire', 'Pondsby'],
 };
 
 // ---------------- 15-plush.js ----------------
@@ -615,7 +652,7 @@ function frog(g, cx, cy, s, L){
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
   const by = cy + .15*s;
   if (L.gear === 'hood'){   // drawn behind the body
-    g.fillStyle = '#3e2a52'; g.beginPath(); g.ellipse(cx, cy - .05*s, 1.3*s, 1.15*s, 0, Math.PI*.92, Math.PI*2.08); g.closePath(); g.fill();
+    g.fillStyle = L.hood || '#3e2a52'; g.beginPath(); g.ellipse(cx, cy - .05*s, 1.3*s, 1.15*s, 0, Math.PI*.92, Math.PI*2.08); g.closePath(); g.fill();
     g.beginPath(); g.ellipse(cx, cy - .05*s, 1.3*s, 1.15*s, 0, Math.PI*.92, Math.PI*2.08); stitchStroke(g, '#c9a8e0', s, .7);
   }
   const gr = g.createRadialGradient(cx - .3*s, by - .4*s, s*.1, cx, by, s*1.3);
@@ -677,6 +714,15 @@ function frog(g, cx, cy, s, L){
       g.fillStyle = '#e6d2a0'; ell(g, cx, by + .62*s, .14*s, .14*s); g.fill();
       g.fillStyle = '#7a5aa0'; for (const a of [0, 1.26, 2.51, 3.77, 5.03]){ ell(g, cx + Math.cos(a)*.13*s, by + .62*s + Math.sin(a)*.13*s, .07*s, .07*s); g.fill(); }
       break;
+    case 'cap': {   // overseer's peaked cap, with a tally-mark badge
+      g.fillStyle = '#1e1a22'; g.beginPath(); g.ellipse(cx, cy - .74*s, .62*s, .3*s, 0, Math.PI, 0); g.closePath(); g.fill();
+      g.fillStyle = '#2c2630'; g.fillRect(cx - .62*s, cy - .78*s, 1.24*s, .14*s);
+      g.fillStyle = '#121014'; g.beginPath(); g.ellipse(cx + .1*s, cy - .62*s, .7*s, .12*s, .05, 0, Math.PI); g.fill();
+      g.fillStyle = '#d9b04a'; ell(g, cx, cy - .86*s, .12*s, .12*s); g.fill();
+      g.strokeStyle = '#3a2a10'; g.lineWidth = s*.025; for (const k of [-.05, 0, .05]){ g.beginPath(); g.moveTo(cx + k*s, cy - .93*s); g.lineTo(cx + k*s, cy - .79*s); g.stroke(); }
+      g.strokeStyle = '#3b2a1e'; g.lineWidth = s*.07; g.beginPath(); g.moveTo(cx + .95*s, by + .1*s); g.quadraticCurveTo(cx + 1.4*s, by - .4*s, cx + 1.15*s, by - .95*s); g.stroke();
+      break;
+    }
     case 'kettle': {
       const hg = g.createLinearGradient(cx, cy - 1.15*s, cx, cy - .7*s); hg.addColorStop(0, '#d6dbe2'); hg.addColorStop(1, '#7c838e');
       g.fillStyle = hg; g.beginPath(); g.ellipse(cx, cy - .76*s, .42*s, .36*s, 0, Math.PI, 0); g.closePath(); g.fill();
@@ -719,14 +765,14 @@ function mouse(g, cx, cy, s, L){
 }
 
 function drawPlush(g, look, cx, cy, s){
-  const L = LOOKS[look] || LOOKS.rebel;
+  const L = LOOKS[look] || LOOKS.worker;
   ({bun: bunny, frog, mouse})[L.sp](g, cx, cy, s, L);
 }
 const portraitCache = {};
 function plushPortrait(look){
   if (portraitCache[look]) return portraitCache[look];
   const c = document.createElement('canvas'); c.width = 300; c.height = 360;
-  const L = LOOKS[look] || LOOKS.rebel;
+  const L = LOOKS[look] || LOOKS.worker;
   drawPlush(c.getContext('2d'), look, 150, L.sp === 'bun' ? 175 : 200, L.sp === 'bun' ? 92 : 100);
   return portraitCache[look] = c.toDataURL();
 }
@@ -753,18 +799,102 @@ function portraitInner(key, look, where = 'panel'){
 
 // ---------------- 20-data-maps.js ----------------
 // ================= Terrain & maps =================
-// Legend: . meadow  F felt thicket  M pillow hills  W satin river  B lolly-stick bridge  T block fort  X spool wall
+// Legend: . open ground  F light cover  M heavy cover  W river  B bridge  T fort (heals)  X wall
+// The rules for each letter are the same everywhere; a map's theme changes how it looks and what it is called.
 const TER = {
-  '.': {n:'Meadow Patch',       def:0, avo:0,  cost:1,  note:'Soft green felt, well trodden.'},
-  'F': {n:'Felt Thicket',       def:1, avo:20, cost:2,  note:'Felt pines, hand-cut. Good cover.'},
-  'M': {n:'Pillow Hills',       def:2, avo:30, cost:3,  note:'Stacked cushions. Hard going, harder to hit.'},
-  'W': {n:'Satin River',        def:0, avo:0,  cost:99, note:'A ribbon of blue satin. No one swims in satin.'},
-  'B': {n:'Lolly-Stick Bridge', def:0, avo:0,  cost:1,  note:'Lolly sticks and glue. It holds.'},
-  'T': {n:'Block Fort',         def:2, avo:20, cost:1,  note:'Toy blocks, stacked high. Restores 20% HP at the start of each phase.', heal:true},
-  'X': {n:'Spool Wall',         def:0, avo:0,  cost:99, note:'Cotton reels stacked to the rafters. Nothing gets through.'},
+  '.': {def:0, avo:0,  cost:1},
+  'F': {def:1, avo:20, cost:2},
+  'M': {def:2, avo:30, cost:3},
+  'W': {def:0, avo:0,  cost:99},
+  'B': {def:0, avo:0,  cost:1},
+  'T': {def:2, avo:20, cost:1, heal:true},
+  'X': {def:0, avo:0,  cost:99},
 };
+const THEMES = {
+  meadow: {
+    '.': ['Meadow Patch', 'Soft green felt, well trodden.'],
+    'F': ['Felt Thicket', 'Felt pines, hand-cut. Good cover.'],
+    'M': ['Pillow Hills', 'Stacked cushions. Hard going, harder to hit.'],
+    'W': ['Satin River', 'A ribbon of blue satin. No one swims in satin.'],
+    'B': ['Lolly-Stick Bridge', 'Lolly sticks and glue. It holds.'],
+    'T': ['Block Fort', 'Toy blocks, stacked high. Restores 20% HP at the start of each phase.'],
+    'X': ['Spool Wall', 'Cotton reels stacked high. Nothing gets through.'],
+  },
+  mine: {
+    '.': ['Tunnel Floor', 'Packed earth, worn smooth by a thousand rabbit feet.'],
+    'F': ['Rubble', 'Broken rock. Something to crouch behind.'],
+    'M': ['Ore Heap', 'A day\'s digging, piled high. Hard to climb, harder to hit.'],
+    'W': ['Flooded Shaft', 'Black water. Nobody goes in.'],
+    'B': ['Plank Walk', 'Boards over the flooded shaft.'],
+    'T': ['Guard Post', 'A frog post with water and bandages. Restores 20% HP at the start of each phase.'],
+    'X': ['Rock Wall', 'Solid stone.'],
+  },
+  camp: {
+    '.': ['Camp Yard', 'Bare dirt, stamped flat by roll calls.'],
+    'F': ['Crates', 'Ore crates waiting for the carts. Good cover.'],
+    'M': ['Spoil Heap', 'Waste rock from the mine. Hard going, harder to hit.'],
+    'W': ['Drainage Ditch', 'Too deep and too foul to cross.'],
+    'B': ['Footbridge', 'Planks over the ditch.'],
+    'T': ['Watch Post', 'A raised frog post. Restores 20% HP at the start of each phase.'],
+    'X': ['Palisade', 'Sharpened stakes, lashed tight.'],
+  },
+};
+// Map: {theme, names?: per-letter name overrides, rows}
 const MAPS = {
-  stitchwater: [
+  lowerSeam: {theme: 'mine', rows: [
+    "XXX..XXX",
+    "X......X",
+    "X.F..T.X",
+    "X..XX..X",
+    "...XX...",
+    "X.....FX",
+    "XX.M..XX",
+    "X......X",
+    "X.F..X.X",
+    "X....X.X",
+    "XX....XX",
+    "XXX..XXX"]},
+  bunkhouses: {theme: 'camp', rows: [
+    "X..XX..X",
+    "........",
+    ".XX..XX.",
+    ".XX..XX.",
+    "...F....",
+    "F......F",
+    "..X..X..",
+    "..X..X..",
+    "........",
+    ".F....F.",
+    "...T....",
+    "X......X"]},
+  gallowsYard: {theme: 'camp', names: {'T': ['The Gallows', 'The platform where rabbits are unstitched. Restores 20% HP to whoever holds it.']}, rows: [
+    "XX.TT.XX",
+    "X......X",
+    "..F..F..",
+    "........",
+    ".MM..MM.",
+    "........",
+    "F..XX..F",
+    "........",
+    "..F..F..",
+    "X......X",
+    "........",
+    "XX....XX"]},
+  tower: {theme: 'camp', names: {'T': ['Overseer\'s Tower', 'Rhubarb\'s tower above the gate. Restores 20% HP at the start of each phase.']}, rows: [
+    "X.XTTX.X",
+    "X......X",
+    "XXX..XXX",
+    "..F..F..",
+    "........",
+    "M......M",
+    "..X..X..",
+    "........",
+    ".F....F.",
+    "........",
+    "..F..F..",
+    "........"]},
+  // Meadow maps kept for the placeholder Friggliarchy battles
+  ford: {theme: 'meadow', rows: [
     "MM.FT.MM",
     "M..F...M",
     "F...FF..",
@@ -776,60 +906,8 @@ const MAPS = {
     "M......F",
     ".F..F...",
     "..T....F",
-    "F......M"],
-  mills: [
-    "X..X.T.X",
-    "...X....",
-    ".F.XX.F.",
-    "........",
-    "XX..XX.X",
-    "...F....",
-    ".X....X.",
-    ".X.FF.X.",
-    "........",
-    "XXX..XXX",
-    "..F.....",
-    "....T..."],
-  hollow: [
-    "F.F..F.F",
-    ".F..F...",
-    "..F...F.",
-    "F...M..F",
-    ".F.MMM..",
-    "F..MTM..",
-    "..F...F.",
-    "F......F",
-    ".F.FF.F.",
-    "..F..F..",
-    "F.F..F.F",
-    ".F....F."],
-  lilyhaven: [
-    "MM.TT.MM",
-    "MX....XM",
-    ".X.FF.X.",
-    ".XX..XX.",
-    "WWWBBWWW",
-    "F......F",
-    "..F..F..",
-    ".M....M.",
-    "...FF...",
-    ".F....F.",
-    "....T...",
-    "F......F"],
-  pantry: [
-    "..X..X..",
-    ".F.....F",
-    "..XXXX..",
-    "........",
-    "F.X..X.F",
-    "..X..X..",
-    "........",
-    ".XX..XX.",
-    "........",
-    "F...T..F",
-    "........",
-    "..F..F.."],
-  reedwall: [
+    "F......M"]},
+  wall: {theme: 'meadow', rows: [
     "M..TT..M",
     "........",
     ".F....F.",
@@ -841,12 +919,15 @@ const MAPS = {
     "........",
     "F..F...F",
     "..F..F..",
-    "........"],
+    "........"]},
 };
+let mapDef = null;   // the map being played (set by the battle engine)
+const tileInfo = ch => (mapDef?.names?.[ch]) || THEMES[mapDef?.theme || 'meadow'][ch];
 function validateMaps(){
   for (const [id, m] of Object.entries(MAPS)){
-    m.forEach((row, y) => {
-      if (row.length !== m[0].length) console.error(`map ${id} row ${y} has ${row.length} tiles, expected ${m[0].length}`);
+    if (!THEMES[m.theme]) console.error(`map ${id} has unknown theme ${m.theme}`);
+    m.rows.forEach((row, y) => {
+      if (row.length !== m.rows[0].length) console.error(`map ${id} row ${y} has ${row.length} tiles, expected ${m.rows[0].length}`);
       for (const ch of row) if (!TER[ch]) console.error(`map ${id} row ${y} has unknown terrain "${ch}"`);
     });
   }
@@ -854,232 +935,232 @@ function validateMaps(){
 
 // ---------------- 25-data-campaign.js ----------------
 // ================= Campaigns =================
-// Two stories run side by side. The player can switch between them at any time.
+// Two stories run side by side; the player can switch between them at any time.
+// Each campaign is a list of chapters, and each chapter holds stages (battles).
 //
-// Chapter fields
-//   id, title, map, objective {type:'boss'|'rout'|'survive', turns}, enemyFaction
-//   deploy        [[x,y], ...] starting tiles in order; the campaign's lord always takes the first
+// Stage fields
+//   id, title, map, objective {type:'boss'|'rout'|'survive', turns?, limit?}, enemyFaction
+//     limit: for 'boss', the battle is lost if the boss still stands after that turn (limitFail explains why)
+//   deploy        [[x,y], ...] starting tiles in order; the campaign's leader always takes the first
 //   maxDeploy     how many units the player may bring
-//   requires      chapter ids from EITHER campaign that must be cleared first (the convergence gates)
-//   convergence   label shown on both sides of a shared story beat
+//   requires      stage ids from EITHER campaign that must be cleared first (convergence gates)
+//   convergence   label shown where the two stories meet
 //   enemies(flags)          initial enemy spawns
 //   reinforce(flags)        [{turn, units:[spawns]}] arriving at the start of that enemy phase
-//   pre / post / bossTalk   dialogue lines {who, text, if?:flag, unless?:flag}
+//   pre / post    story scenes (see Scene lines below)
+//   bossTalk      lines spoken the first time anyone fights the boss
+//   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
-//   bonus         {type:'noLosses', text, flag}  optional objective that sets a world flag
-//   stub          placeholder for a chapter that isn't written yet
+//   bonus         {type:'noLosses', text, flag}  optional objective that sets a shared world flag
+// A chapter with stub:true is a placeholder for story not written yet.
+//
+// Scene lines
+//   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
+//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, gallows, woods)
+//   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
+//   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
+//   {who:'narr', text:'…'}                      narration
+//   any line can carry if:'flag' or unless:'flag'
 // Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}}
-// Flags are shared by both campaigns: how you play one side changes the other.
 
 const E = (cls, lv, x, y, ai = 'charge', extra = {}) => Object.assign({cls, lv, x, y, ai}, extra);
 
 const CAMPAIGNS = {
   rae: {
-    faction: 'rae', name: 'The Raepublic', tagline: 'Soft things are hard to break.', lord: 'rae',
-    start: ['rae', 'thimble', 'clover', 'willow', 'flopsy', 'bramble'], startRes: 200,
-    recruits: [{cls:'conscript', after:'R2', cost:300}, {cls:'quarter', after:'R3', cost:400}],
+    faction: 'rae', name: 'The Raepublic', lord: 'rae',
+    start: ['rae', 'tall', 'burly', 'old'], startRes: 0,
+    recruits: [{cls: 'digger', after: 'R1-2', cost: 250}, {cls: 'hauler', after: 'R1-3', cost: 280}, {cls: 'pebbler', after: 'R1-4', cost: 300}],
     chapters: [
-      {
-        id:'R1', title:'The Ford at Stitchwater', map:'stitchwater', enemyFaction:'frog',
-        objective:{type:'boss'}, maxDeploy:6,
-        deploy:[[3,11],[4,10],[4,11],[2,11],[3,10],[5,10],[2,10],[5,11]],
-        brief:'Stitchwater Ford is the only road north. Baron Jiggle Jaggle holds it with nine frogs and a gilded cleaver.',
-        enemies: () => [
-          E('bruiser',1,1,6), E('bruiser',1,6,7), E('blade',2,4,6,'guard'), E('reed',1,6,5,'guard'),
-          E('lily',1,2,3,'guard'), E('lily',2,6,3,'guard'), E('bruiser',2,3,2,'guard'), E('reed',2,5,1,'guard'),
-          E('baron',5,4,0,'hold',{boss:true, key:'jiggle', name:'Baron Jiggle Jaggle', look:'jiggle'}),
-        ],
-        pre: [
-          {who:'narr', text:'For a hundred seasons the Friggliarchy has ruled the Toybox from the Lily Throne.'},
-          {who:'narr', text:'Frogs feast on velvet cushions. Rabbits stitch in the Stuffing Mills until their seams split.'},
-          {who:'narr', text:'But a thread, once pulled, unravels everything.'},
-          {who:'rae', text:'They call us soft. Fine. Soft things are hard to break.'},
-          {who:'rae', text:'Stitchwater Ford is the only road north. Baron Jiggle Jaggle holds it for King Friggle Fraggle. We take the ford, we take the road.'},
-          {who:'willow', text:'Nine frogs, comrade. One of them is wearing a crown he did not earn. My arrows are counted and ready.'},
-          {who:'flopsy', text:'I brought the big needle. Nobody comes apart today. Not on my watch.'},
-          {who:'jiggle', text:'Rabbits? With swords? Croak the drums. Remind these cushions what they were made for.'},
-          {who:'rae', text:'For the Raepublic. Raise the banner.'},
-        ],
-        bossTalk: [{who:'jiggle', text:'Do you know what you ARE, rabbit? Stuffing and thread. You were MADE to be held.'}],
-        post: [
-          {who:'jiggle', text:'The King… will unpick… every last one of you…'},
-          {who:'rae', text:'Let him try. We know how to sew.'},
-          {who:'narr', text:'Stitchwater Ford is taken. By morning, every mill in the Toybox has heard: the Raepublic is real.'},
-        ],
-        reward:{res:500, flags:['stitchwater_taken']},
-      },
-      {
-        id:'R2', title:'The Stuffing Mills', map:'mills', enemyFaction:'frog',
-        objective:{type:'rout'}, maxDeploy:6,
-        deploy:[[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,10],[6,10]],
-        brief:'A thousand rabbits card wool for frog cushions behind these spool walls. Rout the overseers and the looms are ours.',
-        enemies: () => [
-          E('bruiser',2,4,6), E('bruiser',2,2,7), E('lily',2,3,8,'guard'), E('reed',2,6,5,'guard'),
-          E('lily',2,2,3,'guard'), E('bruiser',3,5,3,'guard'), E('reed',2,1,1,'guard'), E('croaker',3,6,1,'guard'),
-          E('toadknight',3,5,0,'guard'),
-        ],
-        pre: [
-          {who:'narr', text:'Three days south of the ford stand the Stuffing Mills, where a thousand rabbits card wool for frog cushions.'},
-          {who:'bramble', text:'I was born in Mill Four. The overseers count us twice a day. They never count right.'},
-          {who:'rae', text:'Then we free the mill and let everyone count themselves. Standing up.'},
-        ],
-        post: [
-          {who:'narr', text:'The looms stop. For the first time in living memory, the Stuffing Mills are silent.'},
-          {who:'pip', text:'Name\'s Pip. I\'ve got a broom handle and nothing left to lose. Where do I sign?'},
-          {who:'rae', text:'You just did.'},
-        ],
-        reward:{res:600, joins:['pip'], flags:['mills_free']},
-      },
-      {
-        id:'R3', title:'Night at Thimble Hollow', map:'hollow', enemyFaction:'frog',
-        objective:{type:'survive', turns:7}, maxDeploy:7,
-        deploy:[[4,6],[3,6],[5,6],[4,5],[2,7],[6,7],[4,7]],
-        brief:'Lilyguard columns are closing on every road. Hold the hollow through seven turns of darkness.',
-        bonus:{type:'noLosses', text:'Lose no comrades', flag:'hollow_unbroken'},
-        enemies: () => [E('lily',3,1,0), E('bruiser',3,6,1), E('reed',3,3,1), E('blade',3,2,11), E('bruiser',3,6,10)],
-        reinforce: () => [
-          {turn:2, units:[E('lily',3,0,1), E('reed',3,7,11)]},
-          {turn:4, units:[E('bruiser',4,4,0), E('lily',4,3,11), E('blade',3,7,5)]},
-          {turn:5, units:[E('toadknight',4,0,6), E('reed',4,4,11)]},
-        ],
-        pre: [
-          {who:'willow', text:'Scouts report Lilyguard on every road. They mean to smother us before word spreads.'},
-          {who:'rae', text:'Then we hold the Hollow until dawn. Seven turns of dark. Everyone stands.'},
-          {who:'flopsy', text:'Everyone stands. I will make sure of it.'},
-        ],
-        post: [{who:'narr', text:'Dawn finds Thimble Hollow still flying the red scarf.'}],
-        reward:{res:700},
-      },
-      {
-        id:'R4', title:'The Siege of Lilyhaven', map:'lilyhaven', enemyFaction:'frog', convergence:'Lilyhaven',
-        requires:['F3'], objective:{type:'boss'}, maxDeploy:7,
-        deploy:[[3,11],[4,11],[2,11],[5,11],[4,10],[3,10],[1,11],[6,11]],
-        brief:'The summer palace of the Friggliarchy. Prince Fraggle Friggle commands the walls himself.',
-        enemies: flags => [
-          E('prince',6,3,0,'hold',{boss:true, key:'fraggle', name:'Fraggle Friggle', look:'fraggle', bonus:{mhp:4, def:1}}),
-          E('lily',4,4,1,'guard'), E('reed',4,2,1,'guard'), E('reed',4,5,1,'guard'), E('croaker',4,4,2,'guard'),
-          E('toadknight',4,3,3,'guard'), E('lily',4,4,3,'guard'), E('bruiser',4,2,5), E('bruiser',4,5,6), E('blade',4,5,7),
-          ...(flags.reedwall_unbroken ? [E('reed',4,0,2,'guard'), E('reed',4,7,2,'guard')] : []),
-        ],
-        pre: [
-          {who:'narr', text:'Lilyhaven: the summer palace of the Friggliarchy, its moat thick with lilies and its walls thick with archers.'},
-          {who:'willow', text:'The Reedwall garrison came south without losing a frog. There are more bows on those walls than we planned for.', if:'reedwall_unbroken'},
-          {who:'clover', text:'Prince Fraggle Friggle holds the gate. They say he has never lost a battle.'},
-          {who:'rae', text:'Everyone has never lost, right up until they have.'},
-        ],
-        bossTalk: [{who:'fraggle', text:'The rabbit with the scarf. My father calls you a nuisance. I think you are a war.'}],
-        post: [
-          {who:'fraggle', text:'Fall back. Fall BACK. This is not finished, rabbit.'},
-          {who:'narr', text:'The Prince escapes across the lily marsh. Lilyhaven\'s gates open from the inside.'},
-        ],
-        reward:{res:900, flags:['lilyhaven_fallen']},
-      },
-      {id:'R5', title:'The Road to the Lily Throne', stub:true, brief:'The next chapter of the Raepublic is still being stitched.'},
+      {id: 'RC1', title: 'Chapter One', name: 'Rabbit', stages: [
+
+        // ---------------- Stage 1 ----------------
+        {
+          id: 'R1-1', title: 'The Lower Seam', map: 'lowerSeam', enemyFaction: 'frog',
+          objective: {type: 'rout'}, maxDeploy: 4,
+          deploy: [[3,10],[4,10],[2,10],[5,10],[3,11],[4,11]],
+          brief: 'Little Sister is in the cells, to be unstitched at dawn. Start with the guards in the lower tunnels.',
+          enemies: () => [E('lily',1,3,7), E('bruiser',1,5,5), E('lily',1,2,2,'guard'), E('reed',1,1,1,'guard'), E('bruiser',1,5,2,'guard')],
+          pre: [
+            {card: 'Chapter One', sub: 'Rabbit'},
+            {scene: 'yard', place: 'The Work Camp · Roll Call'},
+            {who: 'narr', text: 'Every morning begins the same way. The rabbits stand in rows, and the overseer tells the story.'},
+            {who: 'rhubarb', text: 'Once, long ago, a rabbit had a name.'},
+            {who: 'rhubarb', text: 'Her name was Rae. She lied. She stole. She burned what was not hers, and the whole world bled for it.'},
+            {who: 'rhubarb', text: 'That is why no rabbit has a name. That is why you dig. Be grateful we let you.'},
+            {who: 'rhubarb', text: 'Now. Pick up your tools.'},
+            {scene: 'mine', place: 'The Mine · Lower Seam'},
+            {who: 'narr', text: 'Deep in the lower seam, two rabbits dig side by side.'},
+            {who: 'sister', text: 'You\'re on my side of the seam again.'},
+            {who: 'rae', text: 'Your side? You can barely lift that pick, little one. I\'m doing you a favour.'},
+            {who: 'sister', text: 'I can lift it. I\'m pacing myself.'},
+            {who: 'rae', text: 'Pace faster. If Rhubarb sees a pile that small, you\'ll be on half water for a week.'},
+            {who: 'rae', thought: true, text: 'She\'s too small for this. They all are.'},
+            {who: 'narr', text: 'That night, someone creeps back down the shaft and cuts the ropes on the ore lift. Three days of digging crash to the bottom.'},
+            {scene: 'yard', place: 'The Work Camp · Morning'},
+            {who: 'guard', text: 'The lift ropes were cut in the night. Somebody steps forward, or this whole row goes without water.'},
+            {who: 'rae', thought: true, text: 'Stay still. They can\'t prove anything. Stay still.'},
+            {who: 'sister', text: 'It was me.'},
+            {who: 'rae', text: 'What? No. She\'s lying, she can\'t even reach the—'},
+            {who: 'rhubarb', text: 'Silence.'},
+            {who: 'rhubarb', text: 'The small one has confessed. At dawn tomorrow she will be unstitched on the gallows, in front of all of you.'},
+            {who: 'rhubarb', text: 'Let it remind you what rabbits are for.'},
+            {scene: 'quarters', place: 'The Bunkhouse · Night'},
+            {who: 'rae', text: 'Why did you do that? It was me. You knew it was me.'},
+            {who: 'sister', text: 'Because they\'d have taken you. And then who would pick on me?'},
+            {who: 'narr', text: 'The guards come before she can say anything else. Little Sister is dragged away to the cells.'},
+            {who: 'narr', text: 'Rabbit looks along the bunks. A hundred rabbits. Twenty frogs.'},
+            {who: 'rae', text: 'We dig for them every day of our lives. Tonight, we stop.'},
+            {who: 'tall', text: 'And do what? There are guards in every tunnel.'},
+            {who: 'rae', text: 'Then we start with the tunnels. Bring your tools.'},
+            {who: 'burly', text: '…I\'ve always wanted to hit one.'},
+            {who: 'old', text: 'I\'m too old to dig. I\'m not too old to throw stones.'},
+          ],
+          post: [
+            {who: 'guard', text: 'Sound the bell! The rabbits are loose! One of them is leading them, a mad one with a stolen sword!'},
+            {who: 'guard', text: 'She\'s a Rae! A real one! A RAE!'},
+            {who: 'old', text: 'Did you hear what it called you?'},
+            {who: 'rae', text: 'I heard.'},
+          ],
+          reward: {res: 300},
+        },
+
+        // ---------------- Stage 2 ----------------
+        {
+          id: 'R1-2', title: 'The Bunkhouses', map: 'bunkhouses', enemyFaction: 'frog',
+          objective: {type: 'rout'}, maxDeploy: 4,
+          deploy: [[3,1],[4,1],[2,1],[5,1],[1,0],[6,0]],
+          brief: 'The frogs are locking the bunkhouses. Clear the guards and open every door.',
+          enemies: () => [E('lily',1,3,4), E('bruiser',2,5,5), E('reed',1,1,8,'guard'), E('lily',2,6,8,'guard'), E('bruiser',1,2,9,'guard'), E('reed',2,3,10,'guard')],
+          pre: [
+            {scene: 'yard', place: 'The Bunkhouses · Midnight'},
+            {who: 'narr', text: 'Word runs ahead of them through the camp. By the time they climb out of the mine, the frogs have a word for the trouble.'},
+            {who: 'guard', text: 'Lock the bunkhouses! Rae is loose in the camp! RAE!'},
+            {who: 'tall', text: 'They\'re saying it like a curse.'},
+            {who: 'rae', text: 'Let them. Every bunkhouse they lock has rabbits inside. We open every door.'},
+          ],
+          post: [
+            {who: 'narr', text: 'One by one, the bunkhouse doors swing open.'},
+            {who: 'swift', text: 'Is it true? Are you… her? Are you Rae?'},
+            {who: 'rae', text: 'I\'m a rabbit. Same as you. Grab whatever\'s heavy.'},
+            {who: 'patched', text: 'I can\'t fight. But I can sew up the ones who do.'},
+            {who: 'rae', text: 'That\'s fighting too.'},
+            {who: 'narr', text: 'Across the camp, rabbits start saying the word. Quietly, at first.'},
+          ],
+          reward: {res: 350, joins: ['swift', 'patched']},
+        },
+
+        // ---------------- Stage 3 ----------------
+        {
+          id: 'R1-3', title: 'The Unstitching', map: 'gallowsYard', enemyFaction: 'frog',
+          objective: {type: 'boss', limit: 6}, maxDeploy: 6,
+          limitFail: 'The bell stopped ringing before you reached the gallows.',
+          deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[2,10],[5,10]],
+          brief: 'Dawn. Reach the gallows and defeat the Executioner before the bell stops ringing.',
+          enemies: () => [
+            E('headsman',3,3,0,'hold',{boss: true, key: 'executioner', name: 'The Executioner', look: 'headsman'}),
+            E('lily',2,4,0,'guard'), E('reed',2,1,2,'guard'), E('reed',2,6,2,'guard'),
+            E('bruiser',2,2,5), E('lily',2,5,5), E('bruiser',2,3,7), E('blade',2,6,8),
+          ],
+          pre: [
+            {scene: 'gallows', place: 'The Gallows · Dawn'},
+            {who: 'narr', text: 'Dawn. The bell rings for the unstitching.'},
+            {who: 'rhubarb', text: 'Rabbits! All night you have heard a name whispered. A dead name. A wicked name.'},
+            {who: 'rhubarb', text: 'Watch what happens to rabbits who reach for it.'},
+            {who: 'sister', text: 'I\'m not scared. I\'m not scared. I\'m not…'},
+            {who: 'rae', text: 'Hold on, little one. I\'m coming. Don\'t you dare be brave without me.'},
+          ],
+          bossTalk: [{who: 'executioner', text: 'Stand aside, rabbit. I have work to do.'}],
+          post: [
+            {scene: 'gallows', place: 'The Gallows · Morning'},
+            {who: 'sister', text: 'You came. You actually came.'},
+            {who: 'rae', text: 'Of course I came. Nobody else is allowed to pick on you.'},
+            {who: 'sister', text: 'That\'s the nicest thing you\'ve ever said to me.'},
+            {who: 'rae', text: 'Don\'t get used to it.'},
+            {who: 'narr', text: 'From the tower above the gate, Rhubarb watches the yard. The rabbits are chanting.'},
+            {who: 'rabbits', text: 'Rae! Rae! Rae!'},
+          ],
+          reward: {res: 400},
+        },
+
+        // ---------------- Stage 4 ----------------
+        {
+          id: 'R1-4', title: 'Rhubarb\'s Tower', map: 'tower', enemyFaction: 'frog',
+          objective: {type: 'boss'}, maxDeploy: 6,
+          deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
+          brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
+          rename: {rae: 'Rae Rabbit'},
+          enemies: () => [
+            E('overseer',5,4,0,'hold',{boss: true, key: 'rhubarb', name: 'Rhubarb', look: 'rhubarb', bonus: {mhp: 4}}),
+            E('toadknight',3,3,0,'guard'), E('croaker',3,4,1,'guard'), E('reed',3,1,1,'guard'), E('reed',3,6,1,'guard'),
+            E('lily',3,3,3,'guard'), E('lily',3,4,3,'guard'), E('bruiser',3,1,5), E('bruiser',3,6,5), E('blade',3,3,7),
+          ],
+          pre: [
+            {scene: 'yard', place: 'The Overseer\'s Tower'},
+            {who: 'rhubarb', text: 'Is that what you are now? A name? Rae was a monster. That is all the word has ever meant.'},
+            {who: 'rae', text: 'You told us that story every morning of our lives. You made Rae the worst thing a rabbit could be.'},
+            {who: 'rae', text: 'And now you\'re scared of her.'},
+            {who: 'rae', text: 'So be it. I\'m Rae.'},
+            {who: 'rabbits', text: 'Rae Rabbit! Rae Rabbit! RAE RABBIT!'},
+          ],
+          bossTalk: [{who: 'rhubarb', text: 'I will unstitch you myself, Rae.'}, {who: 'rae', text: 'It\'s Rae Rabbit.'}],
+          post: [
+            {who: 'narr', text: 'The tower comes down. For the first time anyone can remember, the camp gate stands open.'},
+            {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
+            {who: 'rae', text: 'I know.'},
+            {scene: 'woods', place: 'The Edge of the Woods · Dusk'},
+            {who: 'narr', text: 'At the edge of the woods, an old rabbit is waiting, leaning on a longbow.'},
+            {who: 'willow', text: 'So. You\'re the one they\'re calling Rae.'},
+            {who: 'rae', text: 'Rae Rabbit. Who are you?'},
+            {who: 'willow', text: 'My name is Willow. I chose it, a long time ago. Out here, rabbits choose their own names.'},
+            {who: 'willow', text: 'There are more of us. Many more, hidden in the woods. We call ourselves the Republic.'},
+            {who: 'willow', text: 'Your camp is free tonight. Tomorrow the frogs will come back with an army. Bring your rabbits into the woods, Rae Rabbit. Join us.'},
+            {who: 'rae', text: '…Everyone pack what you can carry. We march at dark.'},
+            {card: 'End of Chapter One', sub: 'Rae Rabbit'},
+          ],
+          reward: {res: 500, joins: ['willow']},
+        },
+      ]},
+      {id: 'RC2', title: 'Chapter Two', name: 'Into the woods', stub: true, requires: ['F1-2'],
+       brief: 'Still to be written. (Placeholder gate: waits on the Friggliarchy\'s placeholder battles, to show how the stories link.)'},
     ],
   },
 
+  // The Friggliarchy story is not written yet. These story-free battles keep the side playable.
   frog: {
-    faction: 'frog', name: 'The Friggliarchy', tagline: 'Order is a kindness.', lord: 'fraggle',
-    start: ['fraggle', 'tiggle', 'murk', 'gulp', 'lilyworth', 'quill'], startRes: 200,
-    recruits: [{cls:'lily', after:null, cost:300}, {cls:'bruiser', after:'F1', cost:320}, {cls:'reed', after:'F2', cost:380}],
+    faction: 'frog', name: 'The Friggliarchy', lord: 'frogcmd',
+    start: ['frogcmd'], startRecruits: ['lily', 'bruiser', 'reed', 'croaker', 'toadknight'], startRes: 0,
+    recruits: [{cls: 'lily', after: null, cost: 250}, {cls: 'reed', after: 'F1-1', cost: 300}],
     chapters: [
-      {
-        id:'F1', title:'The Tithe of Crumbs', map:'pantry', enemyFaction:'mouse',
-        objective:{type:'boss'}, maxDeploy:6,
-        deploy:[[3,11],[4,11],[2,10],[5,10],[3,10],[4,10],[1,11],[6,11]],
-        brief:'The pantry mice have paid no tithe this season. Their ringleader, Scrumbly, dances on the top shelf.',
-        enemies: () => [
-          E('nibbler',4,3,0,'hold',{boss:true, key:'scrumbly', name:'Scrumbly', look:'scrumbly', bonus:{mhp:6, def:2}}),
-          E('nibbler',2,1,6), E('nibbler',2,6,6), E('slinger',2,2,3,'guard'), E('slinger',2,5,3,'guard'),
-          E('chewer',2,3,5,'guard'), E('chewer',3,4,1,'guard'), E('nibbler',3,6,1,'guard'), E('slinger',3,1,1,'guard'),
-        ],
-        pre: [
-          {who:'narr', text:'In the Lily Palace, King Friggle Fraggle receives the harvest tithe. The pantry mice have sent none.'},
-          {who:'king', text:'The mice forget themselves, my son. Remind them. Gently, if they let you.'},
-          {who:'fraggle', text:'They never let me, Father.'},
-          {who:'tiggle', text:'Can I come? I will be very gentle. Mostly.'},
-        ],
-        bossTalk: [{who:'scrumbly', text:'We dance, we nibble, we pay no tithe! The pantry belongs to whoever is hungry!'}],
-        post: [
-          {who:'fraggle', text:'Take the crumbs. Leave them enough for the winter. A starved subject is a rebel in waiting.'},
-          {who:'murk', text:'Mercy, my prince? Your father would call that weakness.'},
-          {who:'fraggle', text:'My father calls everything weakness. That is why he needs me.'},
-        ],
-        reward:{res:500, flags:['tithe_collected']},
-      },
-      {
-        id:'F2', title:'The Baron\'s Funeral', map:'stitchwater', enemyFaction:'rae', convergence:'After Stitchwater',
-        requires:['R1'], objective:{type:'rout'}, maxDeploy:6,
-        deploy:[[4,0],[3,1],[5,1],[2,1],[4,1],[6,1],[2,2],[6,2]],
-        brief:'Stitchwater has fallen and Baron Jiggle Jaggle with it. Bury him at the ford, and clear the rebels who still hold it.',
-        enemies: () => [
-          E('conscript',3,1,6), E('conscript',3,6,6), E('conscript',3,2,5), E('outrider',3,5,9),
-          E('quarter',3,3,7,'guard'), E('breaker',3,4,8,'guard'), E('captain',4,2,10,'guard'), E('mender',3,3,11,'guard'), E('quarter',3,6,10,'guard'),
-        ],
-        pre: [
-          {who:'narr', text:'Word comes north: Stitchwater has fallen, and Baron Jiggle Jaggle with it. Unstitched by a rabbit in a red scarf.'},
-          {who:'king', text:'A rabbit. With a SWORD. Bury Jiggle at the ford he lost, and bury whoever is still standing there beside him.'},
-          {who:'fraggle', text:'Rabbits do not raise swords on their own. Someone taught them how.'},
-          {who:'lilyworth', text:'Then let us find the teacher, my prince.'},
-        ],
-        post: [
-          {who:'fraggle', text:'These are not bandits. They fight like they believe in something.'},
-          {who:'quill', text:'So do we, my prince.'},
-          {who:'fraggle', text:'…Do we?'},
-        ],
-        reward:{res:600, flags:['baron_buried']},
-      },
-      {
-        id:'F3', title:'The Reedwall', map:'reedwall', enemyFaction:'rae',
-        objective:{type:'survive', turns:6}, maxDeploy:7,
-        deploy:[[3,0],[4,0],[2,1],[5,1],[3,1],[4,1],[1,1],[6,1]],
-        brief:'The Reedwall guards the marsh road to Lilyhaven. Hold it for six turns until the King\'s barges arrive.',
-        bonus:{type:'noLosses', text:'Lose no frogs', flag:'reedwall_unbroken'},
-        enemies: () => [E('conscript',3,1,8), E('conscript',3,6,8), E('breaker',3,3,9), E('quarter',3,5,10), E('outrider',3,0,6)],
-        reinforce: () => [
-          {turn:2, units:[E('conscript',3,2,11), E('conscript',3,5,11)]},
-          {turn:3, units:[E('captain',4,3,11), E('quarter',3,6,11)]},
-          {turn:4, units:[E('breaker',4,1,11), E('outrider',4,7,10)]},
-          {turn:5, units:[E('conscript',4,4,11), E('quarter',4,0,11)]},
-        ],
-        pre: [
-          {who:'narr', text:'The Reedwall guards the marsh road to Lilyhaven. If it breaks, the summer palace lies open.'},
-          {who:'fraggle', text:'Six turns. Hold six turns and the King\'s barges arrive.'},
-          {who:'gulp', text:'Gulp.'},
-          {who:'tiggle', text:'He means yes.'},
-        ],
-        post: [{who:'fraggle', text:'The wall held. Send word to Lilyhaven. I will command its defence myself.'}],
-        reward:{res:700},
-      },
-      {
-        id:'F4', title:'The Fall of Lilyhaven', map:'lilyhaven', enemyFaction:'rae', convergence:'Lilyhaven',
-        requires:['R3'], objective:{type:'survive', turns:6}, maxDeploy:7,
-        deploy:[[3,0],[4,0],[2,1],[5,1],[3,1],[4,1],[2,2],[5,2]],
-        brief:'The red scarves are crossing the marsh. Hold the palace walls until the barges come.',
-        enemies: () => [
-          E('conscript',4,2,9), E('conscript',4,5,9), E('breaker',4,3,8), E('quarter',4,1,10),
-          E('captain',5,4,10), E('outrider',4,6,10), E('mender',4,3,11),
-        ],
-        reinforce: flags => [
-          {turn:2, units:[E('conscript',4,0,11), E('conscript',4,7,11)]},
-          {turn:3, units:[E('breaker',4,2,11), E('quarter',4,5,11), ...(flags.hollow_unbroken ? [E('captain',5,4,11), E('breaker',5,3,11)] : [])]},
-          {turn:4, units:[E('outrider',5,1,11), E('conscript',5,6,11)]},
-        ],
-        pre: [
-          {who:'narr', text:'Across the lily marsh, the red scarves are coming.'},
-          {who:'murk', text:'Their army came through Thimble Hollow without losing a single soul. That is not luck, my prince. That is faith.', if:'hollow_unbroken'},
-          {who:'fraggle', text:'Hold the walls until the barges come. Then we will see whose faith floats.'},
-        ],
-        post: [
-          {who:'narr', text:'The barges come, too late to save the palace. Fraggle Friggle crosses the marsh with what remains of his guard.'},
-          {who:'fraggle', text:'Remember her face, Tiggle. We will see it again.'},
-        ],
-        reward:{res:900, flags:['lilyhaven_evacuated']},
-      },
-      {id:'F5', title:'The Lily Throne', stub:true, brief:'The next chapter of the Friggliarchy is still being stitched.'},
+      {id: 'FC1', title: 'Chapter One', name: 'Story to come', stages: [
+        {
+          id: 'F1-1', title: 'Placeholder Battle I', map: 'ford', enemyFaction: 'rae',
+          objective: {type: 'rout'}, maxDeploy: 6,
+          deploy: [[4,0],[3,1],[5,1],[2,1],[4,1],[6,1],[2,2],[6,2]],
+          brief: 'A story-free battle so this side can be played while its story is written.',
+          enemies: () => [E('digger',2,1,6), E('hauler',2,6,6), E('pebbler',2,3,7,'guard'), E('digger',2,4,8,'guard'), E('runner',2,5,9), E('hauler',2,2,10,'guard')],
+          reward: {res: 300},
+        },
+        {
+          id: 'F1-2', title: 'Placeholder Battle II', map: 'wall', enemyFaction: 'rae',
+          objective: {type: 'survive', turns: 5}, maxDeploy: 6,
+          deploy: [[3,0],[4,0],[2,1],[5,1],[3,1],[4,1],[1,1],[6,1]],
+          brief: 'Hold the wall for five turns. Another story-free placeholder.',
+          enemies: () => [E('digger',2,1,8), E('digger',2,6,8), E('runner',2,0,6), E('pebbler',2,5,10)],
+          reinforce: () => [{turn: 2, units: [E('hauler',2,2,11), E('hauler',2,5,11)]}, {turn: 3, units: [E('digger',3,3,11), E('pebbler',2,6,11)]}],
+          reward: {res: 400},
+        },
+      ]},
+      {id: 'FC2', title: 'Chapter Two', name: 'Story to come', stub: true, brief: 'Still to be written.'},
     ],
   },
 };
+
+// Flatten chapters into one ordered list of stages per campaign. A stub chapter becomes one placeholder stage.
+for (const camp of Object.values(CAMPAIGNS)){
+  camp.stages = camp.chapters.flatMap((c, ci) => c.stub
+    ? [{id: c.id + '-stub', title: c.name, stub: true, brief: c.brief, requires: c.requires, chapter: c, ci, si: 0}]
+    : c.stages.map((s, si) => Object.assign(s, {chapter: c, ci, si})));
+}
 
 // ---------------- 30-save.js ----------------
 // ================= Save state & armies =================
@@ -1095,12 +1176,22 @@ function scaledStats(cls, lv, bonus){
 }
 function recordFor(key){
   const c = CHARACTERS[key];
-  return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: key, lv: c.lv, exp: 0, stats: {...c.stats},
+  return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},
           wtier: 0, wname: c.wname || CLASSES[c.cls].wname, lord: !!c.lord, dead: false};
 }
 function newSave(){
-  return {v: 1, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
+  SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
+  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, 2));
+  return SAVE;
+}
+// Story renames (Rabbit becomes Rae Rabbit). Speakers in later scenes pick the new name up from the roster.
+function applyRename(ck, map){
+  for (const [key, name] of Object.entries(map || {})) for (const r of SAVE.camps[ck].roster) if (r.key === key) r.name = name;
+}
+function speakerName(who){
+  for (const c of Object.values(SAVE?.camps || {})){ const r = c.roster.find(r => r.key === who); if (r) return r.name; }
+  return SPEAKERS[who]?.name || '';
 }
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
@@ -1108,25 +1199,25 @@ const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[rec.cls].g;
 const weaponName = rec => WEAPON_TIERS[rec.wtier || 0].prefix + rec.wname;
 const living = campKey => SAVE.camps[campKey].roster.filter(r => !r.dead);
 
-function findChapter(id){
+function findStage(id){
   for (const [camp, c] of Object.entries(CAMPAIGNS)){
-    const i = c.chapters.findIndex(ch => ch.id === id);
-    if (i >= 0) return {camp, i, ch: c.chapters[i]};
+    const i = c.stages.findIndex(s => s.id === id);
+    if (i >= 0) return {camp, i, st: c.stages[i]};
   }
   return null;
 }
 // done | next | gate (waiting on the other story) | stub (not written yet) | future
-function chapterState(campKey, i){
-  const camp = CAMPAIGNS[campKey], ch = camp.chapters[i], st = SAVE.camps[campKey];
-  if (st.cleared.includes(ch.id)) return {s: 'done'};
-  if (i > 0 && !st.cleared.includes(camp.chapters[i - 1].id)) return {s: 'future'};
-  if (ch.stub) return {s: 'stub'};
-  const missing = (ch.requires || []).filter(r => !isCleared(r));
-  return missing.length ? {s: 'gate', missing} : {s: 'next'};
+function stageState(campKey, i){
+  const camp = CAMPAIGNS[campKey], sg = camp.stages[i], st = SAVE.camps[campKey];
+  if (st.cleared.includes(sg.id)) return {s: 'done'};
+  if (i > 0 && !st.cleared.includes(camp.stages[i - 1].id)) return {s: 'future'};
+  const missing = (sg.requires || []).filter(r => !isCleared(r));
+  if (missing.length) return {s: 'gate', missing};
+  return sg.stub ? {s: 'stub'} : {s: 'next'};
 }
-function currentChapterIndex(campKey){
-  const n = CAMPAIGNS[campKey].chapters.length;
-  for (let i = 0; i < n; i++) if (chapterState(campKey, i).s !== 'done') return i;
+function currentStageIndex(campKey){
+  const n = CAMPAIGNS[campKey].stages.length;
+  for (let i = 0; i < n; i++) if (stageState(campKey, i).s !== 'done') return i;
   return n - 1;
 }
 
@@ -1137,10 +1228,10 @@ function recruitLevel(campKey){
   const lv = living(campKey).map(r => r.lv);
   return Math.max(1, Math.floor(lv.reduce((a, b) => a + b, 0)/lv.length) - 1);
 }
-function makeRecruit(campKey, cls){
+function makeRecruit(campKey, cls, fixedLv){
   const st = SAVE.camps[campKey], faction = CAMPAIGNS[campKey].faction, used = new Set(st.roster.map(r => r.name));
   const name = RECRUIT_NAMES[faction].find(n => !used.has(n)) || `${CLASSES[cls].name} ${st.recruited + 1}`;
-  const lv = recruitLevel(campKey);
+  const lv = fixedLv || recruitLevel(campKey);
   st.recruited++;
   return {uid: `${cls}-${Date.now().toString(36)}-${st.recruited}`, key: 'recruit', name, faction, cls, look: CLASS_LOOK[cls],
           lv, exp: 0, stats: scaledStats(cls, lv), wtier: 0, wname: CLASSES[cls].wname, lord: false, dead: false};
@@ -1160,7 +1251,7 @@ function rollLevel(statsObj, g){
 // runBattle(campKey, chapter, deployedRecords) plays one chapter and resolves with
 // {win, retreated, turn, survivors, lost}. Team 'p' is whoever the player controls
 // (rabbits or frogs); team 'e' is the AI.
-let B = null;   // {ch, campKey, pf, ef, kills, waves, resolve, done}
+let B = null;   // {ch (the stage), campKey, pf, ef, kills, waves, resolve, done}
 let MAP = [], COLS = 8, ROWS = 12;
 let units = [], turn = 1, phase = 'p', mode = 'idle', busy = false, bossTalked = false, nextId = 1;
 let sel = null, orig = null, reachMap = null, moveKeys = new Set(), atkKeys = new Set(), healKeys = new Set();
@@ -1214,7 +1305,7 @@ function freeTileNear(x, y){
 function runBattle(campKey, ch, records){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : []};
-  MAP = MAPS[ch.map]; ROWS = MAP.length; COLS = MAP[0].length;
+  mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
@@ -1229,10 +1320,10 @@ function runBattle(campKey, ch, records){
   showScreen('app'); resize(); refreshTop();
   return new Promise(res => { B.resolve = res; startPlayerPhase(); });
 }
-function finishBattle(win, retreated = false){
+function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
-  B.resolve({win, retreated, turn, survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -1389,8 +1480,8 @@ async function strike(a, d, f){
 async function doCombat(a, d){
   if ((a.boss || d.boss) && !bossTalked && B.ch.bossTalk){
     bossTalked = true;
-    const r = a.boss ? d : a, retort = CHARACTERS[r.key]?.retort;
-    await talk([...B.ch.bossTalk, ...(retort ? [{who: r.key, text: retort}] : [])]);
+    const r = a.boss ? d : a, retort = CHARACTERS[r.key]?.retort, answered = B.ch.bossTalk.some(l => l.who === r.key);
+    await talk([...B.ch.bossTalk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
   }
   const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
   if (D.can) seq.push([d, a, D]);
@@ -1432,19 +1523,19 @@ async function levelUp(u){
 function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u.key, u.look, 'panel')}</div>`; }
 function objectiveText(){
   const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
-  const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}.`
+  const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
   return `${goal} ${lord ? lord.name + ' must not fall.' : ''}`;
 }
 function unitHTML(u){
-  const t = ter(u.x, u.y), pct = u.hp/u.mhp*100;
+  const t = ter(u.x, u.y), tn = tileInfo(MAP[u.y][u.x])[0], pct = u.hp/u.mhp*100;
   const col = pct > 50 ? '#6fbf6a' : pct > 25 ? '#e0b44c' : '#e0533d';
   const note = u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
       <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0]}${note}</div>
-      <div class="tr">${t.n}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
+      <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
     </div></div>
     <div class="stats">${[[u.w === 'staff' ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -1544,9 +1635,9 @@ async function onTap(x, y){
     if (u){ inspect = u.team === 'e' && inspect !== u ? u : null; setPanel(unitHTML(u)); }
     else {
       inspect = null;
-      const t = ter(x, y), ch = MAP[y][x];
-      setPanel(`<div class="uhead"><span class="nm">${t.n}</span><span class="cl">${t.cost >= 99 ? 'Impassable' : `Move cost ${t.cost}`}</span></div>
-        <div class="hint"><em>${t.note}</em></div>
+      const t = ter(x, y), ch = MAP[y][x], [tn, note] = tileInfo(ch);
+      setPanel(`<div class="uhead"><span class="nm">${tn}</span><span class="cl">${t.cost >= 99 ? 'Impassable' : `Move cost ${t.cost}`}</span></div>
+        <div class="hint"><em>${note}</em></div>
         <div class="hint">${t.def || t.avo ? `Units here gain <b>+${t.def} Def</b> and <b>+${t.avo} Avoid</b>.` : 'No cover.'}${ch === 'F' ? ' Mounted units pay 3 to enter.' : ''}${ch === 'M' ? ' Mounted and armoured units cannot climb.' : ''}</div>`);
     }
     refreshTop(); return;
@@ -1589,6 +1680,8 @@ async function fortHeal(t){
   await wait(300);
 }
 async function startPlayerPhase(){
+  const ob = B.ch.objective;
+  if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
   refreshTop(); panelIdle();
@@ -1799,6 +1892,8 @@ function drawTile(g, x, y, ch){
     }
     return;
   }
+  const theme = mapDef?.theme || 'meadow';
+  if (theme !== 'meadow') return drawThemedTile(g, x, y, ch, theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -1849,12 +1944,72 @@ function drawTile(g, x, y, ch){
   }
 }
 
+// Mine and camp tiles: felt rocks, crates, ore heaps and palisades instead of meadow and spools.
+function drawFort(g, X, Y, x, y){
+  const f = FACTIONS[fortOwner.get(K(x, y)) || 'rae'];
+  const blk = (bx, by, bw, bh, c, top) => {
+    g.fillStyle = c; g.fillRect(X + bx*T, Y + by*T, bw*T, bh*T);
+    g.fillStyle = 'rgba(255,255,255,.22)'; g.fillRect(X + bx*T, Y + by*T, bw*T, T*.035);
+    g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(X + (bx + bw)*T - T*.035, Y + by*T, T*.035, bh*T);
+    if (top) for (let i = 0; i < 2; i++){ g.fillStyle = c; g.fillRect(X + (bx + i*bw*.6)*T, Y + (by - .08)*T, bw*.4*T, .08*T); }
+  };
+  g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, X + T*.5, Y + T*.88, T*.42, T*.08); g.fill();
+  blk(.1, .34, .26, .54, f.fort[0], true); blk(.64, .34, .26, .54, f.fort[1], true); blk(.33, .48, .34, .4, '#e9dcc0');
+  g.fillStyle = '#3a2a1e'; g.beginPath(); g.arc(X + T*.5, Y + T*.74, T*.09, Math.PI, 0); g.lineTo(X + T*.59, Y + T*.88); g.lineTo(X + T*.41, Y + T*.88); g.closePath(); g.fill();
+  g.fillStyle = f.fort[0]; g.font = `${Math.round(T*.16)}px 'Saira Stencil One', Impact, sans-serif`; g.textAlign = 'center'; g.fillText(f.letter, X + T*.5, Y + T*.62);
+  g.strokeStyle = '#3a2a1e'; g.lineWidth = Math.max(1, T*.025); g.beginPath(); g.moveTo(X + T*.77, Y + T*.26); g.lineTo(X + T*.77, Y + T*.02); g.stroke();
+  g.fillStyle = f.band; g.beginPath(); g.moveTo(X + T*.77, Y + T*.03); g.lineTo(X + T*.98, Y + T*.08); g.lineTo(X + T*.77, Y + T*.15); g.closePath(); g.fill();
+}
+function stones(g, X, Y, list, cols, stitch){
+  list.forEach(([a, b, r], i) => {
+    g.fillStyle = 'rgba(0,0,0,.28)'; ell(g, X + T*a + T*.02, Y + T*b + T*.03, T*r, T*r*.75); g.fill();
+    g.fillStyle = cols[i % cols.length]; ell(g, X + T*a, Y + T*b, T*r, T*r*.78); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.12)'; ell(g, X + T*a - T*r*.3, Y + T*b - T*r*.3, T*r*.4, T*r*.25); g.fill();
+    g.beginPath(); g.ellipse(X + T*a, Y + T*b, T*r*.82, T*r*.62, 0, 0, Math.PI*2); stitchStroke(g, stitch, T*.45, .7);
+  });
+}
+function drawThemedTile(g, x, y, ch, theme){
+  const X = x*T, Y = y*T, mine = theme === 'mine';
+  const floor = mine ? ['#5a4434', '#634b39', '#53402f', '#6a503c'] : ['#7a6448', '#836c4e', '#725d42', '#8a7352'];
+  if (ch === 'X' && mine){
+    g.fillStyle = '#2a221c'; g.fillRect(X, Y, T, T);
+    stones(g, X, Y, [[.28, .3, .26], [.72, .28, .24], [.5, .66, .3], [.15, .78, .18], [.86, .74, .17]], ['#4a423b', '#56504a', '#3f3833'], 'rgba(20,16,12,.8)');
+    return;
+  }
+  patch(g, X, Y, ch === 'M' ? (mine ? '#4e4036' : '#6e5a42') : floor[Math.floor(hash(x, y)*4)], x, y);
+  if (ch === 'F'){
+    if (mine) stones(g, X, Y, [[.3, .6, .16], [.62, .52, .19], [.48, .8, .14], [.78, .8, .11]], ['#8a8580', '#9c968e', '#7c7772'], 'rgba(50,45,40,.7)');
+    else for (const [a, b, w] of [[.12, .3, .42], [.5, .5, .4]]){   // ore crates
+      const cx = X + T*a, cy = Y + T*b, s = T*w;
+      g.fillStyle = 'rgba(0,0,0,.3)'; g.fillRect(cx + T*.03, cy + T*.04, s, s);
+      g.fillStyle = '#9a6e42'; g.fillRect(cx, cy, s, s);
+      g.strokeStyle = '#6a4626'; g.lineWidth = Math.max(1, T*.03); g.strokeRect(cx, cy, s, s);
+      g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + s, cy + s); g.moveTo(cx + s, cy); g.lineTo(cx, cy + s); g.stroke();
+      g.fillStyle = 'rgba(255,255,255,.15)'; g.fillRect(cx, cy, s, T*.03);
+    }
+  }
+  if (ch === 'M'){
+    hump(g, X + T*.62, Y + T*.84, T*.38, T*.58, mine ? '#6e6a66' : '#8e7050', 'rgba(40,35,30,.6)');
+    hump(g, X + T*.33, Y + T*.9, T*.3, T*.4, mine ? '#8a857e' : '#a3845e', 'rgba(50,40,30,.55)');
+    if (mine){ g.fillStyle = '#e3b54c'; for (let i = 0; i < 6; i++){ ell(g, X + T*(.3 + hash(x, y, i)*.5), Y + T*(.5 + hash(x, y, i + 9)*.35), T*.025, T*.025); g.fill(); } }
+  }
+  if (ch === 'X'){   // palisade
+    for (let i = 0; i < 5; i++){
+      const sx = X + T*(.04 + i*.19), w = T*.15;
+      g.fillStyle = i % 2 ? '#6e4e30' : '#7a5838';
+      g.beginPath(); g.moveTo(sx, Y + T*.95); g.lineTo(sx, Y + T*.2); g.lineTo(sx + w/2, Y + T*.04); g.lineTo(sx + w, Y + T*.2); g.lineTo(sx + w, Y + T*.95); g.closePath(); g.fill();
+      g.fillStyle = 'rgba(0,0,0,.2)'; g.fillRect(sx + w*.7, Y + T*.2, w*.3, T*.75);
+    }
+    g.fillStyle = '#c9a46a'; g.fillRect(X, Y + T*.38, T, T*.06); g.fillRect(X, Y + T*.7, T, T*.06);
+  }
+  if (ch === 'T') drawFort(g, X, Y, x, y);
+}
 function tokenFor(u, variant){
   const key = `${u.look}|${u.faction}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const L = LOOKS[u.look] || LOOKS.rebel, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
+  const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   g.fillStyle = F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, F.stitch, T*.5);
   const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
@@ -1970,34 +2125,70 @@ function frame(now){
 new ResizeObserver(() => resize()).observe(boardEl);
 
 // ---------------- 50-dialogue.js ----------------
-// ================= Dialogue & level-up cards =================
-// Lines: {who, text, if?:flag, unless?:flag}. Lines whose flag test fails are skipped.
+// ================= Story scenes, dialogue & level-up cards =================
+// talk(lines) plays a list of scene lines (see 25-data-campaign.js). If any line sets a {scene},
+// it plays as a full story scene with a backdrop and characters on stage; otherwise it is a short
+// exchange over the battlefield (boss lines).
 const linesFor = lines => (lines || []).filter(l => (!l.if || SAVE.flags[l.if]) && (!l.unless || !SAVE.flags[l.unless]));
+
+function actorHTML(who, side){
+  const sp = SPEAKERS[who];
+  if (!sp) return '';
+  const art = ART[who]?.portrait;
+  if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
+  return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
+}
 
 function talk(rawLines){
   const lines = linesFor(rawLines);
   if (!lines.length) return Promise.resolve();
+  const sceneMode = lines.some(l => l.scene || l.card);
   return new Promise(res => {
     const ov = $('#talk'), txt = $('#ttext'), box = $('#tbody'), por = $('#tpor'), nm = $('#tname'), skip = $('#skip');
+    const card = $('#tcard'), wrap = $('#tboxWrap'), actors = {L: $('#actorL'), R: $('#actorR')}, onStage = {L: null, R: null};
     let i = -1, typing = null, full = '';
-    const finish = () => { ov.hidden = true; skip.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
+    ov.classList.toggle('scene', sceneMode);
+    for (const a of Object.values(actors)){ a.className = a.className.replace(/ on| dim/g, ''); a.innerHTML = ''; }
+    const finish = () => { ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
     const show = () => {
       i++; if (i >= lines.length) return finish();
-      const l = lines[i], sp = SPEAKERS[l.who] || SPEAKERS.narr, narr = l.who === 'narr';
-      box.className = 'tbody' + (narr ? ' narr' : '');
-      por.hidden = narr; nm.hidden = narr;
-      if (!narr){
-        por.className = 'tpor f-' + sp.faction;
-        por.innerHTML = portraitInner(l.who, sp.look, 'talk');
-        nm.className = 'tname f-' + sp.faction; nm.textContent = sp.name;
+      const l = lines[i];
+      if (l.scene){   // change the backdrop and clear the stage
+        $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
+        for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
+        anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);
+        return show();
       }
+      if (l.card){
+        card.hidden = false; wrap.hidden = true; $('#tc1').textContent = l.card; $('#tc2').textContent = l.sub || '';
+        anim(card, [{opacity: 0}, {opacity: 1}], 600);
+        return;
+      }
+      card.hidden = true; wrap.hidden = false;
+      const narr = l.who === 'narr', sp = SPEAKERS[l.who] || SPEAKERS.narr;
+      box.className = 'tbody' + (narr ? ' narr' : '') + (l.thought ? ' thought' : '');
+      nm.hidden = narr;
+      if (!narr){
+        nm.className = 'tname f-' + sp.faction; nm.textContent = l.as || speakerName(l.who);
+        por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, sp.look, 'talk');
+        if (sceneMode){
+          // The lead stands on the left; whoever she is talking to stands on the right.
+          const side = l.who === CAMPAIGNS.rae.lord ? 'L' : 'R';
+          if (onStage[side] !== l.who){
+            onStage[side] = l.who; actors[side].innerHTML = actorHTML(l.who, side);
+            anim(actors[side], [{opacity: 0, transform: `translateX(${side === 'L' ? -30 : 30}px)`}, {opacity: 1, transform: 'none'}], 300);
+          }
+          actors[side].classList.add('on'); actors[side].classList.remove('dim');
+          const other = side === 'L' ? 'R' : 'L'; if (onStage[other]) actors[other].classList.add('dim');
+        }
+      } else if (sceneMode){ for (const s of ['L', 'R']) if (onStage[s]) actors[s].classList.add('dim'); }
       full = l.text; let n = 0; txt.textContent = '';
       clearInterval(typing);
       typing = setInterval(() => { n += 2; txt.textContent = full.slice(0, n); if (n >= full.length){ clearInterval(typing); typing = null; } }, 22);
     };
     ov.onclick = () => { if (typing){ clearInterval(typing); typing = null; txt.textContent = full; } else show(); };
     skip.onclick = e => { e.stopPropagation(); finish(); };
-    ov.hidden = false; skip.hidden = false; show();
+    ov.hidden = false; skip.hidden = false; card.hidden = true; wrap.hidden = false; show();
   });
 }
 
@@ -2007,7 +2198,7 @@ function showLevelUp(u, ups){
   $('#lvlCard').innerHTML = `<div class="urow"><div class="por f-${u.faction}">${portraitInner(u.key, u.look, 'panel')}</div>
     <div class="uinfo"><h1>LEVEL UP</h1><h2>${u.name} · Level ${u.lv}</h2></div></div>
     <div class="lv">${STAT_KEYS.map(s => `<div class="${ups[s] ? 'up' : ''}"><small>${label[s]}</small>${u[s]}${ups[s] ? ' ▲' : ''}</div>`).join('')}</div>
-    <p class="meta">The cause grows stronger. Tap to continue.</p>`;
+    <p class="meta">Tap to continue.</p>`;
   $('#lvl').hidden = false;
   return new Promise(res => {
     const done = () => { $('#lvl').hidden = true; $('#lvl').removeEventListener('click', done); clearTimeout(tm); res(); };
@@ -2026,20 +2217,21 @@ function showScreen(id){
 const campOf = () => CAMPAIGNS[SAVE.current];
 const stOf = () => SAVE.camps[SAVE.current];
 const otherCamp = ck => Object.keys(CAMPAIGNS).find(k => k !== ck);
-const objectiveLabel = ob => ob.type === 'boss' ? 'Defeat the commander' : ob.type === 'survive' ? `Survive ${ob.turns} turns` : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? `Survive ${ob.turns} turns` : 'Rout the enemy';
 function chapterRef(id){
-  const f = findChapter(id); if (!f) return id;
-  return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${ROMAN(f.i + 1)}. ${f.ch.title}`;
+  const f = findStage(id); if (!f) return id;
+  return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
 }
+const stageLabel = sg => sg.stub ? sg.chapter.title : `${sg.chapter.title.replace('Chapter ', 'Ch. ')}, Stage ${sg.si + 1}`;
 function progressLabel(ck){
-  const chs = CAMPAIGNS[ck].chapters.filter(c => !c.stub), done = SAVE.camps[ck].cleared.length;
-  const i = currentChapterIndex(ck), s = chapterState(ck, i).s;
+  const chs = CAMPAIGNS[ck].stages.filter(c => !c.stub), done = SAVE.camps[ck].cleared.length;
+  const i = currentStageIndex(ck), s = stageState(ck, i).s;
   return s === 'gate' ? `${done}/${chs.length} · waiting` : `${done}/${chs.length} cleared`;
 }
 
 // ---------- Hub ----------
 function nodeHTML(ck, ch, i){
-  const st = chapterState(ck, i), n = ROMAN(i + 1);
+  const st = stageState(ck, i), n = ch.stub ? '…' : ch.si + 1;
   const conv = ch.convergence ? `<span class="chip conv">Convergence · ${ch.convergence}</span>` : '';
   if (st.s === 'done'){
     const bonus = ch.bonus ? (SAVE.flags[ch.bonus.flag] ? `<span class="chip bonus">★ ${ch.bonus.text}</span>` : '') : '';
@@ -2050,10 +2242,10 @@ function nodeHTML(ck, ch, i){
       <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${conv}${ch.bonus ? `<span class="chip bonus">Bonus: ${ch.bonus.text}</span>` : ''}</div>
       <button class="btn primary" data-play="${i}" type="button">Prepare for Battle</button></div></div>`;
   if (st.s === 'gate'){
-    const other = findChapter(st.missing[0]).camp;
+    const other = findStage(st.missing[0]).camp;
     return `<div class="node"><div class="pin gate">${n}</div><div class="ncard">
       <h3>${ch.title}</h3><div class="chips">${conv}</div>
-      <div class="gatebox"><span>The stories meet here. Before this chapter can begin, the other side must reach the same moment. Clear <b>${st.missing.map(chapterRef).join('</b> and <b>')}</b>.</span>
+      ${ch.stub ? `<div class="nmeta">${ch.brief}</div>` : ''}<div class="gatebox"><span>The stories meet here. Before this can begin, the other side must reach the same moment. Clear <b>${st.missing.map(chapterRef).join('</b> and <b>')}</b>.</span>
       <button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div></div></div>`;
   }
   if (st.s === 'stub') return `<div class="node"><div class="pin stub">${n}</div><div class="ncard dim"><h3>${ch.title}</h3><div class="nmeta">${ch.brief}</div></div></div>`;
@@ -2070,12 +2262,12 @@ function renderHub(){
       `<button class="f-${c.faction}${k === ck ? ' on' : ''}" data-camp="${k}" role="tab" aria-selected="${k === ck}" type="button">${FACTIONS[c.faction].name}<small>${progressLabel(k)}</small></button>`).join('')}</div>
     <div class="hero f-${camp.faction}">
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
-      <div><h2>${camp.name}</h2><div class="tagl">${camp.tagline}</div>
+      <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         <button class="btn" data-go="army" type="button">Army &amp; Armoury</button></div>
     </div>
-    <div class="sec">Chapters</div>
-    <div class="track">${camp.chapters.map((ch, i) => nodeHTML(ck, ch, i)).join('')}</div>
+    ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
+      <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
   </div>`;
   showScreen('hub');
 }
@@ -2151,7 +2343,7 @@ function recruit(cls){
 // ---------- Battle preparation ----------
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
-  const ch = CAMPAIGNS[ck].chapters[i], alive = living(ck);
+  const ch = CAMPAIGNS[ck].stages[i], alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
   const order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
   if (!prep || prep.ck !== ck || prep.i !== i) prep = {ck, i, picks: new Set(order.slice(0, max).map(r => r.uid))};
@@ -2159,11 +2351,11 @@ function openPrep(ck, i){
   renderPrep();
 }
 function renderPrep(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.chapters[i], alive = living(ck);
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
-    <div class="brief"><div class="kick">${camp.name} · Chapter ${ROMAN(i + 1)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
+    <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
       <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${ch.bonus ? `<span class="chip bonus">Bonus: ${ch.bonus.text}</span>` : ''}</div></div>
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     <div class="ulist">${order.map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
@@ -2172,7 +2364,7 @@ function renderPrep(){
   showScreen('prep');
 }
 function togglePick(uid){
-  const ch = CAMPAIGNS[prep.ck].chapters[prep.i], rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
+  const ch = CAMPAIGNS[prep.ck].stages[prep.i], rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
   if (!rec) return;
   if (rec.lord){ toast(`${rec.name} leads every battle.`); return; }
   if (prep.picks.has(uid)) prep.picks.delete(uid);
@@ -2183,9 +2375,10 @@ function togglePick(uid){
 
 // ---------- Playing a chapter ----------
 async function playChapter(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.chapters[i], st = SAVE.camps[ck];
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
   await talk(ch.pre);
+  if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   const res = await runBattle(ck, ch, recs);
   const kills = B.kills;
   if (!res.win){
@@ -2215,12 +2408,12 @@ async function playChapter(){
 }
 
 function renderResult(r){
-  const camp = CAMPAIGNS[r.ck], ch = camp.chapters[r.i], F = FACTIONS[camp.faction];
+  const camp = CAMPAIGNS[r.ck], ch = camp.stages[r.i], F = FACTIONS[camp.faction];
   let html;
   if (r.win){
-    const other = otherCamp(r.ck), opened = CAMPAIGNS[other].chapters
-      .map((c, j) => ({c, j})).filter(({c, j}) => (c.requires || []).includes(ch.id) && chapterState(other, j).s === 'next');
-    html = `<div class="brief"><div class="kick">Victory · ${camp.name} · Chapter ${ROMAN(r.i + 1)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
+    const other = otherCamp(r.ck), opened = CAMPAIGNS[other].stages
+      .map((c, j) => ({c, j})).filter(({c, j}) => (c.requires || []).includes(ch.id) && stageState(other, j).s === 'next');
+    html = `<div class="brief"><div class="kick">Victory · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
@@ -2232,7 +2425,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : `${CHARACTERS[camp.lord].name} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : `${speakerName(camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;
@@ -2260,10 +2453,10 @@ document.addEventListener('click', e => {
 });
 
 // ---------- Title ----------
+// How the two-campaign structure works, shown once when a new game starts.
 const INTRO = [
-  {who: 'narr', text: 'This is a chronicle of one war, told from both sides of it.'},
-  {who: 'narr', text: 'Lead the Raepublic or the Friggliarchy, and switch between them whenever you like.'},
-  {who: 'narr', text: 'At certain crossroads the two stories meet. Neither can go on until both have reached that moment.'},
+  {who: 'narr', text: 'There are two stories here: the Raepublic and the Friggliarchy. Switch between them whenever you like.'},
+  {who: 'narr', text: 'Sometimes the stories meet. When they do, neither can go on until both have reached that point.'},
 ];
 $('#contBtn').addEventListener('click', () => {
   SAVE = SAVE || Store.load();
@@ -2272,7 +2465,7 @@ $('#contBtn').addEventListener('click', () => {
 });
 $('#newBtn').addEventListener('click', async e => {
   if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again to erase your save')) return;
-  SAVE = newSave(); saveGame(); prep = null;
+  newSave(); saveGame(); prep = null;
   $('#title').hidden = true; renderHub();
   await talk(INTRO);
 });
