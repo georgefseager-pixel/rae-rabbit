@@ -32,6 +32,20 @@ for (const [key, set] of Object.entries(window.GAME_ART || {})){
   for (const [kind, d] of Object.entries(set)) ART[key][kind] = dataToURL(d);
 }
 
+// Decoded art for drawing on the map canvas (art/<key>-token.png). Returns null until loaded.
+const artImages = {};
+function artImage(key, kind){
+  const url = ART[key]?.[kind];
+  if (!url) return null;
+  const id = key + '|' + kind;
+  if (!artImages[id]){
+    const img = new Image();
+    img.onload = () => { img.ready = true; if (typeof tokenCache !== 'undefined') tokenCache.clear(); };
+    img.src = url; artImages[id] = img;
+  }
+  return artImages[id].ready ? artImages[id] : null;
+}
+
 function toast(msg){
   const t = $('#toast'); t.textContent = msg; t.hidden = false;
   clearTimeout(toast.tm); toast.tm = setTimeout(() => { t.hidden = true; }, 2200);

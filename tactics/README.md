@@ -57,7 +57,8 @@ Duplicate rares raise Bond (small stat boosts). Recruits can be released for cur
 
 ## Adding art
 
-Drop transparent PNGs into `art/` named `<character>-portrait.png` (front-facing) and
-`<character>-battle.png` (side-on, facing right), then rebuild. Character keys are the
+Drop transparent PNGs into `art/` named `<character>-portrait.png` (front-facing),
+`<character>-battle.png` (side-on, facing right) and `<character>-token.png` (the head
+icon used on the battle grid), then rebuild. Character keys are the
 ones in `CHARACTERS` (`rae`, `willow`, `fraggle`, `tiggle`, ...). Anyone without art
 uses their drawn plush placeholder.

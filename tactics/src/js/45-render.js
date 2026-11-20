@@ -184,8 +184,16 @@ function tokenFor(u, variant){
   const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   g.fillStyle = F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, F.stitch, T*.5);
-  const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
-  drawPlush(g, u.look, ox + T*.5, oy + T*(L.sp === 'bun' ? .44 : .46) + (L.small ? T*.05 : 0), s);
+  const icon = artImage(u.key, 'token');
+  if (ART[u.key]?.token && !icon) return c;   // art still decoding: draw nothing yet and don't cache
+  if (icon){
+    // Real token art: fit it to the tile, sitting on the felt coaster.
+    const w = T*1.16, h = w*icon.height/icon.width;
+    g.drawImage(icon, ox + T*.5 - w/2, oy + T*.88 - h, w, h);
+  } else {
+    const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
+    drawPlush(g, u.look, ox + T*.5, oy + T*(L.sp === 'bun' ? .44 : .46) + (L.small ? T*.05 : 0), s);
+  }
   const bx = ox + T*.84, by = oy + T*.7, br = T*.14;
   const bg = g.createRadialGradient(bx - br*.3, by - br*.3, 1, bx, by, br); bg.addColorStop(0, '#f6d98a'); bg.addColorStop(1, '#a07024');
   g.fillStyle = 'rgba(0,0,0,.35)'; ell(g, bx + 1, by + 1.5, br, br); g.fill();
