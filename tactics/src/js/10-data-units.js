@@ -136,13 +136,6 @@ const FURS = {
   tan: null, grey: [0, .12, .05], cream: [4, .55, .38], white: [0, .1, .6],
   chocolate: [-4, .85, -.38], sooty: [0, .15, -.6], ginger: [-6, 1.45, -.02], sandy: [10, .75, .16],
 };
-// The loincloth and rope are never recoloured: they are marked pixel by pixel in art/minermask-<kind>.png.
-// Ear linings are traced here, in each image's own pixel size; inside them only clearly tan pixels are recoloured.
-const FUR_PROTECT = {
-  portrait: {size: [433, 900], ears: [[[100,78],[122,140],[108,232],[72,288],[38,272],[58,178]],[[308,118],[342,150],[382,258],[398,334],[360,304],[330,200]]]},
-  battle:   {size: [453, 640], ears: [[[18,242],[90,190],[150,148],[206,118],[218,150],[202,202],[172,242],[122,266],[60,270]],[[112,266],[165,234],[207,212],[218,262],[192,288],[140,298]]]},
-  token:    {size: [512, 379], ears: [[[98,162],[126,200],[112,282],[82,352],[42,346],[58,250]],[[414,162],[470,250],[470,346],[430,352],[400,282],[386,200]]]},
-};
 
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {

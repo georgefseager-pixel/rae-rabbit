@@ -74,8 +74,8 @@ function artImage(ent, kind){
 }
 
 // Recolour the generic mine-rabbit art into every fur in FURS, once, at load.
-// The fur is picked out by colour (tan, not pink). art/minermask-<kind>.png marks the loincloth
-// and rope, which are never recoloured, and FUR_PROTECT traces the ear linings. Results become ART['miner<fur>'].
+// art/minermask-<kind>.png marks what keeps its colour (loincloth, rope, ear linings, nose);
+// the rest of the warm fur is recoloured. Results become ART['miner<fur>'].
 let furReady = false;
 function rgbToHsl(r, g, b){
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn)/2, d = mx - mn;
@@ -89,17 +89,6 @@ function hslToRgb(h, s, l){
   const [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][k];
   return [r + m, g + m, b + m];
 }
-function polyMask(W, H, size, polys){
-  // Drawn small and scaled up, which feathers the edges without canvas filters (not supported everywhere).
-  const sc = 1/6, m = document.createElement('canvas'); m.width = Math.ceil(W*sc); m.height = Math.ceil(H*sc);
-  const g = m.getContext('2d'); g.fillStyle = '#fff';
-  for (const p of polys){ g.beginPath(); p.forEach(([x, y], i) => g[i ? 'lineTo' : 'moveTo'](x/size[0]*W*sc, y/size[1]*H*sc)); g.closePath(); g.fill(); }
-  const big = document.createElement('canvas'); big.width = W; big.height = H;
-  const bg = big.getContext('2d'); bg.imageSmoothingEnabled = true; bg.drawImage(m, 0, 0, W, H);
-  const d = bg.getImageData(0, 0, W, H).data, out = new Float32Array(W*H);
-  for (let i = 0; i < out.length; i++) out[i] = d[i*4 + 3]/255;
-  return out;
-}
 const loadImg = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
 async function buildFurVariants(){
   if (!ART.miner) return;
@@ -109,21 +98,21 @@ async function buildFurVariants(){
       const c = document.createElement('canvas'); c.width = W; c.height = H;
       const g = c.getContext('2d'); g.drawImage(img, 0, 0);
       const src = g.getImageData(0, 0, W, H), px = src.data, n = W*H;
-      const pr = FUR_PROTECT[kind] || {size: [W, H]};
-      const ears = polyMask(W, H, pr.size, pr.ears || []);
-      let cloth = new Float32Array(W*H);
+      // Keep-mask: art/minermask-<kind>.png is opaque over everything that must not change colour
+      // (loincloth, rope, ear linings, nose). Everything else that is tan fur gets recoloured.
+      const keep = new Float32Array(n);
       if (ART.minermask?.[kind]){
         const mi = await loadImg(ART.minermask[kind]), mc = document.createElement('canvas'); mc.width = W; mc.height = H;
         const mg = mc.getContext('2d'); mg.drawImage(mi, 0, 0, W, H);
         const md = mg.getImageData(0, 0, W, H).data;
-        for (let i = 0; i < cloth.length; i++) cloth[i] = md[i*4 + 3]/255;
+        for (let i = 0; i < n; i++) keep[i] = md[i*4 + 3]/255;
       }
       const w = new Float32Array(n), hsl = new Float32Array(n*3);
       for (let i = 0; i < n; i++){
         const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2];
-        const rg = clamp((r - gg - 14)/14, 0, 1), loose = rg*clamp((gg - b - 6)/14, 0, 1), strict = rg*clamp((gg - b - 20)/10, 0, 1);
         const [h, s, l] = rgbToHsl(r/255, gg/255, b/255);
-        w[i] = (loose*(1 - ears[i]) + strict*ears[i])*(1 - cloth[i])*clamp((l - .14)/.12, 0, 1);
+        // fur is warm (red above green); ink outlines and eye highlights are left alone
+        w[i] = clamp((r - gg - 6)/12, 0, 1)*clamp((l - .12)/.1, 0, 1)*(1 - keep[i]);
         hsl[i*3] = h; hsl[i*3 + 1] = s; hsl[i*3 + 2] = l;
       }
       for (const [fur, f] of Object.entries(FURS)){

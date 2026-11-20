@@ -75,9 +75,9 @@ uses their drawn plush placeholder.
 `art/miner-portrait.png`, `miner-battle.png` and `miner-token.png` are the shared art for
 every rabbit without art of their own: recruits, enemy rabbits, and named characters who
 are still waiting for art. At load the game recolours the fur into each coat in `FURS`
-(`src/js/10-data-units.js`), keeping the loincloth, rope and ear linings as drawn. The
-loincloth and rope are marked pixel by pixel in `art/minermask-portrait.png` and
-`art/minermask-battle.png` (opaque = never recolour); the ear linings are traced in
-`FUR_PROTECT`. If the generic art is replaced, these masks need redoing to match. A character can pick a coat with `fur: 'grey'`;
+(`src/js/10-data-units.js`), keeping the loincloth, rope, ear linings, nose and eyes as drawn: those are marked in
+`art/minermask-portrait.png`, `-battle.png` and `-token.png` (opaque = keep). How the
+masks were made is recorded in `tools/miner-art/`; if the generic art is replaced, they
+need redoing. A character can pick a coat with `fur: 'grey'`;
 generic rabbits get one from their id, so each keeps the same coat. Once a character has
 their own art, it replaces the generic art automatically.
