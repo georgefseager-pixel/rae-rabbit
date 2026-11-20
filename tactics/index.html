@@ -433,7 +433,7 @@ function hash(x, y, s = 0){ let h = (x*374761393 + y*668265263 + s*1442695041) |
 // Per-viewer save slot. Browser storage can be missing or throw (private windows,
 // previews), so every access is guarded and the game still runs without it.
 const Store = {
-  key: 'raepublic-save-v2',
+  key: 'raepublic-save-v3',
   load(){ try { const s = localStorage.getItem(this.key); return s ? JSON.parse(s) : null; } catch (e){ return null; } },
   save(d){ try { localStorage.setItem(this.key, JSON.stringify(d)); } catch (e){} },
   clear(){ try { localStorage.removeItem(this.key); } catch (e){} },
