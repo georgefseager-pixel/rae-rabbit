@@ -53,7 +53,7 @@ function renderHub(){
     <div class="hero f-${camp.faction}">
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
       <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
-        <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
+        <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         <button class="btn" data-go="army" type="button">Army &amp; Armoury</button></div>
     </div>
     ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
@@ -73,7 +73,7 @@ function recCard(rec, actions = '', extraClass = ''){
   const c = CLASSES[rec.cls];
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     <div class="por f-${rec.faction}">${portraitInner(rec.key, rec.look, 'panel')}</div>
-    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span></div>
+    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
       <div class="ustat"><b>${weaponName(rec)}</b> · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
     ${statsGrid(rec)}${actions}</div>`;
@@ -83,22 +83,15 @@ function renderArmy(){
   let body = '';
   if (armyTab === 'roster'){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
-    body = `<div class="hint">Drill a unit for experience, or upgrade its weapon. Fallen units do not return.</div><div class="ulist">${alive.map(r => {
+    body = `<div class="hint">Drill a unit for experience, or upgrade its weapon. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div><div class="ulist">${alive.map(r => {
       const next = WEAPON_TIERS[(r.wtier || 0) + 1];
       return recCard(r, `<div class="uacts">
         <button class="btn" data-train="${r.uid}" type="button" ${st.res < TRAIN.cost || r.lv >= 20 ? 'disabled' : ''}>Drill +${TRAIN.exp} EXP · ${TRAIN.cost}</button>
         ${next ? `<button class="btn" data-arm="${r.uid}" type="button" ${st.res < next.cost ? 'disabled' : ''}>${next.prefix.trim()} · ${next.cost}</button>` : '<button class="btn" type="button" disabled>Weapon mastered</button>'}
+        ${isGachaUnit(r) ? `<button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button>` : ''}
       </div>`);
     }).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
-  } else {
-    const open = recruitOptions(ck), lv = recruitLevel(ck);
-    const locked = camp.recruits.filter(r => !open.includes(r));
-    body = `<div class="hint">New recruits join at level ${lv}, close to the rest of the army.</div><div class="ulist">${open.map(r => {
-      const preview = {uid: 'preview-' + r.cls, key: 'recruit', name: CLASSES[r.cls].name, faction: camp.faction, cls: r.cls, look: CLASS_LOOK[r.cls], lv, exp: 0, stats: scaledStats(r.cls, lv), wtier: 0, wname: CLASSES[r.cls].wname};
-      return recCard(preview, `<div class="uacts"><button class="btn primary" data-recruit="${r.cls}" type="button" ${st.res < r.cost ? 'disabled' : ''}>Recruit · ${r.cost}</button></div>`);
-    }).join('') || '<div class="empty">No one is ready to enlist yet.</div>'}</div>
-    ${locked.length ? `<div class="sec">Later</div><div class="ulist">${locked.map(r => `<div class="ncard dim"><h3>${CLASSES[r.cls].name}</h3><div class="nmeta">Enlists after <b>${chapterRef(r.after)}</b>.</div></div>`).join('')}</div>` : ''}`;
-  }
+  } else body = recruitTabHTML(ck);
   $('#army').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="${armyReturn}" type="button">‹ Back</button><h1>Army</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
     <div class="tabs"><button class="btn${armyTab === 'roster' ? ' on' : ''}" data-tab="roster" type="button">Roster</button><button class="btn${armyTab === 'recruit' ? ' on' : ''}" data-tab="recruit" type="button">Recruit</button></div>
@@ -123,11 +116,11 @@ function upgradeWeapon(uid){
   st.res -= next.cost; rec.wtier = (rec.wtier || 0) + 1;
   saveGame(); toast(`${rec.name} now carries the ${weaponName(rec)}.`); renderArmy();
 }
-function recruit(cls){
-  const ck = SAVE.current, st = stOf(), opt = CAMPAIGNS[ck].recruits.find(r => r.cls === cls);
-  if (!opt || st.res < opt.cost) return;
-  st.res -= opt.cost; const rec = makeRecruit(ck, cls); st.roster.push(rec);
-  saveGame(); toast(`${rec.name} joins the ${FACTIONS[rec.faction].name}.`); renderArmy();
+function release(btn){
+  const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === btn.dataset.release);
+  if (!rec || !armed(btn, 'Tap again to release')) return;
+  const back = releaseUnit(ck, rec.uid);
+  toast(`${rec.name} leaves the army. +${back} ${GACHA_ARMY[ck].currency}.`); renderArmy();
 }
 
 // ---------- Battle preparation ----------
@@ -186,15 +179,15 @@ async function playChapter(){
   const bonusHit = ch.bonus?.type === 'noLosses' && res.lost.length === 0;
   if (bonusHit) SAVE.flags[ch.bonus.flag] = true;
   for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
-  const spoils = ch.reward.res + kills*20;
-  st.res += spoils;
+  const spoils = ch.reward.res + kills*20, tokens = ch.reward.tokens ?? GACHA.stageTokens;
+  st.res += spoils; gachaState(ck).tokens += tokens;
   const joined = [];
   for (const key of ch.reward.joins || []) if (!st.roster.some(r => r.key === key)){ st.roster.push(recordFor(key)); joined.push(CHARACTERS[key].name); }
   st.cleared.push(ch.id);
   saveGame();
   await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, turn: res.turn, kills, spoils, joined, lost: res.lost.map(u => u.name), bonusHit});
+  renderResult({win: true, ck, i, turn: res.turn, kills, spoils, tokens, joined, lost: res.lost.map(u => u.name), bonusHit});
 }
 
 function renderResult(r){
@@ -206,6 +199,7 @@ function renderResult(r){
     html = `<div class="brief"><div class="kick">Victory · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
+        <div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${ch.bonus ? `<div><span>${ch.bonus.text}</span><b>${r.bonusHit ? '★ Achieved' : 'Missed'}</b></div>` : ''}
@@ -235,7 +229,10 @@ document.addEventListener('click', e => {
   else if (d.tab){ armyTab = d.tab; renderArmy(); }
   else if (d.train) trainUnit(d.train);
   else if (d.arm) upgradeWeapon(d.arm);
-  else if (d.recruit) recruit(d.recruit);
+  else if (d.release) release(t);
+  else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }
+  else if (d.pull) runPull(SAVE.current, +d.pull);
+  else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, +d.play);
   else if ('begin' in d) playChapter();
   else if ('retry' in d) openPrep(prep.ck, prep.i);

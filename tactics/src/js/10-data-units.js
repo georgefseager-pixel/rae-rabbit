@@ -66,6 +66,13 @@ const LOOKS = {
   workerMend:{sp:'bun', ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#7a6a58', gear:'heart'},
   stayer:    {sp:'bun', ears:'up',  fur:'#8a7a6a', light:'#a89888', dark:'#54483c', scarf:'#7a2a24', gear:'none', oneEar:true},
   thin:      {sp:'bun', ears:'lop', fur:'#cfc4b4', light:'#e6ddd0', dark:'#8a7e70', gear:'none', small:true},
+  // Rare recruits (placeholders)
+  lantern:   {sp:'bun', ears:'up',  fur:'#d8b070', light:'#f0d098', dark:'#94743a', scarf:'#e0a030', gear:'bandana', band:'#e0a030'},
+  masked:    {sp:'bun', ears:'lop', fur:'#5a4a40', light:'#7a6a5e', dark:'#2e241e', scarf:'#2a2a2a', gear:'mask'},
+  ironear:   {sp:'bun', ears:'up',  fur:'#8c8c90', light:'#b0b0b4', dark:'#55555a', scarf:'#3a4a66', gear:'helm', big:true},
+  duckweed:  {sp:'frog', skin:'#4f8a5a', light:'#71ac7c', dark:'#24452c', belly:'#bcd8b0', gear:'kettle', big:true},
+  glimmer:   {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'reed'},
+  bogsworth: {sp:'frog', skin:'#5a7a4a', light:'#7c9c6c', dark:'#2c3e22', belly:'#c0cc9c', gear:'hood', hood:'#6a4a2a'},
   // Frogs
   tiggle:    {sp:'frog', skin:'#7bc043', light:'#a6dc72', dark:'#3d6a1e', belly:'#dcf0a8', gear:'circlet', small:true},
   biggle:    {sp:'frog', skin:'#467a2e', light:'#679a4a', dark:'#203a12', belly:'#b8cc84', gear:'kettle', big:true},
@@ -100,6 +107,13 @@ const CHARACTERS = {
   willow:  {name:'Willow', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
+  // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; all are placeholders for now.
+  lantern:  {name:'Lantern Rabbit', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.'},
+  masked:   {name:'Masked Rabbit', faction:'rae', cls:'digger', lv:3, stars:3, placeholder:true, stats:{mhp:27,atk:15,def:6,spd:6,skl:6,mov:5}},
+  ironear:  {name:'Iron-Eared Rabbit', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5}},
+  duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4}},
+  glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5}},
+  bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -118,6 +132,7 @@ const SPEAKERS = Object.assign({
 
 // Generic recruits. Camp rabbits have no names, so they are known by how they look.
 const RECRUIT_NAMES = {
-  rae:  ['Grey Rabbit', 'Scarred Rabbit', 'Small Rabbit', 'Lop-Eared Rabbit', 'Dusty Rabbit', 'Quiet Rabbit', 'Long-Eared Rabbit', 'Spotted Rabbit', 'Sooty Rabbit', 'Bent-Eared Rabbit'],
-  frog: ['Glub', 'Murkle', 'Bogwort', 'Puddle', 'Ribbet', 'Sludge', 'Duckweed', 'Croakley', 'Mire', 'Pondsby'],
+  rae:  ['Grey Rabbit', 'Scarred Rabbit', 'Small Rabbit', 'Lop-Eared Rabbit', 'Dusty Rabbit', 'Quiet Rabbit', 'Long-Eared Rabbit', 'Spotted Rabbit',
+         'Sooty Rabbit', 'Bent-Eared Rabbit', 'Ginger Rabbit', 'Pale Rabbit', 'Stubby Rabbit', 'Patchy Rabbit', 'Big-Footed Rabbit', 'Twitchy Rabbit'],
+  frog: ['Glub', 'Murkle', 'Bogwort', 'Puddle', 'Ribbet', 'Sludge', 'Croakley', 'Mire', 'Pondsby', 'Squelch', 'Gloop', 'Paddock', 'Fennick', 'Wortle', 'Plash', 'Brack'],
 };

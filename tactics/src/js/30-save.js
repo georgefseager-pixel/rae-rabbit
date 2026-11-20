@@ -56,16 +56,15 @@ function currentStageIndex(campKey){
   return n - 1;
 }
 
-function recruitOptions(campKey){
-  return CAMPAIGNS[campKey].recruits.filter(r => !r.after || isCleared(r.after));
-}
 function recruitLevel(campKey){
   const lv = living(campKey).map(r => r.lv);
   return Math.max(1, Math.floor(lv.reduce((a, b) => a + b, 0)/lv.length) - 1);
 }
 function makeRecruit(campKey, cls, fixedLv){
   const st = SAVE.camps[campKey], faction = CAMPAIGNS[campKey].faction, used = new Set(st.roster.map(r => r.name));
-  const name = RECRUIT_NAMES[faction].find(n => !used.has(n)) || `${CLASSES[cls].name} ${st.recruited + 1}`;
+  const list = RECRUIT_NAMES[faction];
+  let name = list.find(n => !used.has(n));
+  for (let k = 2; !name; k++) name = list.map(n => `${n} ${ROMAN(k)}`).find(n => !used.has(n));
   const lv = fixedLv || recruitLevel(campKey);
   st.recruited++;
   return {uid: `${cls}-${Date.now().toString(36)}-${st.recruited}`, key: 'recruit', name, faction, cls, look: CLASS_LOOK[cls],

@@ -4,6 +4,7 @@
 const $ = s => document.querySelector(s);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const deepCopy = o => JSON.parse(JSON.stringify(o));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const ROMAN = n => { let s = ''; for (const [v, c] of [[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']]) while (n >= v){ s += c; n -= v; } return s; };
 function hash(x, y, s = 0){ let h = (x*374761393 + y*668265263 + s*1442695041) | 0; h = Math.imul(h ^ (h>>>13), 1274126177); return ((h ^ (h>>>16)) >>> 0) / 4294967295; }
 

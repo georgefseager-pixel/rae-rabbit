@@ -33,7 +33,6 @@ const CAMPAIGNS = {
   rae: {
     faction: 'rae', name: 'The Raepublic', lord: 'rae',
     start: ['rae', 'tall', 'burly', 'old'], startRes: 0,
-    recruits: [{cls: 'digger', after: 'R1-2', cost: 250}, {cls: 'hauler', after: 'R1-3', cost: 280}, {cls: 'pebbler', after: 'R1-4', cost: 300}],
     chapters: [
       {id: 'RC1', title: 'Chapter One', name: 'Rabbit', stages: [
 
@@ -204,7 +203,6 @@ const CAMPAIGNS = {
   frog: {
     faction: 'frog', name: 'The Friggliarchy', lord: 'tiggle',
     start: ['tiggle', 'biggle'], startRecruits: ['lily', 'lily', 'bruiser', 'reed', 'croaker'], startLevel: 1, startRes: 0,
-    recruits: [{cls: 'lily', after: null, cost: 250}, {cls: 'reed', after: 'F1-1', cost: 280}, {cls: 'bruiser', after: 'F1-2', cost: 300}],
     chapters: [
       {id: 'FC1', title: 'Chapter One', name: 'The Prince', stages: [
 

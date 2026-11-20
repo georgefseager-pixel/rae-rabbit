@@ -60,6 +60,12 @@ function bunny(g, cx, cy, s, L){
     g.fillStyle = '#e8ecf0'; for (const k of [-.7,-.35,0,.35,.7]){ ell(g, cx + k*s, cy - .27*s, .045*s, .045*s); g.fill(); }
     g.strokeStyle = '#b5302a'; g.lineWidth = s*.1; g.beginPath(); g.moveTo(cx, cy - 1.0*s); g.quadraticCurveTo(cx + .2*s, cy - 1.35*s, cx + .55*s, cy - 1.3*s); g.stroke();
   }
+  if (L.gear === 'mask'){   // a dark cloth mask over the eyes
+    g.fillStyle = '#1a1614'; g.beginPath(); g.ellipse(cx, cy - .06*s, .78*s, .24*s, 0, 0, Math.PI*2); g.fill();
+    g.beginPath(); g.ellipse(cx, cy - .06*s, .7*s, .17*s, 0, 0, Math.PI*2); stitchStroke(g, '#5a4a40', s, .6);
+    button(g, cx - .4*s, cy - .06*s, .1*s, '#e8dcc0'); button(g, cx + .4*s, cy - .06*s, .1*s, '#e8dcc0');
+    g.strokeStyle = '#1a1614'; g.lineWidth = s*.08; g.beginPath(); g.moveTo(cx - .78*s, cy - .06*s); g.lineTo(cx - 1.1*s, cy + .2*s); g.stroke();
+  }
   if (L.gear === 'monocle'){
     g.strokeStyle = '#e2b955'; g.lineWidth = s*.07; ell(g, cx + .4*s, cy - .06*s, .25*s, .25*s); g.stroke();
     g.lineWidth = s*.03; g.beginPath(); g.moveTo(cx + .62*s, cy + .05*s); g.quadraticCurveTo(cx + .8*s, cy + .5*s, cx + .6*s, cy + .75*s); g.stroke();
