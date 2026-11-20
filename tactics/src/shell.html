@@ -1,0 +1,75 @@
+<title>Raepublic</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:wght@400;500;700;800&display=swap">
+<!-- Built by tools/build.py from src/. Edit the files in src/, then rebuild. -->
+<style>
+/*@CSS*/
+</style>
+
+<!-- ===== Battle ===== -->
+<div id="app" hidden>
+  <div id="top">
+    <div id="turnBox"><small>Turn <span id="turn">I</span></small><span id="phase">Raepublic</span></div>
+    <span class="sp"></span>
+    <button class="btn icon" id="menuBtn" type="button" aria-label="Battle menu">☰</button>
+    <button class="btn" id="dangerBtn" type="button">Danger</button>
+    <button class="btn primary" id="endBtn" type="button">End Turn</button>
+  </div>
+  <div id="board"><canvas id="cv"></canvas>
+    <div id="duel" hidden>
+      <div class="arena"><div class="ground"></div>
+        <div class="ftr L" id="dL"><div class="pf"></div><div class="pop"></div></div>
+        <div class="ftr R" id="dR"><div class="pf"></div><div class="pop"></div></div>
+      </div>
+      <div class="plates">
+        <div class="plate" id="pL"><div class="nm"></div><div class="hprow"><span class="hpn"></span><div class="bar"><i></i></div></div><div class="ds"></div></div>
+        <div class="plate" id="pR"><div class="nm"></div><div class="hprow"><span class="hpn"></span><div class="bar"><i></i></div></div><div class="ds"></div></div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="stampx" id="stamp"></div>
+      <div class="dhint">Tap to speed up</div>
+    </div>
+  </div>
+  <div id="panel"></div>
+</div>
+
+<!-- ===== Campaign screens ===== -->
+<section class="screen" id="hub" hidden></section>
+<section class="screen" id="army" hidden></section>
+<section class="screen" id="prep" hidden></section>
+<section class="screen" id="result" hidden></section>
+
+<!-- ===== Overlays ===== -->
+<div class="ov" id="title">
+  <div class="tl">
+    <img class="art" id="titleArt" alt="Rae Rabbit in patchwork armour, holding a sword, red scarf flowing">
+    <div class="txt">
+      <div class="kicker">A Chronicle of the Toybox War</div>
+      <h1 class="logo">RAEPUBLIC</h1>
+      <div class="rule"></div>
+      <p class="tag">Soft things are hard to break.</p>
+      <div class="tbtns">
+        <button class="btn primary" id="contBtn" type="button">Continue</button>
+        <button class="btn" id="newBtn" type="button">New Campaign</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ov" id="talk" hidden>
+  <div class="tbox"><div class="tpor" id="tpor"></div><div class="tname" id="tname"></div>
+    <div class="tbody" id="tbody"><div class="ttext" id="ttext"></div><div class="tmore">▼</div></div></div>
+</div>
+<button class="btn" id="skip" type="button" hidden>Skip</button>
+<div class="ov" id="lvl" hidden><div class="card" id="lvlCard"></div></div>
+<div class="ov" id="menu" hidden>
+  <div class="card">
+    <h1>Battle Paused</h1><h2 id="menuSub"></h2><p id="menuObj"></p>
+    <button class="btn primary" id="resumeBtn" type="button">Resume</button>
+    <button class="btn" id="retreatBtn" type="button">Retreat to Campaign</button>
+  </div>
+</div>
+<div id="toast" hidden></div>
+<!--@ART-->
+<!--@JS-->
