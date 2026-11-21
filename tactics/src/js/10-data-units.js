@@ -149,7 +149,8 @@ const SKINS = {
 // at the waist, so it reads as a full-sized figure rather than a giant head.
 const STAGE_SIZE = {
   sistercamp: {h: .8}, sisterflora: {h: .8},     // the little sister
-  king: {h: .92, drop: .26},                      // waist-up art: sized so his head matches the others, cut edge hidden
+  king: {h: 1.3, drop: .22},                      // waist-up art: a large, grand figure whose lower half stands behind the dialogue box
+  biggle: {h: 1.12},                              // the older brother stands taller than Tiggle
 };
 
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
