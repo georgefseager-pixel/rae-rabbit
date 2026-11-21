@@ -62,6 +62,10 @@ banners can give. Recruits can be released for currency.
 
 ## Adding art
 
+Keep full-size PNG sources in `art/`; the build embeds them as WebP, capped at 720px tall
+for portraits, 512px for battle sprites and 256px wide for map icons (masks stay lossless).
+
+
 Drop transparent PNGs into `art/` named `<character>-portrait.png` (front-facing),
 `<character>-battle.png` (side-on, facing right) and `<character>-token.png` (the head
 icon used on the battle grid), then rebuild.
