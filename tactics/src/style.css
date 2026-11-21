@@ -291,7 +291,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .actor.L{left:-4%;justify-content:flex-start}.actor.R{right:-4%;justify-content:flex-end}
 .actor img{display:block;height:100%;width:auto;max-width:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.7))}
 .actor img.plush{height:62%}
-.actor.dim{filter:brightness(.38) saturate(.6);transform:translateY(8px)}
+.actor.dim{filter:brightness(.38) saturate(.6)}
 #talk.scene .tpor{display:none}
 #talk.scene .tname{left:18px}
 .tbody.thought .ttext{font-style:italic;color:#c9bfe0}
