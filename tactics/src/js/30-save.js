@@ -13,7 +13,7 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
-  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !r.stars) r.stars = 3;   // story characters are ★★★
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
     const c = CHARACTERS.condemned;
     Object.assign(r, {key: 'condemned', uid: r.uid === 'masked' ? 'condemned' : r.uid, name: c.name, look: c.look, cls: c.cls, wname: c.wname});
@@ -39,7 +39,7 @@ function recordFor(key){
   const c = CHARACTERS[key];
   return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},
           wtier: 0, wname: c.wname || CLASSES[c.cls].wname, lord: !!c.lord, dead: false, outfit: c.outfit || '',
-          stars: 3};   // every named character is ★★★, whether they joined in the story or through recruiting
+          stars: c.rarity || 3};   // named characters are ★★★ (story or recruited) unless their data says otherwise
 }
 // A chapter can dress its characters: {rae: 'camp'} uses art/raecamp-*.png, {rae: ''} goes back to the default art.
 function applyOutfits(ck, outfits){

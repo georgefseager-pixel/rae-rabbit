@@ -95,16 +95,17 @@ const CLASS_LOOK = {
 
 // ================= Named characters =================
 // Rabbits in the camps are not allowed names; the descriptors below are how the player tells them apart.
+// rarity: stars for a named character who isn't ★★★ (the camp rabbits are ordinary ★ soldiers).
 // crop: how front-portrait art is framed in the small panel and in dialogue.
 const CHARACTERS = {
   // Raepublic
   rae:     {name:'Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true, outfit:'camp',
             retort:'Come and find out.'},
-  tall:    {name:'Tall Rabbit', fur:'sandy', generic:'standard', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
-  burly:   {name:'Burly Rabbit', fur:'chocolate', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
-  old:     {name:'Old Rabbit', fur:'grey', elderly:true, faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
-  swift:   {name:'Swift Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
-  patched: {name:'Patched Rabbit', fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
+  tall:    {name:'Tall Rabbit', rarity:1, fur:'sandy', generic:'standard', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
+  burly:   {name:'Burly Rabbit', rarity:1, fur:'chocolate', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
+  old:     {name:'Old Rabbit', rarity:1, fur:'grey', elderly:true, faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
+  swift:   {name:'Swift Rabbit', rarity:1, fur:'ginger', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
+  patched: {name:'Patched Rabbit', rarity:1, fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
