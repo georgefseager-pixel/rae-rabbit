@@ -137,6 +137,9 @@ const FURS = {
   chocolate: [-4, .85, -.38], sooty: [0, .15, -.6], ginger: [-6, 1.45, -.02], sandy: [10, .75, .16],
 };
 
+// Generic rabbits of these classes use the bulkier mine-rabbit portrait (art/minerbulk-portrait.png).
+const BULKY_CLASSES = ['digger', 'hauler'];
+
 // Skin colours for the generic frog-soldier art (art/grunt-*.png), same format as FURS.
 // Only the head is recoloured (art/gruntskin-*.png); 'green' is the art as drawn.
 const SKINS = {
@@ -156,6 +159,7 @@ const STAGE_SIZE = {
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
+  minerbulk: {panel: ['215% auto', '60% 2%'], talk: ['160% auto', '62% 1%']}, // bulky mine rabbit
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)

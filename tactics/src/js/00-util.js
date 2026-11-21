@@ -62,8 +62,11 @@ function artResolve(ent, kind){
   if (ART[k]?.[kind]) return k;
   const sp = speciesOf(ent), fur = furOf(ent);
   if (!sp || !fur) return null;
+  const cls = ent.cls || CHARACTERS[ent.key]?.cls;
+  // bulky rabbit fighters have their own portrait (art/minerbulk-portrait.png)
+  if (sp.base === 'miner' && BULKY_CLASSES.includes(cls) && ART['minerbulk' + fur]?.[kind]) return 'minerbulk' + fur;
   // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
-  const ranged = (ent.w || CLASSES[ent.cls]?.w) === 'bow';
+  const ranged = (ent.w || CLASSES[cls]?.w) === 'bow';
   if (ranged && sp.base === 'grunt' && ART['gruntbow' + fur]?.[kind]) return 'gruntbow' + fur;
   return ART[sp.base + fur]?.[kind] ? sp.base + fur : null;
 }
@@ -139,8 +142,8 @@ async function buildVariants(base, palette, weightOf){
   }
 }
 async function buildFurVariants(){
-  await buildVariants('miner', FURS, async (kind, px, W, H) => {
-    const keep = await maskAlpha(ART.minermask?.[kind], W, H), w = new Float32Array(W*H);
+  for (const base of ['miner', 'minerbulk']) await buildVariants(base, FURS, async (kind, px, W, H) => {
+    const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], l = (Math.max(r, gg, b) + Math.min(r, gg, b))/510;
       // fur is warm (red above green); ink outlines are left alone

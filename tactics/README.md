@@ -70,6 +70,10 @@ ones in `CHARACTERS` (`rae`, `willow`, `fraggle`, `tiggle`, ...). Anyone without
 uses their drawn plush placeholder.
 
 
+A second, bulkier mine-rabbit portrait (`art/minerbulk-portrait.png`, keep-mask
+`minerbulkmask-portrait.png`) is used by generic rabbits of the classes in `BULKY_CLASSES`
+(Diggers and Haulers); their battle sprite and map icon still come from the standard set.
+
 ### Generic frog soldiers
 
 `art/grunt-portrait.png`, `grunt-battle.png` and `grunt-token.png` are the shared art for
