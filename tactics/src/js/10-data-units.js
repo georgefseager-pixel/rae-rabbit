@@ -128,7 +128,7 @@ const CHARACTERS = {
   bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5},
              intro:{title:'Placeholder character', text:'A croaker of the Friggliarchy. His story is still to be written.'}},
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', cls:'overseer', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
-                retort:'Back to the seam with you. And mind the lash on the way down.',
+                retort:'Back down that seam wi\' you, love. And mind the lash on yer way.',
                 intro:{title:'Overseer of the Mines', text:'She keeps the crown\'s mine camp digging, with her lash and with stories. Every morning the rabbits hear about Rae the monster. Her whip reaches further than you\'d expect.'}},
   executioner: {name:'The Executioner', faction:'frog', look:'headsman', cls:'headsman', lv:3, stars:3, stats:{mhp:27,atk:14,def:6,spd:4,skl:6,mov:4},
                 retort:'Nothing personal. It never is.',
