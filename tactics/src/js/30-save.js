@@ -9,6 +9,15 @@ function scaledStats(cls, lv, bonus){
   if (bonus) for (const k in bonus) s[k] = (s[k] || 0) + bonus[k];
   return s;
 }
+// Older saves: the placeholder Masked Rabbit became The Condemned.
+function migrateSave(s){
+  if (!s?.camps) return s;
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
+    const c = CHARACTERS.condemned;
+    Object.assign(r, {key: 'condemned', uid: r.uid === 'masked' ? 'condemned' : r.uid, name: c.name, look: c.look, cls: c.cls, wname: c.wname});
+  }
+  return s;
+}
 function recordFor(key){
   const c = CHARACTERS[key];
   return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},

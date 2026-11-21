@@ -31,14 +31,12 @@ const GACHA_ARMY = {
     currency: 'Whispers', one: 'Whisper', trade: 100,
     tease: 'A folded note, passed hand to hand along the tunnels…', seal: 'R',
     generic: ['digger', 'hauler', 'pebbler', 'runner', 'patcher'],
-    rares: ['brigand', 'lantern', 'masked', 'ironear'],
+    rares: ['brigand', 'condemned', 'lantern', 'ironear'],
     banners: [
-      {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'lantern', 'masked', 'ironear'],
-       blurb: 'Rabbits who hear the name and come looking for it. Anyone in the pool can answer.'},
+      {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
+       blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
-      {id: 'rae-masked', name: 'Faces in the Woods', kind: 'featured', featured: ['masked'], after: 'R1-4', bg: 'woods',
-       blurb: 'Placeholder banner. Masked Rabbit answers more often.'},
     ],
   },
   frog: {

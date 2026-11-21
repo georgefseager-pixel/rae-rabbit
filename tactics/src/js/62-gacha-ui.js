@@ -89,6 +89,23 @@ function spotlight(r){
       <div class="meta">Tap to continue</div></div>`;
   sp.hidden = false;
   anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
+  const intro = r.kind === 'new' && CHARACTERS[rec.key]?.intro;
+  return new Promise(res => { sp.onclick = () => {
+    sp.onclick = null;
+    if (intro) return introCard(rec, intro, 'Joins the army').then(res);
+    sp.hidden = true; res();
+  }; });
+}
+// A ★★★ character's first arrival: who they are, in a few lines (many are never met in the main story).
+function introCard(rec, intro, kicker){
+  const sp = $('#gspot'), art = artFor(rec, 'portrait');
+  sp.innerHTML = `<div class="sintro f-${rec.faction}">
+      <div class="iart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>
+      <div class="itxt"><div class="ikick${kicker.includes('★') ? ' gold' : ''}">${kicker}</div><h2>${rec.name}</h2><div class="ititle">${intro.title}</div>
+        <p>${intro.text}</p>
+        <div class="ifacts">${CLASSES[rec.cls].name} · ${weaponName(rec)}</div></div>
+      <div class="meta">Tap to continue</div></div>`;
+  anim(sp.querySelector('.sintro'), [{opacity: 0, transform: 'translateY(16px)'}, {opacity: 1, transform: 'none'}], 380);
   return new Promise(res => { sp.onclick = () => { sp.hidden = true; sp.onclick = null; res(); }; });
 }
 async function runPull(ck, n){
@@ -132,4 +149,11 @@ async function runPull(ck, n){
     else if ('gdone' in b.dataset){ ov.hidden = true; stage.onclick = null; renderArmy(); }
     else if (b.dataset.again){ stage.onclick = null; runPull(ck, +b.dataset.again); }
   };
+}
+// Re-read a ★★★ character's intro from the Army screen.
+function showIntro(uid){
+  const rec = stOf().roster.find(r => r.uid === uid), intro = rec && CHARACTERS[rec.key]?.intro;
+  if (!intro) return;
+  const ov = $('#gacha'); ov.className = 'ov f-' + rec.faction; $('#gstage').innerHTML = ''; ov.hidden = false; $('#gspot').hidden = false;
+  introCard(rec, intro, `${'★'.repeat(rec.stars || 3)}`).then(() => { ov.hidden = true; });
 }

@@ -76,6 +76,7 @@ function recCard(rec, actions = '', extraClass = ''){
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
+      ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat"><b>${weaponName(rec)}</b> · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
     ${statsGrid(rec)}${actions}</div>`;
@@ -242,6 +243,7 @@ document.addEventListener('click', e => {
     saveGame();
     toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
+  else if (d.about) showIntro(d.about);
   else if (d.release) release(t);
   else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }
   else if (d.pull) runPull(SAVE.current, +d.pull);

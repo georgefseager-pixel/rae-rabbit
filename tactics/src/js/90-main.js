@@ -1,7 +1,7 @@
 // ================= Boot =================
 validateMaps();
 function boot(data){
-  SAVE = (data && data.save) || Store.load();
+  SAVE = migrateSave((data && data.save) || Store.load());
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
   $('#contBtn').hidden = !SAVE;
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update

@@ -69,7 +69,7 @@ const LOOKS = {
   bandit:    {sp:'bun', ears:'up', fur:'#efe8de', light:'#fbf7f1', dark:'#a89c8c', scarf:'#b5302a', gear:'bandana', band:'#b5302a'},
   // Rare recruits (placeholders)
   lantern:   {sp:'bun', ears:'up',  fur:'#d8b070', light:'#f0d098', dark:'#94743a', scarf:'#e0a030', gear:'bandana', band:'#e0a030'},
-  masked:    {sp:'bun', ears:'lop', fur:'#5a4a40', light:'#7a6a5e', dark:'#2e241e', scarf:'#2a2a2a', gear:'mask'},
+  condemned: {sp:'bun', ears:'lop', fur:'#efe8de', light:'#fbf7f1', dark:'#a89c8c', scarf:'#3a3436', gear:'mask'},
   ironear:   {sp:'bun', ears:'up',  fur:'#8c8c90', light:'#b0b0b4', dark:'#55555a', scarf:'#3a4a66', gear:'helm', big:true},
   duckweed:  {sp:'frog', skin:'#4f8a5a', light:'#71ac7c', dark:'#24452c', belly:'#bcd8b0', gear:'kettle', big:true},
   glimmer:   {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'reed'},
@@ -108,19 +108,31 @@ const CHARACTERS = {
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
-  // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; all are placeholders for now.
+  // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; placeholder:true ones have no art yet.
+  // intro: the card shown the first time you recruit them (title + a few sentences). Important for characters
+  // you never meet in the main story.
   brigand:  {name:'Brigand', faction:'rae', look:'bandit', cls:'digger', lv:3, stars:3, stats:{mhp:27,atk:15,def:5,spd:7,skl:7,mov:5},
-             retort:'Ha! Swing harder, little prince.'},
-  lantern:  {name:'Lantern Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.'},
-  masked:   {name:'Masked Rabbit', fur:'sooty', faction:'rae', cls:'digger', lv:3, stars:3, placeholder:true, stats:{mhp:27,atk:15,def:6,spd:6,skl:6,mov:5}},
-  ironear:  {name:'Iron-Eared Rabbit', fur:'grey', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5}},
-  duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4}},
-  glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5}},
-  bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5}},
+             retort:'Ha! Swing harder, little prince.',
+             intro:{title:'Bandit of the Mine Road', text:'He has robbed the crown\'s supply carts on the Mine Road for years and never once been caught. He calls it freedom. Lately he has started to wonder whether that\'s all it is.'}},
+  condemned:{name:'The Condemned', faction:'rae', look:'condemned', cls:'runner', wname:'Broken Shackles', lv:3, stars:3, stats:{mhp:23,atk:13,def:5,spd:12,skl:10,mov:6},
+             retort:'I\'ve been closer to the axe than you\'ll ever get.',
+             intro:{title:'Next for the Block', text:'He was waiting in chains for his turn at the block the morning Rae stopped the Executioner. He says he owes her his life. No one has seen his face. He has never taken off the hood, and he will not say why.'}},
+  lantern:  {name:'Lantern Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.',
+             intro:{title:'Placeholder character', text:'A ginger rabbit who knows the deep tunnels by lamplight. Their story is still to be written.'}},
+  ironear:  {name:'Iron-Eared Rabbit', fur:'grey', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5},
+             intro:{title:'Placeholder character', text:'A grey rabbit with an iron ear, and a hauler\'s strength. Their story is still to be written.'}},
+  duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4},
+             intro:{title:'Placeholder character', text:'A toad knight of the Lily Court. Her story is still to be written.'}},
+  glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5},
+             intro:{title:'Placeholder character', text:'A captain of the reed archers. Their story is still to be written.'}},
+  bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5},
+             intro:{title:'Placeholder character', text:'A croaker of the Friggliarchy. His story is still to be written.'}},
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', cls:'overseer', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
-                retort:'Back to the seam with you. And mind the lash on the way down.'},
+                retort:'Back to the seam with you. And mind the lash on the way down.',
+                intro:{title:'Overseer of the Mines', text:'She keeps the crown\'s mine camp digging, with her lash and with stories. Every morning the rabbits hear about Rae the monster. Her whip reaches further than you\'d expect.'}},
   executioner: {name:'The Executioner', faction:'frog', look:'headsman', cls:'headsman', lv:3, stars:3, stats:{mhp:27,atk:14,def:6,spd:4,skl:6,mov:4},
-                retort:'Nothing personal. It never is.'},
+                retort:'Nothing personal. It never is.',
+                intro:{title:'The Crown\'s Headsman', text:'He carries out the crown\'s sentences at the block and has never once asked what they were for. He does not hurry, and he does not miss.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -162,6 +174,7 @@ const SKINS = {
 const STAGE_SIZE = {
   sistercamp: {h: .8}, sisterflora: {h: .8},     // the little sister
   king: {h: 1.15},                                // full-body art: a little taller than everyone, as befits a king
+  condemned: {h: .92},                            // big ears: a touch smaller so they stay on screen
   biggle: {h: 1.12, drop: .035},                  // the older brother stands taller than Tiggle; drop lines his planted foot up with Tiggle's
 };
 
@@ -178,6 +191,7 @@ const ART_CROP = {
   rhubarb:  {panel: ['220% auto', '50% 5%'], talk: ['160% auto', '50% 4%']},
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   brigand:  {panel: ['200% auto', '38% 3%'], talk: ['150% auto', '36% 2%']},
+  condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)
