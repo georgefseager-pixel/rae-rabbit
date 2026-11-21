@@ -288,7 +288,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 #talk.scene .splace{display:block}
 .actor{position:absolute;bottom:150px;height:min(58vh, 520px);width:62%;display:none;align-items:flex-end;pointer-events:none;transition:filter .25s, opacity .25s, transform .25s}
 #talk.scene .actor.on{display:flex}
-.actor.L{left:-4%;justify-content:flex-start}.actor.R{right:-4%;justify-content:flex-end}
+.actor.L{left:-1%;justify-content:flex-start}.actor.R{right:-1%;justify-content:flex-end}
 .actor img{display:block;height:100%;width:auto;max-width:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.7))}
 .actor img.plush{height:62%}
 .actor.dim{filter:brightness(.38) saturate(.6)}

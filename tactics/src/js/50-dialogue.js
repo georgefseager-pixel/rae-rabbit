@@ -11,10 +11,23 @@ function actorHTML(who, side){
   if (art){
     const st = STAGE_SIZE[artResolve(who, 'portrait')] || {}, h = st.h || 1, drop = st.drop || 0;
     const tf = `${drop ? `translateY(${drop*100}%)` : ''}${side === 'R' ? ' scaleX(-1)' : ''}`;
-    return `<img alt="" src="${art}" style="height:${h*100}%${tf ? `;transform:${tf}` : ''}">`;
+    return `<img alt="" src="${art}" data-h="${h}" style="height:${h*100}%${tf ? `;transform:${tf}` : ''}">`;
   }
-  return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
+  return `<img alt="" class="plush" data-h=".62" src="${plushPortrait(sp.look)}">`;
 }
+// Two characters on stage must not stand inside each other. Each is drawn at its own height (STAGE_SIZE);
+// if together they're wider than the screen, both shrink by the same amount so they still match in size.
+function fitActors(){
+  const ov = $('#talk'); if (!ov.classList.contains('scene')) return;
+  const on = [...ov.querySelectorAll('.actor.on img')], box = ov.querySelector('.actor.on');
+  if (!on.length || !box) return;
+  const H = box.clientHeight, W = ov.clientWidth;
+  let total = 0;
+  for (const im of on){ if (!im.naturalWidth) return; total += H*(+im.dataset.h || 1)*im.naturalWidth/im.naturalHeight; }
+  const k = on.length > 1 ? Math.min(1, W*1.02/total) : Math.min(1, W*.95/total);
+  for (const im of on) im.style.height = (+im.dataset.h || 1)*k*100 + '%';
+}
+window.addEventListener('resize', () => fitActors());
 
 // Backdrops painted already lamplit or at night: never shaded darker.
 const NIGHT_LIT = ['quarters', 'ridge'];
@@ -63,10 +76,12 @@ function talk(rawLines){
           const side = l.who === CAMPAIGNS[SAVE.current].lord ? 'L' : 'R';
           if (onStage[side] !== l.who){
             onStage[side] = l.who; actors[side].innerHTML = actorHTML(l.who, side);
+            const im = actors[side].querySelector('img'); if (im && !im.complete) im.onload = fitActors;
             anim(actors[side], [{opacity: 0, transform: `translateX(${side === 'L' ? -30 : 30}px)`}, {opacity: 1, transform: 'none'}], 300);
           }
           actors[side].classList.add('on'); actors[side].classList.remove('dim');
           const other = side === 'L' ? 'R' : 'L'; if (onStage[other]) actors[other].classList.add('dim');
+          fitActors();
         }
       } else if (sceneMode){ for (const s of ['L', 'R']) if (onStage[s]) actors[s].classList.add('dim'); }
       full = l.text; let n = 0; txt.textContent = '';
