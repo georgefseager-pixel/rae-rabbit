@@ -3927,9 +3927,14 @@ document.addEventListener('click', e => {
   else if ('debug' in d){
     if (!armed(t, SAVE.debugUnlock ? 'Tap again to relock' : 'Tap again to unlock all')) return;
     SAVE.debugUnlock = !SAVE.debugUnlock;
-    if (SAVE.debugUnlock) for (const ck of Object.keys(SAVE.camps)){ SAVE.camps[ck].res += 100000; gachaState(ck).tokens += 1000; }
+    if (SAVE.debugUnlock) for (const ck of Object.keys(SAVE.camps)){
+      SAVE.camps[ck].res += 100000; gachaState(ck).tokens += 1000;
+      // everyone the story brings into this army (stage rewards and mid-battle joins), if not already there
+      const st = SAVE.camps[ck], keys = CAMPAIGNS[ck].stages.flatMap(sg => [...(sg.reward?.joins || []), ...(sg.events || []).map(e => e.join).filter(Boolean)]);
+      for (const key of new Set(keys)) if (CHARACTERS[key] && !st.roster.some(r => r.key === key)) st.roster.push(recordFor(key));
+    }
     saveGame();
-    toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
+    toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked, story recruits joined; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
   else if (d.about) showIntro(d.about);
   else if (d.release) release(t);
