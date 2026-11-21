@@ -56,7 +56,8 @@ pulls are the `stars: 3` characters in `CHARACTERS`, which are all placeholders 
 Duplicate rares raise Bond (small stat boosts). Common and Uncommon soldiers come from a
 fixed company per army (two of each generic class at ★, one at ★★, so 15 named soldiers);
 a soldier you already have gains a weaker Bond (★ up to 3, ★★ up to 4) and, once maxed,
-refunds currency, so the roster stays a fixed size. Recruits can be released for currency.
+refunds currency. There's no roster cap as such: it just can't hold more soldiers than the
+banners can give. Recruits can be released for currency.
 
 ## Adding art
 

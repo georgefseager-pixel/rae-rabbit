@@ -48,7 +48,8 @@ function recruitTabHTML(ck){
 
 // ---------- Pull reveal ----------
 function cardHTML(r, i){
-  const rec = r.rec, look = rec.look, art = artFor(rec, 'portrait');
+  // small cards show the map icon (a head-and-shoulders badge reads better this small than a full portrait)
+  const rec = r.rec, look = rec.look, art = artFor(rec, 'token') || artFor(rec, 'portrait');
   const tag = r.kind === 'new' ? 'New' : r.kind === 'bond' ? `Bond ${rec.bond}` : `+${r.refund}`;
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
