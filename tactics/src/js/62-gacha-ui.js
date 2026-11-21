@@ -3,7 +3,7 @@ const gachaSel = {};   // selected banner per army
 const stars = n => '★'.repeat(n || 1);
 
 function bannerArt(ck, b){
-  const keys = b.featured || GACHA_ARMY[ck].rares;
+  const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   return keys.map((k, i) => `<div class="bfig${b.featured ? ' big' : ''}" style="--i:${i}">${artFor(k, 'portrait') ? `<img alt="" src="${artFor(k, 'portrait')}">` : `<img alt="" src="${plushPortrait(CHARACTERS[k].look || k)}">`}</div>`).join('');
 }
 function recruitTabHTML(ck){
@@ -11,7 +11,7 @@ function recruitTabHTML(ck){
   const banners = army.banners;
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = army.rares.map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
+  const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
       <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>

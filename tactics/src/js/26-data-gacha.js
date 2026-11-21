@@ -2,7 +2,8 @@
 // Each army recruits through its own banners with its own pull currency.
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
-//   ★★★   Rare: a unique character (all placeholders for now; see CHARACTERS with stars:3)
+//   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
+//         its own ★★★ characters; otherwise it draws from the army's `rares`.
 // Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
 // past that, it refunds pull currency.
 const GACHA = {
@@ -41,8 +42,8 @@ const GACHA_ARMY = {
     generic: ['lily', 'bruiser', 'reed', 'croaker', 'blade'],
     rares: ['duckweed', 'glimmer', 'bogsworth'],
     banners: [
-      {id: 'frog-std', name: 'The Royal Levy', kind: 'standard',
-       blurb: 'Frogs answering the crown\'s call to arms. Anyone in the pool can answer.'},
+      {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'],
+       blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3',

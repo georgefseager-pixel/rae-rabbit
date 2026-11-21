@@ -838,6 +838,10 @@ const CHARACTERS = {
   duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4}},
   glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5}},
   bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5}},
+  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', cls:'overseer', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
+                retort:'Back to the seam with you. And mind the lash on the way down.'},
+  executioner: {name:'The Executioner', faction:'frog', look:'headsman', cls:'headsman', lv:3, stars:3, stats:{mhp:27,atk:14,def:6,spd:4,skl:6,mov:4},
+                retort:'Nothing personal. It never is.'},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -1661,7 +1665,8 @@ for (const camp of Object.values(CAMPAIGNS)){
 // Each army recruits through its own banners with its own pull currency.
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
-//   ★★★   Rare: a unique character (all placeholders for now; see CHARACTERS with stars:3)
+//   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
+//         its own ★★★ characters; otherwise it draws from the army's `rares`.
 // Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
 // past that, it refunds pull currency.
 const GACHA = {
@@ -1700,8 +1705,8 @@ const GACHA_ARMY = {
     generic: ['lily', 'bruiser', 'reed', 'croaker', 'blade'],
     rares: ['duckweed', 'glimmer', 'bogsworth'],
     banners: [
-      {id: 'frog-std', name: 'The Royal Levy', kind: 'standard',
-       blurb: 'Frogs answering the crown\'s call to arms. Anyone in the pool can answer.'},
+      {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'],
+       blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3',
@@ -1828,7 +1833,8 @@ function bondBoost(rec){
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
-    const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(army.rares);
+    const pool = banner.pool || army.rares;
+    const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
     if (have){
       if ((have.bond || 0) < GACHA.bondMax){ have.bond = (have.bond || 0) + 1; bondBoost(have); return {stars, rec: have, kind: 'bond'}; }
@@ -3139,7 +3145,7 @@ const gachaSel = {};   // selected banner per army
 const stars = n => '★'.repeat(n || 1);
 
 function bannerArt(ck, b){
-  const keys = b.featured || GACHA_ARMY[ck].rares;
+  const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   return keys.map((k, i) => `<div class="bfig${b.featured ? ' big' : ''}" style="--i:${i}">${artFor(k, 'portrait') ? `<img alt="" src="${artFor(k, 'portrait')}">` : `<img alt="" src="${plushPortrait(CHARACTERS[k].look || k)}">`}</div>`).join('');
 }
 function recruitTabHTML(ck){
@@ -3147,7 +3153,7 @@ function recruitTabHTML(ck){
   const banners = army.banners;
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = army.rares.map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
+  const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
       <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>

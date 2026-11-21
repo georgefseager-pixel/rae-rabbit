@@ -115,6 +115,10 @@ const CHARACTERS = {
   duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4}},
   glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5}},
   bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5}},
+  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', cls:'overseer', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
+                retort:'Back to the seam with you. And mind the lash on the way down.'},
+  executioner: {name:'The Executioner', faction:'frog', look:'headsman', cls:'headsman', lv:3, stars:3, stats:{mhp:27,atk:14,def:6,spd:4,skl:6,mov:4},
+                retort:'Nothing personal. It never is.'},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.

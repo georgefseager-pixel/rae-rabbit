@@ -21,7 +21,8 @@ function bondBoost(rec){
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
-    const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(army.rares);
+    const pool = banner.pool || army.rares;
+    const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
     if (have){
       if ((have.bond || 0) < GACHA.bondMax){ have.bond = (have.bond || 0) + 1; bondBoost(have); return {stars, rec: have, kind: 'bond'}; }
