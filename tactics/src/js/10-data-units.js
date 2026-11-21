@@ -76,7 +76,7 @@ const LOOKS = {
   // Frogs
   tiggle:    {sp:'frog', skin:'#7bc043', light:'#a6dc72', dark:'#3d6a1e', belly:'#dcf0a8', gear:'circlet', small:true},
   biggle:    {sp:'frog', skin:'#467a2e', light:'#679a4a', dark:'#203a12', belly:'#b8cc84', gear:'kettle', big:true},
-  king:      {sp:'frog', skin:'#26262c', light:'#45454f', dark:'#0b0b0e', belly:'#55555f', eye:'#e02424', gear:'crown', big:true},
+  king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
   headsman:  {sp:'frog', skin:'#46603a', light:'#647e52', dark:'#1f2c18', belly:'#a9b68c', gear:'hood', hood:'#151214', big:true},
@@ -143,6 +143,7 @@ const ART_CROP = {
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One
+  king:     {panel: ['230% auto', '62% 2%'], talk: ['160% auto', '60% 0%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)
 };
 
