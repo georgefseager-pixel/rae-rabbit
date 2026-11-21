@@ -6,6 +6,9 @@
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
 // Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
 // past that, it refunds pull currency.
+// Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
+// each rarity, named from RECRUIT_NAMES. A soldier you already have gains a smaller Bond instead
+// (genericBond); once maxed, the duplicate refunds the release value. So the roster can't grow forever.
 const GACHA = {
   rarity: {
     1: {name: 'Common',   rate: 64, color: '#b88a58'},
@@ -16,6 +19,8 @@ const GACHA = {
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
   bondMax: 5,
+  company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
+  genericBond: {1: {max: 3, hp: 0, stats: 1}, 2: {max: 4, hp: 1, stats: 1}},   // per Bond level
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
   stageTokens: 5,         // awarded for clearing a stage unless the stage's reward sets `tokens`

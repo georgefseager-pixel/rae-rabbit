@@ -40,7 +40,9 @@ function recruitTabHTML(ck){
       <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
       Soldiers can be any of: ${army.generic.map(c => CLASSES[c].name).join(', ')}.
       Every ×10 includes at least one ★★. A ★★★ is guaranteed by pull ${GACHA.pity} on each banner.
-      A duplicate rare raises their Bond (up to ${GACHA.bondMax}); after that it returns ${GACHA.release[3]} ${army.currency}.</p>
+      Soldiers come from a fixed company of ${companyOf(ck).length}. A soldier or rare you already have gains Bond instead:
+      ★ up to ${GACHA.genericBond[1].max}, ★★ up to ${GACHA.genericBond[2].max}, ★★★ up to ${GACHA.bondMax} (bigger boosts at higher rarity).
+      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>
     </details>`;
 }
 

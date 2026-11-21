@@ -53,7 +53,10 @@ Whispers, the frogs spend Writs. Both are earned by clearing stages (`reward.tok
 `GACHA_ARMY`; a banner with `after: 'R1-2'` opens once that stage is cleared, and
 `featured` units get a rate-up. Common and Uncommon pulls are generic soldiers; Rare
 pulls are the `stars: 3` characters in `CHARACTERS`, which are all placeholders for now.
-Duplicate rares raise Bond (small stat boosts). Recruits can be released for currency.
+Duplicate rares raise Bond (small stat boosts). Common and Uncommon soldiers come from a
+fixed company per army (two of each generic class at ★, one at ★★, so 15 named soldiers);
+a soldier you already have gains a weaker Bond (★ up to 3, ★★ up to 4) and, once maxed,
+refunds currency, so the roster stays a fixed size. Recruits can be released for currency.
 
 ## Adding art
 

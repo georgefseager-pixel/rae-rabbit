@@ -1669,6 +1669,9 @@ for (const camp of Object.values(CAMPAIGNS)){
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
 // Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
 // past that, it refunds pull currency.
+// Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
+// each rarity, named from RECRUIT_NAMES. A soldier you already have gains a smaller Bond instead
+// (genericBond); once maxed, the duplicate refunds the release value. So the roster can't grow forever.
 const GACHA = {
   rarity: {
     1: {name: 'Common',   rate: 64, color: '#b88a58'},
@@ -1679,6 +1682,8 @@ const GACHA = {
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
   bondMax: 5,
+  company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
+  genericBond: {1: {max: 3, hp: 0, stats: 1}, 2: {max: 4, hp: 1, stats: 1}},   // per Bond level
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
   stageTokens: 5,         // awarded for clearing a stage unless the stage's reward sets `tokens`
@@ -1742,7 +1747,12 @@ function applyOutfits(ck, outfits){
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
-  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []) SAVE.camps[k].roster.push(makeRecruit(k, cls, c.startLevel || 1));
+  // starting soldiers are members of the army's fixed company (★), so they can gain Bond later
+  for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []){
+    const st = SAVE.camps[k], tpl = companyOf(k).find(t => t.stars === 1 && t.cls === cls && !st.roster.some(r => r.gid === t.id));
+    const rec = makeRecruit(k, cls, c.startLevel || 1);
+    st.roster.push(tpl ? asCompanySoldier(rec, tpl) : rec);
+  }
   return SAVE;
 }
 // Story renames (Rabbit becomes Rae Rabbit). Speakers in later scenes pick the new name up from the roster.
@@ -1830,6 +1840,25 @@ function bondBoost(rec){
   const keys = ['atk', 'def', 'spd', 'skl'];
   for (let i = 0; i < 2; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
 }
+// The fixed company of generic soldiers for an army: [{id, cls, stars, name}].
+function companyOf(ck){
+  const army = GACHA_ARMY[ck], names = RECRUIT_NAMES[CAMPAIGNS[ck].faction], out = [];
+  let n = 0;
+  for (const stars of [2, 1]) for (const cls of army.generic) for (let i = 0; i < GACHA.company[stars]; i++)
+    out.push({id: `${ck}-s${stars}-${cls}-${i}`, cls, stars, name: names[n++] || `${CLASSES[cls].name} ${n}`});
+  return out;
+}
+// Turn a fresh generic recruit into a particular company soldier (stable id, name and look).
+function asCompanySoldier(rec, tpl){
+  rec.uid = tpl.id; rec.gid = tpl.id; rec.name = tpl.name; rec.stars = tpl.stars; rec.bond = 0;
+  if (tpl.stars === 2){ rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; rec.wtier = 1; }
+  return rec;
+}
+function genericBondBoost(rec, stars){
+  const gb = GACHA.genericBond[stars]; rec.stats.mhp += gb.hp;
+  const keys = gb.hp ? ['atk', 'def', 'spd', 'skl'] : ['mhp', 'atk', 'def', 'spd', 'skl'];
+  for (let i = 0; i < gb.stats; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
+}
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
@@ -1845,9 +1874,17 @@ function grantPull(ck, banner, stars){
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
   }
-  const rec = makeRecruit(ck, pick(army.generic));
-  rec.stars = stars;
-  if (stars === 2){ rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; rec.wtier = 1; }
+  const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
+  const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
+  if (have){
+    const gb = GACHA.genericBond[stars];
+    if ((have.bond || 0) < gb.max){ have.bond = (have.bond || 0) + 1; genericBondBoost(have, stars); return {stars, rec: have, kind: 'bond'}; }
+    gachaState(ck).tokens += GACHA.release[stars];
+    return {stars, rec: have, kind: 'refund', refund: GACHA.release[stars]};
+  }
+  // a fallen soldier of the same name is replaced by the new one
+  st.roster = st.roster.filter(r => r.gid !== tpl.id);
+  const rec = asCompanySoldier(makeRecruit(ck, tpl.cls), tpl);
   st.roster.push(rec);
   return {stars, rec, kind: 'new'};
 }
@@ -3184,7 +3221,9 @@ function recruitTabHTML(ck){
       <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
       Soldiers can be any of: ${army.generic.map(c => CLASSES[c].name).join(', ')}.
       Every ×10 includes at least one ★★. A ★★★ is guaranteed by pull ${GACHA.pity} on each banner.
-      A duplicate rare raises their Bond (up to ${GACHA.bondMax}); after that it returns ${GACHA.release[3]} ${army.currency}.</p>
+      Soldiers come from a fixed company of ${companyOf(ck).length}. A soldier or rare you already have gains Bond instead:
+      ★ up to ${GACHA.genericBond[1].max}, ★★ up to ${GACHA.genericBond[2].max}, ★★★ up to ${GACHA.bondMax} (bigger boosts at higher rarity).
+      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>
     </details>`;
 }
 

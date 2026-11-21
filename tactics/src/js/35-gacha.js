@@ -18,6 +18,25 @@ function bondBoost(rec){
   const keys = ['atk', 'def', 'spd', 'skl'];
   for (let i = 0; i < 2; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
 }
+// The fixed company of generic soldiers for an army: [{id, cls, stars, name}].
+function companyOf(ck){
+  const army = GACHA_ARMY[ck], names = RECRUIT_NAMES[CAMPAIGNS[ck].faction], out = [];
+  let n = 0;
+  for (const stars of [2, 1]) for (const cls of army.generic) for (let i = 0; i < GACHA.company[stars]; i++)
+    out.push({id: `${ck}-s${stars}-${cls}-${i}`, cls, stars, name: names[n++] || `${CLASSES[cls].name} ${n}`});
+  return out;
+}
+// Turn a fresh generic recruit into a particular company soldier (stable id, name and look).
+function asCompanySoldier(rec, tpl){
+  rec.uid = tpl.id; rec.gid = tpl.id; rec.name = tpl.name; rec.stars = tpl.stars; rec.bond = 0;
+  if (tpl.stars === 2){ rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; rec.wtier = 1; }
+  return rec;
+}
+function genericBondBoost(rec, stars){
+  const gb = GACHA.genericBond[stars]; rec.stats.mhp += gb.hp;
+  const keys = gb.hp ? ['atk', 'def', 'spd', 'skl'] : ['mhp', 'atk', 'def', 'spd', 'skl'];
+  for (let i = 0; i < gb.stats; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
+}
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
@@ -33,9 +52,17 @@ function grantPull(ck, banner, stars){
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
   }
-  const rec = makeRecruit(ck, pick(army.generic));
-  rec.stars = stars;
-  if (stars === 2){ rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; rec.wtier = 1; }
+  const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
+  const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
+  if (have){
+    const gb = GACHA.genericBond[stars];
+    if ((have.bond || 0) < gb.max){ have.bond = (have.bond || 0) + 1; genericBondBoost(have, stars); return {stars, rec: have, kind: 'bond'}; }
+    gachaState(ck).tokens += GACHA.release[stars];
+    return {stars, rec: have, kind: 'refund', refund: GACHA.release[stars]};
+  }
+  // a fallen soldier of the same name is replaced by the new one
+  st.roster = st.roster.filter(r => r.gid !== tpl.id);
+  const rec = asCompanySoldier(makeRecruit(ck, tpl.cls), tpl);
   st.roster.push(rec);
   return {stars, rec, kind: 'new'};
 }
