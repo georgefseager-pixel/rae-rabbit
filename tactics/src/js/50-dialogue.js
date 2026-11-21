@@ -17,7 +17,9 @@ function actorHTML(who, side){
 }
 
 // Backdrops painted already lamplit or at night: never shaded darker.
-const NIGHT_LIT = ['quarters'];
+const NIGHT_LIT = ['quarters', 'ridge'];
+// Where to anchor a backdrop when a tall phone screen crops its sides (default: centre).
+const BG_POS = {ridge: '70% 30%'};
 function talk(rawLines){
   const lines = linesFor(rawLines);
   if (!lines.length) return Promise.resolve();
@@ -37,7 +39,7 @@ function talk(rawLines){
         // painted backdrop (art/bg-<scene>.jpg) where there is one; darker for night and dusk scenes
         // (night is darker than dusk/evening); the drawn placeholder details are hidden under a painting
         const bg = ART.bg?.[l.scene], pl = l.place || '', shade = NIGHT_LIT.includes(l.scene) ? 0 : /night/i.test(pl) ? .66 : /dusk|evening/i.test(pl) ? .5 : 0;
-        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) center 30%/cover no-repeat` : '';
+        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) ${BG_POS[l.scene] || 'center 30%'}/cover no-repeat` : '';
         $('#sbg').toggleAttribute('data-painted', !!bg);
         for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
         anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);
