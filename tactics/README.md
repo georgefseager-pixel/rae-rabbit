@@ -90,7 +90,9 @@ generic look with `generic: 'standard'` (Tall Rabbit).
 every frog without art of their own. Only the head is recoloured, into the skin colours in
 `SKINS` (`src/js/10-data-units.js`); `art/gruntskin-*.png` marks the head (opaque = recolour),
 so the armour, cloak, plume and banner stay as drawn. Characters can pick a colour with
-`fur: 'olive'` (Rhubarb is pink, the Executioner olive); others get one from their id.
+`fur: 'olive'`; others get one from their id. ★★ (elite) frog soldiers wear red: the green
+armour, cloak, plume and banner marked in `art/gruntarmour-*.png` and `gruntbowarmour-battle.png`
+are turned red at load, before the skin colours.
 
 ### Generic mine rabbits
 

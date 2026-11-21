@@ -75,8 +75,13 @@ function artResolve(ent, kind){
   const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls)
     || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
-  // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
-  if (ranged && sp.base === 'grunt' && ART['gruntbow' + fur]?.[kind]) return 'gruntbow' + fur;
+  if (sp.base === 'grunt'){
+    // ★★ frog soldiers wear red (elite) armour: art built from art/grunt*armour-*.png at load
+    const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
+    // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
+    if (ranged && ART['gruntbow' + e + fur]?.[kind]) return 'gruntbow' + e + fur;
+    if (ART['grunt' + e + fur]?.[kind]) return 'grunt' + e + fur;
+  }
   return ART[sp.base + fur]?.[kind] ? sp.base + fur : null;
 }
 const artFor = (ent, kind) => { const k = artResolve(ent, kind); return k ? ART[k][kind] : undefined; };
@@ -150,6 +155,27 @@ async function buildVariants(base, palette, weightOf){
     } catch (e){ console.warn('recolour failed for', base, kind, e); }
   }
 }
+async function buildEliteArmour(base){
+  if (!ART[base]) return;
+  ART[base + 'elite'] = {};
+  for (const kind of Object.keys(ART[base])){
+    try {
+      const img = await loadImg(ART[base][kind]), W = img.naturalWidth, H = img.naturalHeight;
+      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      const data = g.getImageData(0, 0, W, H), px = data.data, m = await maskAlpha(ART[base + 'armour']?.[kind], W, H);
+      for (let i = 0; i < W*H; i++){
+        if (m[i] <= 0) continue;
+        const [, s, l] = rgbToHsl(px[i*4]/255, px[i*4 + 1]/255, px[i*4 + 2]/255);
+        const [r, gg, b] = hslToRgb(356, clamp(s*1.25 + .08, 0, 1), l*.95);
+        px[i*4] += (r*255 - px[i*4])*m[i]; px[i*4 + 1] += (gg*255 - px[i*4 + 1])*m[i]; px[i*4 + 2] += (b*255 - px[i*4 + 2])*m[i];
+      }
+      g.putImageData(data, 0, 0);
+      const blob = await new Promise(res => c.toBlob(res, 'image/png'));
+      ART[base + 'elite'][kind] = blob ? URL.createObjectURL(blob) : c.toDataURL();
+    } catch (e){ console.warn('elite armour failed for', base, kind, e); }
+  }
+}
 async function buildFurVariants(){
   for (const base of ['miner', 'minerbulk', 'minerold', 'minersling']) await buildVariants(base, FURS, async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
@@ -160,8 +186,10 @@ async function buildFurVariants(){
     }
     return w;
   });
-  for (const base of ['grunt', 'gruntbow']) await buildVariants(base, SKINS, async (kind, px, W, H) => {
-    const skin = await maskAlpha(ART[base + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
+  // Elite (★★) frog art: the green armour, cloak, plume and banner turned red, before the skin colours.
+  for (const base of ['grunt', 'gruntbow']) await buildEliteArmour(base);
+  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite']) await buildVariants(base, SKINS, async (kind, px, W, H) => {
+    const skin = await maskAlpha(ART[base.replace('elite', '') + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
       // colourless pixels (eye highlights) and near-black ink keep their colour
