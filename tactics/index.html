@@ -161,11 +161,15 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .ground{position:absolute;left:-10%;right:-10%;bottom:0;height:24%;transform:perspective(260px) rotateX(40deg);transform-origin:50% 100%;
   background:repeating-linear-gradient(90deg, rgba(255,255,230,.07) 0 22px, transparent 22px 44px), linear-gradient(180deg,#628f47,#3b5f2e);
   border-top:2px dashed rgba(240,228,200,.5);box-shadow:inset 0 14px 24px rgba(0,0,0,.35)}
-.ftr{position:absolute;bottom:10%;width:50%;height:86%;display:flex;align-items:flex-end;justify-content:center}
-.ftr.L{left:0}.ftr.R{right:0}
-.pf{position:relative;height:100%;width:100%;display:flex;align-items:flex-end;justify-content:center}
-.pf img{display:block;max-height:100%;max-width:118%;object-fit:contain;filter:drop-shadow(0 10px 8px rgba(0,0,0,.6))}
-.pf img.plush{max-height:78%;transform:translateY(17%)}
+.ftr{position:absolute;bottom:10%;width:50%;height:86%;display:flex;align-items:flex-end}
+.ftr.L{left:0;justify-content:flex-start;padding-left:3%}.ftr.R{right:0;justify-content:flex-end;padding-right:3%}
+.ftr.atk{z-index:1}
+/* every battler is drawn at the same height (--sprH, set in openDuel), whatever its pose's width;
+   weapons held out simply reach toward the middle */
+.pf{position:relative;height:100%;display:flex;align-items:flex-end}
+.ftr.L .pf{justify-content:flex-start}.ftr.R .pf{justify-content:flex-end}
+.pf img{display:block;height:var(--sprH, 100%);width:auto;max-width:none;filter:drop-shadow(0 10px 8px rgba(0,0,0,.6))}
+.pf img.plush{height:calc(var(--sprH, 100%)*.7)}
 .pf img.flip{transform:scaleX(-1)}
 .plates{position:absolute;left:12px;right:12px;bottom:34px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .plate{background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;outline:1px dashed var(--thread);outline-offset:-4px;min-width:0}
@@ -2005,6 +2009,11 @@ async function openDuel(a, d){
   duelSides = {[a.id]: 'L', [d.id]: 'R'};
   fillFighter('L', a, calc(a, d, a, d)); fillFighter('R', d, calc(d, a, d, a));
   const duel = duelEl(); duel.hidden = false;
+  // one shared sprite height for every fight: as tall as the stage allows, but never so tall
+  // that the widest pose (a weapon held out, about 1.5 times wider than tall) runs off the far side
+  const ar = duel.querySelector('.arena').getBoundingClientRect();
+  duel.style.setProperty('--sprH', Math.round(Math.min(ar.height*.86*.98, ar.width*.62/1.5)) + 'px');
+  dEl.L.classList.add('atk'); dEl.R.classList.remove('atk');
   anim(dEl.L, [{transform: 'translateX(-60px)', opacity: 0}, {transform: 'none', opacity: 1}], 320);
   anim(dEl.R, [{transform: 'translateX(60px)', opacity: 0}, {transform: 'none', opacity: 1}], 320);
   anim(pEl.L, [{transform: 'translateY(20px)', opacity: 0}, {transform: 'none', opacity: 1}], 320);
@@ -3200,7 +3209,9 @@ function boot(data){
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
-if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady};
+if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady,
+  duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
+    B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
 
 })();
 </script>

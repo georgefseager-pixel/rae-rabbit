@@ -175,6 +175,11 @@ async function openDuel(a, d){
   duelSides = {[a.id]: 'L', [d.id]: 'R'};
   fillFighter('L', a, calc(a, d, a, d)); fillFighter('R', d, calc(d, a, d, a));
   const duel = duelEl(); duel.hidden = false;
+  // one shared sprite height for every fight: as tall as the stage allows, but never so tall
+  // that the widest pose (a weapon held out, about 1.5 times wider than tall) runs off the far side
+  const ar = duel.querySelector('.arena').getBoundingClientRect();
+  duel.style.setProperty('--sprH', Math.round(Math.min(ar.height*.86*.98, ar.width*.62/1.5)) + 'px');
+  dEl.L.classList.add('atk'); dEl.R.classList.remove('atk');
   anim(dEl.L, [{transform: 'translateX(-60px)', opacity: 0}, {transform: 'none', opacity: 1}], 320);
   anim(dEl.R, [{transform: 'translateX(60px)', opacity: 0}, {transform: 'none', opacity: 1}], 320);
   anim(pEl.L, [{transform: 'translateY(20px)', opacity: 0}, {transform: 'none', opacity: 1}], 320);
