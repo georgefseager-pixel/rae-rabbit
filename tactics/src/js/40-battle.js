@@ -200,7 +200,7 @@ function duelPop(u, text, color){
 }
 
 async function strike(a, d, f){
-  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx, dy), ranged = man(a, d) > 1;
+  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx, dy), ranged = man(a, d) > 1 && a.w !== 'whip';   // a whip lashes, it doesn't shoot
   const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
   const duel = duelEl(), scene = !duel.hidden, A = dEl[sideOf(a)], D = dEl[sideOf(d)], dir = sideOf(a) === 'L' ? 1 : -1;
   if (scene) anim(A.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${dir*(ranged ? 16 : 64)}px) rotate(${dir*3}deg)`}, {transform: 'none'}], 380, {easing: 'ease-in-out'});
@@ -295,7 +295,7 @@ function unitHTML(u){
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
       <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
-      <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0]}${note}</div>
+      <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
     </div></div>
     <div class="stats">${[[u.w === 'staff' ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;

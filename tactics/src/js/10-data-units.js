@@ -33,10 +33,11 @@ const CLASSES = {
   toadknight:{name: 'Armoured Guard', w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Halberd',           base: {mhp:25,atk:12,def:10,spd:2,skl:5,mov:4}, g: {mhp:85,atk:45,def:55,spd:15,skl:35}},
   croaker:   {name: 'Croaker',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Silt Censer',       base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   headsman:  {name: 'Executioner',    w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Headsman\'s Axe',   base: {mhp:26,atk:13,def:5, spd:4,skl:5,mov:4}, g: {mhp:80,atk:50,def:30,spd:25,skl:35}},
-  overseer:  {name: 'Overseer',       w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Tally Club',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
+  overseer:  {name: 'Overseer',       w: 'whip',  rng: [1,2], mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
 const STAT_KEYS = ['mhp','atk','def','spd','skl'];
-const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff'};
+// Whips reach 1–2 tiles and sit outside the sword/axe/lance triangle.
+const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff', whip: 'Whip'};
 const BEATS = {sword: 'axe', axe: 'lance', lance: 'sword'};
 const triangle = (a, b) => BEATS[a] === b ? 1 : BEATS[b] === a ? -1 : 0;
 
@@ -121,7 +122,7 @@ const SPEAKERS = Object.assign({
   narr:        {name:''},
   sister:      {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp'},   // becomes Flopsy Flora in Chapter Two
   rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop', fur:'grey'},
-  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', fur:'pink'},
+  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
   executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
   king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
@@ -169,6 +170,7 @@ const ART_CROP = {
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One
   tiggle:   {panel: ['210% auto', '52% 3%'], talk: ['150% auto', '50% 2%']},
+  rhubarb:  {panel: ['220% auto', '50% 5%'], talk: ['160% auto', '50% 4%']},
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
