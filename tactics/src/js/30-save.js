@@ -16,7 +16,10 @@ function recordFor(key){
 }
 // A chapter can dress its characters: {rae: 'camp'} uses art/raecamp-*.png, {rae: ''} goes back to the default art.
 function applyOutfits(ck, outfits){
-  for (const [key, o] of Object.entries(outfits || {})) for (const r of SAVE.camps[ck].roster) if (r.key === key) r.outfit = o;
+  for (const [key, o] of Object.entries(outfits || {})){
+    for (const r of SAVE.camps[ck].roster) if (r.key === key) r.outfit = o;
+    (SAVE.outfits ||= {})[key] = o;
+  }
 }
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>

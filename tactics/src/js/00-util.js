@@ -35,8 +35,10 @@ for (const [key, set] of Object.entries(window.GAME_ART || {})){
 // Outfits: a character can have alternate art, named art/<key><outfit>-<kind>.png (e.g. raecamp-portrait.png).
 // The outfit a character is wearing is kept on their army record and set by chapters (see 25-data-campaign.js).
 function outfitOf(key){
-  for (const c of Object.values((typeof SAVE !== 'undefined' && SAVE?.camps) || {})){ const r = c.roster.find(r => r.key === key); if (r) return r.outfit ?? CHARACTERS[key]?.outfit ?? ''; }
-  return CHARACTERS[key]?.outfit || '';
+  const S = typeof SAVE !== 'undefined' ? SAVE : null;
+  for (const c of Object.values(S?.camps || {})){ const r = c.roster.find(r => r.key === key); if (r) return r.outfit ?? CHARACTERS[key]?.outfit ?? ''; }
+  // story-only characters (not in any army) keep their outfit on the save itself
+  return S?.outfits?.[key] ?? CHARACTERS[key]?.outfit ?? SPEAKERS[key]?.outfit ?? '';
 }
 function artKey(key, kind){ const o = outfitOf(key); return o && ART[key + o]?.[kind] ? key + o : key; }
 

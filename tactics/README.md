@@ -64,7 +64,7 @@ icon used on the battle grid), then rebuild.
 A character can also have outfits: alternate art named `<character><outfit>-<kind>.png`,
 e.g. `raecamp-portrait.png`. A chapter sets who wears what with `outfits: {rae: 'camp'}`;
 anything an outfit lacks (Rae's camp outfit has no token) falls back to the default art.
-Rae wears `camp` through Chapter One; Chapter Two should set `outfits: {rae: ''}` to put
+Rae and Little Sister (`sister`, art `sistercamp-*.png`) wear `camp` through Chapter One. Story-only characters keep their outfit on the save. Rae Chapter Two should set `outfits: {rae: ''}` to put
 her in the uniform. Character keys are the
 ones in `CHARACTERS` (`rae`, `willow`, `fraggle`, `tiggle`, ...). Anyone without art
 uses their drawn plush placeholder.

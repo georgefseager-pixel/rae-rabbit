@@ -35,7 +35,7 @@ const CAMPAIGNS = {
     faction: 'rae', name: 'The Raepublic', lord: 'rae',
     start: ['rae', 'tall', 'burly', 'old'], startRes: 0,
     chapters: [
-      {id: 'RC1', title: 'Chapter One', name: 'Rabbit', outfits: {rae: 'camp'}, stages: [
+      {id: 'RC1', title: 'Chapter One', name: 'Rabbit', outfits: {rae: 'camp', sister: 'camp'}, stages: [
 
         // ---------------- Stage 1 ----------------
         {
@@ -199,6 +199,8 @@ const CAMPAIGNS = {
       ]},
       // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
       // Give the chapter outfits: {rae: ''} so she switches back to the uniform art (art/rae-portrait.png, rae-battle.png).
+      // Little Sister gets her name in Chapter Two: Flopsy Flora, with a new design. Rename the speaker 'sister'
+      // to 'Flopsy Flora' and give her new art as an outfit (e.g. art/sisterflora-*.png with outfits: {sister: 'flora'}).
       {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', stub: true, brief: 'Still to be written.'},
     ],
   },

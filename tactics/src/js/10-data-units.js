@@ -119,7 +119,7 @@ const CHARACTERS = {
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({
   narr:        {name:''},
-  sister:      {name:'Little Sister', faction:'rae', look:'sister', fur:'white'},
+  sister:      {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp'},   // becomes Flopsy Flora in Chapter Two
   rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop', fur:'grey'},
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
@@ -142,6 +142,7 @@ const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
+  sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One
 };
 
 // Generic recruits. Camp rabbits have no names, so they are known by how they look.
