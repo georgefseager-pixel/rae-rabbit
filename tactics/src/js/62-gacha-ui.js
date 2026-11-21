@@ -47,9 +47,9 @@ function recruitTabHTML(ck){
 }
 
 // ---------- Pull reveal ----------
-function cardHTML(r, i){
-  // small cards show the map icon (a head-and-shoulders badge reads better this small than a full portrait)
-  const rec = r.rec, look = rec.look, art = artFor(rec, 'token') || artFor(rec, 'portrait');
+function cardHTML(r, i, single){
+  // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
+  const rec = r.rec, look = rec.look, art = single ? artFor(rec, 'portrait') : (artFor(rec, 'token') || artFor(rec, 'portrait'));
   const tag = r.kind === 'new' ? 'New' : r.kind === 'bond' ? `Bond ${rec.bond}` : `+${r.refund}`;
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
@@ -92,7 +92,7 @@ async function runPull(ck, n){
   await anim(note, [{transform: 'scale(1)', opacity: 1}, {transform: 'scale(1.25)', opacity: 0}], 380);
   // 2. Face-down cards. Tap each to turn it over, or reveal them all.
   stage.innerHTML = `<div class="gtitle">${findBanner(ck, gachaSel[ck]).name}</div>
-    <div class="ggrid n${n}">${results.map(cardHTML).join('')}</div>
+    <div class="ggrid n${n}">${results.map((r, i) => cardHTML(r, i, n === 1)).join('')}</div>
     <div class="gacts"><button class="btn" data-reveal-all type="button">Reveal All</button></div>`;
   const cards = [...stage.querySelectorAll('.gcard')];
   cards.forEach((c, i) => anim(c, [{opacity: 0, transform: 'translateY(20px)'}, {opacity: 1, transform: 'none'}], 300, {delay: i*50, fill: 'backwards'}));
