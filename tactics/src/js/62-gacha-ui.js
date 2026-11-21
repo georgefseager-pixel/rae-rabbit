@@ -87,7 +87,7 @@ function spotlight(r){
       <p>${CLASSES[rec.cls].name}${CHARACTERS[rec.key]?.placeholder ? ' · placeholder character' : ''}</p>
       <div class="stag">${r.kind === 'new' ? 'Joins the army' : r.kind === 'bond' ? `Bond rises to ${rec.bond}` : `Bond is full: +${r.refund} ${GACHA_ARMY[SAVE.current].currency}`}</div>
       <div class="meta">Tap to continue</div></div>`;
-  sp.hidden = false;
+  sp.hidden = false; Music.jingle('rare');
   anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
   const intro = r.kind === 'new' && CHARACTERS[rec.key]?.intro;
   return new Promise(res => { sp.onclick = () => {
@@ -121,6 +121,7 @@ async function runPull(ck, n){
   anim(note, [{transform: 'rotate(-2deg)'}, {transform: 'rotate(2deg)'}, {transform: 'rotate(-2deg)'}], 700, {iterations: Infinity});
   await new Promise(res => { ov.onclick = res; });
   ov.onclick = null;
+  Sfx.play('seal');
   await anim(note, [{transform: 'scale(1)', opacity: 1}, {transform: 'scale(1.25)', opacity: 0}], 380);
   // 2. Face-down cards. Tap each to turn it over, or reveal them all.
   stage.innerHTML = `<div class="gtitle">${findBanner(ck, gachaSel[ck]).name}</div>
@@ -131,7 +132,7 @@ async function runPull(ck, n){
   let busyReveal = false;
   const reveal = async i => {
     const c = cards[i]; if (c.classList.contains('open')) return;
-    c.classList.add('open');
+    c.classList.add('open'); Sfx.play('flip'); setTimeout(() => Sfx.play('star', results[i].stars), 220);
     if (results[i].stars === 3){ busyReveal = true; await wait(500); await spotlight(results[i]); busyReveal = false; }
     if (cards.every(x => x.classList.contains('open'))) finishReveal();
   };

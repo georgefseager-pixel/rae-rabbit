@@ -1,7 +1,9 @@
 // ================= Campaign screens =================
 const SCREENS = ['app', 'hub', 'army', 'prep', 'result'];
+const campTrack = () => CAMPAIGNS[SAVE.current]?.faction === 'frog' ? 'frogCamp' : 'raeCamp';
 function showScreen(id){
   for (const s of SCREENS) $('#' + s).hidden = s !== id;
+  if (id !== 'app') Music.want(campTrack());   // battles choose their own music
   if (id !== 'app') window.scrollTo(0, 0);
 }
 const campOf = () => CAMPAIGNS[SAVE.current];
@@ -47,7 +49,7 @@ function renderHub(){
   const art = artFor(lord, 'portrait') || plushPortrait(lord.look);
   const avg = Math.round(alive.reduce((a, r) => a + r.lv, 0)/alive.length*10)/10;
   $('#hub').innerHTML = `<div class="sin f-${camp.faction}">
-    <div class="sbar"><h1>RAEPUBLIC</h1><button class="btn" data-go="title" type="button">Title</button></div>
+    <div class="sbar"><h1>RAEPUBLIC</h1><button class="btn" data-sound type="button">${SOUND_SHORT[Audio_.mode]}</button><button class="btn" data-go="title" type="button">Title</button></div>
     <div class="fswitch" role="tablist" aria-label="Choose a story">${Object.entries(CAMPAIGNS).map(([k, c]) =>
       `<button class="f-${c.faction}${k === ck ? ' on' : ''}" data-camp="${k}" role="tab" aria-selected="${k === ck}" type="button">${FACTIONS[c.faction].name}<small>${progressLabel(k)}</small></button>`).join('')}</div>
     <div class="hero f-${camp.faction}">
@@ -104,7 +106,7 @@ function renderArmy(){
 async function trainUnit(uid){
   const st = stOf(), rec = st.roster.find(r => r.uid === uid);
   if (!rec || st.res < TRAIN.cost) return;
-  st.res -= TRAIN.cost; rec.exp += TRAIN.exp;
+  st.res -= TRAIN.cost; rec.exp += TRAIN.exp; Sfx.play('coin');
   while (rec.exp >= 100 && rec.lv < 20){
     rec.exp -= 100; rec.lv++;
     const ups = rollLevel(rec.stats, growthOf(rec));
@@ -116,7 +118,7 @@ async function trainUnit(uid){
 function upgradeWeapon(uid){
   const st = stOf(), rec = st.roster.find(r => r.uid === uid), next = rec && WEAPON_TIERS[(rec.wtier || 0) + 1];
   if (!next || st.res < next.cost) return;
-  st.res -= next.cost; rec.wtier = (rec.wtier || 0) + 1;
+  st.res -= next.cost; rec.wtier = (rec.wtier || 0) + 1; Sfx.play('coin');
   saveGame(); toast(`${rec.name} now carries the ${weaponName(rec)}.`); renderArmy();
 }
 function release(btn){
@@ -232,7 +234,7 @@ document.addEventListener('click', e => {
   else if (d.go === 'hub') renderHub();
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
   else if (d.go === 'prep') renderPrep();
-  else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; }
+  else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); }
   else if (d.train) trainUnit(d.train);
   else if (d.arm) upgradeWeapon(d.arm);
@@ -269,5 +271,5 @@ $('#newBtn').addEventListener('click', async e => {
   if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again to erase your save')) return;
   newSave(); saveGame(); prep = null;
   $('#title').hidden = true; renderHub();
-  await talk(INTRO);
+  await talk(INTRO); Music.want(campTrack());
 });

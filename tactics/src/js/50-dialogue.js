@@ -27,7 +27,8 @@ function talk(rawLines){
   return new Promise(res => {
     const ov = $('#talk'), txt = $('#ttext'), box = $('#tbody'), por = $('#tpor'), nm = $('#tname'), skip = $('#skip');
     const card = $('#tcard'), wrap = $('#tboxWrap'), actors = {L: $('#actorL'), R: $('#actorR')}, onStage = {L: null, R: null};
-    let i = -1, typing = null, full = '';
+    let i = -1, typing = null, full = '', voice = null;
+    if (sceneMode) Music.want('story');   // whoever called talk() picks the music that follows
     ov.classList.toggle('scene', sceneMode);
     for (const a of Object.values(actors)){ a.className = a.className.replace(/ on| dim/g, ''); a.innerHTML = ''; }
     const finish = () => { ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
@@ -70,7 +71,8 @@ function talk(rawLines){
       } else if (sceneMode){ for (const s of ['L', 'R']) if (onStage[s]) actors[s].classList.add('dim'); }
       full = l.text; let n = 0; txt.textContent = '';
       clearInterval(typing);
-      typing = setInterval(() => { n += 2; txt.textContent = full.slice(0, n); if (n >= full.length){ clearInterval(typing); typing = null; } }, 22);
+      voice = narr ? null : sp.faction;
+      typing = setInterval(() => { n += 2; txt.textContent = full.slice(0, n); if (voice && full[n - 1] !== ' ') Sfx.play('blip', voice); if (n >= full.length){ clearInterval(typing); typing = null; } }, 22);
     };
     ov.onclick = () => { if (typing){ clearInterval(typing); typing = null; txt.textContent = full; } else show(); };
     skip.onclick = e => { e.stopPropagation(); finish(); };
@@ -85,7 +87,7 @@ function showLevelUp(u, ups){
     <div class="uinfo"><h1>LEVEL UP</h1><h2>${u.name} · Level ${u.lv}</h2></div></div>
     <div class="lv">${STAT_KEYS.map(s => `<div class="${ups[s] ? 'up' : ''}"><small>${label[s]}</small>${u[s]}${ups[s] ? ' ▲' : ''}</div>`).join('')}</div>
     <p class="meta">Tap to continue.</p>`;
-  $('#lvl').hidden = false;
+  $('#lvl').hidden = false; Sfx.play('levelup');
   return new Promise(res => {
     const done = () => { $('#lvl').hidden = true; $('#lvl').removeEventListener('click', done); clearTimeout(tm); res(); };
     const tm = setTimeout(done, 2800);

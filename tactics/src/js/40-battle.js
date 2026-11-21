@@ -80,6 +80,7 @@ function runBattle(campKey, ch, records){
 function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
+  Music.jingle(win ? 'victory' : 'defeat');
   B.resolve({win, retreated, reason, turn, survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
@@ -143,6 +144,7 @@ function popup(u, text, color){ popups.push({x: u.x + .5, y: u.y + .3, text, col
 async function moveAlong(u, path){
   for (let i = 1; i < path.length; i++){
     const fx = KX(path[i-1]), fy = KY(path[i-1]), tx = KX(path[i]), ty = KY(path[i]);
+    Sfx.play('step');
     await tween(80, t => { u.px = fx + (tx - fx)*t; u.py = fy + (ty - fy)*t; });
   }
   const last = path[path.length - 1];
@@ -207,6 +209,7 @@ async function strike(a, d, f){
   const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
   const duel = duelEl(), scene = !duel.hidden, A = dEl[sideOf(a)], D = dEl[sideOf(d)], dir = sideOf(a) === 'L' ? 1 : -1;
   if (scene) anim(A.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${dir*(ranged ? 16 : 64)}px) rotate(${dir*3}deg)`}, {transform: 'none'}], 380, {easing: 'ease-in-out'});
+  Sfx.play(a.w === 'whip' ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
   await tween(140, t => { a.ox = lx*t; a.oy = ly*t; });
   if (ranged){
     const s = {x0: a.x + .5, y0: a.y + .5, x1: d.x + .5, y1: d.y + .5, t: 0}; shots.push(s);
@@ -217,6 +220,7 @@ async function strike(a, d, f){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');
+    Sfx.play(crit ? 'crit' : dmg === 0 ? 'nodamage' : 'hit');
     if (crit){ shake = 1; if (scene){ stamp('CRITICAL', '#ffcf5a'); anim(duel, [{transform: 'none'}, {transform: 'translate(-8px,5px)'}, {transform: 'translate(7px,-4px)'}, {transform: 'translate(-4px,2px)'}, {transform: 'none'}], 380); } }
     if (scene){
       duelPop(d, dmg === 0 ? 'NO DAMAGE' : String(dmg), crit ? '#ffcf5a' : '#fff');
@@ -225,18 +229,18 @@ async function strike(a, d, f){
     }
     tween(280, t => { d.flash = 1 - t; d.shp = from + (d.hp - from)*t; });
   } else {
-    popup(d, 'Miss', '#c5d3e3');
+    popup(d, 'Miss', '#c5d3e3'); Sfx.play('miss');
     if (scene){ duelPop(d, 'MISS', '#c5d3e3'); anim(D.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${-dir*26}px)`}, {transform: 'none'}], 380); }
   }
   await tween(150, t => { a.ox = lx*(1 - t); a.oy = ly*(1 - t); });
   await wait(scene ? 380 : 220);
   if (d.hp <= 0){
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
-      stamp('FLEES', '#ecc673');
+      stamp('FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
       await wait(500);
     } else if (scene){
-      stamp('UNSTITCHED', '#e8493b');
+      stamp('UNSTITCHED', '#e8493b'); Sfx.play('unstitch');
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
@@ -252,6 +256,7 @@ async function doCombat(a, d){
   const foe = [d, a].find(u => u.talk?.length && !u.talked);
   if (foe){
     foe.talked = true;
+    if (foe.boss && !B.bossMusic){ B.bossMusic = true; Music.want('boss'); }   // the boss has spoken: the music turns
     const r = foe === a ? d : a, retort = CHARACTERS[r.key]?.retort, answered = foe.talk.some(l => l.who === r.key);
     await talk([...foe.talk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
   }
@@ -273,13 +278,13 @@ async function doCombat(a, d){
 }
 async function doHeal(h, t){
   const amt = Math.min(healAmt(h), t.mhp - t.hp), from = t.hp;
-  t.hp += amt; popup(t, `+${amt}`, '#9ff0b0');
+  t.hp += amt; popup(t, `+${amt}`, '#9ff0b0'); Sfx.play('heal');
   await tween(420, k => { t.shp = from + amt*k; t.flash = (1 - k)*.6; });
   await wait(200);
   if (h.team === 'p') await giveExp(h, 12);
 }
 async function giveExp(u, xp){
-  popup(u, `+${xp} EXP`, '#ecc673');
+  popup(u, `+${xp} EXP`, '#ecc673'); Sfx.play('exp');
   u.exp += xp;
   await wait(450);
   while (u.exp >= 100){ u.exp -= 100; await levelUp(u); }
@@ -402,7 +407,8 @@ async function onTap(x, y){
         busy = false; openActions(); return;
       }
     }
-    if (u && u.team === 'p' && !u.moved){ select(u); return; }
+    if (u && u.team === 'p' && !u.moved){ Sfx.play('select'); select(u); return; }
+    Sfx.play('cursor');
     clearSel(); mode = 'idle';
     if (u){ inspect = u.team === 'e' && inspect !== u ? u : null; setPanel(unitHTML(u)); }
     else {
@@ -457,6 +463,7 @@ async function startPlayerPhase(){
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
   refreshTop(); panelIdle();
+  Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
   await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
   await fortHeal('p');
   busy = false; mode = 'idle'; updateDanger(); panelIdle(); refreshTop();
@@ -467,13 +474,14 @@ async function spawnReinforcements(){
   let first = true;
   for (const sp of wave.units){
     const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
-    if (first){ popup(u, 'Reinforcements!', '#ffcf5a'); first = false; }
+    if (first){ popup(u, 'Reinforcements!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
     tween(400, t => { u.alpha = t; });
   }
   await wait(700);
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
+  Music.want(B.bossMusic ? 'boss' : 'enemy'); Sfx.play('phase', 'e');
   await showBanner(FACTIONS[B.ef].enemyLine, `Turn ${ROMAN(turn)}`, B.ef);
   await fortHeal('e');
   await spawnReinforcements();

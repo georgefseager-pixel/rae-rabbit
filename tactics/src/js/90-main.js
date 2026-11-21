@@ -3,7 +3,8 @@ validateMaps();
 function boot(data){
   SAVE = migrateSave((data && data.save) || Store.load());
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
-  $('#contBtn').hidden = !SAVE;
+  $('#contBtn').hidden = !SAVE; soundLabels();
+  if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update
   requestAnimationFrame(frame);
   document.fonts?.ready?.then(() => { tokenCache.clear(); resize(); });
@@ -18,6 +19,7 @@ function boot(data){
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
+if (location.hash === '#debug') Object.assign(window, {__audio: Audio_, __music: Music, __sfx: Sfx});
 if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k), fight: (ak, dk) => { const f = k => units.find(u => !u.dead && u.key === k); return doCombat(f(ak), f(dk)); },
   duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
     B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
