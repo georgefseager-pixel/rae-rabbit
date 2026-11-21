@@ -61,7 +61,11 @@ function artResolve(ent, kind){
   const k = artKey(ent.key, kind);
   if (ART[k]?.[kind]) return k;
   const sp = speciesOf(ent), fur = furOf(ent);
-  return sp && fur && ART[sp.base + fur]?.[kind] ? sp.base + fur : null;
+  if (!sp || !fur) return null;
+  // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
+  const ranged = (ent.w || CLASSES[ent.cls]?.w) === 'bow';
+  if (ranged && sp.base === 'grunt' && ART['gruntbow' + fur]?.[kind]) return 'gruntbow' + fur;
+  return ART[sp.base + fur]?.[kind] ? sp.base + fur : null;
 }
 const artFor = (ent, kind) => { const k = artResolve(ent, kind); return k ? ART[k][kind] : undefined; };
 
@@ -144,8 +148,8 @@ async function buildFurVariants(){
     }
     return w;
   });
-  await buildVariants('grunt', SKINS, async (kind, px, W, H) => {
-    const skin = await maskAlpha(ART.gruntskin?.[kind], W, H), w = new Float32Array(W*H);
+  for (const base of ['grunt', 'gruntbow']) await buildVariants(base, SKINS, async (kind, px, W, H) => {
+    const skin = await maskAlpha(ART[base + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
       // colourless pixels (eye highlights) and near-black ink keep their colour
