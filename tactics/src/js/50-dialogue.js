@@ -8,7 +8,11 @@ function actorHTML(who, side){
   const sp = SPEAKERS[who];
   if (!sp) return '';
   const art = artFor(who, 'portrait');   // falls back to the mine-rabbit art in the speaker's fur
-  if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
+  if (art){
+    const st = STAGE_SIZE[artResolve(who, 'portrait')] || {}, h = st.h || 1, drop = st.drop || 0;
+    const tf = `${drop ? `translateY(${drop*100}%)` : ''}${side === 'R' ? ' scaleX(-1)' : ''}`;
+    return `<img alt="" src="${art}" style="height:${h*100}%${tf ? `;transform:${tf}` : ''}">`;
+  }
   return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
 }
 

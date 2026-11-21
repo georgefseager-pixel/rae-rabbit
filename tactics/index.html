@@ -296,9 +296,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .actor{position:absolute;bottom:150px;height:min(58vh, 520px);width:62%;display:none;align-items:flex-end;pointer-events:none;transition:filter .25s, opacity .25s, transform .25s}
 #talk.scene .actor.on{display:flex}
 .actor.L{left:-4%;justify-content:flex-start}.actor.R{right:-4%;justify-content:flex-end}
-.actor img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(0,0,0,.7))}
-.actor img.plush{max-height:62%;max-width:90%}
-.actor.R img.flip{transform:scaleX(-1)}
+.actor img{display:block;height:100%;width:auto;max-width:none;filter:drop-shadow(0 14px 18px rgba(0,0,0,.7))}
+.actor img.plush{height:62%}
 .actor.dim{filter:brightness(.38) saturate(.6);transform:translateY(8px)}
 #talk.scene .tpor{display:none}
 #talk.scene .tname{left:18px}
@@ -845,6 +844,14 @@ const FURS = {
 const SKINS = {
   green: null, lime: [22, 1.2, 0], olive: [6, .75, -.32], teal: [105, .9, -.06], blue: [150, 1.1, -.1],
   toad: [-28, .75, -.28], gold: [-22, 1.6, .02], red: [-58, 1.3, -.1], violet: [215, .8, -.06], pink: [-80, .9, .12],
+};
+
+// How tall each portrait stands in story scenes, relative to a standard full-body figure (1).
+// drop pushes the bottom of the art below the stage, behind the dialogue box: used for art cropped
+// at the waist, so it reads as a full-sized figure rather than a giant head.
+const STAGE_SIZE = {
+  sistercamp: {h: .8}, sisterflora: {h: .8},     // the little sister
+  king: {h: .92, drop: .26},                      // waist-up art: sized so his head matches the others, cut edge hidden
 };
 
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
@@ -2737,7 +2744,11 @@ function actorHTML(who, side){
   const sp = SPEAKERS[who];
   if (!sp) return '';
   const art = artFor(who, 'portrait');   // falls back to the mine-rabbit art in the speaker's fur
-  if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
+  if (art){
+    const st = STAGE_SIZE[artResolve(who, 'portrait')] || {}, h = st.h || 1, drop = st.drop || 0;
+    const tf = `${drop ? `translateY(${drop*100}%)` : ''}${side === 'R' ? ' scaleX(-1)' : ''}`;
+    return `<img alt="" src="${art}" style="height:${h*100}%${tf ? `;transform:${tf}` : ''}">`;
+  }
   return `<img alt="" class="plush" src="${plushPortrait(sp.look)}">`;
 }
 
@@ -3210,7 +3221,7 @@ function boot(data){
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
-if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady,
+if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines),
   duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
     B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
 

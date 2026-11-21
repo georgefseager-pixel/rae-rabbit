@@ -144,6 +144,14 @@ const SKINS = {
   toad: [-28, .75, -.28], gold: [-22, 1.6, .02], red: [-58, 1.3, -.1], violet: [215, .8, -.06], pink: [-80, .9, .12],
 };
 
+// How tall each portrait stands in story scenes, relative to a standard full-body figure (1).
+// drop pushes the bottom of the art below the stage, behind the dialogue box: used for art cropped
+// at the waist, so it reads as a full-sized figure rather than a giant head.
+const STAGE_SIZE = {
+  sistercamp: {h: .8}, sisterflora: {h: .8},     // the little sister
+  king: {h: .92, drop: .26},                      // waist-up art: sized so his head matches the others, cut edge hidden
+};
+
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
