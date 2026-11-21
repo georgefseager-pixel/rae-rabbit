@@ -563,3 +563,5 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .spips{display:flex;gap:6px}
 .spip{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--stencil);font-size:16px;color:rgba(239,227,200,.35);border:1.5px dashed rgba(239,227,200,.3);background:none;padding:0}
 .spip.on{color:#1b1210;background:var(--brass-hi);border:1.5px solid var(--brass-hi);cursor:pointer;box-shadow:0 0 10px rgba(236,198,115,.35)}
+.scard .stats{grid-column:1/-1}
+.scard > .btn small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.04em;text-transform:none;opacity:.85;margin-top:2px}

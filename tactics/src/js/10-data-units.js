@@ -47,7 +47,6 @@ const WEAPON_TIERS = [
   {prefix: 'Reinforced ', bonus: 2, cost: 250},
   {prefix: 'Masterwork ', bonus: 4, cost: 600},
 ];
-const TRAIN = {cost: 150, exp: 40};   // Drill Yard: spend currency for experience
 
 // ================= Plush looks (placeholder art drawn in code) =================
 // Used for tokens everywhere, and for portraits until real art exists in art/.

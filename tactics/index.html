@@ -570,6 +570,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .spips{display:flex;gap:6px}
 .spip{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--stencil);font-size:16px;color:rgba(239,227,200,.35);border:1.5px dashed rgba(239,227,200,.3);background:none;padding:0}
 .spip.on{color:#1b1210;background:var(--brass-hi);border:1.5px solid var(--brass-hi);cursor:pointer;box-shadow:0 0 10px rgba(236,198,115,.35)}
+.scard .stats{grid-column:1/-1}
+.scard > .btn small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.04em;text-transform:none;opacity:.85;margin-top:2px}
 
 </style>
 
@@ -1320,7 +1322,6 @@ const WEAPON_TIERS = [
   {prefix: 'Reinforced ', bonus: 2, cost: 250},
   {prefix: 'Masterwork ', bonus: 4, cost: 600},
 ];
-const TRAIN = {cost: 150, exp: 40};   // Drill Yard: spend currency for experience
 
 // ================= Plush looks (placeholder art drawn in code) =================
 // Used for tokens everywhere, and for portraits until real art exists in art/.
@@ -2371,6 +2372,8 @@ const GACHA_ARMY = {
 // ================= Supports (Camp conversations) =================
 // After Chapter One, each army's leader can sit down with the unique (★★★) units in their army.
 // Every pairing has three ranks, C → B → A, each unlocked by paying the army's money (Thread / Crowns).
+// Each rank also makes the partner permanently stronger (SUPPORT.boost); after A they can Train for more.
+// This is the only way to spend money on a unit's stats (there is no Drill or weapon upgrade).
 //   kind: 'friend' (they become friends) | 'learn' (the leader learns something from them) | 'family'
 //   about: a one-line hint of what the conversations are about (shown in the Camp)
 //   C / B / A: the scene for that rank, as dialogue lines (see 25-data-campaign.js). Leave a rank out to get
@@ -2378,6 +2381,10 @@ const GACHA_ARMY = {
 const SUPPORT = {
   ranks: ['C', 'B', 'A'],
   cost: {C: 200, B: 400, A: 800},
+  // what each rank gives the partner, permanently (HP, Atk, Def, Spd, Skl)
+  boost: {C: {mhp: 2, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 3, atk: 1, def: 1, spd: 1}},
+  // after rank A: Train, +1 to two stats (+2 if HP), weighted by the unit's growths. The price rises each time.
+  train: {cost: 300, step: 100, max: 10},
   opensAfter: {rae: 'R1-4', frog: 'F1-4'},   // the end of each army's Chapter One
   scene: {rae: 'woods', frog: 'yard'},       // where the leader's camp is
   kinds: {friend: 'Friendship', learn: 'Lessons', family: 'Family'},
@@ -3684,10 +3691,10 @@ function talk(rawLines){
 }
 
 // u is anything with name, lv, key, look, faction, w and flat stats (a battle unit, or a record's stats spread in).
-function showLevelUp(u, ups){
+function showLevelUp(u, ups, title = 'LEVEL UP', sub = null){
   const label = {mhp: 'HP', atk: u.w === 'staff' ? 'Mag' : 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl'};
   $('#lvlCard').innerHTML = `<div class="urow"><div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>
-    <div class="uinfo"><h1>LEVEL UP</h1><h2>${u.name} · Level ${u.lv}</h2></div></div>
+    <div class="uinfo"><h1>${title}</h1><h2>${sub || `${u.name} · Level ${u.lv}`}</h2></div></div>
     <div class="lv">${STAT_KEYS.map(s => `<div class="${ups[s] ? 'up' : ''}"><small>${label[s]}</small>${u[s]}${ups[s] ? ' ▲' : ''}</div>`).join('')}</div>
     <p class="meta">Tap to continue.</p>`;
   $('#lvl').hidden = false; Sfx.play('levelup');
@@ -3815,38 +3822,14 @@ function renderArmy(){
   let body = '';
   if (armyTab === 'roster'){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
-    body = `<div class="hint">Drill a unit for experience, or upgrade its weapon. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r => {
-      const next = WEAPON_TIERS[(r.wtier || 0) + 1];
-      return recCard(r, `<div class="uacts">
-        <button class="btn" data-train="${r.uid}" type="button" ${st.res < TRAIN.cost || r.lv >= 20 ? 'disabled' : ''}>Drill +${TRAIN.exp} EXP · ${TRAIN.cost}</button>
-        ${next ? `<button class="btn" data-arm="${r.uid}" type="button" ${st.res < next.cost ? 'disabled' : ''}>${next.prefix.trim()} · ${next.cost}</button>` : '<button class="btn" type="button" disabled>Weapon mastered</button>'}
-        ${isGachaUnit(r) ? `<button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button>` : ''}
-      </div>`);
-    }).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
+    body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
+      recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
   } else body = recruitTabHTML(ck);
   $('#army').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="${armyReturn}" type="button">‹ Back</button><h1>Army</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
     <div class="tabs"><button class="btn${armyTab === 'roster' ? ' on' : ''}" data-tab="roster" type="button">Roster</button><button class="btn${armyTab === 'recruit' ? ' on' : ''}" data-tab="recruit" type="button">Recruit</button></div>
     ${body}</div>`;
   showScreen('army');
-}
-async function trainUnit(uid){
-  const st = stOf(), rec = st.roster.find(r => r.uid === uid);
-  if (!rec || st.res < TRAIN.cost) return;
-  st.res -= TRAIN.cost; rec.exp += TRAIN.exp; Sfx.play('coin');
-  while (rec.exp >= 100 && rec.lv < 20){
-    rec.exp -= 100; rec.lv++;
-    const ups = rollLevel(rec.stats, growthOf(rec));
-    await showLevelUp({...rec, ...rec.stats, atk: rec.stats.atk + WEAPON_TIERS[rec.wtier || 0].bonus, w: CLASSES[rec.cls].w}, ups);
-  }
-  if (rec.lv >= 20) rec.exp = 0;
-  saveGame(); renderArmy();
-}
-function upgradeWeapon(uid){
-  const st = stOf(), rec = st.roster.find(r => r.uid === uid), next = rec && WEAPON_TIERS[(rec.wtier || 0) + 1];
-  if (!next || st.res < next.cost) return;
-  st.res -= next.cost; rec.wtier = (rec.wtier || 0) + 1; Sfx.play('coin');
-  saveGame(); toast(`${rec.name} now carries the ${weaponName(rec)}.`); renderArmy();
 }
 function release(btn){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === btn.dataset.release);
@@ -3976,8 +3959,6 @@ document.addEventListener('click', e => {
   else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
   else if ('recruitNow' in d){ armyTab = 'recruit'; armyReturn = 'hub'; renderArmy(); recruitTutorial(SAVE.current); }
-  else if (d.train) trainUnit(d.train);
-  else if (d.arm) upgradeWeapon(d.arm);
   else if ('debug' in d){
     if (!armed(t, SAVE.debugUnlock ? 'Tap again to relock' : 'Tap again to unlock all')) return;
     SAVE.debugUnlock = !SAVE.debugUnlock;
@@ -3992,6 +3973,7 @@ document.addEventListener('click', e => {
   }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
+  else if (d.trainUnit) trainPartner(d.trainUnit);
   else if (d.supportView) viewSupport(d.supportView, +d.rank);
   else if (d.about) showIntro(d.about);
   else if (d.release) release(t);
@@ -4235,11 +4217,21 @@ function supportScene(ck, rec, rank){
   ];
 }
 
+const STAT_SHORT = {mhp: 'HP', atk: 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl'};
+const boostText = b => Object.entries(b).map(([k, v]) => `+${v} ${STAT_SHORT[k]}`).join(' ');
+const trainCost = rec => SUPPORT.train.cost + SUPPORT.train.step*(rec.trained || 0);
+// show the gains on the level-up card, with its own heading
+function showGains(rec, gains, title, sub){
+  const s = rec.stats;
+  return showLevelUp({...rec, ...s, atk: s.atk + WEAPON_TIERS[rec.wtier || 0].bonus, w: CLASSES[rec.cls].w}, gains, title, sub);
+}
+function applyGains(rec, gains){ for (const [k, v] of Object.entries(gains)) rec.stats[k] = (rec.stats[k] || 0) + v; }
 function renderCamp(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction], lord = camp.lord;
   const partners = supportPartners(ck);
   const card = r => {
     const rank = supportRank(ck, r.key), info = supportInfo(ck, r.key), next = SUPPORT.ranks[rank], cost = next && SUPPORT.cost[next];
+    const tc = trainCost(r), maxed = (r.trained || 0) >= SUPPORT.train.max;
     const pips = SUPPORT.ranks.map((R, i) => i < rank
       ? `<button class="spip on" data-support-view="${r.key}" data-rank="${i}" type="button" aria-label="Watch support ${R} again">${R}</button>`
       : `<span class="spip">${R}</span>`).join('');
@@ -4248,13 +4240,15 @@ function renderCamp(){
       <div class="sinfo"><div class="uhead"><span class="nm">${r.name}</span><span class="skind ${info.kind}">${SUPPORT.kinds[info.kind]}</span></div>
         <p class="meta">${info.about}</p>
         <div class="spips" aria-label="Support rank">${pips}</div></div>
-      ${next ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost ? 'disabled' : ''}>Support ${next} · ${cost} ${F.currency}</button>`
-             : '<button class="btn" type="button" disabled>Support A reached</button>'}
+      ${statsGrid(r)}
+      ${next ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost ? 'disabled' : ''}>Support ${next} · ${cost} ${F.currency}<small>${boostText(SUPPORT.boost[next])}</small></button>`
+        : maxed ? '<button class="btn" type="button" disabled>Fully trained</button>'
+        : `<button class="btn primary" data-train-unit="${r.key}" type="button" ${st.res < tc ? 'disabled' : ''}>Train · ${tc} ${F.currency}<small>+1 to two stats${r.trained ? ` · trained ×${r.trained}` : ''}</small></button>`}
     </div>`;
   };
   $('#camp').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Camp</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
-    <div class="hint">Spend time with the unique members of the army. Each conversation unlocks a support rank with ${speakerName(lord)}, from C to A. Tap a rank you've reached to watch it again.</div>
+    <div class="hint">Spend time with the unique members of the army. Each conversation unlocks a support rank with ${speakerName(lord)}, from C to A, and makes them permanently stronger. After A, they can keep training. Tap a rank you've reached to watch it again.</div>
     ${partners.length ? `<div class="ulist">${partners.map(card).join('')}</div>`
       : `<div class="gatebox"><span>No one to sit with yet. Unique (★★★) members of the army appear here: some join in the story, others through Recruiting.</span></div>`}
   </div>`;
@@ -4266,10 +4260,27 @@ async function unlockSupport(key){
   if (!rec || !next) return;
   const cost = SUPPORT.cost[next];
   if (st.res < cost){ toast(`Not enough ${FACTIONS[campOf().faction].currency}.`); return; }
-  st.res -= cost; supportState(ck)[key] = rank + 1; saveGame(); Sfx.play('coin');
+  const gains = SUPPORT.boost[next];
+  st.res -= cost; supportState(ck)[key] = rank + 1; applyGains(rec, gains); saveGame(); Sfx.play('coin');
   await talk(supportScene(ck, rec, rank));
-  toast(`${rec.name} and ${speakerName(campOf().lord)} reached Support ${next}.`);
   Music.want(campTrack()); renderCamp();
+  await showGains(rec, gains, `SUPPORT ${next}`, `${rec.name} & ${speakerName(campOf().lord)}`);
+}
+// After rank A: +1 to two different stats (+2 HP), chosen by the unit's growth rates. No conversation.
+async function trainPartner(key){
+  const ck = SAVE.current, st = stOf(), rec = st.roster.find(r => r.key === key && !r.dead);
+  if (!rec || supportRank(ck, key) < SUPPORT.ranks.length || (rec.trained || 0) >= SUPPORT.train.max) return;
+  const cost = trainCost(rec); if (st.res < cost) return;
+  const g = growthOf(rec), pool = Object.keys(STAT_SHORT), gains = {};
+  for (let n = 0; n < 2; n++){
+    const left = pool.filter(k => !gains[k]), total = left.reduce((a, k) => a + (g[k] || 30), 0);
+    let roll = Math.random()*total, pick = left[0];
+    for (const k of left){ roll -= g[k] || 30; if (roll <= 0){ pick = k; break; } }
+    gains[pick] = pick === 'mhp' ? 2 : 1;
+  }
+  st.res -= cost; rec.trained = (rec.trained || 0) + 1; applyGains(rec, gains); saveGame(); Sfx.play('coin');
+  renderCamp();
+  await showGains(rec, gains, 'TRAINED', `${rec.name} · training ${rec.trained} of ${SUPPORT.train.max}`);
 }
 async function viewSupport(key, rank){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.key === key);

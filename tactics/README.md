@@ -12,17 +12,20 @@ and run
 | --- | --- |
 | `src/shell.html` | Page skeleton: battle screen, campaign screens, overlays |
 | `src/style.css` | All styling |
+| `src/js/05-audio.js` | Music and sound effects, synthesised with Web Audio (no sound files) |
 | `src/js/10-data-units.js` | Factions, classes, weapon tiers, characters, plush looks |
 | `src/js/20-data-maps.js` | Terrain types and battle maps (8 wide, any height) |
 | `src/js/25-data-campaign.js` | Both campaigns: chapters, gates, enemies, story lines, rewards |
 | `src/js/26-data-gacha.js` | Recruitment: rarity rates, pity, and each army's banners and pull currency |
+| `src/js/27-data-supports.js` | Camp supports: ranks, costs, stat boosts, training, and each pairing's scenes |
 | `src/js/30-save.js` | Save data, army records, chapter unlock rules |
 | `src/js/35-gacha.js` | Recruitment rules: pulls, duplicates (Bond), trading, releasing |
 | `src/js/40-battle.js` | Battle engine: movement, combat, battle scenes, enemy AI, objectives |
 | `src/js/45-render.js` | Drawing the quilted map and the tokens |
 | `src/js/50-dialogue.js` | Story dialogue and level-up cards |
-| `src/js/60-screens.js` | Campaign hub, army and armoury, battle prep, results |
+| `src/js/60-screens.js` | Campaign hub, army roster, battle prep, results |
 | `src/js/62-gacha-ui.js` | Recruit tab and the pull reveal |
+| `src/js/64-camp.js` | The Camp: supports and training |
 | `art/` | Character art, embedded into the page at build time |
 
 ## Campaigns, chapters and stages

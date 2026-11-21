@@ -114,38 +114,14 @@ function renderArmy(){
   let body = '';
   if (armyTab === 'roster'){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
-    body = `<div class="hint">Drill a unit for experience, or upgrade its weapon. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r => {
-      const next = WEAPON_TIERS[(r.wtier || 0) + 1];
-      return recCard(r, `<div class="uacts">
-        <button class="btn" data-train="${r.uid}" type="button" ${st.res < TRAIN.cost || r.lv >= 20 ? 'disabled' : ''}>Drill +${TRAIN.exp} EXP · ${TRAIN.cost}</button>
-        ${next ? `<button class="btn" data-arm="${r.uid}" type="button" ${st.res < next.cost ? 'disabled' : ''}>${next.prefix.trim()} · ${next.cost}</button>` : '<button class="btn" type="button" disabled>Weapon mastered</button>'}
-        ${isGachaUnit(r) ? `<button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button>` : ''}
-      </div>`);
-    }).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
+    body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
+      recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
   } else body = recruitTabHTML(ck);
   $('#army').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="${armyReturn}" type="button">‹ Back</button><h1>Army</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
     <div class="tabs"><button class="btn${armyTab === 'roster' ? ' on' : ''}" data-tab="roster" type="button">Roster</button><button class="btn${armyTab === 'recruit' ? ' on' : ''}" data-tab="recruit" type="button">Recruit</button></div>
     ${body}</div>`;
   showScreen('army');
-}
-async function trainUnit(uid){
-  const st = stOf(), rec = st.roster.find(r => r.uid === uid);
-  if (!rec || st.res < TRAIN.cost) return;
-  st.res -= TRAIN.cost; rec.exp += TRAIN.exp; Sfx.play('coin');
-  while (rec.exp >= 100 && rec.lv < 20){
-    rec.exp -= 100; rec.lv++;
-    const ups = rollLevel(rec.stats, growthOf(rec));
-    await showLevelUp({...rec, ...rec.stats, atk: rec.stats.atk + WEAPON_TIERS[rec.wtier || 0].bonus, w: CLASSES[rec.cls].w}, ups);
-  }
-  if (rec.lv >= 20) rec.exp = 0;
-  saveGame(); renderArmy();
-}
-function upgradeWeapon(uid){
-  const st = stOf(), rec = st.roster.find(r => r.uid === uid), next = rec && WEAPON_TIERS[(rec.wtier || 0) + 1];
-  if (!next || st.res < next.cost) return;
-  st.res -= next.cost; rec.wtier = (rec.wtier || 0) + 1; Sfx.play('coin');
-  saveGame(); toast(`${rec.name} now carries the ${weaponName(rec)}.`); renderArmy();
 }
 function release(btn){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === btn.dataset.release);
@@ -275,8 +251,6 @@ document.addEventListener('click', e => {
   else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
   else if ('recruitNow' in d){ armyTab = 'recruit'; armyReturn = 'hub'; renderArmy(); recruitTutorial(SAVE.current); }
-  else if (d.train) trainUnit(d.train);
-  else if (d.arm) upgradeWeapon(d.arm);
   else if ('debug' in d){
     if (!armed(t, SAVE.debugUnlock ? 'Tap again to relock' : 'Tap again to unlock all')) return;
     SAVE.debugUnlock = !SAVE.debugUnlock;
@@ -291,6 +265,7 @@ document.addEventListener('click', e => {
   }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
+  else if (d.trainUnit) trainPartner(d.trainUnit);
   else if (d.supportView) viewSupport(d.supportView, +d.rank);
   else if (d.about) showIntro(d.about);
   else if (d.release) release(t);
