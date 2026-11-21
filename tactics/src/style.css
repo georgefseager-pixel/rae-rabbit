@@ -474,8 +474,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   background:repeating-conic-gradient(rgba(236,198,115,.18) 0 8deg, transparent 8deg 20deg);-webkit-mask-image:radial-gradient(circle, #000 20%, transparent 65%);mask-image:radial-gradient(circle, #000 20%, transparent 65%);
   animation:spinray 18s linear infinite}
 @keyframes spinray{to{transform:translate(-50%,-50%) rotate(360deg)}}
-.sart{position:relative;height:min(42vh,320px)}
-.sart img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 0 30px rgba(236,198,115,.5))}
+.sart{position:relative;line-height:0}
+.sart img{height:min(42vh,320px);height:min(42dvh,320px);width:auto;max-width:90vw;object-fit:contain;object-position:bottom;filter:drop-shadow(0 0 30px rgba(236,198,115,.5))}
 .sstars{position:relative;font-size:28px;color:var(--brass-hi);letter-spacing:.1em;text-shadow:0 0 14px rgba(236,198,115,.7)}
 .spin h2{position:relative;font-family:var(--stencil);font-size:34px;margin:0;line-height:1}
 .spin p{position:relative;margin:0;color:var(--muted)}
@@ -486,8 +486,10 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:14px;padding:18px 16px 14px;box-sizing:border-box;
   outline:1.5px dashed var(--thread);outline-offset:-7px;box-shadow:0 0 0 2px var(--brass),0 20px 50px rgba(0,0,0,.7)}
 .sintro.f-frog{background:linear-gradient(180deg,#2c3e1c,#17220e);box-shadow:0 0 0 2px #7a8f3a,0 20px 50px rgba(0,0,0,.7)}
-.iart{height:min(38vh,280px);height:min(38dvh,280px);display:flex;align-items:flex-end;justify-content:center}
-.iart img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.6))}
+/* explicit heights (no % inside flex): Safari can ignore those and draw the art full size, clipping its top */
+.sintro{--ih:min(38vh,280px);--ih:min(38dvh,280px)}
+.iart{display:block;text-align:center;line-height:0}
+.iart img{display:inline-block;height:var(--ih);width:auto;max-width:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 8px 16px rgba(0,0,0,.6))}
 .itxt{text-align:left;padding-bottom:4px}
 .ikick{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#9fe09a}
 .itxt h2{font-family:var(--stencil);font-size:26px;line-height:1.05;margin:4px 0 2px}
@@ -495,7 +497,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .itxt p{font-size:16px;line-height:1.45;color:#efe5cf;margin:0}
 .ifacts{margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.04em}
 .sintro .meta{grid-column:1/-1;text-align:center;margin-top:8px}
-@media (max-width:420px){ .sintro{grid-template-columns:1fr;text-align:center} .iart{height:min(30vh,240px);height:min(30dvh,240px)} .itxt{text-align:center} }
+@media (max-width:420px){ .sintro{grid-template-columns:1fr;text-align:center} .sintro{--ih:min(30vh,240px);--ih:min(30dvh,240px)} .itxt{text-align:center} }
 
 .dbg{display:flex;justify-content:center;margin-top:18px;opacity:.7}
 .dbg .btn{font-size:11px;min-height:36px;outline-style:dotted}
