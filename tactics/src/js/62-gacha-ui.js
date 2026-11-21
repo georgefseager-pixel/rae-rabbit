@@ -2,9 +2,22 @@
 const gachaSel = {};   // selected banner per army
 const stars = n => '★'.repeat(n || 1);
 
+// The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
-  return keys.map((k, i) => `<div class="bfig${b.featured ? ' big' : ''}" style="--i:${i}">${artFor(k, 'portrait') ? `<img alt="" src="${artFor(k, 'portrait')}">` : `<img alt="" src="${plushPortrait(CHARACTERS[k].look || k)}">`}</div>`).join('');
+  const figs = keys.map((k, i) => {
+    const src = artFor(k, 'portrait') || plushPortrait(CHARACTERS[k].look || k);
+    return `<div class="bfig${artFor(k, 'portrait') ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
+  }).join('');
+  const plates = keys.map(k => `<div class="bplate"><span class="bpst">★★★</span><b>${CHARACTERS[k].name}</b><small>${CLASSES[CHARACTERS[k].cls].name}</small></div>`).join('');
+  const bg = b.bg && ART.bg?.[b.bg];
+  return `<div class="bhero"${bg ? ` style="--bgimg:url(${bg})"` : ''}>
+      <div class="brays"></div>
+      <div class="bfigs n${keys.length}">${figs}</div>
+      <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
+      ${b.featured ? '<div class="brate">Rate up</div>' : ''}
+      <div class="bplates">${plates}</div>
+    </div>`;
 }
 function recruitTabHTML(ck){
   const army = GACHA_ARMY[ck], g = gachaState(ck), st = SAVE.camps[ck], F = FACTIONS[CAMPAIGNS[ck].faction];
@@ -18,13 +31,13 @@ function recruitTabHTML(ck){
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
       ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
-    <div class="gbanner f-${CAMPAIGNS[ck].faction}">
-      <div class="bart">${bannerArt(ck, b)}</div>
-      <div class="binfo"><div class="bkind">${b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div>
-        <h2>${b.name}</h2><p>${b.blurb}</p>
+    <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
+      ${bannerArt(ck, b)}
+      <div class="binfo"><p>${b.blurb}</p>
         <div class="chips"><span class="chip bonus">★★★ ${R[3].rate}%</span><span class="chip">★★ ${R[2].rate}%</span><span class="chip">★ ${R[1].rate}%</span>
         ${b.featured ? `<span class="chip conv">Rate up · ${b.featured.map(k => CHARACTERS[k].name).join(', ')}</span>` : ''}</div>
-        <div class="pity">A ★★★ is guaranteed within <b>${GACHA.pity - pity}</b> more pull${GACHA.pity - pity === 1 ? '' : 's'} on this banner.</div>
+        <div class="pity"><div class="pbar"><i style="width:${pity/GACHA.pity*100}%"></i></div>
+          <span>★★★ guaranteed within <b>${GACHA.pity - pity}</b> more pull${GACHA.pity - pity === 1 ? '' : 's'}</span></div>
       </div>
     </div>
     <div class="pullbtns">

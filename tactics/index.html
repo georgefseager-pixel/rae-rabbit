@@ -372,20 +372,44 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .bchip.on{background:var(--navy3);outline:1.5px solid var(--brass-hi)}
 .f-frog .bchip.on{background:#3f6a28}
 .bchip:disabled{opacity:.45}
-.gbanner{position:relative;border-radius:14px;overflow:hidden;display:grid;grid-template-rows:auto auto;outline:1.5px dashed var(--thread);outline-offset:-7px;box-shadow:0 14px 34px rgba(0,0,0,.5)}
-.gbanner.f-rae{background:radial-gradient(ellipse at 50% 30%, rgba(236,198,115,.28), transparent 60%), linear-gradient(180deg,#3a2418,#1a100c)}
-.gbanner.f-frog{background:radial-gradient(ellipse at 50% 30%, rgba(236,198,115,.25), transparent 60%), linear-gradient(180deg,#3e2052,#1a2614)}
-.bart{height:170px;display:flex;align-items:flex-end;justify-content:center;gap:0;padding-top:10px;overflow:hidden}
-.bfig{height:120px;margin:0 -14px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.6));transform:translateY(calc(var(--i) * 0px))}
-.bfig:nth-child(2){height:140px;z-index:1}
-.bfig.big{height:165px}
-.bfig img{height:100%;width:auto;object-fit:contain}
-.binfo{padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.35))}
+/* banner poster: painted backdrop, the ★★★ characters standing large, title and nameplates on top */
+.gbanner{position:relative;border-radius:14px;overflow:hidden;outline:1.5px dashed var(--thread);outline-offset:-7px;box-shadow:0 14px 34px rgba(0,0,0,.55)}
+.gbanner.f-rae{--tone:#3a2418;--glow:rgba(236,160,90,.5);background:linear-gradient(180deg,#2a1a12,#140c09)}
+.gbanner.f-frog{--tone:#2c1a3a;--glow:rgba(236,198,115,.5);background:linear-gradient(180deg,#241830,#10160c)}
+.bhero{position:relative;height:min(400px,58vh);overflow:hidden;
+  background:linear-gradient(180deg, rgba(0,0,0,.35) 0%, transparent 30%, transparent 55%, rgba(8,6,5,.92) 100%),
+    var(--bgimg, linear-gradient(180deg, var(--tone), #0c0806)) center 35%/cover no-repeat}
+.bhero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 45% at 50% 52%, var(--glow), transparent 70%);mix-blend-mode:screen;opacity:.75}
+.brays{position:absolute;left:50%;top:52%;width:760px;height:760px;transform:translate(-50%,-50%);pointer-events:none;
+  background:repeating-conic-gradient(rgba(255,230,170,.10) 0 7deg, transparent 7deg 18deg);
+  -webkit-mask-image:radial-gradient(circle, #000 15%, transparent 60%);mask-image:radial-gradient(circle, #000 15%, transparent 60%);animation:spinray 40s linear infinite}
+.bfigs{position:absolute;left:0;right:0;top:56px;bottom:46px;display:flex;align-items:flex-end;justify-content:center}
+.bfig{position:relative;height:88%;margin:0 -9%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));animation:figin .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s)}
+.bfig img{display:block;height:100%;width:auto}
+.bfigs.n1 .bfig{height:100%}
+.bfigs.n2 .bfig{height:96%;margin:0 -6%}
+.bfigs.n3 .bfig:nth-child(2){height:100%;z-index:2}
+.bfig.plush{height:62%!important;align-self:center}
+@keyframes figin{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+.btitle{position:absolute;left:16px;right:16px;top:14px;z-index:3;text-shadow:0 2px 0 rgba(0,0,0,.6), 0 0 18px rgba(0,0,0,.8)}
 .bkind{font-family:var(--fell);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-hi)}
-.binfo h2{font-family:var(--stencil);font-size:26px;line-height:1;margin:0;letter-spacing:.03em}
+.btitle.rated{right:84px}
+.btitle h2{font-family:var(--stencil);font-size:30px;line-height:1;margin:2px 0 0;letter-spacing:.03em;color:var(--cream);text-wrap:balance}
+.brate{position:absolute;right:-34px;top:22px;z-index:3;transform:rotate(38deg);background:var(--red);color:var(--cream);font-family:var(--stencil);font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;padding:5px 40px 4px;box-shadow:0 3px 8px rgba(0,0,0,.5);outline:1px dashed rgba(239,227,200,.5);outline-offset:-4px}
+.bplates{position:absolute;left:10px;right:10px;bottom:10px;z-index:3;display:flex;gap:8px;justify-content:center}
+.bplate{flex:1;max-width:190px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 8px 6px;border-radius:8px;text-align:center;
+  background:linear-gradient(180deg,rgba(60,40,14,.92),rgba(24,16,8,.92));box-shadow:inset 0 0 0 1.5px var(--brass), 0 4px 10px rgba(0,0,0,.5)}
+.bpst{font-size:11px;color:var(--brass-hi);letter-spacing:.08em;line-height:1}
+.bplate b{font-family:var(--fell);font-weight:400;font-size:16px;line-height:1.15;color:var(--cream)}
+.bplate small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.binfo{padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px}
 .binfo p{margin:0;font-size:14px;line-height:1.45;color:#dccfb4}
-.pity{font-size:13px;color:var(--muted)}
+.pity{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}
 .pity b{color:var(--brass-hi);font-weight:500}
+.pbar{height:7px;border-radius:4px;background:rgba(0,0,0,.45);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#9c6d22,var(--brass-hi))}
+@media (prefers-reduced-motion: reduce){ .brays,.bfig{animation:none} }
 .pullbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pullbtns .btn{min-height:52px;font-size:13px;white-space:normal;line-height:1.2}
 .rates{background:rgba(0,0,0,.25);border-radius:10px;padding:10px 12px}
@@ -1743,11 +1767,11 @@ const GACHA_ARMY = {
     generic: ['digger', 'hauler', 'pebbler', 'runner', 'patcher'],
     rares: ['lantern', 'masked', 'ironear'],
     banners: [
-      {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard',
+      {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine',
        blurb: 'Rabbits who hear the name and come looking for it. Anyone in the pool can answer.'},
-      {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2',
+      {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
-      {id: 'rae-masked', name: 'Faces in the Woods', kind: 'featured', featured: ['masked'], after: 'R1-4',
+      {id: 'rae-masked', name: 'Faces in the Woods', kind: 'featured', featured: ['masked'], after: 'R1-4', bg: 'woods',
        blurb: 'Placeholder banner. Masked Rabbit answers more often.'},
     ],
   },
@@ -1757,11 +1781,11 @@ const GACHA_ARMY = {
     generic: ['lily', 'bruiser', 'reed', 'croaker', 'blade'],
     rares: ['duckweed', 'glimmer', 'bogsworth'],
     banners: [
-      {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'],
+      {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
-      {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2',
+      {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
-      {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3',
+      {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',
        blurb: 'Placeholder banner. Captain Glimmer answers more often.'},
     ],
   },
@@ -3234,9 +3258,22 @@ $('#newBtn').addEventListener('click', async e => {
 const gachaSel = {};   // selected banner per army
 const stars = n => '★'.repeat(n || 1);
 
+// The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
-  return keys.map((k, i) => `<div class="bfig${b.featured ? ' big' : ''}" style="--i:${i}">${artFor(k, 'portrait') ? `<img alt="" src="${artFor(k, 'portrait')}">` : `<img alt="" src="${plushPortrait(CHARACTERS[k].look || k)}">`}</div>`).join('');
+  const figs = keys.map((k, i) => {
+    const src = artFor(k, 'portrait') || plushPortrait(CHARACTERS[k].look || k);
+    return `<div class="bfig${artFor(k, 'portrait') ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
+  }).join('');
+  const plates = keys.map(k => `<div class="bplate"><span class="bpst">★★★</span><b>${CHARACTERS[k].name}</b><small>${CLASSES[CHARACTERS[k].cls].name}</small></div>`).join('');
+  const bg = b.bg && ART.bg?.[b.bg];
+  return `<div class="bhero"${bg ? ` style="--bgimg:url(${bg})"` : ''}>
+      <div class="brays"></div>
+      <div class="bfigs n${keys.length}">${figs}</div>
+      <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
+      ${b.featured ? '<div class="brate">Rate up</div>' : ''}
+      <div class="bplates">${plates}</div>
+    </div>`;
 }
 function recruitTabHTML(ck){
   const army = GACHA_ARMY[ck], g = gachaState(ck), st = SAVE.camps[ck], F = FACTIONS[CAMPAIGNS[ck].faction];
@@ -3250,13 +3287,13 @@ function recruitTabHTML(ck){
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
       ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
-    <div class="gbanner f-${CAMPAIGNS[ck].faction}">
-      <div class="bart">${bannerArt(ck, b)}</div>
-      <div class="binfo"><div class="bkind">${b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div>
-        <h2>${b.name}</h2><p>${b.blurb}</p>
+    <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
+      ${bannerArt(ck, b)}
+      <div class="binfo"><p>${b.blurb}</p>
         <div class="chips"><span class="chip bonus">★★★ ${R[3].rate}%</span><span class="chip">★★ ${R[2].rate}%</span><span class="chip">★ ${R[1].rate}%</span>
         ${b.featured ? `<span class="chip conv">Rate up · ${b.featured.map(k => CHARACTERS[k].name).join(', ')}</span>` : ''}</div>
-        <div class="pity">A ★★★ is guaranteed within <b>${GACHA.pity - pity}</b> more pull${GACHA.pity - pity === 1 ? '' : 's'} on this banner.</div>
+        <div class="pity"><div class="pbar"><i style="width:${pity/GACHA.pity*100}%"></i></div>
+          <span>★★★ guaranteed within <b>${GACHA.pity - pity}</b> more pull${GACHA.pity - pity === 1 ? '' : 's'}</span></div>
       </div>
     </div>
     <div class="pullbtns">
