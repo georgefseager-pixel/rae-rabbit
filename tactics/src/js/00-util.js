@@ -70,7 +70,10 @@ function artResolve(ent, kind){
   const standard = CHARACTERS[ent.key]?.generic === 'standard';   // forced onto the first generic look
   if (sp.base === 'miner' && !standard && BULKY_CLASSES.includes(cls) && ART['minerbulk' + fur]?.[kind]) return 'minerbulk' + fur;
   // elderly rabbits have their own portrait (art/minerold-portrait.png)
-  const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls));
+  // generic rabbits (recruits, enemies) that aren't bulky are elderly about one time in three, fixed per rabbit
+  const generic = ent.key === 'recruit' || ent.key === 'enemy';
+  const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls)
+    || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
   // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
   if (ranged && sp.base === 'grunt' && ART['gruntbow' + fur]?.[kind]) return 'gruntbow' + fur;

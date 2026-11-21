@@ -74,7 +74,7 @@ A second, bulkier mine-rabbit portrait (`art/minerbulk-portrait.png`, keep-mask
 `minerbulkmask-portrait.png`) is used by generic rabbits of the classes in `BULKY_CLASSES`
 (Diggers and Haulers); their battle sprite and map icon still come from the standard set.
 An elderly portrait (`art/minerold-portrait.png`, keep-mask `mineroldmask-portrait.png`)
-is used by Slingers (`ELDERLY_CLASSES`) and characters marked `elderly: true` (Old Rabbit).
+is used by characters marked `elderly: true` (Old Rabbit) and by about one in three non-bulky generic rabbits.
 Every ranged rabbit (any bow-type class) uses the slinger battle pose
 (`art/minersling-battle.png`, keep-mask `minerslingmask-battle.png`) in its own coat, so
 portrait, battle sprite and icon always match. A character can be held to the first

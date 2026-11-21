@@ -586,7 +586,10 @@ function artResolve(ent, kind){
   const standard = CHARACTERS[ent.key]?.generic === 'standard';   // forced onto the first generic look
   if (sp.base === 'miner' && !standard && BULKY_CLASSES.includes(cls) && ART['minerbulk' + fur]?.[kind]) return 'minerbulk' + fur;
   // elderly rabbits have their own portrait (art/minerold-portrait.png)
-  const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls));
+  // generic rabbits (recruits, enemies) that aren't bulky are elderly about one time in three, fixed per rabbit
+  const generic = ent.key === 'recruit' || ent.key === 'enemy';
+  const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls)
+    || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
   // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
   if (ranged && sp.base === 'grunt' && ART['gruntbow' + fur]?.[kind]) return 'gruntbow' + fur;
@@ -854,8 +857,9 @@ const FURS = {
 
 // Generic rabbits of these classes use the bulkier mine-rabbit portrait (art/minerbulk-portrait.png).
 const BULKY_CLASSES = ['digger', 'hauler'];
-// ...and these, plus characters marked elderly:true, use the elderly portrait (art/minerold-portrait.png).
-const ELDERLY_CLASSES = ['pebbler'];
+// Classes always drawn elderly (art/minerold-portrait.png). Characters can be marked elderly:true, and
+// non-bulky generic rabbits are elderly about one time in three, so slingers get a mix of portraits.
+const ELDERLY_CLASSES = [];
 
 // Skin colours for the generic frog-soldier art (art/grunt-*.png), same format as FURS.
 // Only the head is recoloured (art/gruntskin-*.png); 'green' is the art as drawn.
@@ -2021,6 +2025,8 @@ function sprite(u, side){
 }
 function fillFighter(side, u, f){
   const pf = dEl[side].querySelector('.pf');
+  // clear leftover effects from the previous fight (e.g. the greyed-out defeat pose, which is held with fill:'forwards')
+  for (const el of [pf, dEl[side]]) for (const a of el.getAnimations()) a.cancel();
   pf.innerHTML = sprite(u, side); pf.style.filter = ''; pf.style.transform = '';
   const pl = pEl[side]; pl.className = 'plate f-' + u.faction;
   pl.querySelector('.nm').textContent = u.name;
@@ -3242,7 +3248,7 @@ function boot(data){
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
-if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines),
+if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k),
   duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
     B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
 

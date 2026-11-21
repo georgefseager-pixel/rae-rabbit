@@ -159,6 +159,8 @@ function sprite(u, side){
 }
 function fillFighter(side, u, f){
   const pf = dEl[side].querySelector('.pf');
+  // clear leftover effects from the previous fight (e.g. the greyed-out defeat pose, which is held with fill:'forwards')
+  for (const el of [pf, dEl[side]]) for (const a of el.getAnimations()) a.cancel();
   pf.innerHTML = sprite(u, side); pf.style.filter = ''; pf.style.transform = '';
   const pl = pEl[side]; pl.className = 'plate f-' + u.faction;
   pl.querySelector('.nm').textContent = u.name;

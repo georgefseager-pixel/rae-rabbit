@@ -139,8 +139,9 @@ const FURS = {
 
 // Generic rabbits of these classes use the bulkier mine-rabbit portrait (art/minerbulk-portrait.png).
 const BULKY_CLASSES = ['digger', 'hauler'];
-// ...and these, plus characters marked elderly:true, use the elderly portrait (art/minerold-portrait.png).
-const ELDERLY_CLASSES = ['pebbler'];
+// Classes always drawn elderly (art/minerold-portrait.png). Characters can be marked elderly:true, and
+// non-bulky generic rabbits are elderly about one time in three, so slingers get a mix of portraits.
+const ELDERLY_CLASSES = [];
 
 // Skin colours for the generic frog-soldier art (art/grunt-*.png), same format as FURS.
 // Only the head is recoloured (art/gruntskin-*.png); 'green' is the art as drawn.
