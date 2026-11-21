@@ -149,7 +149,7 @@ const SKINS = {
 // at the waist, so it reads as a full-sized figure rather than a giant head.
 const STAGE_SIZE = {
   sistercamp: {h: .8}, sisterflora: {h: .8},     // the little sister
-  king: {h: 1.3, drop: .22},                      // waist-up art: a large, grand figure whose lower half stands behind the dialogue box
+  king: {h: 1.15},                                // full-body art: a little taller than everyone, as befits a king
   biggle: {h: 1.12, drop: .035},                  // the older brother stands taller than Tiggle; drop lines his planted foot up with Tiggle's
 };
 
@@ -162,7 +162,7 @@ const ART_CROP = {
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One
   tiggle:   {panel: ['210% auto', '52% 3%'], talk: ['150% auto', '50% 2%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
-  king:     {panel: ['230% auto', '62% 2%'], talk: ['160% auto', '60% 0%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
+  king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)
 };
 
