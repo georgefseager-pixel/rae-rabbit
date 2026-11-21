@@ -12,12 +12,28 @@ function scaledStats(cls, lv, bonus){
 // Older saves: the placeholder Masked Rabbit became The Condemned.
 function migrateSave(s){
   if (!s?.camps) return s;
+  s.stars = s.stars || {};
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
     const c = CHARACTERS.condemned;
     Object.assign(r, {key: 'condemned', uid: r.uid === 'masked' ? 'condemned' : r.uid, name: c.name, look: c.look, cls: c.cls, wname: c.wname});
   }
   return s;
 }
+// ---------- Bonus stars ----------
+// live: {lost, turn, lordHit, bossBy, deployed, over}. Returns 'ok' (earned, or on course), 'missed', or 'pending'.
+function starText(ch, ck){ return ch.star ? ch.star.text.replace('{lord}', speakerName(CAMPAIGNS[ck].lord)) : ''; }
+function starCheck(star, v){
+  if (!star) return 'pending';
+  switch (star.type){
+    case 'noLosses': return v.lost > 0 ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'turns':    return v.turn > star.n ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'unhurt':   return v.lordHit ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'bossBy':   return v.bossBy ? (v.bossBy === star.key ? 'ok' : 'missed') : 'pending';
+    case 'fewer':    return v.deployed > star.n ? 'missed' : v.over ? 'ok' : 'pending';
+  }
+  return 'pending';
+}
+const hasStar = id => !!SAVE.stars?.[id];
 function recordFor(key){
   const c = CHARACTERS[key];
   return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},
@@ -31,7 +47,7 @@ function applyOutfits(ck, outfits){
   }
 }
 function newSave(){
-  SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
+  SAVE = {v: 2, current: 'rae', flags: {}, stars: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
   // starting soldiers are members of the army's fixed company (★), so they can gain Bond later
   for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []){

@@ -16,7 +16,10 @@
 //                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
-//   bonus         {type:'noLosses', text, flag}  optional objective that sets a shared world flag
+//   star          the stage's bonus challenge (one ★ per stage, worth GACHA.starTokens recruiting currency once;
+//                 a cleared stage can be replayed to try again). {lord} in the text becomes the leader's name.
+//                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage)
+//                        | bossBy (key: that unit defeats the boss) | fewer (n: deploy at most n units)
 // A chapter with stub:true is a placeholder for story not written yet.
 // A chapter can set enemyMods: {stat: +/-n}, added to every enemy in its stages (difficulty tuning).
 // A chapter can set outfits: {characterKey: 'outfit'}, applied when any of its stages starts (see art/ naming in README).
@@ -45,6 +48,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 1 ----------------
         {
           id: 'R1-1', title: 'The Lower Seam', map: 'lowerSeam', enemyFaction: 'frog',
+          star: {type: 'unhurt', text: '{lord} takes no damage'},
           objective: {type: 'rout'}, maxDeploy: 4,
           deploy: [[3,10],[4,10],[2,10],[5,10],[3,11],[4,11]],
           brief: 'Little Sister is in the cells, to be unstitched at dawn. Start with the guards in the lower tunnels.',
@@ -96,6 +100,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 2 ----------------
         {
           id: 'R1-2', title: 'The Bunkhouses', map: 'bunkhouses', enemyFaction: 'frog',
+          star: {type: 'turns', n: 6, text: 'Win by the end of turn VI'},
           objective: {type: 'rout'}, maxDeploy: 4,
           deploy: [[3,1],[4,1],[2,1],[5,1],[1,0],[6,0]],
           brief: 'The frogs are locking the bunkhouses. Clear the guards and open every door.',
@@ -125,6 +130,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 3 ----------------
         {
           id: 'R1-3', title: 'The Unstitching', map: 'blockYard', enemyFaction: 'frog',
+          star: {type: 'bossBy', key: 'rae', text: '{lord} defeats the Executioner herself'},
           objective: {type: 'boss', limit: 8}, maxDeploy: 6,
           limitFail: 'The bell stopped ringing before you reached the block. The axe fell.',
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[2,10],[5,10]],
@@ -170,6 +176,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 4 ----------------
         {
           id: 'R1-4', title: 'Rhubarb\'s Tower', map: 'tower', enemyFaction: 'frog',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
           requires: ['F1-3'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
@@ -241,6 +248,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 1 ----------------
         {
           id: 'F1-1', title: 'The Mine Road', map: 'ford', enemyFaction: 'rae',
+          star: {type: 'bossBy', key: 'tiggle', text: '{lord} drives Brigand off himself'},
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[4,0],[3,1],[5,1],[2,1],[4,1],[6,1],[2,2],[6,2]],
           brief: 'Brigand and his bandits have stopped a supply cart on the road to the mines. Drive him off and seize his gang.',
@@ -289,6 +297,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 2 ----------------
         {
           id: 'F1-2', title: 'The Outer Camp', map: 'outerCamp', enemyFaction: 'rae',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
           objective: {type: 'rout'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The rabbits of the outer camp have barricaded themselves in. Take the camp back.',
@@ -316,6 +325,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 3 ----------------
         {
           id: 'F1-3', title: 'The Ridge', map: 'ridge', enemyFaction: 'rae',
+          star: {type: 'unhurt', text: '{lord} takes no damage'},
           objective: {type: 'survive', turns: 5}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'Rebel scouts are climbing the ridge. Hold it for five turns until the main column arrives.',
@@ -348,6 +358,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 4 ----------------
         {
           id: 'F1-4', title: 'Retaking the Mines', map: 'tower', enemyFaction: 'rae',
+          star: {type: 'fewer', n: 4, text: 'Win with 4 or fewer units deployed'},
           requires: ['R1-4'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],

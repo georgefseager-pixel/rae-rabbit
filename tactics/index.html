@@ -454,7 +454,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .ggrid.n1 .gname{font-size:18px}.ggrid.n1 .gstars{font-size:16px}.ggrid.n1 .gcls,.ggrid.n1 .gtag{font-size:11px}
 .gacts{display:flex;gap:8px;width:100%}
 .gacts .btn{flex:1;min-height:48px}
-.gspot{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:rgba(6,4,3,.86);cursor:pointer;padding:20px;box-sizing:border-box}
+.gspot{position:fixed;inset:0;z-index:30;display:flex;overflow-y:auto;background:rgba(6,4,3,.86);cursor:pointer;padding:max(16px, env(safe-area-inset-top, 0px)) 16px 16px;box-sizing:border-box}
+.gspot > *{margin:auto}   /* centred, but scrolls from the top instead of clipping on short screens */
 .spin{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
 .sray{position:absolute;left:50%;top:38%;width:520px;height:520px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
   background:repeating-conic-gradient(rgba(236,198,115,.18) 0 8deg, transparent 8deg 20deg);-webkit-mask-image:radial-gradient(circle, #000 20%, transparent 65%);mask-image:radial-gradient(circle, #000 20%, transparent 65%);
@@ -472,7 +473,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:14px;padding:18px 16px 14px;box-sizing:border-box;
   outline:1.5px dashed var(--thread);outline-offset:-7px;box-shadow:0 0 0 2px var(--brass),0 20px 50px rgba(0,0,0,.7)}
 .sintro.f-frog{background:linear-gradient(180deg,#2c3e1c,#17220e);box-shadow:0 0 0 2px #7a8f3a,0 20px 50px rgba(0,0,0,.7)}
-.iart{height:min(38vh,280px);display:flex;align-items:flex-end;justify-content:center;margin-top:-60px}
+.iart{height:min(38vh,280px);height:min(38dvh,280px);display:flex;align-items:flex-end;justify-content:center}
 .iart img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.6))}
 .itxt{text-align:left;padding-bottom:4px}
 .ikick{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#9fe09a}
@@ -481,7 +482,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .itxt p{font-size:16px;line-height:1.45;color:#efe5cf;margin:0}
 .ifacts{margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.04em}
 .sintro .meta{grid-column:1/-1;text-align:center;margin-top:8px}
-@media (max-width:420px){ .sintro{grid-template-columns:1fr;text-align:center} .iart{height:min(34vh,250px);margin-top:-80px} .itxt{text-align:center} }
+@media (max-width:420px){ .sintro{grid-template-columns:1fr;text-align:center} .iart{height:min(30vh,240px);height:min(30dvh,240px)} .itxt{text-align:center} }
 
 .dbg{display:flex;justify-content:center;margin-top:18px;opacity:.7}
 .dbg .btn{font-size:11px;min-height:36px;outline-style:dotted}
@@ -506,6 +507,26 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .ikick.gold{color:var(--brass-hi);font-size:16px;letter-spacing:.1em}
 .sbg[data-painted]::before,.sbg[data-painted]::after{display:none}
 .tbtns .btn.sound{min-height:36px;font-size:12px;padding:6px 18px;align-self:center;width:auto;opacity:.85}
+/* bonus stars */
+.nhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nstar{font-size:24px;line-height:1;color:rgba(236,198,115,.45)}
+.nstar.got{color:var(--brass-hi);text-shadow:0 0 10px rgba(236,198,115,.6)}
+.starrow{margin:8px 0 2px;padding:7px 10px;border-radius:8px;border:1px dashed rgba(236,198,115,.45);font-size:13px;color:#e8dcc0;background:rgba(236,198,115,.06)}
+.starrow b{color:var(--brass-hi);font-weight:600}
+.starrow.got{border-style:solid;border-color:rgba(236,198,115,.7);background:rgba(236,198,115,.14);color:var(--brass-hi)}
+.starrow .warn{color:#ff9b8a}
+.ncard > .btn{margin-top:8px}
+.hint.starline{color:#e8dcc0}.hint.starline.missed{color:#d9a89f}.hint.starline.ok b{color:#9fe09a}.hint.starline small{opacity:.7}
+.rstar span{color:var(--brass-hi)}.rstar.got b{color:var(--brass-hi)}
+/* roster sorting and favourites */
+.sortbar{display:flex;align-items:center;gap:6px;margin:4px 0 10px;flex-wrap:wrap}
+.sortbar span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.sortbar .btn{min-height:36px;padding:6px 12px;font-size:12px;flex:1}
+.sortbar .btn.on{outline-color:var(--brass-hi);color:var(--brass-hi)}
+.ucard{position:relative}
+.ufav{position:absolute;top:6px;right:6px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(0,0,0,.25);color:rgba(239,229,207,.55);font-size:22px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0}
+.ufav.on{color:#ff6f8a;background:rgba(255,111,138,.14);text-shadow:0 0 8px rgba(255,111,138,.5)}
+.ucard .uhead{padding-right:40px}
 
 </style>
 
@@ -1798,7 +1819,10 @@ function validateMaps(){
 //                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
-//   bonus         {type:'noLosses', text, flag}  optional objective that sets a shared world flag
+//   star          the stage's bonus challenge (one ★ per stage, worth GACHA.starTokens recruiting currency once;
+//                 a cleared stage can be replayed to try again). {lord} in the text becomes the leader's name.
+//                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage)
+//                        | bossBy (key: that unit defeats the boss) | fewer (n: deploy at most n units)
 // A chapter with stub:true is a placeholder for story not written yet.
 // A chapter can set enemyMods: {stat: +/-n}, added to every enemy in its stages (difficulty tuning).
 // A chapter can set outfits: {characterKey: 'outfit'}, applied when any of its stages starts (see art/ naming in README).
@@ -1827,6 +1851,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 1 ----------------
         {
           id: 'R1-1', title: 'The Lower Seam', map: 'lowerSeam', enemyFaction: 'frog',
+          star: {type: 'unhurt', text: '{lord} takes no damage'},
           objective: {type: 'rout'}, maxDeploy: 4,
           deploy: [[3,10],[4,10],[2,10],[5,10],[3,11],[4,11]],
           brief: 'Little Sister is in the cells, to be unstitched at dawn. Start with the guards in the lower tunnels.',
@@ -1878,6 +1903,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 2 ----------------
         {
           id: 'R1-2', title: 'The Bunkhouses', map: 'bunkhouses', enemyFaction: 'frog',
+          star: {type: 'turns', n: 6, text: 'Win by the end of turn VI'},
           objective: {type: 'rout'}, maxDeploy: 4,
           deploy: [[3,1],[4,1],[2,1],[5,1],[1,0],[6,0]],
           brief: 'The frogs are locking the bunkhouses. Clear the guards and open every door.',
@@ -1907,6 +1933,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 3 ----------------
         {
           id: 'R1-3', title: 'The Unstitching', map: 'blockYard', enemyFaction: 'frog',
+          star: {type: 'bossBy', key: 'rae', text: '{lord} defeats the Executioner herself'},
           objective: {type: 'boss', limit: 8}, maxDeploy: 6,
           limitFail: 'The bell stopped ringing before you reached the block. The axe fell.',
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[2,10],[5,10]],
@@ -1952,6 +1979,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 4 ----------------
         {
           id: 'R1-4', title: 'Rhubarb\'s Tower', map: 'tower', enemyFaction: 'frog',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
           requires: ['F1-3'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
@@ -2023,6 +2051,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 1 ----------------
         {
           id: 'F1-1', title: 'The Mine Road', map: 'ford', enemyFaction: 'rae',
+          star: {type: 'bossBy', key: 'tiggle', text: '{lord} drives Brigand off himself'},
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[4,0],[3,1],[5,1],[2,1],[4,1],[6,1],[2,2],[6,2]],
           brief: 'Brigand and his bandits have stopped a supply cart on the road to the mines. Drive him off and seize his gang.',
@@ -2071,6 +2100,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 2 ----------------
         {
           id: 'F1-2', title: 'The Outer Camp', map: 'outerCamp', enemyFaction: 'rae',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
           objective: {type: 'rout'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The rabbits of the outer camp have barricaded themselves in. Take the camp back.',
@@ -2098,6 +2128,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 3 ----------------
         {
           id: 'F1-3', title: 'The Ridge', map: 'ridge', enemyFaction: 'rae',
+          star: {type: 'unhurt', text: '{lord} takes no damage'},
           objective: {type: 'survive', turns: 5}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'Rebel scouts are climbing the ridge. Hold it for five turns until the main column arrives.',
@@ -2130,6 +2161,7 @@ const CAMPAIGNS = {
         // ---------------- Stage 4 ----------------
         {
           id: 'F1-4', title: 'Retaking the Mines', map: 'tower', enemyFaction: 'rae',
+          star: {type: 'fewer', n: 4, text: 'Win with 4 or fewer units deployed'},
           requires: ['R1-4'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
@@ -2221,7 +2253,8 @@ const GACHA = {
   genericBond: {1: {max: 3, hp: 0, stats: 1}, 2: {max: 4, hp: 1, stats: 1}},   // per Bond level
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
-  stageTokens: 5,         // awarded for clearing a stage unless the stage's reward sets `tokens`
+  stageTokens: 5,
+  starTokens: 10,         // for earning a stage's bonus star (once per stage)         // awarded for clearing a stage unless the stage's reward sets `tokens`
 };
 
 const GACHA_ARMY = {
@@ -2268,12 +2301,28 @@ function scaledStats(cls, lv, bonus){
 // Older saves: the placeholder Masked Rabbit became The Condemned.
 function migrateSave(s){
   if (!s?.camps) return s;
+  s.stars = s.stars || {};
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
     const c = CHARACTERS.condemned;
     Object.assign(r, {key: 'condemned', uid: r.uid === 'masked' ? 'condemned' : r.uid, name: c.name, look: c.look, cls: c.cls, wname: c.wname});
   }
   return s;
 }
+// ---------- Bonus stars ----------
+// live: {lost, turn, lordHit, bossBy, deployed, over}. Returns 'ok' (earned, or on course), 'missed', or 'pending'.
+function starText(ch, ck){ return ch.star ? ch.star.text.replace('{lord}', speakerName(CAMPAIGNS[ck].lord)) : ''; }
+function starCheck(star, v){
+  if (!star) return 'pending';
+  switch (star.type){
+    case 'noLosses': return v.lost > 0 ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'turns':    return v.turn > star.n ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'unhurt':   return v.lordHit ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'bossBy':   return v.bossBy ? (v.bossBy === star.key ? 'ok' : 'missed') : 'pending';
+    case 'fewer':    return v.deployed > star.n ? 'missed' : v.over ? 'ok' : 'pending';
+  }
+  return 'pending';
+}
+const hasStar = id => !!SAVE.stars?.[id];
 function recordFor(key){
   const c = CHARACTERS[key];
   return {uid: key, key, name: c.name, faction: c.faction, cls: c.cls, look: c.look || key, lv: c.lv, exp: 0, stats: {...c.stats},
@@ -2287,7 +2336,7 @@ function applyOutfits(ck, outfits){
   }
 }
 function newSave(){
-  SAVE = {v: 2, current: 'rae', flags: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
+  SAVE = {v: 2, current: 'rae', flags: {}, stars: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
   // starting soldiers are members of the army's fixed company (★), so they can gain Bond later
   for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []){
@@ -2525,7 +2574,7 @@ function freeTileNear(x, y){
 }
 
 function runBattle(campKey, ch, records){
-  B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false,
+  B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : []};
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
@@ -2546,7 +2595,7 @@ function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
   Music.jingle(win ? 'victory' : 'defeat');
-  B.resolve({win, retreated, reason, turn, survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -2684,6 +2733,7 @@ async function strike(a, d, f){
   if (roll < f.hit){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
+    if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');
     Sfx.play(crit ? 'crit' : dmg === 0 ? 'nodamage' : 'hit');
     if (crit){ shake = 1; if (scene){ stamp('CRITICAL', '#ffcf5a'); anim(duel, [{transform: 'none'}, {transform: 'translate(-8px,5px)'}, {transform: 'translate(7px,-4px)'}, {transform: 'translate(-4px,2px)'}, {transform: 'none'}], 380); } }
@@ -2700,6 +2750,7 @@ async function strike(a, d, f){
   await tween(150, t => { a.ox = lx*(1 - t); a.oy = ly*(1 - t); });
   await wait(scene ? 380 : 220);
   if (d.hp <= 0){
+    if (d.boss && !B.bossBy) B.bossBy = a.key;   // who brought the boss down (for bonus stars)
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
       stamp('FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
@@ -2769,6 +2820,12 @@ function objectiveText(){
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
   return `${goal} ${lord ? lord.name + ' must not fall.' : ''}`;
 }
+const starLive = () => ({lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
+function starHTML(){
+  if (!B.ch.star) return '';
+  const st = starCheck(B.ch.star, starLive()), had = hasStar(B.ch.id);
+  return `<div class="hint starline ${st}">${had ? '★' : '☆'} Bonus: ${starText(B.ch, B.campKey)}${st === 'missed' ? ' <b>· missed</b>' : st === 'ok' ? ' <b>· done</b>' : ''}${had ? ' <small>(already earned)</small>' : ''}</div>`;
+}
 function unitHTML(u){
   const t = ter(u.x, u.y), tn = tileInfo(MAP[u.y][u.x])[0], pct = u.hp/u.mhp*100;
   const col = pct > 50 ? '#6fbf6a' : pct > 25 ? '#e0b44c' : '#e0533d';
@@ -2786,7 +2843,7 @@ function panelIdle(){
   if (phase !== 'p'){ setPanel(`<div class="hint"><em>${FACTIONS[B.ef].name} is moving…</em></div>`); return; }
   const left = team('p').filter(u => !u.moved).length;
   setPanel(`<div class="hint"><b>${left} unit${left === 1 ? '' : 's'} ready.</b> Tap one of yours to give orders. Tap an enemy to see how far it can reach.</div>
-    <div class="hint"><em>${objectiveText()}</em></div>`);
+    <div class="hint"><em>${objectiveText()}</em></div>${starHTML()}`);
 }
 function panelSelected(u){ setPanel(unitHTML(u) + `<div class="hint">Tap a blue patch to march there, or tap ${u.name.split(' ')[0]} again to act in place.</div>`); }
 function panelActions(u){
@@ -3516,7 +3573,8 @@ const stageLabel = sg => sg.stub ? sg.chapter.title : `${sg.chapter.title.replac
 function progressLabel(ck){
   const chs = CAMPAIGNS[ck].stages.filter(c => !c.stub), done = SAVE.camps[ck].cleared.length;
   const i = currentStageIndex(ck), s = stageState(ck, i).s;
-  return s === 'gate' ? `${done}/${chs.length} · waiting` : `${done}/${chs.length} cleared`;
+  const got = chs.filter(c => c.star && hasStar(c.id)).length, of = chs.filter(c => c.star).length;
+  return `${s === 'gate' ? `${done}/${chs.length} · waiting` : `${done}/${chs.length} cleared`}${of ? ` · ★ ${got}/${of}` : ''}`;
 }
 
 // ---------- Hub ----------
@@ -3524,12 +3582,16 @@ function nodeHTML(ck, ch, i){
   const st = stageState(ck, i), n = ch.stub ? '…' : ch.si + 1;
   const conv = ch.convergence ? `<span class="chip conv">Convergence · ${ch.convergence}</span>` : '';
   if (st.s === 'done'){
-    const bonus = ch.bonus ? (SAVE.flags[ch.bonus.flag] ? `<span class="chip bonus">★ ${ch.bonus.text}</span>` : '') : '';
-    return `<div class="node"><div class="pin done">${n}</div><div class="ncard"><h3>${ch.title}</h3><div class="chips"><span class="chip ok">Cleared</span>${conv}${bonus}</div></div></div>`;
+    const got = hasStar(ch.id);
+    return `<div class="node"><div class="pin done">${n}</div><div class="ncard"><div class="nhead"><h3>${ch.title}</h3>${ch.star ? `<span class="nstar${got ? ' got' : ''}" aria-label="${got ? 'Bonus star earned' : 'Bonus star not earned'}">${got ? '★' : '☆'}</span>` : ''}</div>
+      <div class="chips"><span class="chip ok">Cleared</span>${conv}</div>
+      ${ch.star ? `<div class="starrow${got ? ' got' : ''}">${got ? '★ Bonus earned' : '☆ Bonus'}: ${starText(ch, ck)}${got ? '' : ` · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b>`}</div>` : ''}
+      <button class="btn" data-play="${i}" type="button">${got ? 'Replay' : 'Replay for the ★'}</button></div></div>`;
   }
   if (st.s === 'next') return `<div class="node"><div class="pin next">${n}</div><div class="ncard">
       <h3>${ch.title}</h3><div class="nmeta">${ch.brief}</div>
-      <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${conv}${ch.bonus ? `<span class="chip bonus">Bonus: ${ch.bonus.text}</span>` : ''}</div>
+      <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${conv}</div>
+      ${ch.star ? `<div class="starrow">☆ Bonus: ${starText(ch, ck)} · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b></div>` : ''}
       <button class="btn primary" data-play="${i}" type="button">Prepare for Battle</button></div></div>`;
   if (st.s === 'gate'){
     const other = findStage(st.missing[0]).camp;
@@ -3571,9 +3633,27 @@ function statsGrid(rec){
   return `<div class="stats">${[['HP', s.mhp], [w === 'staff' ? 'Mag' : 'Atk', s.atk + tb], ['Def', s.def], ['Spd', s.spd], ['Mov', s.mov]]
     .map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
+// ---------- Roster order and favourites ----------
+let rosterSort = 'stars';
+try { rosterSort = localStorage.getItem('raepublic-sort') || 'stars'; } catch (e){}
+const SORTS = {fav: '♥ Favourites', stars: '★ Rarity', level: 'Level'};
+function sortRecs(list){
+  const by = {
+    stars: (a, b) => (b.stars || 0) - (a.stars || 0) || b.lv - a.lv || b.exp - a.exp,
+    level: (a, b) => b.lv - a.lv || b.exp - a.exp || (b.stars || 0) - (a.stars || 0),
+    fav:   (a, b) => (b.fav ? 1 : 0) - (a.fav ? 1 : 0) || (b.stars || 0) - (a.stars || 0) || b.lv - a.lv,
+  }[rosterSort];
+  return [...list.filter(r => r.lord), ...list.filter(r => !r.lord).sort(by)];   // the leader always comes first
+}
+const sortBarHTML = () => `<div class="sortbar" role="group" aria-label="Sort the roster"><span>Sort</span>${Object.entries(SORTS).map(([k, l]) =>
+  `<button class="btn${rosterSort === k ? ' on' : ''}" data-sort="${k}" type="button" aria-pressed="${rosterSort === k}">${l}</button>`).join('')}</div>`;
+// re-render without jumping back to the top of the list
+function rerenderKeepScroll(){ const y = window.scrollY; if (!$('#prep').hidden) renderPrep(); else renderArmy(); window.scrollTo(0, y); }
+
 function recCard(rec, actions = '', extraClass = ''){
   const c = CLASSES[rec.cls];
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
+    ${rec.dead ? '' : `<button class="ufav${rec.fav ? ' on' : ''}" data-fav="${rec.uid}" type="button" aria-pressed="${!!rec.fav}" aria-label="${rec.fav ? 'Remove from favourites' : 'Add to favourites'}">${rec.fav ? '♥' : '♡'}</button>`}
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
@@ -3586,7 +3666,7 @@ function renderArmy(){
   let body = '';
   if (armyTab === 'roster'){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
-    body = `<div class="hint">Drill a unit for experience, or upgrade its weapon. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div><div class="ulist">${alive.map(r => {
+    body = `<div class="hint">Drill a unit for experience, or upgrade its weapon. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r => {
       const next = WEAPON_TIERS[(r.wtier || 0) + 1];
       return recCard(r, `<div class="uacts">
         <button class="btn" data-train="${r.uid}" type="button" ${st.res < TRAIN.cost || r.lv >= 20 ? 'disabled' : ''}>Drill +${TRAIN.exp} EXP · ${TRAIN.cost}</button>
@@ -3639,12 +3719,16 @@ function openPrep(ck, i){
 function renderPrep(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
+  const replaying = SAVE.camps[ck].cleared.includes(ch.id);
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
     <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
-      <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${ch.bonus ? `<span class="chip bonus">Bonus: ${ch.bonus.text}</span>` : ''}</div></div>
+      <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span></div>
+      ${ch.star ? `<div class="starrow${hasStar(ch.id) ? ' got' : ''}">${hasStar(ch.id) ? '★ Bonus earned' : '☆ Bonus'}: ${starText(ch, ck)}${hasStar(ch.id) ? '' : ` · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b>`}${ch.star.type === 'fewer' && prep.picks.size > ch.star.n ? ` <span class="warn">(you're deploying ${prep.picks.size})</span>` : ''}</div>` : ''}
+      ${replaying ? '<p class="meta">Replay: the story scenes are skipped and nobody new joins. Your army keeps any experience earned, and anyone unstitched is still lost.</p>' : ''}</div>
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
-    <div class="ulist">${order.map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
+    ${sortBarHTML()}
+    <div class="ulist">${sortRecs(order).map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
     <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">Begin Battle</button></div>
   </div>`;
   showScreen('prep');
@@ -3656,16 +3740,19 @@ function togglePick(uid){
   if (prep.picks.has(uid)) prep.picks.delete(uid);
   else if (prep.picks.size >= max){ toast(`Only ${max} can deploy here.`); return; }
   else prep.picks.add(uid);
-  renderPrep();
+  rerenderKeepScroll();
 }
 
 // ---------- Playing a chapter ----------
 async function playChapter(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
-  applyOutfits(ck, ch.chapter.outfits);
-  await talk(ch.pre);
-  if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
+  const replay = st.cleared.includes(ch.id);   // replays skip the story and its one-time rewards
+  if (!replay){
+    applyOutfits(ck, ch.chapter.outfits);
+    await talk(ch.pre);
+    if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
+  }
   const res = await runBattle(ck, ch, recs);
   const kills = B.kills;
   if (!res.win){
@@ -3680,20 +3767,22 @@ async function playChapter(){
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
   }
   for (const u of res.lost) u.rec.dead = true;
-  const departed = [];
-  for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.dead){ r.dead = true; departed.push(r.name || CHARACTERS[key].name); }
-  const bonusHit = ch.bonus?.type === 'noLosses' && res.lost.length === 0;
-  if (bonusHit) SAVE.flags[ch.bonus.flag] = true;
-  for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
-  const spoils = ch.reward.res + kills*20, tokens = ch.reward.tokens ?? GACHA.stageTokens;
+  const departed = [], joined = [];
+  // bonus star: earned once, for recruiting currency
+  const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
+  if (starNew) SAVE.stars[ch.id] = true;
+  const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*20, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
-  const joined = [];
-  for (const key of ch.reward.joins || []) if (!st.roster.some(r => r.key === key)){ st.roster.push(recordFor(key)); joined.push(CHARACTERS[key].name); }
-  st.cleared.push(ch.id);
+  if (!replay){
+    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.dead){ r.dead = true; departed.push(r.name || CHARACTERS[key].name); }
+    for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
+    for (const key of ch.reward.joins || []) if (!st.roster.some(r => r.key === key)){ st.roster.push(recordFor(key)); joined.push(CHARACTERS[key].name); }
+    st.cleared.push(ch.id);
+  }
   saveGame();
-  await talk(ch.post);
+  if (!replay) await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, turn: res.turn, kills, spoils, tokens, joined, lost: res.lost.map(u => u.name), departed, bonusHit});
+  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, lost: res.lost.map(u => u.name), departed});
 }
 
 function renderResult(r){
@@ -3702,13 +3791,13 @@ function renderResult(r){
   if (r.win){
     const other = otherCamp(r.ck), opened = CAMPAIGNS[other].stages
       .map((c, j) => ({c, j})).filter(({c, j}) => (c.requires || []).includes(ch.id) && stageState(other, j).s === 'next');
-    html = `<div class="brief"><div class="kick">Victory · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
+    html = `<div class="brief"><div class="kick">${r.replay ? 'Replay victory' : 'Victory'} · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
         <div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
-        ${ch.bonus ? `<div><span>${ch.bonus.text}</span><b>${r.bonusHit ? '★ Achieved' : 'Missed'}</b></div>` : ''}
+        ${ch.star ? `<div class="rstar ${r.star === 'ok' ? 'got' : ''}"><span>${r.star === 'ok' ? '★' : '☆'} Bonus: ${starText(ch, r.ck)}</span><b>${r.starTokens ? `Earned! +${r.starTokens} ${GACHA_ARMY[r.ck].currency}` : r.star === 'ok' ? 'Done (already earned)' : hasStar(ch.id) ? 'Missed (already earned)' : 'Missed: replay to try again'}</b></div>` : ''}
         ${r.lost.length ? `<div><span>Unstitched for good</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
@@ -3751,6 +3840,8 @@ document.addEventListener('click', e => {
   else if (d.play !== undefined) openPrep(SAVE.current, +d.play);
   else if ('begin' in d) playChapter();
   else if ('retry' in d) openPrep(prep.ck, prep.i);
+  else if (d.fav){ const rec = stOf().roster.find(r => r.uid === d.fav); if (rec){ rec.fav = !rec.fav; saveGame(); rerenderKeepScroll(); } }
+  else if (d.sort){ rosterSort = d.sort; try { localStorage.setItem('raepublic-sort', d.sort); } catch (e){} rerenderKeepScroll(); }
   else if (t.classList.contains('pick')) togglePick(d.uid);
 });
 
@@ -3957,7 +4048,7 @@ window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
 if (location.hash === '#debug') Object.assign(window, {__audio: Audio_, __music: Music, __sfx: Sfx});
-if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k), fight: (ak, dk) => { const f = k => units.find(u => !u.dead && u.key === k); return doCombat(f(ak), f(dk)); },
+if (location.hash === '#debug') window.RAE_DEBUG = {battle: () => B, win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k), fight: (ak, dk) => { const f = k => units.find(u => !u.dead && u.key === k); return doCombat(f(ak), f(dk)); },
   duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
     B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
 

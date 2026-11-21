@@ -23,7 +23,8 @@ const GACHA = {
   genericBond: {1: {max: 3, hp: 0, stats: 1}, 2: {max: 4, hp: 1, stats: 1}},   // per Bond level
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
-  stageTokens: 5,         // awarded for clearing a stage unless the stage's reward sets `tokens`
+  stageTokens: 5,
+  starTokens: 10,         // for earning a stage's bonus star (once per stage)         // awarded for clearing a stage unless the stage's reward sets `tokens`
 };
 
 const GACHA_ARMY = {
