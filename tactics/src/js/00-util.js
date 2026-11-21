@@ -64,12 +64,15 @@ function artResolve(ent, kind){
   if (!sp || !fur) return null;
   const cls = ent.cls || CHARACTERS[ent.key]?.cls;
   // bulky rabbit fighters have their own portrait (art/minerbulk-portrait.png)
-  if (sp.base === 'miner' && BULKY_CLASSES.includes(cls) && ART['minerbulk' + fur]?.[kind]) return 'minerbulk' + fur;
+  const ranged = (ent.w || CLASSES[cls]?.w) === 'bow';
+  // ranged rabbits all share the slinger battle pose (art/minersling-battle.png), whatever their portrait
+  if (sp.base === 'miner' && ranged && ART['minersling' + fur]?.[kind]) return 'minersling' + fur;
+  const standard = CHARACTERS[ent.key]?.generic === 'standard';   // forced onto the first generic look
+  if (sp.base === 'miner' && !standard && BULKY_CLASSES.includes(cls) && ART['minerbulk' + fur]?.[kind]) return 'minerbulk' + fur;
   // elderly rabbits have their own portrait (art/minerold-portrait.png)
-  const elderly = CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls);
+  const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
   // ranged frog soldiers have their own battle pose (art/gruntbow-battle.png)
-  const ranged = (ent.w || CLASSES[cls]?.w) === 'bow';
   if (ranged && sp.base === 'grunt' && ART['gruntbow' + fur]?.[kind]) return 'gruntbow' + fur;
   return ART[sp.base + fur]?.[kind] ? sp.base + fur : null;
 }
@@ -145,7 +148,7 @@ async function buildVariants(base, palette, weightOf){
   }
 }
 async function buildFurVariants(){
-  for (const base of ['miner', 'minerbulk', 'minerold']) await buildVariants(base, FURS, async (kind, px, W, H) => {
+  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling']) await buildVariants(base, FURS, async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], l = (Math.max(r, gg, b) + Math.min(r, gg, b))/510;

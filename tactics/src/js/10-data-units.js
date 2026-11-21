@@ -99,7 +99,7 @@ const CHARACTERS = {
   // Raepublic
   rae:     {name:'Rabbit', faction:'rae', cls:'captain', lv:1, stats:{mhp:20,atk:11,def:5,spd:8,skl:7,mov:5}, lord:true, outfit:'camp',
             retort:'Come and find out.'},
-  tall:    {name:'Tall Rabbit', fur:'sandy', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
+  tall:    {name:'Tall Rabbit', fur:'sandy', generic:'standard', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
   burly:   {name:'Burly Rabbit', fur:'chocolate', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
   old:     {name:'Old Rabbit', fur:'grey', elderly:true, faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
   swift:   {name:'Swift Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
