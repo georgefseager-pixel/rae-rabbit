@@ -121,9 +121,9 @@ const SPEAKERS = Object.assign({
   narr:        {name:''},
   sister:      {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp'},   // becomes Flopsy Flora in Chapter Two
   rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop', fur:'grey'},
-  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb'},
+  rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', fur:'pink'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
-  executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
+  executioner: {name:'The Executioner', faction:'frog', look:'headsman', fur:'olive'},
   king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
   scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
   stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer', fur:'sooty'},
@@ -137,9 +137,17 @@ const FURS = {
   chocolate: [-4, .85, -.38], sooty: [0, .15, -.6], ginger: [-6, 1.45, -.02], sandy: [10, .75, .16],
 };
 
+// Skin colours for the generic frog-soldier art (art/grunt-*.png), same format as FURS.
+// Only the head is recoloured (art/gruntskin-*.png); 'green' is the art as drawn.
+const SKINS = {
+  green: null, lime: [22, 1.2, 0], olive: [6, .75, -.32], teal: [105, .9, -.06], blue: [150, 1.1, -.1],
+  toad: [-28, .75, -.28], gold: [-22, 1.6, .02], red: [-58, 1.3, -.1], violet: [215, .8, -.06], pink: [-80, .9, .12],
+};
+
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
+  grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One

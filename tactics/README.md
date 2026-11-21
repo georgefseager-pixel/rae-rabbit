@@ -70,6 +70,14 @@ ones in `CHARACTERS` (`rae`, `willow`, `fraggle`, `tiggle`, ...). Anyone without
 uses their drawn plush placeholder.
 
 
+### Generic frog soldiers
+
+`art/grunt-portrait.png`, `grunt-battle.png` and `grunt-token.png` are the shared art for
+every frog without art of their own. Only the head is recoloured, into the skin colours in
+`SKINS` (`src/js/10-data-units.js`); `art/gruntskin-*.png` marks the head (opaque = recolour),
+so the armour, cloak, plume and banner stay as drawn. Characters can pick a colour with
+`fur: 'olive'` (Rhubarb is pink, the Executioner olive); others get one from their id.
+
 ### Generic mine rabbits
 
 `art/miner-portrait.png`, `miner-battle.png` and `miner-token.png` are the shared art for

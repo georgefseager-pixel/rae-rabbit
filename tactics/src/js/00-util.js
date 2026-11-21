@@ -43,21 +43,25 @@ function outfitOf(key){
 function artKey(key, kind){ const o = outfitOf(key); return o && ART[key + o]?.[kind] ? key + o : key; }
 
 // Which art to show for a character or unit. `ent` is a character key, or anything with {key, look, uid, name, fur}.
-// Order: the character's own art (in their current outfit), then the generic mine-rabbit art in their fur colour.
+// Order: the character's own art (in their current outfit), then the shared generic art for their species,
+// recoloured into their coat: mine rabbits (art/miner-*.png, colours in FURS) and frog soldiers
+// (art/grunt-*.png, skin colours in SKINS).
 function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
+const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}};
+function speciesOf(ent){ return SPECIES_ART[LOOKS[ent.look]?.sp] || null; }
 function furOf(ent){
-  if (ent.fur) return ent.fur;
-  const f = CHARACTERS[ent.key]?.fur || SPEAKERS[ent.key]?.fur;
-  if (f) return f;
-  if (LOOKS[ent.look]?.sp !== 'bun') return null;                       // only rabbits share the mine-rabbit art
-  const furs = Object.keys(FURS); return furs[strHash(ent.uid || ent.name || ent.key) % furs.length];
+  const sp = speciesOf(ent); if (!sp) return null;
+  const pal = sp.palette();
+  const f = ent.fur || CHARACTERS[ent.key]?.fur || SPEAKERS[ent.key]?.fur;
+  if (f && f in pal) return f;
+  const keys = Object.keys(pal); return keys[strHash(ent.uid || ent.name || ent.key) % keys.length];
 }
 function artResolve(ent, kind){
-  if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || ent};
+  if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || CHARACTERS[ent]?.look || ent};
   const k = artKey(ent.key, kind);
   if (ART[k]?.[kind]) return k;
-  const fur = furOf(ent);
-  return fur && ART['miner' + fur]?.[kind] ? 'miner' + fur : null;
+  const sp = speciesOf(ent), fur = furOf(ent);
+  return sp && fur && ART[sp.base + fur]?.[kind] ? sp.base + fur : null;
 }
 const artFor = (ent, kind) => { const k = artResolve(ent, kind); return k ? ART[k][kind] : undefined; };
 
@@ -75,9 +79,11 @@ function artImage(ent, kind){
   return artImages[id].ready ? artImages[id] : null;
 }
 
-// Recolour the generic mine-rabbit art into every fur in FURS, once, at load.
-// art/minermask-<kind>.png marks what keeps its colour (loincloth, rope, ear linings, nose);
-// the rest of the warm fur is recoloured. Results become ART['miner<fur>'].
+// Recolour the generic art into every colour of its palette, once, at load. Results become ART['<base><colour>'].
+//   miner (rabbits): art/minermask-<kind>.png marks what KEEPS its colour (loincloth, rope, ear linings,
+//                    nose, eyes); the rest of the warm fur is recoloured.
+//   grunt (frogs):   art/gruntskin-<kind>.png marks the skin to recolour (the head); armour, cloak,
+//                    plume and banner stay as drawn.
 let furReady = false;
 function rgbToHsl(r, g, b){
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn)/2, d = mx - mn;
@@ -92,34 +98,28 @@ function hslToRgb(h, s, l){
   return [r + m, g + m, b + m];
 }
 const loadImg = url => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
-async function buildFurVariants(){
-  if (!ART.miner) return;
-  for (const kind of Object.keys(ART.miner)){
+async function maskAlpha(url, W, H){
+  const out = new Float32Array(W*H);
+  if (!url) return out;
+  const mi = await loadImg(url), mc = document.createElement('canvas'); mc.width = W; mc.height = H;
+  const mg = mc.getContext('2d'); mg.drawImage(mi, 0, 0, W, H);
+  const md = mg.getImageData(0, 0, W, H).data;
+  for (let i = 0; i < out.length; i++) out[i] = md[i*4 + 3]/255;
+  return out;
+}
+async function buildVariants(base, palette, weightOf){
+  if (!ART[base]) return;
+  for (const kind of Object.keys(ART[base])){
     try {
-      const img = await loadImg(ART.miner[kind]), W = img.naturalWidth, H = img.naturalHeight;
+      const img = await loadImg(ART[base][kind]), W = img.naturalWidth, H = img.naturalHeight;
       const c = document.createElement('canvas'); c.width = W; c.height = H;
       const g = c.getContext('2d'); g.drawImage(img, 0, 0);
-      const src = g.getImageData(0, 0, W, H), px = src.data, n = W*H;
-      // Keep-mask: art/minermask-<kind>.png is opaque over everything that must not change colour
-      // (loincloth, rope, ear linings, nose). Everything else that is tan fur gets recoloured.
-      const keep = new Float32Array(n);
-      if (ART.minermask?.[kind]){
-        const mi = await loadImg(ART.minermask[kind]), mc = document.createElement('canvas'); mc.width = W; mc.height = H;
-        const mg = mc.getContext('2d'); mg.drawImage(mi, 0, 0, W, H);
-        const md = mg.getImageData(0, 0, W, H).data;
-        for (let i = 0; i < n; i++) keep[i] = md[i*4 + 3]/255;
-      }
-      const w = new Float32Array(n), hsl = new Float32Array(n*3);
-      for (let i = 0; i < n; i++){
-        const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2];
-        const [h, s, l] = rgbToHsl(r/255, gg/255, b/255);
-        // fur is warm (red above green); ink outlines and eye highlights are left alone
-        w[i] = clamp((r - gg - 6)/12, 0, 1)*clamp((l - .12)/.1, 0, 1)*(1 - keep[i]);
-        hsl[i*3] = h; hsl[i*3 + 1] = s; hsl[i*3 + 2] = l;
-      }
-      for (const [fur, f] of Object.entries(FURS)){
-        ART['miner' + fur] = ART['miner' + fur] || {};
-        if (!f){ ART['miner' + fur][kind] = ART.miner[kind]; continue; }
+      const px = g.getImageData(0, 0, W, H).data, n = W*H;
+      const w = await weightOf(kind, px, W, H), hsl = new Float32Array(n*3);
+      for (let i = 0; i < n; i++){ const [h, s2, l] = rgbToHsl(px[i*4]/255, px[i*4 + 1]/255, px[i*4 + 2]/255); hsl[i*3] = h; hsl[i*3 + 1] = s2; hsl[i*3 + 2] = l; }
+      for (const [name, f] of Object.entries(palette)){
+        ART[base + name] = ART[base + name] || {};
+        if (!f){ ART[base + name][kind] = ART[base][kind]; continue; }
         const [dh, sm, dl] = f, out = new ImageData(new Uint8ClampedArray(px), W, H), o = out.data;
         for (let i = 0; i < n; i++){
           if (w[i] <= 0) continue;
@@ -129,10 +129,30 @@ async function buildFurVariants(){
         }
         g.putImageData(out, 0, 0);
         const blob = await new Promise(res => c.toBlob(res, 'image/png'));
-        ART['miner' + fur][kind] = blob ? URL.createObjectURL(blob) : c.toDataURL();
+        ART[base + name][kind] = blob ? URL.createObjectURL(blob) : c.toDataURL();
       }
-    } catch (e){ console.warn('fur recolour failed for', kind, e); }
+    } catch (e){ console.warn('recolour failed for', base, kind, e); }
   }
+}
+async function buildFurVariants(){
+  await buildVariants('miner', FURS, async (kind, px, W, H) => {
+    const keep = await maskAlpha(ART.minermask?.[kind], W, H), w = new Float32Array(W*H);
+    for (let i = 0; i < w.length; i++){
+      const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], l = (Math.max(r, gg, b) + Math.min(r, gg, b))/510;
+      // fur is warm (red above green); ink outlines are left alone
+      w[i] = clamp((r - gg - 6)/12, 0, 1)*clamp((l - .12)/.1, 0, 1)*(1 - keep[i]);
+    }
+    return w;
+  });
+  await buildVariants('grunt', SKINS, async (kind, px, W, H) => {
+    const skin = await maskAlpha(ART.gruntskin?.[kind], W, H), w = new Float32Array(W*H);
+    for (let i = 0; i < w.length; i++){
+      const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
+      // colourless pixels (eye highlights) and near-black ink keep their colour
+      w[i] = skin[i]*clamp((mx - mn - 18)/20, 0, 1)*clamp(((mx + mn)/510 - .14)/.08, 0, 1);
+    }
+    return w;
+  });
   furReady = true;
 }
 
