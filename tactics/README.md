@@ -73,6 +73,8 @@ uses their drawn plush placeholder.
 A second, bulkier mine-rabbit portrait (`art/minerbulk-portrait.png`, keep-mask
 `minerbulkmask-portrait.png`) is used by generic rabbits of the classes in `BULKY_CLASSES`
 (Diggers and Haulers); their battle sprite and map icon still come from the standard set.
+An elderly portrait (`art/minerold-portrait.png`, keep-mask `mineroldmask-portrait.png`)
+is used by Slingers (`ELDERLY_CLASSES`) and characters marked `elderly: true` (Old Rabbit).
 
 ### Generic frog soldiers
 

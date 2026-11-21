@@ -221,7 +221,7 @@ function glyph(g, w, cx, cy, r, col){
 function portraitInner(ent, where = 'panel'){
   if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || ent};
   const look = ent.look, ak = artResolve(ent, 'portrait'), art = ak && ART[ak].portrait;
-  const crop = ak && (ART_CROP[ak] || (ak.startsWith('minerbulk') ? ART_CROP.minerbulk : ak.startsWith('miner') ? ART_CROP.miner : ak.startsWith('grunt') ? ART_CROP.grunt : null))?.[where];
+  const crop = ak && (ART_CROP[ak] || (ak.startsWith('minerbulk') ? ART_CROP.minerbulk : ak.startsWith('minerold') ? ART_CROP.minerold : ak.startsWith('miner') ? ART_CROP.miner : ak.startsWith('grunt') ? ART_CROP.grunt : null))?.[where];
   if (art) return `<div class="porart" style="background-image:url(${art});background-size:${crop ? crop[0] : '200% auto'};background-position:${crop ? crop[1] : '50% 0%'}"></div>`;
   return `<img alt="" src="${plushPortrait(look)}">`;
 }

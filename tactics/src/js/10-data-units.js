@@ -101,7 +101,7 @@ const CHARACTERS = {
             retort:'Come and find out.'},
   tall:    {name:'Tall Rabbit', fur:'sandy', faction:'rae', cls:'hauler', lv:1, stats:{mhp:20,atk:10,def:6,spd:5,skl:5,mov:5}},
   burly:   {name:'Burly Rabbit', fur:'chocolate', faction:'rae', cls:'digger', lv:1, stats:{mhp:23,atk:12,def:4,spd:4,skl:4,mov:5}},
-  old:     {name:'Old Rabbit', fur:'grey', faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
+  old:     {name:'Old Rabbit', fur:'grey', elderly:true, faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
   swift:   {name:'Swift Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
   patched: {name:'Patched Rabbit', fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
@@ -139,6 +139,8 @@ const FURS = {
 
 // Generic rabbits of these classes use the bulkier mine-rabbit portrait (art/minerbulk-portrait.png).
 const BULKY_CLASSES = ['digger', 'hauler'];
+// ...and these, plus characters marked elderly:true, use the elderly portrait (art/minerold-portrait.png).
+const ELDERLY_CLASSES = ['pebbler'];
 
 // Skin colours for the generic frog-soldier art (art/grunt-*.png), same format as FURS.
 // Only the head is recoloured (art/gruntskin-*.png); 'green' is the art as drawn.
@@ -159,6 +161,7 @@ const STAGE_SIZE = {
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
+  minerold: {panel: ['215% auto', '58% 2%'], talk: ['160% auto', '60% 1%']},  // elderly mine rabbit
   minerbulk: {panel: ['215% auto', '60% 2%'], talk: ['160% auto', '62% 1%']}, // bulky mine rabbit
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
