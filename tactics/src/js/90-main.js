@@ -3,6 +3,7 @@ validateMaps();
 function boot(data){
   SAVE = migrateSave((data && data.save) || Store.load());
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
+  $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');
   $('#contBtn').hidden = !SAVE; soundLabels();
   if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update

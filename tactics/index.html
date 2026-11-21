@@ -113,14 +113,34 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   radial-gradient(ellipse at 50% 120%, rgba(201,151,63,.18), transparent 60%), #0d0908;padding:0;align-items:stretch;overflow:hidden}
 .tl{position:relative;width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
   padding:max(16px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(26px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));box-sizing:border-box;min-height:100%}
-.tl .art{position:absolute;left:50%;top:0;height:78%;max-width:none;transform:translateX(-50%);
-  -webkit-mask-image:linear-gradient(180deg,#000 62%,transparent 98%);mask-image:linear-gradient(180deg,#000 62%,transparent 98%);filter:drop-shadow(0 0 34px rgba(220,170,90,.28)) drop-shadow(0 12px 18px rgba(0,0,0,.6));
-  animation:artIn 1.6s cubic-bezier(.2,.7,.2,1) both}
+/* split background */
+.tsplit{position:absolute;inset:0;pointer-events:none}
+.tside{position:absolute;inset:0;animation:fadeIn 1.2s both}
+.tside.rae{clip-path:polygon(0 0,60% 0,40% 100%,0 100%);background:radial-gradient(ellipse 90% 60% at 18% 32%, rgba(190,40,30,.62), transparent 72%),linear-gradient(160deg,#3a0f0c,#140807 70%)}
+.tside.frog{clip-path:polygon(60% 0,100% 0,100% 100%,40% 100%);background:radial-gradient(ellipse 90% 60% at 82% 32%, rgba(96,140,48,.55), transparent 72%),linear-gradient(200deg,#1c2e10,#0a1006 70%)}
+.tseam{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tseam line{vector-effect:non-scaling-stroke}
+.tseam .sh{stroke:#070504;stroke-width:7}
+.tseam .st{stroke:rgba(236,198,115,.85);stroke-width:2.2;stroke-dasharray:9 7;animation:stitch 1.6s .3s ease-out both}
+@keyframes stitch{from{stroke-dashoffset:300;opacity:0}to{stroke-dashoffset:0;opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.tfade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 46%,rgba(10,7,6,.82) 70%,#0a0706 88%)}
+.tfac{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));font-family:var(--fell);font-size:12px;letter-spacing:.26em;text-transform:uppercase;animation:up .9s .4s both;z-index:1}
+.tfac.rae{left:max(18px, env(safe-area-inset-left, 0px));color:#f0b3a6}
+.tfac.frog{right:max(18px, env(safe-area-inset-right, 0px));color:#c9e08f;text-align:right}
+/* the two leads, facing each other across the seam */
+.duo{position:absolute;left:0;right:0;top:5%;height:62%;pointer-events:none}
+.duo .art{position:absolute;bottom:0;height:100%;width:56%;object-fit:contain;max-width:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 99%);mask-image:linear-gradient(180deg,#000 70%,transparent 99%)}
+.duo .art.L{left:-6%;object-position:bottom center;transform:scaleX(-1);filter:drop-shadow(0 0 28px rgba(220,90,60,.35)) drop-shadow(0 12px 18px rgba(0,0,0,.6));animation:inL 1.4s .2s cubic-bezier(.2,.7,.2,1) both}
+.duo .art.R{right:-6%;object-position:bottom center;transform:scaleX(-1);filter:drop-shadow(0 0 28px rgba(150,200,80,.3)) drop-shadow(0 12px 18px rgba(0,0,0,.6));animation:inR 1.4s .35s cubic-bezier(.2,.7,.2,1) both}
+@keyframes inL{from{opacity:0;transform:scaleX(-1) translateX(40px)}to{opacity:1;transform:scaleX(-1)}}
+@keyframes inR{from{opacity:0;transform:scaleX(-1) translateX(-40px)}to{opacity:1;transform:scaleX(-1)}}
 .tl .txt{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .kicker{font-family:var(--fell);font-size:13px;letter-spacing:.32em;color:var(--brass-hi);text-transform:uppercase;animation:up .9s .5s both}
 .logo{font-family:var(--stencil);font-size:clamp(52px, 16vw, 84px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--cream);
   text-shadow:0 3px 0 #6e1b16, 0 6px 22px rgba(0,0,0,.8);animation:stamp .7s .7s cubic-bezier(.2,1.5,.4,1) both}
-.rule{width:min(300px,80%);height:12px;background:var(--red);clip-path:polygon(0 30%,3% 0,97% 10%,100% 45%,98% 100%,2% 85%);position:relative;animation:up .8s 1s both}
+.rule{width:min(300px,80%);height:12px;background:linear-gradient(100deg,var(--red) 49%,#070504 49% 51%,var(--frog) 51%);clip-path:polygon(0 30%,3% 0,97% 10%,100% 45%,98% 100%,2% 85%);position:relative;animation:up .8s 1s both}
 .rule::after{content:"";position:absolute;left:4%;right:4%;top:50%;border-top:1.5px dashed rgba(239,227,200,.7)}
 .tag{font-family:var(--fell-i);font-style:italic;font-size:20px;color:#e8dcc2;margin:0;animation:up .8s 1.15s both}
 .tbtns{display:flex;flex-direction:column;gap:10px;margin-top:10px;width:min(280px,100%);animation:up .8s 1.35s both}
@@ -183,7 +203,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .stampx{position:absolute;left:50%;top:34%;font-family:var(--stencil);font-size:40px;color:var(--red-hi);border:4px solid var(--red-hi);padding:4px 14px 2px;border-radius:6px;
   transform:translate(-50%,-50%) rotate(-9deg);opacity:0;pointer-events:none;z-index:3;background:rgba(20,6,5,.55);white-space:nowrap;letter-spacing:.06em}
 .dhint{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.08em}
-@media (prefers-reduced-motion: reduce){ .tl .art,.kicker,.logo,.rule,.tag,.tbtns{animation:none} .tmore{animation:none} }
+@media (prefers-reduced-motion: reduce){ .duo .art,.tside,.tseam .st,.tfac,.kicker,.logo,.rule,.tag,.tbtns{animation:none} .tmore{animation:none} }
 
 /* ================= Campaign screens ================= */
 .screen{position:fixed;inset:0;overflow-y:auto;z-index:5;box-sizing:border-box;-webkit-overflow-scrolling:touch;
@@ -533,6 +553,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .hero .newrec{margin-top:8px;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 4px rgba(236,198,115,.35)}}
 @media (prefers-reduced-motion: reduce){ .hero .newrec{animation:none} }
+@media (max-width:360px){ .tfac{font-size:10px;letter-spacing:.14em} }
 
 </style>
 
@@ -571,11 +592,22 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 
 <!-- ===== Overlays ===== -->
 <div class="ov" id="title">
+  <!-- two stories, two sides: the Raepublic (left, red) and the Friggliarchy (right, green), stitched together -->
+  <div class="tsplit" aria-hidden="true">
+    <div class="tside rae"></div><div class="tside frog"></div>
+    <svg class="tseam" viewBox="0 0 100 100" preserveAspectRatio="none"><line class="sh" x1="60" y1="-2" x2="40" y2="102"/><line class="st" x1="60" y1="-2" x2="40" y2="102"/></svg>
+    <div class="tfade"></div>
+  </div>
   <div class="tl">
-    <img class="art" id="titleArt" alt="Rae Rabbit in patchwork armour, holding a sword, red scarf flowing">
+    <div class="tfac rae">The Raepublic</div><div class="tfac frog">The Friggliarchy</div>
+    <div class="duo">
+      <img class="art L" id="titleArt" alt="Rae Rabbit in patchwork armour, holding a sword, red scarf flowing">
+      <img class="art R" id="titleArt2" alt="Prince Tiggle Taggle in green and gold armour, sword in hand">
+    </div>
     <div class="txt">
       <h1 class="logo">RAEPUBLIC</h1>
       <div class="rule"></div>
+      <p class="tag">Two stories. One war.</p>
       <div class="tbtns">
         <button class="btn primary" id="contBtn" type="button">Continue</button>
         <button class="btn" id="newBtn" type="button">New Campaign</button>
@@ -4074,6 +4106,7 @@ validateMaps();
 function boot(data){
   SAVE = migrateSave((data && data.save) || Store.load());
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
+  $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');
   $('#contBtn').hidden = !SAVE; soundLabels();
   if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update

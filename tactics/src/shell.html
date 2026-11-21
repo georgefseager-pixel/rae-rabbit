@@ -43,11 +43,22 @@
 
 <!-- ===== Overlays ===== -->
 <div class="ov" id="title">
+  <!-- two stories, two sides: the Raepublic (left, red) and the Friggliarchy (right, green), stitched together -->
+  <div class="tsplit" aria-hidden="true">
+    <div class="tside rae"></div><div class="tside frog"></div>
+    <svg class="tseam" viewBox="0 0 100 100" preserveAspectRatio="none"><line class="sh" x1="60" y1="-2" x2="40" y2="102"/><line class="st" x1="60" y1="-2" x2="40" y2="102"/></svg>
+    <div class="tfade"></div>
+  </div>
   <div class="tl">
-    <img class="art" id="titleArt" alt="Rae Rabbit in patchwork armour, holding a sword, red scarf flowing">
+    <div class="tfac rae">The Raepublic</div><div class="tfac frog">The Friggliarchy</div>
+    <div class="duo">
+      <img class="art L" id="titleArt" alt="Rae Rabbit in patchwork armour, holding a sword, red scarf flowing">
+      <img class="art R" id="titleArt2" alt="Prince Tiggle Taggle in green and gold armour, sword in hand">
+    </div>
     <div class="txt">
       <h1 class="logo">RAEPUBLIC</h1>
       <div class="rule"></div>
+      <p class="tag">Two stories. One war.</p>
       <div class="tbtns">
         <button class="btn primary" id="contBtn" type="button">Continue</button>
         <button class="btn" id="newBtn" type="button">New Campaign</button>
