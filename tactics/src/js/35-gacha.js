@@ -4,7 +4,10 @@ function gachaState(ck){
   if (!st.gacha) st.gacha = {tokens: GACHA.startTokens, pity: {}, total: 0};
   return st.gacha;
 }
-const bannerOpen = b => !b.after || SAVE?.debugUnlock || isCleared(b.after);   // debug unlock opens every banner
+// Recruiting as a whole opens after each army's Chapter One (opensAfter); a banner can also wait for a later stage.
+for (const [ck, a] of Object.entries(GACHA_ARMY)) for (const b of a.banners) b.army = ck;
+const recruitOpen = ck => !!SAVE?.debugUnlock || isCleared(GACHA_ARMY[ck].opensAfter);
+const bannerOpen = b => recruitOpen(b.army) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
 const findBanner = (ck, id) => GACHA_ARMY[ck].banners.find(b => b.id === id);
 const isGachaUnit = rec => rec.key === 'recruit' || CHARACTERS[rec.key]?.stars === 3;
 

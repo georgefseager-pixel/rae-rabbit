@@ -22,6 +22,13 @@ function bannerArt(ck, b){
 function recruitTabHTML(ck){
   const army = GACHA_ARMY[ck], g = gachaState(ck), st = SAVE.camps[ck], F = FACTIONS[CAMPAIGNS[ck].faction];
   const banners = army.banners;
+  if (!recruitOpen(ck)){   // locked until Chapter One is finished: show what's coming
+    const first = banners[0];
+    return `<div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div></div>
+      <div class="gbanner locked f-${CAMPAIGNS[ck].faction}">${bannerArt(ck, first)}
+        <div class="binfo"><p><b>Recruiting opens when Chapter One is finished.</b> Clear <b>${chapterRef(army.opensAfter)}</b> to unlock “${first.name}”.</p>
+        <p class="meta">Keep the ${army.currency} you earn from battles: they're what you'll recruit with.</p></div></div>`;
+  }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
   const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
@@ -157,4 +164,23 @@ function showIntro(uid){
   if (!intro) return;
   const ov = $('#gacha'); ov.className = 'ov f-' + rec.faction; $('#gstage').innerHTML = ''; ov.hidden = false; $('#gspot').hidden = false;
   introCard(rec, intro, `${'★'.repeat(rec.stars || 3)}`).then(() => { ov.hidden = true; });
+}
+
+// ---------- First visit: a short guide to recruiting ----------
+const recruitSeen = ck => !!SAVE.flags['tut-recruit-' + ck];
+function recruitTutorial(ck){
+  if (!recruitOpen(ck) || recruitSeen(ck)) return;
+  SAVE.flags['tut-recruit-' + ck] = true; saveGame();
+  const a = GACHA_ARMY[ck], F = FACTIONS[CAMPAIGNS[ck].faction], R = GACHA.rarity;
+  const hello = ck === 'rae'
+    ? 'Word of you is spreading through the tunnels, Rae Rabbit. Rabbits are coming to find you. Let\'s see who answers.'
+    : 'The crown rewards loyalty, little brother. Put out the call and see who answers it.';
+  talk([
+    {who: a.guide, text: hello},
+    {who: 'narr', text: `Recruiting is open. Spend ${a.currency} on a banner to bring new units into your army: one at a time, or ten at once.`},
+    {who: 'narr', text: `Every recruit is ★ a soldier (${R[1].rate}%), ★★ a veteran (${R[2].rate}%), or ★★★ a unique character with a story of their own (${R[3].rate}%).`},
+    {who: 'narr', text: `A ten-recruit call always brings at least one ★★, and every banner guarantees a ★★★ within ${GACHA.pity} recruits. The bar under the banner shows how close you are.`},
+    {who: 'narr', text: 'Recruit someone you already have and they gain Bond instead: a small, permanent boost.'},
+    {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of this screen.`},
+  ]);
 }

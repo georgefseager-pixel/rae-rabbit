@@ -30,6 +30,8 @@ const GACHA = {
 const GACHA_ARMY = {
   rae: {
     currency: 'Whispers', one: 'Whisper', trade: 100,
+    opensAfter: 'R1-4',   // recruiting opens once Chapter One is finished
+    guide: 'willow',      // who introduces recruiting (the tutorial)
     tease: 'A folded note, passed hand to hand along the tunnels…', seal: 'R',
     generic: ['digger', 'hauler', 'pebbler', 'runner', 'patcher'],
     rares: ['brigand', 'condemned', 'lantern', 'ironear'],
@@ -42,6 +44,8 @@ const GACHA_ARMY = {
   },
   frog: {
     currency: 'Writs', one: 'Writ', trade: 100,
+    opensAfter: 'F1-4',
+    guide: 'biggle',
     tease: 'A writ under the royal seal, delivered by runner…', seal: 'F',
     generic: ['lily', 'bruiser', 'reed', 'croaker', 'blade'],
     rares: ['duckweed', 'glimmer', 'bogsworth'],

@@ -520,3 +520,9 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .ufav{position:absolute;top:6px;right:6px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(0,0,0,.25);color:rgba(239,229,207,.55);font-size:22px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0}
 .ufav.on{color:#ff6f8a;background:rgba(255,111,138,.14);text-shadow:0 0 8px rgba(255,111,138,.5)}
 .ucard .uhead{padding-right:40px}
+/* recruiting locked / just opened */
+.gbanner.locked .bhero{filter:grayscale(.7) brightness(.55)}
+.gbanner.locked .binfo p{margin:0 0 6px}
+.hero .newrec{margin-top:8px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 4px rgba(236,198,115,.35)}}
+@media (prefers-reduced-motion: reduce){ .hero .newrec{animation:none} }

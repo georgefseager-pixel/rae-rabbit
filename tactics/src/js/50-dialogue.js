@@ -68,6 +68,7 @@ function talk(rawLines){
       const narr = l.who === 'narr', sp = SPEAKERS[l.who] || SPEAKERS.narr;
       box.className = 'tbody' + (narr ? ' narr' : '') + (l.thought ? ' thought' : '');
       nm.hidden = narr;
+      if (narr) por.hidden = true;   // narration has no speaker portrait
       if (!narr){
         nm.className = 'tname f-' + sp.faction; nm.textContent = l.as || speakerName(l.who);
         por.hidden = sceneMode; por.className = 'tpor f-' + sp.faction; por.innerHTML = sceneMode ? '' : portraitInner(l.who, 'talk');

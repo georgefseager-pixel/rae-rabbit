@@ -61,7 +61,8 @@ function renderHub(){
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
       <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
-        <button class="btn" data-go="army" type="button">Army &amp; Armoury</button></div>
+        <button class="btn" data-go="army" type="button">Army &amp; Armoury</button>
+        ${recruitOpen(ck) && !recruitSeen(ck) ? `<button class="btn primary newrec" data-recruit-now type="button">New: Recruiting is open</button>` : ''}</div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
     ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
@@ -246,6 +247,7 @@ function renderResult(r){
         ${r.lost.length ? `<div><span>Unstitched for good</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
+      ${ch.id === GACHA_ARMY[r.ck].opensAfter && !r.replay ? `<div class="gatebox recopen"><span><b>Recruiting is now open.</b> Spend your ${GACHA_ARMY[r.ck].currency} to bring new units into the ${FACTIONS[camp.faction].name}'s army.</span><button class="btn primary" data-recruit-now type="button">Go to Recruiting</button></div>` : ''}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
@@ -267,7 +269,8 @@ document.addEventListener('click', e => {
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
   else if (d.go === 'prep') renderPrep();
   else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
-  else if (d.tab){ armyTab = d.tab; renderArmy(); }
+  else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
+  else if ('recruitNow' in d){ armyTab = 'recruit'; armyReturn = 'hub'; renderArmy(); recruitTutorial(SAVE.current); }
   else if (d.train) trainUnit(d.train);
   else if (d.arm) upgradeWeapon(d.arm);
   else if ('debug' in d){
