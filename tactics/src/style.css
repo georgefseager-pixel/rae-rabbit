@@ -497,3 +497,4 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 
 .uabout{display:block;background:none;border:0;padding:2px 0;margin:0;font:inherit;font-family:var(--fell);font-size:13px;color:var(--brass-hi);cursor:pointer;text-align:left}
 .ikick.gold{color:var(--brass-hi);font-size:16px;letter-spacing:.1em}
+.sbg[data-painted]::before,.sbg[data-painted]::after{display:none}

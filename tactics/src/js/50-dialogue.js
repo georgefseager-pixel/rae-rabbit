@@ -33,8 +33,10 @@ function talk(rawLines){
       if (l.scene){   // change the backdrop and clear the stage
         $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
         // painted backdrop (art/bg-<scene>.jpg) where there is one; darker for night and dusk scenes
-        const bg = ART.bg?.[l.scene], dark = /night|dusk|midnight|evening/i.test(l.place || '');
-        $('#sbg').style.background = bg ? `${dark ? 'linear-gradient(rgba(10,12,30,.55), rgba(10,12,30,.55)), ' : ''}url(${bg}) center 30%/cover no-repeat` : '';
+        // (night is darker than dusk/evening); the drawn placeholder details are hidden under a painting
+        const bg = ART.bg?.[l.scene], pl = l.place || '', shade = /night/i.test(pl) ? .66 : /dusk|evening/i.test(pl) ? .5 : 0;
+        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) center 30%/cover no-repeat` : '';
+        $('#sbg').toggleAttribute('data-painted', !!bg);
         for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
         anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);
         return show();
