@@ -443,6 +443,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 
 .dbg{display:flex;justify-content:center;margin-top:18px;opacity:.7}
 .dbg .btn{font-size:11px;min-height:36px;outline-style:dotted}
+.dbgbtn{opacity:.7;font-size:12px;outline-style:dotted}
 
 </style>
 
@@ -508,6 +509,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
     <h1>Battle Paused</h1><h2 id="menuSub"></h2><p id="menuObj"></p>
     <button class="btn primary" id="resumeBtn" type="button">Resume</button>
     <button class="btn" id="retreatBtn" type="button">Retreat to Campaign</button>
+    <button class="btn dbgbtn" id="skipWinBtn" type="button">Debug: Win This Battle</button>
   </div>
 </div>
 <div class="ov" id="gacha" hidden><div class="gstage" id="gstage"></div><div class="gspot" id="gspot" hidden></div></div>
@@ -2455,6 +2457,10 @@ $('#menuBtn').addEventListener('click', () => {
   $('#menu').hidden = false;
 });
 $('#resumeBtn').addEventListener('click', () => { $('#menu').hidden = true; });
+$('#skipWinBtn').addEventListener('click', e => {
+  if (!armed(e.currentTarget, 'Tap again to win now')) return;
+  $('#menu').hidden = true; finishBattle(true);   // the post-battle story and rewards still play
+});
 $('#retreatBtn').addEventListener('click', e => {
   if (!armed(e.currentTarget, 'Tap again: lose this battle')) return;
   $('#menu').hidden = true; finishBattle(false, true);

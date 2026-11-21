@@ -581,6 +581,10 @@ $('#menuBtn').addEventListener('click', () => {
   $('#menu').hidden = false;
 });
 $('#resumeBtn').addEventListener('click', () => { $('#menu').hidden = true; });
+$('#skipWinBtn').addEventListener('click', e => {
+  if (!armed(e.currentTarget, 'Tap again to win now')) return;
+  $('#menu').hidden = true; finishBattle(true);   // the post-battle story and rewards still play
+});
 $('#retreatBtn').addEventListener('click', e => {
   if (!armed(e.currentTarget, 'Tap again: lose this battle')) return;
   $('#menu').hidden = true; finishBattle(false, true);
