@@ -29,11 +29,14 @@ function newSave(){
 }
 // Story renames (Rabbit becomes Rae Rabbit). Speakers in later scenes pick the new name up from the roster.
 function applyRename(ck, map){
-  for (const [key, name] of Object.entries(map || {})) for (const r of SAVE.camps[ck].roster) if (r.key === key) r.name = name;
+  for (const [key, name] of Object.entries(map || {})){
+    for (const r of SAVE.camps[ck].roster) if (r.key === key) r.name = name;
+    (SAVE.names ||= {})[key] = name;   // story-only characters (not in any army) are renamed on the save
+  }
 }
 function speakerName(who){
   for (const c of Object.values(SAVE?.camps || {})){ const r = c.roster.find(r => r.key === who); if (r) return r.name; }
-  return SPEAKERS[who]?.name || '';
+  return SAVE?.names?.[who] || SPEAKERS[who]?.name || '';
 }
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));

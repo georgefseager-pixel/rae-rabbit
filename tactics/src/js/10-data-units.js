@@ -143,6 +143,7 @@ const ART_CROP = {
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One
+  sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)
 };
 
 // Generic recruits. Camp rabbits have no names, so they are known by how they look.

@@ -199,8 +199,9 @@ const CAMPAIGNS = {
       ]},
       // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
       // Give the chapter outfits: {rae: ''} so she switches back to the uniform art (art/rae-portrait.png, rae-battle.png).
-      // Little Sister gets her name in Chapter Two: Flopsy Flora, with a new design. Rename the speaker 'sister'
-      // to 'Flopsy Flora' and give her new art as an outfit (e.g. art/sisterflora-*.png with outfits: {sister: 'flora'}).
+      // Little Sister gets her name in Chapter Two: Flopsy Flora, with her new design. Her art is ready as the 'flora'
+      // outfit (art/sisterflora-*.png; she keeps her map icon). Give the chapter outfits: {rae: '', sister: 'flora'},
+      // and rename her with rename: {sister: 'Flopsy Flora'} on the stage where she takes the name.
       {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', stub: true, brief: 'Still to be written.'},
     ],
   },
