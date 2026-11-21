@@ -4,7 +4,7 @@
 // (rabbits or frogs); team 'e' is the AI.
 let B = null;   // {ch (the stage), campKey, pf, ef, kills, waves, resolve, done}
 let MAP = [], COLS = 8, ROWS = 12;
-let units = [], turn = 1, phase = 'p', mode = 'idle', busy = false, bossTalked = false, nextId = 1;
+let units = [], turn = 1, phase = 'p', mode = 'idle', busy = false, nextId = 1;
 let sel = null, orig = null, reachMap = null, moveKeys = new Set(), atkKeys = new Set(), healKeys = new Set();
 let targets = [], tmode = null, fc = null, inspect = null, showDanger = false, dangerKeys = new Set(), cursor = null;
 let fortOwner = new Map();
@@ -41,7 +41,9 @@ function enemyUnit(sp, faction){
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
   for (const [k, v] of Object.entries(B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
-  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees});
+  // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
+  const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
+  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -70,7 +72,7 @@ function runBattle(campKey, ch, records){
     let best = null; for (const u of units){ const d = Math.abs(u.x - x) + Math.abs(u.y - y); if (!best || d < best.d) best = {d, f: u.faction}; }
     fortOwner.set(K(x, y), best ? best.f : B.pf);
   }));
-  turn = 1; phase = 'p'; bossTalked = false; clearSel(); inspect = null; showDanger = false; cursor = null; updateDanger();
+  turn = 1; phase = 'p'; clearSel(); inspect = null; showDanger = false; cursor = null; updateDanger();
   $('#panel').className = 'f-' + B.pf;
   showScreen('app'); resize(); refreshTop();
   return new Promise(res => { B.resolve = res; startPlayerPhase(); });
@@ -245,10 +247,13 @@ async function strike(a, d, f){
 }
 
 async function doCombat(a, d){
-  if ((a.boss || d.boss) && !bossTalked && B.ch.bossTalk){
-    bossTalked = true;
-    const r = a.boss ? d : a, retort = CHARACTERS[r.key]?.retort, answered = B.ch.bossTalk.some(l => l.who === r.key);
-    await talk([...B.ch.bossTalk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
+  // First time a boss or named enemy is fought (either side attacking): they speak before the duel,
+  // and a named character on the other side answers with their retort if the lines don't already include them.
+  const foe = [d, a].find(u => u.talk?.length && !u.talked);
+  if (foe){
+    foe.talked = true;
+    const r = foe === a ? d : a, retort = CHARACTERS[r.key]?.retort, answered = foe.talk.some(l => l.who === r.key);
+    await talk([...foe.talk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
   }
   const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
   if (D.can) seq.push([d, a, D]);

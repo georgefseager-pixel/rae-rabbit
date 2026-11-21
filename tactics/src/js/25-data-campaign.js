@@ -13,6 +13,7 @@
 //   reinforce(flags)        [{turn, units:[spawns]}] arriving at the start of that enemy phase
 //   pre / post    story scenes (see Scene lines below)
 //   bossTalk      lines spoken the first time anyone fights the boss
+//                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
 //   bonus         {type:'noLosses', text, flag}  optional objective that sets a shared world flag
@@ -141,7 +142,10 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'I\'m not scared. I\'m not scared. I\'m not…'},
             {who: 'rae', text: 'Hold on, little one. I\'m coming. Don\'t you dare be brave without me.'},
           ],
-          bossTalk: [{who: 'executioner', text: 'Stand aside, rabbit. I have work to do.'}],
+          bossTalk: [
+            {who: 'executioner', text: 'Stand aside, rabbit. I have work to do.'},
+            {who: 'executioner', text: 'The bell is still ringing. When it stops, so does she.'},
+          ],
           post: [
             {scene: 'block', place: 'The Execution Block · Morning'},
             {who: 'sister', text: 'You came. You actually came.'},
@@ -341,7 +345,11 @@ const CAMPAIGNS = {
           brief: 'The rebels have fled into the woods and left a rearguard in the yard, led by an old enemy. Break it and retake the mines.',
           enemies: () => [
             E('digger',4,4,0,'hold',{boss: true, flees: true, key: 'brigand', name: 'Brigand', look: 'bandit'}),
-            E('pebbler',3,3,1,'guard',{key: 'old', name: 'Old Rabbit', look: 'old', fur: 'grey', elderly: true}),
+            E('pebbler',3,3,1,'guard',{key: 'old', name: 'Old Rabbit', look: 'old', fur: 'grey', elderly: true, talk: [
+              {who: 'old', text: 'Every stone I throw is one more step she gets into the woods.'},
+              {who: 'tiggle', text: 'Stand down, old one. You don\'t have to die here.'},
+              {who: 'old', text: 'Yes I do, your highness. That\'s the whole point.'},
+            ]}),
             E('hauler',2,3,0,'guard'), E('pebbler',2,1,1,'guard'), E('patcher',2,4,1,'guard'),
             E('digger',2,3,3,'guard'), E('hauler',2,4,3,'guard'), E('runner',2,1,5),
           ],

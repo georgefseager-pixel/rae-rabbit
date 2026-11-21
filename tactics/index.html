@@ -1377,6 +1377,7 @@ function validateMaps(){
 //   reinforce(flags)        [{turn, units:[spawns]}] arriving at the start of that enemy phase
 //   pre / post    story scenes (see Scene lines below)
 //   bossTalk      lines spoken the first time anyone fights the boss
+//                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
 //   bonus         {type:'noLosses', text, flag}  optional objective that sets a shared world flag
@@ -1505,7 +1506,10 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'I\'m not scared. I\'m not scared. I\'m not…'},
             {who: 'rae', text: 'Hold on, little one. I\'m coming. Don\'t you dare be brave without me.'},
           ],
-          bossTalk: [{who: 'executioner', text: 'Stand aside, rabbit. I have work to do.'}],
+          bossTalk: [
+            {who: 'executioner', text: 'Stand aside, rabbit. I have work to do.'},
+            {who: 'executioner', text: 'The bell is still ringing. When it stops, so does she.'},
+          ],
           post: [
             {scene: 'block', place: 'The Execution Block · Morning'},
             {who: 'sister', text: 'You came. You actually came.'},
@@ -1705,7 +1709,11 @@ const CAMPAIGNS = {
           brief: 'The rebels have fled into the woods and left a rearguard in the yard, led by an old enemy. Break it and retake the mines.',
           enemies: () => [
             E('digger',4,4,0,'hold',{boss: true, flees: true, key: 'brigand', name: 'Brigand', look: 'bandit'}),
-            E('pebbler',3,3,1,'guard',{key: 'old', name: 'Old Rabbit', look: 'old', fur: 'grey', elderly: true}),
+            E('pebbler',3,3,1,'guard',{key: 'old', name: 'Old Rabbit', look: 'old', fur: 'grey', elderly: true, talk: [
+              {who: 'old', text: 'Every stone I throw is one more step she gets into the woods.'},
+              {who: 'tiggle', text: 'Stand down, old one. You don\'t have to die here.'},
+              {who: 'old', text: 'Yes I do, your highness. That\'s the whole point.'},
+            ]}),
             E('hauler',2,3,0,'guard'), E('pebbler',2,1,1,'guard'), E('patcher',2,4,1,'guard'),
             E('digger',2,3,3,'guard'), E('hauler',2,4,3,'guard'), E('runner',2,1,5),
           ],
@@ -2027,7 +2035,7 @@ function releaseUnit(ck, uid){
 // (rabbits or frogs); team 'e' is the AI.
 let B = null;   // {ch (the stage), campKey, pf, ef, kills, waves, resolve, done}
 let MAP = [], COLS = 8, ROWS = 12;
-let units = [], turn = 1, phase = 'p', mode = 'idle', busy = false, bossTalked = false, nextId = 1;
+let units = [], turn = 1, phase = 'p', mode = 'idle', busy = false, nextId = 1;
 let sel = null, orig = null, reachMap = null, moveKeys = new Set(), atkKeys = new Set(), healKeys = new Set();
 let targets = [], tmode = null, fc = null, inspect = null, showDanger = false, dangerKeys = new Set(), cursor = null;
 let fortOwner = new Map();
@@ -2064,7 +2072,9 @@ function enemyUnit(sp, faction){
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
   for (const [k, v] of Object.entries(B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
-  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees});
+  // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
+  const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
+  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -2093,7 +2103,7 @@ function runBattle(campKey, ch, records){
     let best = null; for (const u of units){ const d = Math.abs(u.x - x) + Math.abs(u.y - y); if (!best || d < best.d) best = {d, f: u.faction}; }
     fortOwner.set(K(x, y), best ? best.f : B.pf);
   }));
-  turn = 1; phase = 'p'; bossTalked = false; clearSel(); inspect = null; showDanger = false; cursor = null; updateDanger();
+  turn = 1; phase = 'p'; clearSel(); inspect = null; showDanger = false; cursor = null; updateDanger();
   $('#panel').className = 'f-' + B.pf;
   showScreen('app'); resize(); refreshTop();
   return new Promise(res => { B.resolve = res; startPlayerPhase(); });
@@ -2268,10 +2278,13 @@ async function strike(a, d, f){
 }
 
 async function doCombat(a, d){
-  if ((a.boss || d.boss) && !bossTalked && B.ch.bossTalk){
-    bossTalked = true;
-    const r = a.boss ? d : a, retort = CHARACTERS[r.key]?.retort, answered = B.ch.bossTalk.some(l => l.who === r.key);
-    await talk([...B.ch.bossTalk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
+  // First time a boss or named enemy is fought (either side attacking): they speak before the duel,
+  // and a named character on the other side answers with their retort if the lines don't already include them.
+  const foe = [d, a].find(u => u.talk?.length && !u.talked);
+  if (foe){
+    foe.talked = true;
+    const r = foe === a ? d : a, retort = CHARACTERS[r.key]?.retort, answered = foe.talk.some(l => l.who === r.key);
+    await talk([...foe.talk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
   }
   const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
   if (D.can) seq.push([d, a, D]);
@@ -3448,7 +3461,7 @@ function boot(data){
 window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
-if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k),
+if (location.hash === '#debug') window.RAE_DEBUG = {win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k), fight: (ak, dk) => { const f = k => units.find(u => !u.dead && u.key === k); return doCombat(f(ak), f(dk)); },
   duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
     B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
 
