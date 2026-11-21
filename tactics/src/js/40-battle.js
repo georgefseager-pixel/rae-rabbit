@@ -61,7 +61,8 @@ function freeTileNear(x, y){
 
 function runBattle(campKey, ch, records){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
-       waves: ch.reinforce ? ch.reinforce(SAVE.flags) : []};
+       waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
+       events: (ch.events || []).filter(ev => !ev.join || !SAVE.camps[campKey].roster.some(r => r.key === ev.join)).map(ev => ({...ev}))};
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
@@ -304,7 +305,8 @@ function objectiveText(){
   const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
-  return `${goal} ${lord ? lord.name + ' must not fall.' : ''}`;
+  const must = [lord, ...units.filter(u => u.team === 'p' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
+  return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
 const starLive = () => ({lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
 function starHTML(){
@@ -474,7 +476,27 @@ async function startPlayerPhase(){
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
   await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
   await fortHeal('p');
+  await battleEvents();
   busy = false; mode = 'idle'; updateDanger(); panelIdle(); refreshTop();
+}
+// Story events during a battle (see `events` in 25-data-campaign.js): someone runs onto the field and joins in.
+async function battleEvents(){
+  for (const ev of B.events){
+    if (ev.done || ev.turn !== turn || B.done) continue;
+    ev.done = true;
+    if (ev.join){
+      const u = battleUnit(recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
+      const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u);
+      // run in from beyond the edge of the map
+      const fy = ROWS + .6;
+      for (let s = 0; s < 3; s++) setTimeout(() => Sfx.play('step'), s*110);
+      await tween(420, t => { u.py = fy + (ty - fy)*t; });
+      u.py = ty; popup(u, 'Joins!', '#9fe09a');
+      refreshTop(); panelIdle();
+      await wait(350);
+    }
+    if (ev.talk) await talk(ev.talk);
+  }
 }
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
@@ -581,6 +603,8 @@ function checkEnd(){
   if (!B || B.done) return true;
   const lord = units.find(u => u.team === 'p' && u.lord);
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
+  const vip = units.find(u => u.team === 'p' && u.vip && u.dead);
+  if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.ch.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));

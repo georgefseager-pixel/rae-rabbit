@@ -1362,6 +1362,8 @@ const CHARACTERS = {
   old:     {name:'Old Rabbit', rarity:1, fur:'grey', elderly:true, faction:'rae', cls:'pebbler', lv:2, stats:{mhp:17,atk:9,def:3,spd:6,skl:8,mov:5}},
   swift:   {name:'Swift Rabbit', rarity:1, fur:'ginger', faction:'rae', cls:'runner', lv:1, stats:{mhp:18,atk:9,def:3,spd:10,skl:7,mov:6}},
   patched: {name:'Patched Rabbit', rarity:1, fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
+  sister:  {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp', cls:'patcher', wname:'Sewing Needle', lv:2,   // joins mid-battle in R1-4; Flopsy Flora from Chapter Two
+            stats:{mhp:17,atk:5,def:2,spd:8,skl:6,mov:5}, retort:'I\'m not scared of you! …Much.'},
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'quarter', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
@@ -1858,6 +1860,9 @@ function validateMaps(){
 //                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
+//   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
+//                 at the start of that player turn the character runs onto the field, the lines play, and they fight
+//                 for you; they join the army if the battle is won (skipped if they're already in the army)
 //   star          the stage's bonus challenge (one ★ per stage, worth GACHA.starTokens recruiting currency once;
 //                 a cleared stage can be replayed to try again). {lord} in the text becomes the leader's name.
 //                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage)
@@ -2025,6 +2030,19 @@ const CAMPAIGNS = {
           brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
           rename: {rae: 'Rae Rabbit'},
           departs: ['old'],   // Old Rabbit stays behind with the rearguard (dies in F1-4)
+          // Little Sister runs onto the field at the start of turn II and won't be sent back. She must not fall.
+          events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, talk: [
+            {who: 'narr', text: 'Small feet pound across the yard behind the line.'},
+            {who: 'sister', text: 'Wait! Wait for me!'},
+            {who: 'rae', text: 'What are you doing here? I told you to hide in the bunkhouse!'},
+            {who: 'sister', text: 'You also said nobody else is allowed to pick on me. That means you have to stay in one piece.'},
+            {who: 'rae', text: 'This is a battle, little one. Go back. Now.'},
+            {who: 'sister', text: 'No. You came for me at the block. I\'m not hiding under a bunk while you climb that tower.'},
+            {who: 'sister', text: 'And I can stitch. I\'ve been sewing up your rips my whole life.'},
+            {who: 'rae', thought: true, text: 'She\'s not going anywhere. She never does.'},
+            {who: 'rae', text: '…Stay behind me. Stay close. And if I say run, you run.'},
+            {who: 'sister', text: 'Deal!'},
+          ]}],
           enemies: () => [
             E('overseer',4,4,0,'hold',{boss: true, key: 'rhubarb', name: 'Rhubarb', look: 'rhubarb'}),
             E('toadknight',2,3,0,'guard',{elite: true}), E('croaker',2,4,1,'guard'), E('reed',2,1,1,'guard'),
@@ -2042,6 +2060,9 @@ const CAMPAIGNS = {
           bossTalk: [{who: 'rhubarb', text: 'Right, that\'s it. I\'ll unstitch you meself, Rae.'}, {who: 'rae', text: 'It\'s Rae Rabbit.'}],
           post: [
             {who: 'narr', text: 'The tower comes down. For the first time anyone can remember, the camp gate stands open.'},
+            {who: 'sister', text: 'See? I told you I could help.'},
+            {who: 'rae', text: 'You did. Don\'t you dare do it again.'},
+            {who: 'sister', text: 'No promises.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
             {who: 'rae', text: 'Let them come.'},
             {scene: 'yard', place: 'The Camp Gate · Night'},
@@ -2068,7 +2089,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['willow']},
+          reward: {res: 500, joins: ['willow', 'sister']},
         },
       ]},
       // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
@@ -2623,7 +2644,8 @@ function freeTileNear(x, y){
 
 function runBattle(campKey, ch, records){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
-       waves: ch.reinforce ? ch.reinforce(SAVE.flags) : []};
+       waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
+       events: (ch.events || []).filter(ev => !ev.join || !SAVE.camps[campKey].roster.some(r => r.key === ev.join)).map(ev => ({...ev}))};
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
@@ -2866,7 +2888,8 @@ function objectiveText(){
   const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
-  return `${goal} ${lord ? lord.name + ' must not fall.' : ''}`;
+  const must = [lord, ...units.filter(u => u.team === 'p' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
+  return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
 const starLive = () => ({lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
 function starHTML(){
@@ -3036,7 +3059,27 @@ async function startPlayerPhase(){
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
   await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
   await fortHeal('p');
+  await battleEvents();
   busy = false; mode = 'idle'; updateDanger(); panelIdle(); refreshTop();
+}
+// Story events during a battle (see `events` in 25-data-campaign.js): someone runs onto the field and joins in.
+async function battleEvents(){
+  for (const ev of B.events){
+    if (ev.done || ev.turn !== turn || B.done) continue;
+    ev.done = true;
+    if (ev.join){
+      const u = battleUnit(recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
+      const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u);
+      // run in from beyond the edge of the map
+      const fy = ROWS + .6;
+      for (let s = 0; s < 3; s++) setTimeout(() => Sfx.play('step'), s*110);
+      await tween(420, t => { u.py = fy + (ty - fy)*t; });
+      u.py = ty; popup(u, 'Joins!', '#9fe09a');
+      refreshTop(); panelIdle();
+      await wait(350);
+    }
+    if (ev.talk) await talk(ev.talk);
+  }
 }
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
@@ -3143,6 +3186,8 @@ function checkEnd(){
   if (!B || B.done) return true;
   const lord = units.find(u => u.team === 'p' && u.lord);
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
+  const vip = units.find(u => u.team === 'p' && u.vip && u.dead);
+  if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.ch.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
@@ -3807,7 +3852,7 @@ async function playChapter(){
   const kills = B.kills;
   if (!res.win){
     B = null;
-    renderResult({win: false, retreated: res.retreated, ck, i});
+    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i});
     return;
   }
   // Commit the battle to the permanent army.
@@ -3826,6 +3871,8 @@ async function playChapter(){
   if (!replay){
     for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.dead){ r.dead = true; departed.push(r.name || CHARACTERS[key].name); }
     for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
+    // anyone who joined mid-battle keeps the experience they earned there
+    for (const u of res.survivors) if (!st.roster.includes(u.rec)){ st.roster.push(u.rec); joined.push(u.rec.name); }
     for (const key of ch.reward.joins || []) if (!st.roster.some(r => r.key === key)){ st.roster.push(recordFor(key)); joined.push(CHARACTERS[key].name); }
     st.cleared.push(ch.id);
   }
@@ -3856,7 +3903,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : `${speakerName(camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;

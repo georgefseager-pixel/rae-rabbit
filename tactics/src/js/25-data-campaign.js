@@ -16,6 +16,9 @@
 //                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
+//   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
+//                 at the start of that player turn the character runs onto the field, the lines play, and they fight
+//                 for you; they join the army if the battle is won (skipped if they're already in the army)
 //   star          the stage's bonus challenge (one ★ per stage, worth GACHA.starTokens recruiting currency once;
 //                 a cleared stage can be replayed to try again). {lord} in the text becomes the leader's name.
 //                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage)
@@ -183,6 +186,19 @@ const CAMPAIGNS = {
           brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
           rename: {rae: 'Rae Rabbit'},
           departs: ['old'],   // Old Rabbit stays behind with the rearguard (dies in F1-4)
+          // Little Sister runs onto the field at the start of turn II and won't be sent back. She must not fall.
+          events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, talk: [
+            {who: 'narr', text: 'Small feet pound across the yard behind the line.'},
+            {who: 'sister', text: 'Wait! Wait for me!'},
+            {who: 'rae', text: 'What are you doing here? I told you to hide in the bunkhouse!'},
+            {who: 'sister', text: 'You also said nobody else is allowed to pick on me. That means you have to stay in one piece.'},
+            {who: 'rae', text: 'This is a battle, little one. Go back. Now.'},
+            {who: 'sister', text: 'No. You came for me at the block. I\'m not hiding under a bunk while you climb that tower.'},
+            {who: 'sister', text: 'And I can stitch. I\'ve been sewing up your rips my whole life.'},
+            {who: 'rae', thought: true, text: 'She\'s not going anywhere. She never does.'},
+            {who: 'rae', text: '…Stay behind me. Stay close. And if I say run, you run.'},
+            {who: 'sister', text: 'Deal!'},
+          ]}],
           enemies: () => [
             E('overseer',4,4,0,'hold',{boss: true, key: 'rhubarb', name: 'Rhubarb', look: 'rhubarb'}),
             E('toadknight',2,3,0,'guard',{elite: true}), E('croaker',2,4,1,'guard'), E('reed',2,1,1,'guard'),
@@ -200,6 +216,9 @@ const CAMPAIGNS = {
           bossTalk: [{who: 'rhubarb', text: 'Right, that\'s it. I\'ll unstitch you meself, Rae.'}, {who: 'rae', text: 'It\'s Rae Rabbit.'}],
           post: [
             {who: 'narr', text: 'The tower comes down. For the first time anyone can remember, the camp gate stands open.'},
+            {who: 'sister', text: 'See? I told you I could help.'},
+            {who: 'rae', text: 'You did. Don\'t you dare do it again.'},
+            {who: 'sister', text: 'No promises.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
             {who: 'rae', text: 'Let them come.'},
             {scene: 'yard', place: 'The Camp Gate · Night'},
@@ -226,7 +245,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['willow']},
+          reward: {res: 500, joins: ['willow', 'sister']},
         },
       ]},
       // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
