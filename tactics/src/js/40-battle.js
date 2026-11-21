@@ -41,7 +41,7 @@ function enemyUnit(sp, faction){
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
   for (const [k, v] of Object.entries(B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
-  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss});
+  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -229,11 +229,16 @@ async function strike(a, d, f){
   await tween(150, t => { a.ox = lx*(1 - t); a.oy = ly*(1 - t); });
   await wait(scene ? 380 : 220);
   if (d.hp <= 0){
-    if (scene){
+    if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
+      stamp('FLEES', '#ecc673');
+      anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
+      await wait(500);
+    } else if (scene){
       stamp('UNSTITCHED', '#e8493b');
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
+    if (d.flees) popup(d, 'Fled!', '#ecc673');
     await tween(380, t => { d.alpha = 1 - t; }); d.dead = true;
     if (d.team === 'e') B.kills++;
   }

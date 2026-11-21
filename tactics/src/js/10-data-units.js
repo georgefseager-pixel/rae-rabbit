@@ -67,6 +67,7 @@ const LOOKS = {
   workerMend:{sp:'bun', ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#7a6a58', gear:'heart'},
   stayer:    {sp:'bun', ears:'up',  fur:'#8a7a6a', light:'#a89888', dark:'#54483c', scarf:'#7a2a24', gear:'none', oneEar:true},
   thin:      {sp:'bun', ears:'lop', fur:'#cfc4b4', light:'#e6ddd0', dark:'#8a7e70', gear:'none', small:true},
+  bandit:    {sp:'bun', ears:'up', fur:'#efe8de', light:'#fbf7f1', dark:'#a89c8c', scarf:'#b5302a', gear:'bandana', band:'#b5302a'},
   // Rare recruits (placeholders)
   lantern:   {sp:'bun', ears:'up',  fur:'#d8b070', light:'#f0d098', dark:'#94743a', scarf:'#e0a030', gear:'bandana', band:'#e0a030'},
   masked:    {sp:'bun', ears:'lop', fur:'#5a4a40', light:'#7a6a5e', dark:'#2e241e', scarf:'#2a2a2a', gear:'mask'},
@@ -109,6 +110,8 @@ const CHARACTERS = {
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
   // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; all are placeholders for now.
+  brigand:  {name:'Brigand', faction:'rae', look:'bandit', cls:'digger', lv:3, stars:3, stats:{mhp:27,atk:15,def:5,spd:7,skl:7,mov:5},
+             retort:'Ha! Swing harder, little prince.'},
   lantern:  {name:'Lantern Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.'},
   masked:   {name:'Masked Rabbit', fur:'sooty', faction:'rae', cls:'digger', lv:3, stars:3, placeholder:true, stats:{mhp:27,atk:15,def:6,spd:6,skl:6,mov:5}},
   ironear:  {name:'Iron-Eared Rabbit', fur:'grey', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5}},
@@ -176,6 +179,7 @@ const ART_CROP = {
   tiggle:   {panel: ['210% auto', '52% 3%'], talk: ['150% auto', '50% 2%']},
   rhubarb:  {panel: ['220% auto', '50% 5%'], talk: ['160% auto', '50% 4%']},
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
+  brigand:  {panel: ['200% auto', '38% 3%'], talk: ['150% auto', '36% 2%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)

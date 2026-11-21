@@ -29,6 +29,7 @@
 //   any line can carry if:'flag' or unless:'flag'
 // Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}, elite?}
 //   elite: a tougher ★★ soldier: red armour on generic frog art, plus the ★★ stat bonus
+//   flees: escapes when beaten instead of being unstitched (a recurring character)
 
 const E = (cls, lv, x, y, ai = 'charge', extra = {}) => Object.assign({cls, lv, x, y, ai}, extra);
 
@@ -223,10 +224,12 @@ const CAMPAIGNS = {
         // ---------------- Stage 1 ----------------
         {
           id: 'F1-1', title: 'The Mine Road', map: 'ford', enemyFaction: 'rae',
-          objective: {type: 'rout'}, maxDeploy: 6,
+          objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[4,0],[3,1],[5,1],[2,1],[4,1],[6,1],[2,2],[6,2]],
-          brief: 'Runaway rabbits have stopped a supply cart on the road to the mines. Clear the road.',
-          enemies: () => [E('digger',1,1,6), E('hauler',1,6,6), E('pebbler',1,3,7,'guard'), E('digger',1,4,8,'guard'), E('runner',1,5,9)],
+          brief: 'Brigand and his bandits have stopped a supply cart on the road to the mines. Drive him off and seize his gang.',
+          enemies: () => [
+            E('digger',3,2,10,'hold',{boss: true, flees: true, key: 'brigand', name: 'Brigand', look: 'bandit'}),
+            E('digger',1,1,6), E('hauler',1,6,6), E('pebbler',1,3,7,'guard'), E('runner',1,5,9)],
           pre: [
             {card: 'Chapter One', sub: 'The Prince'},
             {scene: 'court', place: 'The Lily Court'},
@@ -242,13 +245,23 @@ const CAMPAIGNS = {
             {who: 'king', text: 'Biggle Baggle goes with you. Listen to him. This is your chance to prove you are worth the crown on your head, Tiggle Taggle.'},
             {who: 'tiggle', thought: true, text: 'Order keeps everyone safe. Frogs and rabbits both. I\'ll show him I understand that.'},
             {scene: 'woods', place: 'The Mine Road'},
-            {who: 'scout', text: 'Your Highness! Runaway rabbits on the road ahead. They\'ve stopped a supply cart.'},
-            {who: 'biggle', text: 'Runaways. It\'s started already. Well, little brother? Give the order.'},
+            {who: 'scout', text: 'Your Highness! Bandits on the road ahead. They\'ve stopped a supply cart.'},
+            {who: 'brigand', text: 'Well, well. Frogs in shiny hats. This road\'s mine, princeling. Everything on it too.'},
+            {who: 'tiggle', text: 'You\'re a runaway. That cart is the crown\'s.'},
+            {who: 'brigand', text: 'The crown\'s? Funny. I dug the ore that paid for it. Call it back wages. The name\'s Brigand.'},
+            {who: 'biggle', text: 'A rabbit with a name. Of course. Well, little brother? Give the order.'},
             {who: 'tiggle', text: 'Advance. And… try not to hurt them more than we have to.'},
             {who: 'biggle', text: 'We\'ll hurt them exactly as much as we have to.'},
           ],
+          bossTalk: [
+            {who: 'brigand', text: 'Come on, then. I\'ve robbed bigger frogs than you before breakfast.'},
+            {who: 'tiggle', text: 'Then this will be your last breakfast.'},
+          ],
           post: [
-            {who: 'narr', text: 'When it is over, Tiggle Taggle looks at the rabbits they have caught.'},
+            {who: 'brigand', text: 'Ha! Not today, princeling. Keep the cart. I\'ll keep my neck.'},
+            {who: 'narr', text: 'Brigand vanishes into the trees. His gang is not so quick, and the frogs seize every one of them.'},
+            {who: 'biggle', text: 'Let him run. A bandit with no gang is just a rabbit in the woods.'},
+            {who: 'narr', text: 'Tiggle Taggle looks at the rabbits they have caught.'},
             {who: 'tiggle', text: 'They\'re so thin. Are they always this thin?'},
             {who: 'biggle', text: 'They\'re hungry because they\'re idle. Don\'t look at them too long. That\'s how it started last time. Someone felt sorry for Rae.'},
             {who: 'tiggle', text: '…Of course. Order first.'},
@@ -321,9 +334,10 @@ const CAMPAIGNS = {
           requires: ['R1-4'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
-          brief: 'The rebels have fled into the woods and left a rearguard in the yard. Break it and retake the mines.',
+          brief: 'The rebels have fled into the woods and left a rearguard in the yard, led by an old enemy. Break it and retake the mines.',
           enemies: () => [
-            E('digger',3,4,0,'hold',{boss: true, key: 'stayer', name: 'One-Eared Rabbit', look: 'stayer'}),
+            E('digger',4,4,0,'hold',{boss: true, flees: true, key: 'brigand', name: 'Brigand', look: 'bandit'}),
+            E('digger',3,3,1,'guard',{key: 'stayer', name: 'One-Eared Rabbit', look: 'stayer'}),
             E('hauler',2,3,0,'guard'), E('pebbler',2,1,1,'guard'), E('patcher',2,4,1,'guard'),
             E('digger',2,3,3,'guard'), E('hauler',2,4,3,'guard'), E('runner',2,1,5),
           ],
@@ -333,13 +347,22 @@ const CAMPAIGNS = {
             {who: 'scout', text: 'Most of them are gone, Your Highness. Into the woods. A few stayed behind to hold the yard.'},
             {who: 'biggle', text: 'A rearguard. Brave of them. Pointless, but brave. Take it.'},
             {who: 'tiggle', text: 'Where did the rest go?'},
-            {who: 'biggle', text: 'It doesn\'t matter. Win this first.'},
+            {who: 'scout', text: 'Your Highness… the one leading them. It\'s the bandit from the road.'},
+            {who: 'brigand', text: 'Morning, princeling. Didn\'t think you\'d see me again, did you?'},
+            {who: 'tiggle', text: 'You ran last time. Why come back for them?'},
+            {who: 'brigand', text: 'I\'ve robbed your carts for years and called it freedom. Then I heard a whole camp singing a name, and I thought: they\'re braver than me.'},
+            {who: 'brigand', text: 'So I\'m done running. You want this yard, you go through me.'},
+            {who: 'biggle', text: 'A bandit with a conscience. How tiresome. Take it.'},
           ],
           bossTalk: [
-            {who: 'stayer', text: 'Come on, then, little prince. Every turn you spend on me is a turn she gets further away.'},
+            {who: 'brigand', text: 'Every turn you spend on me is a turn she gets further away. Come on, then!'},
             {who: 'tiggle', text: 'Who? Who is she?'},
           ],
           post: [
+            {who: 'brigand', text: 'Not yet… I can still—'},
+            {who: 'stayer', text: 'Go, you fool. Someone has to tell her what happened here. You\'re the only one fast enough.'},
+            {who: 'brigand', text: '…Then I\'ll tell her you held.'},
+            {who: 'narr', text: 'This time, Brigand does not run to save himself. He runs because the rearguard makes him, and he looks back the whole way.'},
             {scene: 'block', place: 'The Execution Block · Evening'},
             {who: 'narr', text: 'By nightfall the mines belong to the Friggliarchy again. The rabbits who stayed behind are led up the scaffold to the block.'},
             {who: 'biggle', text: 'Read the sentence, little brother. You took the camp. This is part of taking it.'},
