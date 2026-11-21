@@ -33,7 +33,7 @@ each chapter holds stages (battles). All of it lives in `src/js/25-data-campaign
 which starts with a guide to every field.
 
 - **Story scenes** are the `pre` and `post` lists on a stage: title cards, backdrops
-  (`yard`, `mine`, `quarters`, `gallows`, `woods`, `legend`), speakers, narration and
+  (`yard`, `mine`, `quarters`, `block`, `woods`, `court`, `ridge`, `legend`), speakers, narration and
   inner thoughts. A speaker's name comes from the army roster, so when `rename` turns
   Rabbit into Rae Rabbit, every later scene uses the new name.
 - **Convergence gates**: `requires: ['F1-2']` makes a stage (or a whole stub chapter)

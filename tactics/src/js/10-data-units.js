@@ -123,7 +123,7 @@ const SPEAKERS = Object.assign({
   rabbits:     {name:'The Rabbits', faction:'rae', look:'workerLop', fur:'grey'},
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', fur:'pink'},
   guard:       {name:'Guard', faction:'frog', look:'guard'},
-  executioner: {name:'The Executioner', faction:'frog', look:'headsman', fur:'olive'},
+  executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
   king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
   scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
   stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer', fur:'sooty'},
@@ -169,6 +169,7 @@ const ART_CROP = {
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One
   tiggle:   {panel: ['210% auto', '52% 3%'], talk: ['150% auto', '50% 2%']},
+  executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)

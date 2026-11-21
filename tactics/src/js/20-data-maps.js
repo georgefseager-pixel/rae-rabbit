@@ -67,7 +67,7 @@ const MAPS = {
     ".F....F.",
     "...T....",
     "X......X"]},
-  gallowsYard: {theme: 'camp', names: {'T': ['The Gallows', 'The platform where rabbits are unstitched. Restores 20% HP to whoever holds it.']}, rows: [
+  blockYard: {theme: 'camp', names: {'T': ['The Scaffold', 'The raised platform where the axe falls. Restores 20% HP to whoever holds it.']}, rows: [
     "XX.TT.XX",
     "X......X",
     "..F..F..",

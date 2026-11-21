@@ -22,7 +22,7 @@
 //
 // Scene lines
 //   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
-//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, gallows, woods)
+//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods)
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
@@ -68,7 +68,7 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'It was me.'},
             {who: 'rae', text: 'What? No. She\'s lying, she can\'t even reach the—'},
             {who: 'rhubarb', text: 'Silence.'},
-            {who: 'rhubarb', text: 'The small one has confessed. At dawn tomorrow she will be unstitched on the gallows, in front of all of you.'},
+            {who: 'rhubarb', text: 'The small one has confessed. At dawn tomorrow she will be unstitched at the block, in front of all of you.'},
             {who: 'rhubarb', text: 'Let it remind you what rabbits are for.'},
             {scene: 'quarters', place: 'The Bunkhouse · Night'},
             {who: 'rae', text: 'Why did you do that? It was me. You knew it was me.'},
@@ -117,19 +117,19 @@ const CAMPAIGNS = {
 
         // ---------------- Stage 3 ----------------
         {
-          id: 'R1-3', title: 'The Unstitching', map: 'gallowsYard', enemyFaction: 'frog',
+          id: 'R1-3', title: 'The Unstitching', map: 'blockYard', enemyFaction: 'frog',
           objective: {type: 'boss', limit: 8}, maxDeploy: 6,
-          limitFail: 'The bell stopped ringing before you reached the gallows.',
+          limitFail: 'The bell stopped ringing before you reached the block. The axe fell.',
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[2,10],[5,10]],
-          brief: 'Dawn. Reach the gallows and defeat the Executioner before the bell stops ringing.',
+          brief: 'Dawn. Reach the execution block and defeat the Executioner before the bell stops ringing and the axe falls.',
           enemies: () => [
             E('headsman',2,3,0,'hold',{boss: true, key: 'executioner', name: 'The Executioner', look: 'headsman'}),
             E('lily',1,4,0,'guard'), E('reed',1,1,2,'guard'), E('reed',1,6,2,'guard'),
             E('bruiser',1,2,5), E('lily',1,5,5), E('bruiser',2,3,7),
           ],
           pre: [
-            {scene: 'gallows', place: 'The Gallows · Dawn'},
-            {who: 'narr', text: 'Dawn. The bell rings for the unstitching.'},
+            {scene: 'block', place: 'The Execution Block · Dawn'},
+            {who: 'narr', text: 'Dawn. The bell rings for the unstitching. On the scaffold, the Executioner rests his great axe beside the block.'},
             {who: 'rhubarb', text: 'Rabbits! All night you have heard a name whispered. A dead name. A wicked name.'},
             {who: 'rhubarb', text: 'Watch what happens to rabbits who reach for it.'},
             {who: 'sister', text: 'I\'m not scared. I\'m not scared. I\'m not…'},
@@ -137,7 +137,7 @@ const CAMPAIGNS = {
           ],
           bossTalk: [{who: 'executioner', text: 'Stand aside, rabbit. I have work to do.'}],
           post: [
-            {scene: 'gallows', place: 'The Gallows · Morning'},
+            {scene: 'block', place: 'The Execution Block · Morning'},
             {who: 'sister', text: 'You came. You actually came.'},
             {who: 'rae', text: 'Of course I came. Nobody else is allowed to pick on you.'},
             {who: 'sister', text: 'That\'s the nicest thing you\'ve ever said to me.'},
@@ -335,8 +335,8 @@ const CAMPAIGNS = {
             {who: 'tiggle', text: 'Who? Who is she?'},
           ],
           post: [
-            {scene: 'gallows', place: 'The Gallows · Evening'},
-            {who: 'narr', text: 'By nightfall the mines belong to the Friggliarchy again. The rabbits who stayed behind are led to the gallows.'},
+            {scene: 'block', place: 'The Execution Block · Evening'},
+            {who: 'narr', text: 'By nightfall the mines belong to the Friggliarchy again. The rabbits who stayed behind are led up the scaffold to the block.'},
             {who: 'biggle', text: 'Read the sentence, little brother. You took the camp. This is part of taking it.'},
             {who: 'tiggle', text: 'For rebellion against the crown… you are to be unstitched.'},
             {who: 'stayer', text: 'Go on, then. It doesn\'t matter any more.'},
