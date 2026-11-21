@@ -179,6 +179,8 @@ async function playChapter(){
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
   }
   for (const u of res.lost) u.rec.dead = true;
+  const departed = [];
+  for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.dead){ r.dead = true; departed.push(r.name || CHARACTERS[key].name); }
   const bonusHit = ch.bonus?.type === 'noLosses' && res.lost.length === 0;
   if (bonusHit) SAVE.flags[ch.bonus.flag] = true;
   for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
@@ -190,7 +192,7 @@ async function playChapter(){
   saveGame();
   await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, turn: res.turn, kills, spoils, tokens, joined, lost: res.lost.map(u => u.name), bonusHit});
+  renderResult({win: true, ck, i, turn: res.turn, kills, spoils, tokens, joined, lost: res.lost.map(u => u.name), departed, bonusHit});
 }
 
 function renderResult(r){
@@ -207,6 +209,7 @@ function renderResult(r){
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${ch.bonus ? `<div><span>${ch.bonus.text}</span><b>${r.bonusHit ? '★ Achieved' : 'Missed'}</b></div>` : ''}
         ${r.lost.length ? `<div><span>Unstitched for good</span><b>${r.lost.join(', ')}</b></div>` : ''}
+        ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;

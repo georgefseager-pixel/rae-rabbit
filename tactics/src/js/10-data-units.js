@@ -65,7 +65,6 @@ const LOOKS = {
   workerLop: {sp:'bun', ears:'lop', fur:'#9c9a96', light:'#c4c2be', dark:'#62605c', scarf:'#5a4a3a', gear:'none'},
   workerBig: {sp:'bun', ears:'up',  fur:'#6e4a30', light:'#8e6a4c', dark:'#422c1a', gear:'bandana', band:'#5a4a3a'},
   workerMend:{sp:'bun', ears:'lop', fur:'#e4d4bc', light:'#f4ead8', dark:'#a8967c', scarf:'#7a6a58', gear:'heart'},
-  stayer:    {sp:'bun', ears:'up',  fur:'#8a7a6a', light:'#a89888', dark:'#54483c', scarf:'#7a2a24', gear:'none', oneEar:true},
   thin:      {sp:'bun', ears:'lop', fur:'#cfc4b4', light:'#e6ddd0', dark:'#8a7e70', gear:'none', small:true},
   bandit:    {sp:'bun', ears:'up', fur:'#efe8de', light:'#fbf7f1', dark:'#a89c8c', scarf:'#b5302a', gear:'bandana', band:'#b5302a'},
   // Rare recruits (placeholders)
@@ -134,7 +133,6 @@ const SPEAKERS = Object.assign({
   executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
   king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
   scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
-  stayer:      {name:'One-Eared Rabbit', faction:'rae', look:'stayer', fur:'sooty'},
   thin:        {name:'Thin Rabbit', faction:'rae', look:'thin', fur:'cream'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
