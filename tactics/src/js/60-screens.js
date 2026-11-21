@@ -56,10 +56,10 @@ function renderHub(){
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         <button class="btn" data-go="army" type="button">Army &amp; Armoury</button></div>
     </div>
-    ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights are unlocked, in any order.</span></div>' : ''}
+    ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
     ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
-    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock Fights' : 'Debug: Unlock All Fights'}</button></div>
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button></div>
   </div>`;
   showScreen('hub');
 }
@@ -234,8 +234,10 @@ document.addEventListener('click', e => {
   else if (d.arm) upgradeWeapon(d.arm);
   else if ('debug' in d){
     if (!armed(t, SAVE.debugUnlock ? 'Tap again to relock' : 'Tap again to unlock all')) return;
-    SAVE.debugUnlock = !SAVE.debugUnlock; saveGame();
-    toast(SAVE.debugUnlock ? 'Debug: every fight is unlocked.' : 'Fights relocked: normal progression.'); renderHub();
+    SAVE.debugUnlock = !SAVE.debugUnlock;
+    if (SAVE.debugUnlock) for (const ck of Object.keys(SAVE.camps)){ SAVE.camps[ck].res += 100000; gachaState(ck).tokens += 1000; }
+    saveGame();
+    toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
   else if (d.release) release(t);
   else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }

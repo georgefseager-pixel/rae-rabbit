@@ -4,7 +4,7 @@ function gachaState(ck){
   if (!st.gacha) st.gacha = {tokens: GACHA.startTokens, pity: {}, total: 0};
   return st.gacha;
 }
-const bannerOpen = b => !b.after || isCleared(b.after);
+const bannerOpen = b => !b.after || SAVE?.debugUnlock || isCleared(b.after);   // debug unlock opens every banner
 const findBanner = (ck, id) => GACHA_ARMY[ck].banners.find(b => b.id === id);
 const isGachaUnit = rec => rec.key === 'recruit' || CHARACTERS[rec.key]?.stars === 3;
 
