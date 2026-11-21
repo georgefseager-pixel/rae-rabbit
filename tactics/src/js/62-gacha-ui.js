@@ -56,10 +56,12 @@ function cardHTML(r, i, single){
       <div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
       <div class="gface">
         <div class="gpor">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(look)}">`}</div>
-        <div class="gstars">${stars(r.stars)}</div>
-        <div class="gname">${rec.name}</div>
-        <div class="gcls">${CLASSES[rec.cls].name}</div>
-        <div class="gtag">${tag}</div>
+        <div class="gtxt">
+          <div class="gstars">${stars(r.stars)}</div>
+          <div class="gname">${rec.name}</div>
+          <div class="gcls">${CLASSES[rec.cls].name}</div>
+          <div class="gtag">${tag}</div>
+        </div>
       </div>
     </div></button>`;
 }
