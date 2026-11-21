@@ -188,7 +188,8 @@ function tokenFor(u, variant){
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
   if (icon){
     // Real token art: fit it to the tile, sitting on the felt coaster.
-    const w = T*1.16, h = w*icon.height/icon.width;
+    // fit inside a fixed box so tall icons (plumes, shoulders) don't run off the top of the tile
+    const sc = Math.min(T*1.16/icon.width, T*.9/icon.height), w = icon.width*sc, h = icon.height*sc;
     g.drawImage(icon, ox + T*.5 - w/2, oy + T*.88 - h, w, h);
   } else {
     const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
