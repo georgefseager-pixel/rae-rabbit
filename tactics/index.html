@@ -441,6 +441,9 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .stag{position:relative;font-family:var(--fell);font-size:16px;color:#9fe09a}
 @media (prefers-reduced-motion: reduce){ .sray{animation:none} .gin{transition:none} }
 
+.dbg{display:flex;justify-content:center;margin-top:18px;opacity:.7}
+.dbg .btn{font-size:11px;min-height:36px;outline-style:dotted}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -1755,6 +1758,7 @@ function findStage(id){
 function stageState(campKey, i){
   const camp = CAMPAIGNS[campKey], sg = camp.stages[i], st = SAVE.camps[campKey];
   if (st.cleared.includes(sg.id)) return {s: 'done'};
+  if (SAVE.debugUnlock) return sg.stub ? {s: 'stub'} : {s: 'next'};   // debug: every written stage is playable
   if (i > 0 && !st.cleared.includes(camp.stages[i - 1].id)) return {s: 'future'};
   const missing = (sg.requires || []).filter(r => !isCleared(r));
   if (missing.length) return {s: 'gate', missing};
@@ -2906,8 +2910,10 @@ function renderHub(){
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         <button class="btn" data-go="army" type="button">Army &amp; Armoury</button></div>
     </div>
+    ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights are unlocked, in any order.</span></div>' : ''}
     ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock Fights' : 'Debug: Unlock All Fights'}</button></div>
   </div>`;
   showScreen('hub');
 }
@@ -3080,6 +3086,11 @@ document.addEventListener('click', e => {
   else if (d.tab){ armyTab = d.tab; renderArmy(); }
   else if (d.train) trainUnit(d.train);
   else if (d.arm) upgradeWeapon(d.arm);
+  else if ('debug' in d){
+    if (!armed(t, SAVE.debugUnlock ? 'Tap again to relock' : 'Tap again to unlock all')) return;
+    SAVE.debugUnlock = !SAVE.debugUnlock; saveGame();
+    toast(SAVE.debugUnlock ? 'Debug: every fight is unlocked.' : 'Fights relocked: normal progression.'); renderHub();
+  }
   else if (d.release) release(t);
   else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }
   else if (d.pull) runPull(SAVE.current, +d.pull);

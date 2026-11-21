@@ -55,6 +55,7 @@ function findStage(id){
 function stageState(campKey, i){
   const camp = CAMPAIGNS[campKey], sg = camp.stages[i], st = SAVE.camps[campKey];
   if (st.cleared.includes(sg.id)) return {s: 'done'};
+  if (SAVE.debugUnlock) return sg.stub ? {s: 'stub'} : {s: 'next'};   // debug: every written stage is playable
   if (i > 0 && !st.cleared.includes(camp.stages[i - 1].id)) return {s: 'future'};
   const missing = (sg.requires || []).filter(r => !isCleared(r));
   if (missing.length) return {s: 'gate', missing};

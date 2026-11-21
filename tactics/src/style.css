@@ -433,3 +433,6 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .spin p{position:relative;margin:0;color:var(--muted)}
 .stag{position:relative;font-family:var(--fell);font-size:16px;color:#9fe09a}
 @media (prefers-reduced-motion: reduce){ .sray{animation:none} .gin{transition:none} }
+
+.dbg{display:flex;justify-content:center;margin-top:18px;opacity:.7}
+.dbg .btn{font-size:11px;min-height:36px;outline-style:dotted}
