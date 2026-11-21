@@ -27,7 +27,8 @@
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
 //   any line can carry if:'flag' or unless:'flag'
-// Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}}
+// Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}, elite?}
+//   elite: a tougher ★★ soldier: red armour on generic frog art, plus the ★★ stat bonus
 
 const E = (cls, lv, x, y, ai = 'charge', extra = {}) => Object.assign({cls, lv, x, y, ai}, extra);
 
@@ -129,7 +130,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('headsman',2,3,0,'hold',{boss: true, key: 'executioner', name: 'The Executioner', look: 'headsman'}),
             E('lily',1,4,0,'guard'), E('reed',1,1,2,'guard'), E('reed',1,6,2,'guard'),
-            E('bruiser',1,2,5), E('lily',1,5,5), E('bruiser',2,3,7),
+            E('bruiser',1,2,5), E('lily',1,5,5), E('bruiser',2,3,7,'charge',{elite: true}),
           ],
           pre: [
             {scene: 'block', place: 'The Execution Block · Dawn'},
@@ -162,8 +163,8 @@ const CAMPAIGNS = {
           rename: {rae: 'Rae Rabbit'},
           enemies: () => [
             E('overseer',4,4,0,'hold',{boss: true, key: 'rhubarb', name: 'Rhubarb', look: 'rhubarb'}),
-            E('toadknight',2,3,0,'guard'), E('croaker',2,4,1,'guard'), E('reed',2,1,1,'guard'),
-            E('lily',2,3,3,'guard'), E('lily',2,4,3,'guard'), E('bruiser',2,1,5), E('bruiser',2,6,5),
+            E('toadknight',2,3,0,'guard',{elite: true}), E('croaker',2,4,1,'guard'), E('reed',2,1,1,'guard'),
+            E('lily',2,3,3,'guard',{elite: true}), E('lily',2,4,3,'guard',{elite: true}), E('bruiser',2,1,5), E('bruiser',2,6,5),
           ],
           pre: [
             {scene: 'yard', place: 'The Overseer\'s Tower'},
