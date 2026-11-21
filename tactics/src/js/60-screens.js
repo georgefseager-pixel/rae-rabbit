@@ -54,7 +54,7 @@ function renderHub(){
   const art = artFor(lord, 'portrait') || plushPortrait(lord.look);
   const avg = Math.round(alive.reduce((a, r) => a + r.lv, 0)/alive.length*10)/10;
   $('#hub').innerHTML = `<div class="sin f-${camp.faction}">
-    <div class="sbar"><h1>RAEPUBLIC</h1><button class="btn" data-sound type="button">${SOUND_SHORT[Audio_.mode]}</button><button class="btn" data-go="title" type="button">Title</button></div>
+    <div class="sbar"><h1>TOY WARS</h1><button class="btn" data-sound type="button">${SOUND_SHORT[Audio_.mode]}</button><button class="btn" data-go="title" type="button">Title</button></div>
     <div class="fswitch" role="tablist" aria-label="Choose a story">${Object.entries(CAMPAIGNS).map(([k, c]) =>
       `<button class="f-${c.faction}${k === ck ? ' on' : ''}" data-camp="${k}" role="tab" aria-selected="${k === ck}" type="button">${FACTIONS[c.faction].name}<small>${progressLabel(k)}</small></button>`).join('')}</div>
     <div class="hero f-${camp.faction}">

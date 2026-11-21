@@ -1,4 +1,4 @@
-# Raepublic
+# Toy Wars
 
 A grid-based tactics game played with plush toys. The phone build is the single file
 `index.html`. It is **generated**, so don't edit it by hand: change the files in `src/`
