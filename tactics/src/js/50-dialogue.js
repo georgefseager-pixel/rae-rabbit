@@ -32,6 +32,9 @@ function talk(rawLines){
       const l = lines[i];
       if (l.scene){   // change the backdrop and clear the stage
         $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
+        // painted backdrop (art/bg-<scene>.jpg) where there is one; darker for night and dusk scenes
+        const bg = ART.bg?.[l.scene], dark = /night|dusk|midnight|evening/i.test(l.place || '');
+        $('#sbg').style.background = bg ? `${dark ? 'linear-gradient(rgba(10,12,30,.55), rgba(10,12,30,.55)), ' : ''}url(${bg}) center 30%/cover no-repeat` : '';
         for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
         anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);
         return show();

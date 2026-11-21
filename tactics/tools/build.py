@@ -18,12 +18,12 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 
 art = {}
-for f in sorted((ROOT / "art").glob("*.png")):
-    m = re.fullmatch(r"([a-z0-9]+)-([a-z]+)\.png", f.name)
+for f in sorted([*(ROOT / "art").glob("*.png"), *(ROOT / "art").glob("*.jpg")]):
+    m = re.fullmatch(r"([a-z0-9]+)-([a-z]+)\.(png|jpg)", f.name)
     if not m:
         print("skipping art file with unexpected name:", f.name)
         continue
-    art.setdefault(m[1], {})[m[2]] = "data:image/png;base64," + base64.b64encode(f.read_bytes()).decode()
+    art.setdefault(m[1], {})[m[2]] = ("data:image/jpeg;base64," if f.suffix == ".jpg" else "data:image/png;base64,") + base64.b64encode(f.read_bytes()).decode()
 
 js = "\n".join(f"// ---------------- {p.name} ----------------\n{p.read_text()}" for p in sorted((SRC / "js").glob("*.js")))
 html = (SRC / "shell.html").read_text()

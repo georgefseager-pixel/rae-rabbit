@@ -32,7 +32,8 @@ player can switch between them at any time. Each campaign is a list of chapters,
 each chapter holds stages (battles). All of it lives in `src/js/25-data-campaign.js`,
 which starts with a guide to every field.
 
-- **Story scenes** are the `pre` and `post` lists on a stage: title cards, backdrops
+- **Story scenes** are the `pre` and `post` lists on a stage: title cards, backdrops (painted
+  ones from `art/bg-<scene>.jpg` where they exist: mine, block, woods, court)
   (`yard`, `mine`, `quarters`, `block`, `woods`, `court`, `ridge`, `legend`), speakers, narration and
   inner thoughts. A speaker's name comes from the army roster, so when `rename` turns
   Rabbit into Rae Rabbit, every later scene uses the new name.
