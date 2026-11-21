@@ -319,7 +319,6 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   repeating-linear-gradient(90deg, transparent 0 120px, rgba(0,0,0,.25) 120px 124px),
   linear-gradient(180deg,#24233a,#16151f 60%,#0c0b12)}
 .sbg[data-bg=block]{background:
-  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 160'><g fill='%230e0806'><rect x='46' y='20' width='9' height='120' rx='3' transform='rotate(14 50 95)'/><path d='M44 14 Q8 8 4 48 Q24 40 46 52Z' transform='rotate(14 50 95)'/></g></svg>") 56% 52%/24% auto no-repeat,
   linear-gradient(#0e0806,#0e0806) 50% 60%/16% 5% no-repeat,
   linear-gradient(#0e0806,#0e0806) 50% 63.5%/10% 4% no-repeat,
   linear-gradient(#0e0806,#0e0806) 50% 68%/78% 6% no-repeat,
