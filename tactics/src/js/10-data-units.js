@@ -19,6 +19,12 @@ const CLASSES = {
   captain:   {name: 'Ringleader',     w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Stolen Sword',      base: {mhp:20,atk:11,def:5, spd:8,skl:7,mov:5}, g: {mhp:70,atk:45,def:30,spd:50,skl:45}},
   digger:    {name: 'Digger',         w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Pickaxe',           base: {mhp:22,atk:11,def:4, spd:5,skl:4,mov:5}, g: {mhp:80,atk:50,def:25,spd:35,skl:35}},
   hauler:    {name: 'Hauler',         w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Cart Prod',         base: {mhp:20,atk:10,def:6, spd:4,skl:5,mov:5}, g: {mhp:75,atk:40,def:45,spd:25,skl:35}},
+  // Republic soldiers: trained troops in Republic armour (art/troop-*.png; the battle pose follows the weapon)
+  rfencer:   {name: 'Fencer',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Republic Sword',    base: {mhp:19,atk:10,def:5, spd:8,skl:8,mov:5}, g: {mhp:65,atk:40,def:30,spd:55,skl:50}},
+  rfighter:  {name: 'Fighter',        w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Republic Axe',      base: {mhp:23,atk:12,def:5, spd:5,skl:4,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:35}},
+  rlancer:   {name: 'Lancer',         w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Republic Spear',    base: {mhp:21,atk:10,def:7, spd:5,skl:6,mov:5}, g: {mhp:75,atk:40,def:45,spd:30,skl:40}},
+  rarcher:   {name: 'Bowrabbit',      w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Republic Bow',      base: {mhp:18,atk:10,def:4, spd:6,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:40,skl:55}},
+  radept:    {name: 'Adept',          w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Republic Primer',   base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   pebbler:   {name: 'Slinger',        w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Pebble Sling',      base: {mhp:17,atk:9, def:3, spd:6,skl:7,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
@@ -54,6 +60,8 @@ const WEAPON_TIERS = [
 // ================= Plush looks (placeholder art drawn in code) =================
 // Used for tokens everywhere, and for portraits until real art exists in art/.
 const LOOKS = {
+  // art: 'troop' draws them with the Republic soldier art (recoloured to their fur) instead of the mine-rabbit art
+  soldier:   {sp:'bun', art:'troop', ears:'lop', fur:'#c8a27a', light:'#e2c4a0', dark:'#8a6a4a', scarf:'#2c3559', gear:'none'},
   // Rabbits
   rae:       {sp:'bun', ears:'lop', fur:'#e2c79c', light:'#f4e3c2', dark:'#9c8058', scarf:'#b5302a', gear:'fist'},
   sister:    {sp:'bun', ears:'lop', fur:'#efe0c4', light:'#fbf3e3', dark:'#a8987a', gear:'none', small:true},
@@ -91,6 +99,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
+  rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb',
 };

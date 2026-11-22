@@ -34,11 +34,14 @@ const GACHA_ARMY = {
     tease: 'A folded note, passed hand to hand along the tunnels…', seal: 'R',
     generic: ['digger', 'hauler', 'pebbler', 'runner', 'patcher'],
     rares: ['brigand', 'condemned', 'lantern', 'ironear'],
+    // Other companies a banner can draw its soldiers from (troops: '<name>'). Republic soldiers choose their names.
+    troops: {republic: {stars: [1], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
+      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy', 'Yarrow', 'Burdock']}},
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
-      {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
-       blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
+      {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R2-1', bg: 'mine', troops: 'republic',
+       blurb: 'Placeholder banner. Lantern Rabbit answers more often, and the ★ soldiers who answer are trained troops of the Republic.'},
     ],
   },
   frog: {

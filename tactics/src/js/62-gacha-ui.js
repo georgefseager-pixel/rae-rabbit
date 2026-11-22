@@ -58,9 +58,9 @@ function recruitTabHTML(ck){
         <div><span>★ Common: soldiers</span><b>${R[1].rate}%</b></div>
       </div>
       <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare characters are the featured unit.` : ''}
-      Soldiers can be any of: ${army.generic.map(c => CLASSES[c].name).join(', ')}.
+      Soldiers can be any of: ${[...new Set(companyOf(ck, b.troops).map(t => t.cls))].map(c => CLASSES[c].name).join(', ')}.
       Recruiting someone you already have gives you a weapon of their rarity instead.
-      Soldiers come from a fixed company of ${companyOf(ck).length}.
+      Soldiers come from a fixed company of ${companyOf(ck, b.troops).length}.
       Every ×10 includes at least one ★★, and a ★★★ is guaranteed by pull ${GACHA.pity} on each banner. Weapons go to the Armoury, on the Army screen.</p>
     </details>`;
 }

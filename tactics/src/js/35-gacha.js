@@ -17,12 +17,17 @@ function rollRarity(pity){
   return r < R[3].rate ? 3 : r < R[3].rate + R[2].rate ? 2 : 1;
 }
 // The fixed company of generic soldiers for an army: [{id, cls, stars, name}].
-function companyOf(ck){
+// A banner with troops:'<set>' draws its soldiers of the set's rarities from that company instead.
+function companyOf(ck, set){
   const army = GACHA_ARMY[ck], names = RECRUIT_NAMES[CAMPAIGNS[ck].faction], out = [];
   let n = 0;
   for (const stars of [2, 1]) for (const cls of army.generic) for (let i = 0; i < GACHA.company[stars]; i++)
     out.push({id: `${ck}-s${stars}-${cls}-${i}`, cls, stars, name: names[n++] || `${CLASSES[cls].name} ${n}`});
-  return out;
+  const T = set && army.troops?.[set]; if (!T) return out;
+  let m = 0; const own = [];
+  for (const stars of T.stars) for (const cls of T.generic) for (let i = 0; i < GACHA.company[stars]; i++)
+    own.push({id: `${ck}-${set}-s${stars}-${cls}-${i}`, cls, stars, name: T.names[m++] || `${CLASSES[cls].name} ${m}`});
+  return [...out.filter(t => !T.stars.includes(t.stars)), ...own];
 }
 // Turn a fresh generic recruit into a particular company soldier (stable id, name and look).
 function asCompanySoldier(rec, tpl){
@@ -46,7 +51,7 @@ function grantPull(ck, banner, stars){
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
   }
-  const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
+  const tpl = pick(companyOf(ck, banner.troops).filter(t => t.stars === stars));
   const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
   if (have) return weaponResult(ck, stars);   // already with you: a weapon of their rarity instead
   // a fallen soldier comes back, stitched up, with their level

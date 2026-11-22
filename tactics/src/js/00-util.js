@@ -47,8 +47,8 @@ function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] 
 // recoloured into their coat: mine rabbits (art/miner-*.png, colours in FURS) and frog soldiers
 // (art/grunt-*.png, skin colours in SKINS).
 function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
-const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}};
-function speciesOf(ent){ return SPECIES_ART[LOOKS[ent.look]?.sp] || null; }
+const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS}};
+function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
   const pal = sp.palette();
@@ -77,6 +77,11 @@ function artResolve(ent, kind){
   const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls)
     || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
+  if (sp.base === 'troop'){
+    // Republic soldiers: one portrait and map icon, and a battle pose for each weapon (art/troop<weapon>-battle.png)
+    const pose = kind === 'battle' && {axe: 'troopaxe', lance: 'trooplance', bow: 'troopbow', tome: 'troopbook'}[ent.w || CLASSES[cls]?.w];
+    if (pose && ART[pose + fur]?.[kind]) return pose + fur;
+  }
   if (sp.base === 'grunt'){
     // ★★ frog soldiers wear red (elite) armour: art built from art/grunt*armour-*.png at load
     const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
@@ -104,7 +109,8 @@ function artImage(ent, kind){
 
 // Recolour the generic art into every colour of its palette, once, at load. Results become ART['<base><colour>'].
 //   miner (rabbits): art/minermask-<kind>.png marks what KEEPS its colour (loincloth, rope, ear linings,
-//                    nose, eyes); the rest of the warm fur is recoloured.
+//                    nose, eyes); the rest of the warm fur is recoloured. Republic soldiers (troop*) work the same
+//                    way: art/troop*mask-<kind>.png keeps the armour, cloth, leather, weapons and ear linings.
 //   grunt (frogs):   art/gruntskin-<kind>.png marks the skin to recolour (the head); armour, cloak,
 //                    plume and banner stay as drawn.
 let furReady = false;
@@ -179,7 +185,7 @@ async function buildEliteArmour(base){
   }
 }
 async function buildFurVariants(){
-  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling']) await buildVariants(base, FURS, async (kind, px, W, H) => {
+  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', 'troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook']) await buildVariants(base, FURS, async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], l = (Math.max(r, gg, b) + Math.min(r, gg, b))/510;
