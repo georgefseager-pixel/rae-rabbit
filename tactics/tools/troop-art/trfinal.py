@@ -84,10 +84,10 @@ def build(key,kind):
     for poly in F.get('lateAdd',[]):
         pm=Image.new('L',(x.shape[1],x.shape[0]),0); ImageDraw.Draw(pm).polygon([tuple(p) for p in poly],fill=255)
         out|=(np.array(pm)>0)&a&(h>=17)&(h<=38)&(l>.24)&(s>.2)
-    # ear fringe: fur tips that run into the lining (clearly fur-hued, not the pinker lining)
-    top=np.zeros_like(out); top[:F.get('earBottom',380 if kind=='portrait' else 320)]=True
-    fr=top&a&~gold&(((h>=19)&(h<=32)&(s>.3)&(l>.33)) | ((h>=8)&(h<19)&(s>.18)&(s<.35)&(l>.33)&(l<.6)))   # incl. the duller, darker shaded fringe
-    for _ in range(6): out|=ndimage.binary_dilation(out)&fr
+    # ear fringe (hand-drawn): shaded fur tips where the fur meets a lining
+    for poly in F.get('fringePoly',[]):
+        pm=Image.new('L',(x.shape[1],x.shape[0]),0); ImageDraw.Draw(pm).polygon([tuple(p) for p in poly],fill=255)
+        out|=(np.array(pm)>0)&a&(h>=8)&(h<=32)&(s>.15)&(l>.3)&((h>=19)|(s<.36))
     # specks: tiny unmasked islands inside the fur (texture flecks) are fur too
     holes=ndimage.binary_fill_holes(out)&~out
     hl,hn=ndimage.label(holes); hsz=ndimage.sum(holes,hl,range(1,hn+1))
