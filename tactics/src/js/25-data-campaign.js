@@ -511,7 +511,7 @@ const CAMPAIGNS = {
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14],[2,15],[7,15]],
           brief: 'Take the fight to Fraggle Friggle on his hill, and drive him out of the woods. Froggle fights beside you.',
-          allies: () => [E('blade',4,4,13,'charge',{key: 'froggle', name: 'Froggle', look: 'froggle'})],
+          allies: () => [E('tribune',4,4,13,'charge',{key: 'froggle', name: 'Froggle', look: 'froggle'})],
           enemies: () => [
             E('marshlord',5,4,0,'hold',{boss: true, flees: true, key: 'fraggle', name: 'Fraggle Friggle', look: 'fraggle'}),
             E('toadknight',4,3,1,'guard',{elite: true}), E('croaker',3,5,1,'guard'), E('reed',4,2,2,'guard'), E('reed',4,7,2,'guard'),

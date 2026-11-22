@@ -29,6 +29,7 @@ const CLASSES = {
   runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
+  tribune:   {name: 'Tribune',        w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Liberty Spear',     base: {mhp:21,atk:10,def:6, spd:7,skl:9,mov:5}, g: {mhp:70,atk:40,def:40,spd:45,skl:55}},   // Froggle
   scholar:   {name: 'Scholar',        w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Names',     base: {mhp:17,atk:10,def:2, spd:7,skl:8,mov:5}, g: {mhp:45,atk:50,def:10,spd:45,skl:55}},   // magic: tomes reach 1–2 tiles; scholars are soft-stitched (low HP and Def), so keep them behind the line
   // Frogs
   prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Blade',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
@@ -91,7 +92,7 @@ const LOOKS = {
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
-  froggle:   {sp:'frog', art:'none', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
+  froggle:   {sp:'frog', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
   fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
   patch:     {sp:'bun', art:'none', ears:'up', fur:'#9a8a78', light:'#bcae9c', dark:'#5a4a3c', scarf:'#2c3559', gear:'eyepatch'},
   rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
@@ -106,7 +107,7 @@ const LOOKS = {
 const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle',
 };
 
 // ================= Named characters =================
@@ -124,6 +125,9 @@ const CHARACTERS = {
   patched: {name:'Patched Rabbit', rarity:1, fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   sister:  {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp', cls:'patcher', wname:'Sewing Needle', lv:2,   // joins mid-battle in R1-4; Flopsy Flora from Chapter Two
             stats:{mhp:17,atk:5,def:2,spd:8,skl:6,mov:5}, retort:'I\'m not scared of you! …Much.'},
+  froggle:  {name:'Froggle', faction:'rae', look:'froggle', cls:'tribune', lv:4, stars:3, stats:{mhp:24,atk:12,def:7,spd:7,skl:10,mov:5},   // founder of the Republic; recruited from the second Raepublic banner
+             retort:'Every rabbit you ever chained, I wrote down. Every one.',
+             intro:{title:'Founder of the Republic', text:'She kept the ledgers for the crown\'s mines, until one night the numbers stopped adding up. For years after, she kept the Republic hidden in the woods. She has handed it to Rae now, and picked up a spear instead.'}},
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:19,atk:12,def:2,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
@@ -169,7 +173,6 @@ const SPEAKERS = Object.assign({
   scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
   thin:        {name:'Thin Rabbit', faction:'rae', look:'thin', fur:'cream'},
   // Chapter Two (placeholder art)
-  froggle:     {name:'Froggle', faction:'rae', look:'froggle'},              // the frog who leads the Republic
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   patch:       {name:'Patch', faction:'rae', look:'patch'},                  // one-eyed Republic corporal
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
@@ -220,6 +223,7 @@ const ART_CROP = {
   rhubarb:  {panel: ['220% auto', '50% 5%'], talk: ['160% auto', '50% 4%']},
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   brigand:  {panel: ['200% auto', '38% 3%'], talk: ['150% auto', '36% 2%']},
+  froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},

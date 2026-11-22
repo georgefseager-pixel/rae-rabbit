@@ -40,6 +40,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
+      {id: 'rae-froggle', name: 'The Founder', kind: 'featured', featured: ['froggle'], after: 'R2-4', bg: 'republic', troops: 'republic',
+       blurb: 'The frog who built the Republic, and gave it away, steps out of the command tent with a spear. The ★ soldiers who answer are trained troops of the Republic.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R2-1', bg: 'mine', troops: 'republic',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often, and the ★ soldiers who answer are trained troops of the Republic.'},
     ],
