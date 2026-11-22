@@ -633,6 +633,13 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .tdiag .dsep{stroke:rgba(239,227,200,.25);stroke-width:1.5;stroke-dasharray:4 4}
 .dtitle{font-family:var(--fell);font-size:16px;color:var(--brass-hi);text-align:center;letter-spacing:.06em;margin-bottom:2px}
 .dnote{font-size:12px;color:#d8cdb4;text-align:center;margin-top:4px}
+/* weapon comparison in the picker */
+.wcmp{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;align-items:center}
+.vbadge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:20px;color:#14100c}
+.vbadge.better{background:#7ed27a}.vbadge.worse{background:#ef6f5e}.vbadge.mixed{background:#ecc94f}.vbadge.same{background:#a89f8f}
+.dchip{font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px}
+.dchip.up{color:#9fe89a;background:rgba(126,210,122,.14)}.dchip.down{color:#ff9585;background:rgba(239,111,94,.14)}
+.wrow.cmp-better{box-shadow:inset 4px 0 0 #7ed27a}.wrow.cmp-worse{box-shadow:inset 4px 0 0 #ef6f5e}.wrow.cmp-mixed{box-shadow:inset 4px 0 0 #ecc94f}
 
 </style>
 
@@ -4946,10 +4953,23 @@ function recruitTutorial(ck){
 
 // ---------------- 63-arms-ui.js ----------------
 // ================= Armoury tab and the weapon picker =================
-const weaponRowHTML = (w, extra = '', count = 0) => `<div class="wrow s${w.stars || 0}">${weaponIconSVG(w, 34)}
+const weaponRowHTML = (w, extra = '', count = 0, cmp = null) => `<div class="wrow s${w.stars || 0}${cmp ? ' cmp-' + cmp.verdict : ''}">${weaponIconSVG(w, 34)}
   <div class="wtxt"><div class="wname">${w.name}${count > 1 ? ` <span class="wcount">×${count}</span>` : ''} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
     <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
-    ${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
+    ${cmp ? cmp.html : ''}${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
+// Compare a weapon with the one being carried: per-stat changes (green better, red worse) and a verdict.
+function compareWeapons(w, cur){
+  const stats = [['Mt', w.mt || 0, cur.mt || 0], ['Hit', w.hit || 0, cur.hit || 0], ['Crit', w.crit || 0, cur.crit || 0],
+                 ['Rng', (w.rng || [1, 1])[1], (cur.rng || [1, 1])[1]]];
+  let up = 0, down = 0;
+  const chips = stats.map(([label, a, b]) => {
+    const d = a - b; if (d > 0) up++; if (d < 0) down++;
+    return d ? `<span class="dchip ${d > 0 ? 'up' : 'down'}">${label} ${d > 0 ? '▲ +' : '▼ '}${d}</span>` : '';
+  }).join('');
+  const verdict = up && !down ? 'better' : down && !up ? 'worse' : up && down ? 'mixed' : 'same';
+  const word = {better: 'Better', worse: 'Worse', mixed: 'Mixed', same: 'Same'}[verdict];
+  return {verdict, html: `<div class="wcmp"><span class="vbadge ${verdict}">${word}</span>${chips}</div>`};
+}
 const withRange = (w, cls) => ({...w, rng: w.rng || (cls ? CLASSES[cls].rng : typeRange(w.type))});
 
 // Every weapon the army owns, stacked: one row per kind, with how many, who carries them, and how many are spare.
@@ -4983,7 +5003,8 @@ function openWeaponPicker(uid){
   const byPower = (a, b) => WEAPONS[b].stars - WEAPONS[a].stars || WEAPONS[b].mt - WEAPONS[a].mt;
   let ov = $('#armsheet');
   if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
-  const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count)}</button>`;
+  const curW = withRange(cur, rec.cls);
+  const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count, on ? null : compareWeapons(w, curW))}</button>`;
   const rows = [];
   if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], rec.cls), mine, '<span class="whold">Carrying</span>', 0, true));
   rows.push(pick(withRange(basic, rec.cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));

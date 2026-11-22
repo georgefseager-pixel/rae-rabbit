@@ -1,8 +1,21 @@
 // ================= Armoury tab and the weapon picker =================
-const weaponRowHTML = (w, extra = '', count = 0) => `<div class="wrow s${w.stars || 0}">${weaponIconSVG(w, 34)}
+const weaponRowHTML = (w, extra = '', count = 0, cmp = null) => `<div class="wrow s${w.stars || 0}${cmp ? ' cmp-' + cmp.verdict : ''}">${weaponIconSVG(w, 34)}
   <div class="wtxt"><div class="wname">${w.name}${count > 1 ? ` <span class="wcount">×${count}</span>` : ''} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
     <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
-    ${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
+    ${cmp ? cmp.html : ''}${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
+// Compare a weapon with the one being carried: per-stat changes (green better, red worse) and a verdict.
+function compareWeapons(w, cur){
+  const stats = [['Mt', w.mt || 0, cur.mt || 0], ['Hit', w.hit || 0, cur.hit || 0], ['Crit', w.crit || 0, cur.crit || 0],
+                 ['Rng', (w.rng || [1, 1])[1], (cur.rng || [1, 1])[1]]];
+  let up = 0, down = 0;
+  const chips = stats.map(([label, a, b]) => {
+    const d = a - b; if (d > 0) up++; if (d < 0) down++;
+    return d ? `<span class="dchip ${d > 0 ? 'up' : 'down'}">${label} ${d > 0 ? '▲ +' : '▼ '}${d}</span>` : '';
+  }).join('');
+  const verdict = up && !down ? 'better' : down && !up ? 'worse' : up && down ? 'mixed' : 'same';
+  const word = {better: 'Better', worse: 'Worse', mixed: 'Mixed', same: 'Same'}[verdict];
+  return {verdict, html: `<div class="wcmp"><span class="vbadge ${verdict}">${word}</span>${chips}</div>`};
+}
 const withRange = (w, cls) => ({...w, rng: w.rng || (cls ? CLASSES[cls].rng : typeRange(w.type))});
 
 // Every weapon the army owns, stacked: one row per kind, with how many, who carries them, and how many are spare.
@@ -36,7 +49,8 @@ function openWeaponPicker(uid){
   const byPower = (a, b) => WEAPONS[b].stars - WEAPONS[a].stars || WEAPONS[b].mt - WEAPONS[a].mt;
   let ov = $('#armsheet');
   if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
-  const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count)}</button>`;
+  const curW = withRange(cur, rec.cls);
+  const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count, on ? null : compareWeapons(w, curW))}</button>`;
   const rows = [];
   if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], rec.cls), mine, '<span class="whold">Carrying</span>', 0, true));
   rows.push(pick(withRange(basic, rec.cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));
