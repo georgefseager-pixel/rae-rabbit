@@ -92,7 +92,7 @@ const LOOKS = {
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   froggle:   {sp:'frog', art:'none', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
-  fraggle:   {sp:'frog', art:'none', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
+  fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
   patch:     {sp:'bun', art:'none', ears:'up', fur:'#9a8a78', light:'#bcae9c', dark:'#5a4a3c', scarf:'#2c3559', gear:'eyepatch'},
   rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
   headsman:  {sp:'frog', skin:'#46603a', light:'#647e52', dark:'#1f2c18', belly:'#a9b68c', gear:'hood', hood:'#151214', big:true},
@@ -167,7 +167,7 @@ const SPEAKERS = Object.assign({
   thin:        {name:'Thin Rabbit', faction:'rae', look:'thin', fur:'cream'},
   // Chapter Two (placeholder art)
   froggle:     {name:'Froggle', faction:'rae', look:'froggle'},              // the frog who leads the Republic
-  fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods
+  fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   patch:       {name:'Patch', faction:'rae', look:'patch'},                  // one-eyed Republic corporal
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
@@ -216,6 +216,7 @@ const ART_CROP = {
   rhubarb:  {panel: ['220% auto', '50% 5%'], talk: ['160% auto', '50% 4%']},
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   brigand:  {panel: ['200% auto', '38% 3%'], talk: ['150% auto', '36% 2%']},
+  fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
