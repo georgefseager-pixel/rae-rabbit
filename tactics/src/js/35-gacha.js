@@ -40,6 +40,7 @@ function grantPull(ck, banner, stars){
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
     if (have) return weaponResult(ck, 3);   // already with you: a ★★★ weapon instead
+    st.roster = st.roster.filter(r => !(r.key === key && r.dead && !r.departed));   // a fallen copy is replaced by the new one
     const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3;
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};

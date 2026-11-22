@@ -114,8 +114,10 @@ function renderArmy(){
   let body = '';
   if (armyTab === 'roster'){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
-    body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
-      recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
+    body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Units who fall in a battle you win are unstitched, but can be stitched back up below. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
+      recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r, r.departed
+      ? '<div class="uacts"><button class="btn" type="button" disabled>Stayed behind in the story</button></div>'
+      : `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${st.res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${F.currency}</button></div>`)).join('')}</div>` : ''}`;
   } else if (armyTab === 'arms') body = armouryTabHTML(ck);
   else body = recruitTabHTML(ck);
   $('#army').innerHTML = `<div class="sin f-${camp.faction}">
@@ -123,6 +125,16 @@ function renderArmy(){
     <div class="tabs"><button class="btn${armyTab === 'roster' ? ' on' : ''}" data-tab="roster" type="button">Roster</button><button class="btn${armyTab === 'arms' ? ' on' : ''}" data-tab="arms" type="button">Armoury</button><button class="btn${armyTab === 'recruit' ? ' on' : ''}" data-tab="recruit" type="button">Recruit</button></div>
     ${body}</div>`;
   showScreen('army');
+}
+// Fallen units can be stitched back up for money: more for higher levels. Story departures can't.
+const STITCH = {base: 100, perLevel: 25};
+const stitchCost = rec => STITCH.base + STITCH.perLevel*rec.lv;
+function stitchUp(uid){
+  const st = stOf(), rec = st.roster.find(r => r.uid === uid);
+  if (!rec || !rec.dead || rec.departed) return;
+  const cost = stitchCost(rec); if (st.res < cost) return;
+  st.res -= cost; rec.dead = false; saveGame(); Sfx.play('heal');
+  toast(`${rec.name} is stitched back up and ready to fight.`); rerenderKeepScroll();
 }
 function release(btn){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === btn.dataset.release);
@@ -199,7 +211,7 @@ async function playChapter(){
   const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*20, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
   if (!replay){
-    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.dead){ r.dead = true; departed.push(r.name || CHARACTERS[key].name); }
+    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; departed.push(r.name || CHARACTERS[key].name); }
     for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
     // anyone who joined mid-battle keeps the experience they earned there
     for (const u of res.survivors) if (!st.roster.includes(u.rec)){ st.roster.push(u.rec); joined.push(u.rec.name); }
@@ -227,7 +239,7 @@ function renderResult(r){
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${r.armed?.length ? `<div><span>New weapons</span><b>${r.armed.join(', ')}</b></div>` : ''}
         ${ch.star ? `<div class="rstar ${r.star === 'ok' ? 'got' : ''}"><span>${r.star === 'ok' ? '★' : '☆'} Bonus: ${starText(ch, r.ck)}</span><b>${r.starTokens ? `Earned! +${r.starTokens} ${GACHA_ARMY[r.ck].currency}` : r.star === 'ok' ? 'Done (already earned)' : hasStar(ch.id) ? 'Missed (already earned)' : 'Missed: replay to try again'}</b></div>` : ''}
-        ${r.lost.length ? `<div><span>Unstitched for good</span><b>${r.lost.join(', ')}</b></div>` : ''}
+        ${r.lost.length ? `<div><span>Unstitched (stitch them up on the Army screen)</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
       ${ch.id === GACHA_ARMY[r.ck].opensAfter && !r.replay ? `<div class="gatebox recopen"><span><b>Recruiting and the Camp are now open.</b> Spend ${GACHA_ARMY[r.ck].currency} to bring new units into the ${FACTIONS[camp.faction].name}'s army, and spend time with its unique members at the Camp.</span><div class="gbtns"><button class="btn primary" data-recruit-now type="button">Go to Recruiting</button><button class="btn" data-camp-open type="button">Visit the Camp</button></div></div>` : ''}
@@ -273,6 +285,7 @@ document.addEventListener('click', e => {
   else if (d.support) unlockSupport(d.support);
   else if (d.trainUnit) trainPartner(d.trainUnit);
   else if (d.supportView) viewSupport(d.supportView, +d.rank);
+  else if (d.stitch) stitchUp(d.stitch);
   else if (d.about) showIntro(d.about);
   else if (d.release) release(t);
   else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }

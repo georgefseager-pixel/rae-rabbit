@@ -13,6 +13,7 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  for (const [ck, st] of Object.entries(s.camps)) for (const r of st.roster || []) if (r.dead && st.cleared?.some(id => (findStage(id)?.st.departs || []).includes(r.key))) r.departed = true;
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.dead) r.arm = null;   // the fallen drop their weapons
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
