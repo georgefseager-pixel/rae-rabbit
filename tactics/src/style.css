@@ -565,3 +565,38 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .spip.on{color:#1b1210;background:var(--brass-hi);border:1.5px solid var(--brass-hi);cursor:pointer;box-shadow:0 0 10px rgba(236,198,115,.35)}
 .scard .stats{grid-column:1/-1}
 .scard > .btn small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.04em;text-transform:none;opacity:.85;margin-top:2px}
+/* weapons */
+.wicon{flex:none;display:block}
+.uwpn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px dashed rgba(239,227,200,.3);border-radius:6px;padding:3px 8px;margin:0;font:inherit;color:inherit;cursor:pointer}
+.uwpn b{font-weight:600}
+.wlist{display:flex;flex-direction:column;gap:8px}
+.wrow{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:10px;padding:10px;text-align:left;
+  outline:1.5px dashed var(--thread);outline-offset:-5px}
+.f-frog .wrow{background:linear-gradient(180deg,#2c3e1e,#1a260f)}
+.wrow.s3{box-shadow:0 0 0 1.5px rgba(236,198,115,.55)}
+.wtxt{flex:1;min-width:0}
+.wname{font-family:var(--fell);font-size:17px}
+.wst{font-size:11px;color:var(--brass-hi);letter-spacing:.05em;margin-left:4px}
+.wrow.s0 .wst{color:var(--muted)}
+.wmeta{font-size:12px;color:#d8cdb4;margin-top:2px}
+.wdesc{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+.wside{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
+.whold{font-size:11px;letter-spacing:.06em;color:#9fe09a;text-align:right}
+.whold.free{color:var(--muted)}
+.wside .btn{min-height:34px;font-size:11px;padding:4px 10px}
+#armsheet{align-items:center;overflow-y:auto}
+.wsheet{width:min(100%,480px);max-height:calc(100dvh - 32px);overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.wsheet h1{margin:0}.wsheet h2{margin:0 0 4px;font-size:14px;color:var(--muted)}
+.wpick{display:block;width:100%;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;border-radius:10px}
+.wpick.on .wrow{box-shadow:0 0 0 2.5px var(--brass-hi)}
+.tabs{flex-wrap:nowrap}
+/* weapons banner and reveals */
+.barms{position:absolute;left:8px;right:8px;bottom:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 6px}
+.barm{flex:0 0 calc(32% - 4px);width:auto;box-sizing:border-box;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:8px 4px;border-radius:10px;
+  background:rgba(12,8,6,.72);outline:1px solid rgba(236,198,115,.45);outline-offset:-3px;animation:up .7s calc(.12s*var(--i)) both}
+.barm .wicon{filter:drop-shadow(0 0 10px rgba(236,198,115,.55))}
+.barm b{font-family:var(--fell);font-size:13px;line-height:1.1;color:var(--cream)}
+.barm small{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-hi)}
+.gpor.gw{display:grid;place-items:center}
+.sart.sw{display:grid;place-items:center;filter:drop-shadow(0 0 30px rgba(236,198,115,.5))}
+.spin .sdesc{font-style:italic;max-width:320px;color:#d8cdb4}

@@ -26,7 +26,7 @@ const trainCost = rec => SUPPORT.train.cost + SUPPORT.train.step*(rec.trained ||
 // show the gains on the level-up card, with its own heading
 function showGains(rec, gains, title, sub){
   const s = rec.stats;
-  return showLevelUp({...rec, ...s, atk: s.atk + WEAPON_TIERS[rec.wtier || 0].bonus, w: CLASSES[rec.cls].w}, gains, title, sub);
+  return showLevelUp({...rec, ...s, atk: s.atk + weaponOf(rec).mt, w: CLASSES[rec.cls].w}, gains, title, sub);
 }
 function applyGains(rec, gains){ for (const [k, v] of Object.entries(gains)) rec.stats[k] = (rec.stats[k] || 0) + v; }
 function renderCamp(){

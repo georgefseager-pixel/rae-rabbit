@@ -4,6 +4,12 @@ const stars = n => '★'.repeat(n || 1);
 
 // The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 function bannerArt(ck, b){
+  if (b.kind === 'arms'){   // the Smithy: its ★★★ weapons, large
+    const tops = smithyPool(ck, 3).map(id => WEAPONS[id]), bg = b.bg && ART.bg?.[b.bg];
+    return `<div class="bhero arms"${bg ? ` style="--bgimg:url(${bg})"` : ''}><div class="brays"></div>
+      <div class="btitle"><div class="bkind">Weapons banner</div><h2>${b.name}</h2></div>
+      <div class="barms">${tops.map((w, i) => `<div class="barm" style="--i:${i}">${weaponIconSVG(w, 40)}<b>${w.name}</b><small>★★★ ${WTYPE[w.type]}</small></div>`).join('')}</div></div>`;
+  }
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const figs = keys.map((k, i) => {
     const src = artFor(k, 'portrait') || plushPortrait(CHARACTERS[k].look || k);
@@ -31,12 +37,12 @@ function recruitTabHTML(ck){
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
+  const poolRares = b.kind === 'arms' ? smithyPool(ck, 3).map(id => WEAPONS[id].name).join(', ') : (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
       <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
-      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
+      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : x.kind === 'arms' ? 'Weapons' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
     <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
       ${bannerArt(ck, b)}
@@ -53,21 +59,28 @@ function recruitTabHTML(ck){
     </div>
     <details class="rates"><summary>Rates and pool</summary>
       <div class="rlist">
-        <div><span>★★★ Rare: unique characters</span><b>${R[3].rate}%</b></div>
-        <div><span>★★ Uncommon: veteran soldiers</span><b>${R[2].rate}%</b></div>
-        <div><span>★ Common: soldiers</span><b>${R[1].rate}%</b></div>
+        <div><span>★★★ Rare: ${b.kind === 'arms' ? 'the finest weapons' : 'unique characters'}</span><b>${R[3].rate}%</b></div>
+        <div><span>★★ Uncommon: ${b.kind === 'arms' ? 'fine weapons' : 'veteran soldiers'}</span><b>${R[2].rate}%</b></div>
+        <div><span>★ Common: ${b.kind === 'arms' ? 'sturdy weapons' : 'soldiers'}</span><b>${R[1].rate}%</b></div>
       </div>
-      <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
+      ${b.kind === 'arms' ? `<p class="meta">★★★ weapons: ${poolRares}. Weapons go to the Armoury (on the Army screen), where any unit of the right type can carry them. Duplicates are fine: several units can carry the same kind. A ★★★ is guaranteed by pull ${GACHA.pity}.</p>` : `<p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
       Soldiers can be any of: ${army.generic.map(c => CLASSES[c].name).join(', ')}.
       Every ×10 includes at least one ★★. A ★★★ is guaranteed by pull ${GACHA.pity} on each banner.
       Soldiers come from a fixed company of ${companyOf(ck).length}. A soldier or rare you already have gains Bond instead:
       ★ up to ${GACHA.genericBond[1].max}, ★★ up to ${GACHA.genericBond[2].max}, ★★★ up to ${GACHA.bondMax} (bigger boosts at higher rarity).
-      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>
+      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>`}
     </details>`;
 }
 
 // ---------- Pull reveal ----------
 function cardHTML(r, i, single){
+  if (r.weapon){ const w = r.weapon;
+    return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal pull ${i + 1}">
+    <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
+      <div class="gface"><div class="gpor gw">${weaponIconSVG(w, single ? 120 : 52)}</div>
+        <div class="gtxt"><div class="gstars">${stars(r.stars)}</div><div class="gname">${w.name}</div><div class="gcls">${WTYPE[w.type]}${w.lash ? ' · Whip' : ''}</div><div class="gtag">Weapon</div></div>
+      </div></div></button>`;
+  }
   // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
   const rec = r.rec, look = rec.look, art = single ? artFor(rec, 'portrait') : (artFor(rec, 'token') || artFor(rec, 'portrait'));
   const tag = r.kind === 'new' ? 'New' : r.kind === 'bond' ? `Bond ${rec.bond}` : `+${r.refund}`;
@@ -86,8 +99,16 @@ function cardHTML(r, i, single){
     </div></button>`;
 }
 function spotlight(r){
-  const rec = r.rec, art = artFor(rec, 'portrait');
   const sp = $('#gspot');
+  if (r.weapon){ const w = r.weapon;
+    sp.innerHTML = `<div class="spin"><div class="sray"></div><div class="sart sw">${weaponIconSVG(w, 160)}</div>
+      <div class="sstars">★★★</div><h2>${w.name}</h2><p>${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText({...w, rng: w.rng || (w.type === 'bow' ? [2, 2] : [1, 1])})}</p>
+      <p class="sdesc">${w.desc}</p><div class="stag">Added to the Armoury</div><div class="meta">Tap to continue</div></div>`;
+    sp.hidden = false; Music.jingle('rare');
+    anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
+    return new Promise(res => { sp.onclick = () => { sp.hidden = true; sp.onclick = null; res(); }; });
+  }
+  const rec = r.rec, art = artFor(rec, 'portrait');
   sp.innerHTML = `<div class="spin"><div class="sray"></div>
       <div class="sart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>
       <div class="sstars">★★★</div><h2>${rec.name}</h2>
@@ -181,6 +202,7 @@ function recruitTutorial(ck){
     {who: 'narr', text: `Every recruit is ★ a soldier (${R[1].rate}%), ★★ a veteran (${R[2].rate}%), or ★★★ a unique character with a story of their own (${R[3].rate}%).`},
     {who: 'narr', text: `A ten-recruit call always brings at least one ★★, and every banner guarantees a ★★★ within ${GACHA.pity} recruits. The bar under the banner shows how close you are.`},
     {who: 'narr', text: 'Recruit someone you already have and they gain Bond instead: a small, permanent boost.'},
+    {who: 'narr', text: 'The Smithy banner gives weapons instead of recruits. You\'ll find them in the Armoury, on the Army screen.'},
     {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of this screen.`},
   ]);
 }

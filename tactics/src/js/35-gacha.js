@@ -40,8 +40,11 @@ function genericBondBoost(rec, stars){
   const keys = gb.hp ? ['atk', 'def', 'spd', 'skl'] : ['mhp', 'atk', 'def', 'spd', 'skl'];
   for (let i = 0; i < gb.stats; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
 }
+// Weapons this army's Smithy can give at a rarity.
+const smithyPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
+  if (banner.kind === 'arms'){ const it = addWeapon(ck, pick(smithyPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new'}; }
   if (stars === 3){
     const pool = banner.pool || army.rares;
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);

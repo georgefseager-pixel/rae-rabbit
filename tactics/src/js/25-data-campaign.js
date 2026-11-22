@@ -16,6 +16,7 @@
 //                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
+//   reward.weapons  story weapons: [{id, to}] (see 12-data-weapons.js), handed to that character
 //   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
 //                 at the start of that player turn the character runs onto the field, the lines play, and they fight
 //                 for you; they join the army if the battle is won (skipped if they're already in the army)
@@ -219,6 +220,10 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'See? I told you I could help.'},
             {who: 'rae', text: 'You did. Don\'t you dare do it again.'},
             {who: 'sister', text: 'No promises.'},
+            {who: 'narr', text: 'In the overseer\'s tower, a sword hangs above Rhubarb\'s desk. Taken, the guards used to boast, from the last rabbit who ever fought back.'},
+            {who: 'rae', text: 'Then it\'s going back to the rabbits. Last Stand. That\'s what it\'s called now.'},
+            {who: 'sister', text: 'And I\'m having her sewing box. Look, the needles are silver!'},
+            {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Little Sister takes the Silver Needle.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
             {who: 'rae', text: 'Let them come.'},
             {scene: 'yard', place: 'The Camp Gate · Night'},
@@ -245,7 +250,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['willow', 'sister']},
+          reward: {res: 500, joins: ['willow', 'sister'], weapons: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
         },
       ]},
       // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.

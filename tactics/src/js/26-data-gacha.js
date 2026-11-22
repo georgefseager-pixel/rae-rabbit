@@ -2,6 +2,7 @@
 // Each army recruits through its own banners with its own pull currency.
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
+//   (a banner with kind:'arms' gives weapons of that rarity instead; see 12-data-weapons.js)
 //   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
 // Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
@@ -38,6 +39,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
+      {id: 'rae-smithy', name: 'The Tunnel Smithy', kind: 'arms', bg: 'mine',
+       blurb: 'Weapons instead of recruits: tools and scraps from the mines, sharpened and better. ★ to ★★★.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
     ],
@@ -52,6 +55,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
+      {id: 'frog-smithy', name: 'The Royal Armoury', kind: 'arms', bg: 'court',
+       blurb: 'Weapons instead of recruits: arms from the Lily Court, ★ to ★★★.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',

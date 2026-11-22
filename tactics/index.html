@@ -572,6 +572,41 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .spip.on{color:#1b1210;background:var(--brass-hi);border:1.5px solid var(--brass-hi);cursor:pointer;box-shadow:0 0 10px rgba(236,198,115,.35)}
 .scard .stats{grid-column:1/-1}
 .scard > .btn small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.04em;text-transform:none;opacity:.85;margin-top:2px}
+/* weapons */
+.wicon{flex:none;display:block}
+.uwpn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px dashed rgba(239,227,200,.3);border-radius:6px;padding:3px 8px;margin:0;font:inherit;color:inherit;cursor:pointer}
+.uwpn b{font-weight:600}
+.wlist{display:flex;flex-direction:column;gap:8px}
+.wrow{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:10px;padding:10px;text-align:left;
+  outline:1.5px dashed var(--thread);outline-offset:-5px}
+.f-frog .wrow{background:linear-gradient(180deg,#2c3e1e,#1a260f)}
+.wrow.s3{box-shadow:0 0 0 1.5px rgba(236,198,115,.55)}
+.wtxt{flex:1;min-width:0}
+.wname{font-family:var(--fell);font-size:17px}
+.wst{font-size:11px;color:var(--brass-hi);letter-spacing:.05em;margin-left:4px}
+.wrow.s0 .wst{color:var(--muted)}
+.wmeta{font-size:12px;color:#d8cdb4;margin-top:2px}
+.wdesc{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+.wside{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
+.whold{font-size:11px;letter-spacing:.06em;color:#9fe09a;text-align:right}
+.whold.free{color:var(--muted)}
+.wside .btn{min-height:34px;font-size:11px;padding:4px 10px}
+#armsheet{align-items:center;overflow-y:auto}
+.wsheet{width:min(100%,480px);max-height:calc(100dvh - 32px);overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.wsheet h1{margin:0}.wsheet h2{margin:0 0 4px;font-size:14px;color:var(--muted)}
+.wpick{display:block;width:100%;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;border-radius:10px}
+.wpick.on .wrow{box-shadow:0 0 0 2.5px var(--brass-hi)}
+.tabs{flex-wrap:nowrap}
+/* weapons banner and reveals */
+.barms{position:absolute;left:8px;right:8px;bottom:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 6px}
+.barm{flex:0 0 calc(32% - 4px);width:auto;box-sizing:border-box;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:8px 4px;border-radius:10px;
+  background:rgba(12,8,6,.72);outline:1px solid rgba(236,198,115,.45);outline-offset:-3px;animation:up .7s calc(.12s*var(--i)) both}
+.barm .wicon{filter:drop-shadow(0 0 10px rgba(236,198,115,.55))}
+.barm b{font-family:var(--fell);font-size:13px;line-height:1.1;color:var(--cream)}
+.barm small{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-hi)}
+.gpor.gw{display:grid;place-items:center}
+.sart.sw{display:grid;place-items:center;filter:drop-shadow(0 0 30px rgba(236,198,115,.5))}
+.spin .sdesc{font-style:italic;max-width:320px;color:#d8cdb4}
 
 </style>
 
@@ -1308,10 +1343,10 @@ const CLASSES = {
   toadknight:{name: 'Armoured Guard', w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Halberd',           base: {mhp:25,atk:12,def:10,spd:2,skl:5,mov:4}, g: {mhp:85,atk:45,def:55,spd:15,skl:35}},
   croaker:   {name: 'Croaker',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Silt Censer',       base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   headsman:  {name: 'Executioner',    w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Headsman\'s Axe',   base: {mhp:26,atk:13,def:5, spd:4,skl:5,mov:4}, g: {mhp:80,atk:50,def:30,spd:25,skl:35}},
-  overseer:  {name: 'Overseer',       w: 'whip',  rng: [1,2], mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
+  overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
 const STAT_KEYS = ['mhp','atk','def','spd','skl'];
-// Whips reach 1–2 tiles and sit outside the sword/axe/lance triangle.
+// A whip (lash: true) counts as a bow: it reaches 2 tiles and can't strike up close.
 const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff', whip: 'Whip'};
 const BEATS = {sword: 'axe', axe: 'lance', lance: 'sword'};
 const triangle = (a, b) => BEATS[a] === b ? 1 : BEATS[b] === a ? -1 : 0;
@@ -1480,6 +1515,75 @@ const RECRUIT_NAMES = {
          'Sooty Rabbit', 'Bent-Eared Rabbit', 'Ginger Rabbit', 'Pale Rabbit', 'Stubby Rabbit', 'Patchy Rabbit', 'Big-Footed Rabbit', 'Twitchy Rabbit'],
   frog: ['Glub', 'Murkle', 'Bogwort', 'Puddle', 'Ribbet', 'Sludge', 'Croakley', 'Mire', 'Pondsby', 'Squelch', 'Gloop', 'Paddock', 'Fennick', 'Wortle', 'Plash', 'Brack'],
 };
+
+// ---------------- 12-data-weapons.js ----------------
+// ================= Weapons =================
+// Every unit uses one weapon type, set by its class (CLASSES[cls].w): sword, lance, axe, bow or staff.
+// Everyone starts with their class's basic weapon (its `wname`). Better weapons are items: they come from
+// the story (stage reward `weapons`) and from each army's Smithy banner, and any unit of the right type
+// can carry one (unless it has an `owner`, then only that character can).
+//   type   sword | lance | axe | bow | staff          stars  1–3 (rarity)
+//   mt     might: added to Atk (for a staff: to Mag, so it mends more)
+//   hit / crit   added to the chance to hit / to land a critical
+//   rng    [min, max] range; leave out to use the class's usual range
+//   lash   a whip: a bow-type weapon that lashes instead of firing (no projectile, a crack instead of a twang)
+//   army   'rae' | 'frog': which army's Smithy offers it (story weapons have none)
+//   owner  a character key: only they can carry it (personal story weapons)
+const WEAPONS = {
+  // ---- The Raepublic: tools and scraps from the mines, then better ----
+  scrapblade:   {name: 'Scrap Blade',      type: 'sword', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'A sharpened sliver of a broken mine cart.'},
+  tentpole:     {name: 'Tent Pole Spear',  type: 'lance', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'A guard-tent pole with a nail hammered into the end.'},
+  spade:        {name: 'Sharpened Spade',  type: 'axe',   stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'Dug with all day. Swung with all night.'},
+  braidsling:   {name: 'Braided Sling',    type: 'bow',   stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'Three strands of rope, plaited tight.'},
+  boneneedle:   {name: 'Bone Needle',      type: 'staff', stars: 1, mt: 1, hit: 0,  crit: 0,  army: 'rae', desc: 'For quick stitches between fights.'},
+  shearsabre:   {name: 'Shear Sabre',      type: 'sword', stars: 2, mt: 2, hit: 10, crit: 5,  army: 'rae', desc: 'One half of a pair of wool shears, wrapped at the grip.'},
+  tunnelspear:  {name: 'Tunnel Spear',     type: 'lance', stars: 2, mt: 2, hit: 10, crit: 0,  army: 'rae', desc: 'Short enough to fight with underground.'},
+  mattock:      {name: 'Miner\'s Mattock', type: 'axe',   stars: 2, mt: 3, hit: 0,  crit: 5,  army: 'rae', desc: 'Heavy, honest, and very hard to stop.'},
+  longsling:    {name: 'Longsling',        type: 'bow',   stars: 2, mt: 2, hit: 5,  crit: 0,  rng: [2, 3], army: 'rae', desc: 'A long cord for a long throw: reaches 3 tiles.'},
+  patchneedle:  {name: 'Patchwork Needle', type: 'staff', stars: 2, mt: 3, hit: 0,  crit: 0,  army: 'rae', desc: 'Threaded with every colour in the camp.'},
+  moonshears:   {name: 'Moonlit Shears',   type: 'sword', stars: 3, mt: 4, hit: 15, crit: 15, army: 'rae', desc: 'Stolen from the overseer\'s own sewing room.'},
+  gatehook:     {name: 'Gatehook Pike',    type: 'lance', stars: 3, mt: 4, hit: 15, crit: 5,  army: 'rae', desc: 'The hook that once barred the camp gate.'},
+  rockbreaker:  {name: 'Rockbreaker',      type: 'axe',   stars: 3, mt: 5, hit: 5,  crit: 10, army: 'rae', desc: 'It split the deepest seam in the mine.'},
+  starsling:    {name: 'Starshot Sling',   type: 'bow',   stars: 3, mt: 4, hit: 15, crit: 10, rng: [2, 3], army: 'rae', desc: 'Its stones glitter like the crystals in the rock. Reaches 3 tiles.'},
+  thimble:      {name: 'Golden Thimble',   type: 'staff', stars: 3, mt: 5, hit: 0,  crit: 0,  army: 'rae', desc: 'No stitch made with it has ever come loose.'},
+  // ---- The Friggliarchy: royal arms ----
+  pondsword:    {name: 'Pond Sword',       type: 'sword', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Standard issue, green at the hilt.'},
+  lilypike:     {name: 'Lily Pike',        type: 'lance', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Topped with a little iron lily.'},
+  bogclub:      {name: 'Bog Club',         type: 'axe',   stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Bogwood, soaked until it\'s as hard as stone.'},
+  rushbow:      {name: 'Rush Bow',         type: 'bow',   stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Bent from a single river reed.'},
+  mudcenser:    {name: 'Mud Censer',       type: 'staff', stars: 1, mt: 1, hit: 0,  crit: 0,  army: 'frog', desc: 'Its smoke smells of the marsh, and soothes.'},
+  rapier:       {name: 'Crowned Rapier',   type: 'sword', stars: 2, mt: 2, hit: 10, crit: 5,  army: 'frog', desc: 'Carried by officers of the Lily Court.'},
+  courthalberd: {name: 'Court Halberd',    type: 'lance', stars: 2, mt: 2, hit: 10, crit: 0,  army: 'frog', desc: 'Polished for parades, sharpened for everything else.'},
+  ironmace:     {name: 'Ironwood Mace',    type: 'axe',   stars: 2, mt: 3, hit: 0,  crit: 5,  army: 'frog', desc: 'A mace that sinks rather than floats.'},
+  lash:         {name: 'Overseer\'s Lash', type: 'bow',   stars: 2, mt: 3, hit: 5,  crit: 0,  lash: true, army: 'frog', desc: 'A whip, used at range like a bow.'},
+  silvercenser: {name: 'Silver Censer',    type: 'staff', stars: 2, mt: 3, hit: 0,  crit: 0,  army: 'frog', desc: 'Swung on a silver chain at court blessings.'},
+  lilyblade:    {name: 'Lily Crown Blade', type: 'sword', stars: 3, mt: 4, hit: 15, crit: 15, army: 'frog', desc: 'Forged for a prince, with a lily in the pommel.'},
+  glaive:       {name: 'Royal Glaive',     type: 'lance', stars: 3, mt: 4, hit: 15, crit: 5,  army: 'frog', desc: 'The King\'s guard carry nothing finer.'},
+  kingsfall:    {name: 'Kingsfall Axe',    type: 'axe',   stars: 3, mt: 5, hit: 5,  crit: 10, army: 'frog', desc: 'Named for a king it didn\'t quite fell.'},
+  dragonfly:    {name: 'Dragonfly Bow',    type: 'bow',   stars: 3, mt: 4, hit: 15, crit: 10, rng: [2, 3], army: 'frog', desc: 'Light as a wing and as quick. Reaches 3 tiles.'},
+  thornwhip:    {name: 'Thornwhip',        type: 'bow',   stars: 3, mt: 5, hit: 10, crit: 5,  lash: true, army: 'frog', desc: 'A briar whip from the royal gardens.'},
+  lilycenser:   {name: 'Golden Lily Censer', type: 'staff', stars: 3, mt: 5, hit: 0, crit: 0, army: 'frog', desc: 'Lit only for the King\'s own household.'},
+  // ---- Story weapons (personal) ----
+  laststand:    {name: 'Last Stand',       type: 'sword', stars: 3, mt: 5, hit: 15, crit: 10, owner: 'rae',
+                 desc: 'Taken, the guards used to boast, from the last rabbit who fought back. Now it\'s Rae Rabbit\'s.'},
+  silverneedle: {name: 'Silver Needle',    type: 'staff', stars: 3, mt: 4, hit: 0,  crit: 0,  owner: 'sister',
+                 desc: 'From the overseer\'s sewing box. Little Sister mends better with it than anyone.'},
+};
+
+// Small line icons for each weapon type (drawn in the colour of the weapon's rarity).
+const WEAPON_ICON = {
+  sword: '<path d="M7 25 L23 9 M20 7 L25 12 M5 23 L9 27 M6 26 L3 29"/>',
+  lance: '<path d="M5 27 L24 8 M24 8 L27 5 M21 6 L28 4 L26 11 Z"/>',
+  axe:   '<path d="M8 28 L22 7 M18 5 C27 4 30 12 25 16 C22 13 19 11 18 5 Z"/>',
+  bow:   '<path d="M9 4 C24 8 24 24 9 28 M9 4 L9 28 M9 16 L27 16 M23 13 L27 16 L23 19"/>',
+  lash:  '<path d="M6 27 L11 20 M11 20 C17 12 26 20 21 25 C17 29 13 20 20 12 C24 7 28 8 28 5"/>',
+  staff: '<path d="M8 28 L24 6 M22 5 C26 3 29 7 26 9 C24 10 22 8 22 5 Z M11 24 L14 26"/>',
+};
+const RARITY_COL = {0: '#b4a68d', 1: '#c9905a', 2: '#d2dbe6', 3: '#ecc673'};
+function weaponIconSVG(w, size = 28){
+  const shape = WEAPON_ICON[w.lash ? 'lash' : w.type] || WEAPON_ICON.sword;
+  return `<svg class="wicon" viewBox="0 0 32 32" width="${size}" height="${size}" aria-hidden="true" style="color:${RARITY_COL[w.stars || 0]}"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${shape}</g></svg>`;
+}
 
 // ---------------- 15-plush.js ----------------
 // ================= Plush drawing =================
@@ -1878,6 +1982,7 @@ function validateMaps(){
 //                 (any enemy spawn can carry its own talk: [...] lines, spoken the first time it's fought)
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
+//   reward.weapons  story weapons: [{id, to}] (see 12-data-weapons.js), handed to that character
 //   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
 //                 at the start of that player turn the character runs onto the field, the lines play, and they fight
 //                 for you; they join the army if the battle is won (skipped if they're already in the army)
@@ -2081,6 +2186,10 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'See? I told you I could help.'},
             {who: 'rae', text: 'You did. Don\'t you dare do it again.'},
             {who: 'sister', text: 'No promises.'},
+            {who: 'narr', text: 'In the overseer\'s tower, a sword hangs above Rhubarb\'s desk. Taken, the guards used to boast, from the last rabbit who ever fought back.'},
+            {who: 'rae', text: 'Then it\'s going back to the rabbits. Last Stand. That\'s what it\'s called now.'},
+            {who: 'sister', text: 'And I\'m having her sewing box. Look, the needles are silver!'},
+            {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Little Sister takes the Silver Needle.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
             {who: 'rae', text: 'Let them come.'},
             {scene: 'yard', place: 'The Camp Gate · Night'},
@@ -2107,7 +2216,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['willow', 'sister']},
+          reward: {res: 500, joins: ['willow', 'sister'], weapons: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
         },
       ]},
       // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
@@ -2310,6 +2419,7 @@ for (const camp of Object.values(CAMPAIGNS)){
 // Each army recruits through its own banners with its own pull currency.
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
+//   (a banner with kind:'arms' gives weapons of that rarity instead; see 12-data-weapons.js)
 //   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
 // Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
@@ -2346,6 +2456,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
+      {id: 'rae-smithy', name: 'The Tunnel Smithy', kind: 'arms', bg: 'mine',
+       blurb: 'Weapons instead of recruits: tools and scraps from the mines, sharpened and better. ★ to ★★★.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
     ],
@@ -2360,6 +2472,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
+      {id: 'frog-smithy', name: 'The Royal Armoury', kind: 'arms', bg: 'court',
+       blurb: 'Weapons instead of recruits: arms from the Lily Court, ★ to ★★★.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',
@@ -2485,7 +2599,7 @@ function speakerName(who){
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
 const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[rec.cls].g;
-const weaponName = rec => WEAPON_TIERS[rec.wtier || 0].prefix + rec.wname;
+const weaponName = rec => weaponOf(rec).name;   // see 33-arms.js
 const living = campKey => SAVE.camps[campKey].roster.filter(r => !r.dead);
 
 function findStage(id){
@@ -2535,6 +2649,57 @@ function rollLevel(statsObj, g){
   return ups;
 }
 
+// ---------------- 33-arms.js ----------------
+// ================= Weapons: owning, carrying, equipping =================
+// Each army keeps its weapons in SAVE.camps[ck].arms as items {uid, id} (id is a key of WEAPONS).
+// A unit carries at most one item (rec.arm = the item's uid); without one it uses its class's basic weapon.
+const armsOf = ck => (SAVE.camps[ck].arms ||= []);
+function campOfRec(rec){ for (const [k, c] of Object.entries(SAVE?.camps || {})) if (c.roster.includes(rec)) return k; return null; }
+// The class weapon. Older saves may have reinforced it (wtier), which still counts.
+function basicWeapon(rec){
+  const c = CLASSES[rec.cls], t = WEAPON_TIERS[rec.wtier || 0];
+  return {name: t.prefix + (rec.wname || c.wname), type: c.w, stars: 0, mt: t.bonus, hit: 0, crit: 0, rng: c.rng, lash: !!c.lash, basic: true,
+          desc: 'Standard for the class.'};
+}
+function weaponOf(rec){
+  if (rec.arm){
+    const ck = campOfRec(rec), it = ck && armsOf(ck).find(a => a.uid === rec.arm), w = it && WEAPONS[it.id];
+    if (w) return {...w, rng: w.rng || CLASSES[rec.cls].rng, uid: it.uid, id: it.id};
+  }
+  return basicWeapon(rec);
+}
+const canCarry = (rec, w) => w.type === CLASSES[rec.cls].w && (!w.owner || w.owner === rec.key);
+const holderOf = (ck, itemUid) => SAVE.camps[ck].roster.find(r => r.arm === itemUid && !r.dead);
+function addWeapon(ck, id){
+  const it = {uid: `${id}-${Date.now().toString(36)}${Math.floor(Math.random()*1e4)}`, id};
+  armsOf(ck).push(it); return it;
+}
+// Give a unit an item (or null for the class weapon). Whoever had the item goes back to their class weapon.
+function equipWeapon(ck, rec, itemUid){
+  if (itemUid) for (const r of SAVE.camps[ck].roster) if (r.arm === itemUid) r.arm = null;
+  rec.arm = itemUid || null;
+}
+function releaseWeapon(ck, itemUid){
+  const list = armsOf(ck), i = list.findIndex(a => a.uid === itemUid), w = i >= 0 && WEAPONS[list[i].id];
+  if (!w || w.owner) return 0;
+  for (const r of SAVE.camps[ck].roster) if (r.arm === itemUid) r.arm = null;
+  list.splice(i, 1);
+  const back = GACHA.release[w.stars] || 1; gachaState(ck).tokens += back; return back;
+}
+// Story weapons from a stage reward: [{id, to: character key}] — added once, and handed to that character.
+function grantStoryWeapons(ck, list){
+  const got = [];
+  for (const {id, to} of list || []){
+    if (!WEAPONS[id] || armsOf(ck).some(a => a.id === id)) continue;
+    const it = addWeapon(ck, id), rec = SAVE.camps[ck].roster.find(r => r.key === to && !r.dead);
+    if (rec && canCarry(rec, WEAPONS[id])) equipWeapon(ck, rec, it.uid);
+    got.push(`${WEAPONS[id].name}${rec ? ` (${rec.name})` : ''}`);
+  }
+  return got;
+}
+const rngText = r => r[0] === r[1] ? `${r[0]}` : `${r[0]}–${r[1]}`;
+const weaponStatsText = w => `Mt ${w.mt >= 0 ? '+' : ''}${w.mt}${w.hit ? ` · Hit +${w.hit}` : ''}${w.crit ? ` · Crit +${w.crit}` : ''} · Rng ${rngText(w.rng || [1, 1])}`;
+
 // ---------------- 35-gacha.js ----------------
 // ================= Recruitment rules (gacha) =================
 function gachaState(ck){
@@ -2578,8 +2743,11 @@ function genericBondBoost(rec, stars){
   const keys = gb.hp ? ['atk', 'def', 'spd', 'skl'] : ['mhp', 'atk', 'def', 'spd', 'skl'];
   for (let i = 0; i < gb.stats; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
 }
+// Weapons this army's Smithy can give at a rarity.
+const smithyPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
+  if (banner.kind === 'arms'){ const it = addWeapon(ck, pick(smithyPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new'}; }
   if (stars === 3){
     const pool = banner.pool || army.rares;
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
@@ -2670,11 +2838,11 @@ function moveCost(u, x, y){
 
 // ---------- Setup ----------
 function battleUnit(rec, teamId){
-  const c = CLASSES[rec.cls], s = rec.stats, tb = WEAPON_TIERS[rec.wtier || 0].bonus;
+  const c = CLASSES[rec.cls], s = rec.stats, wp = weaponOf(rec), tb = wp.mt;
   const id = nextId++;
   return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, stars: rec.stars, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, name: rec.name, cls: rec.cls,
-    wname: weaponName(rec), tb, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
-    w: c.w, rng: c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
+    wname: wp.name, tb, whit: wp.hit || 0, wcrit: wp.crit || 0, lash: !!wp.lash, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
+    w: wp.type, rng: wp.rng || c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
 }
 function enemyUnit(sp, faction){
@@ -2775,8 +2943,8 @@ function calc(a, d, ap, dp){
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, a.atk + tri - (d.def + t.def)),
-    hit: clamp(75 + a.skl*2 + tri*15 - (d.spd*2 + t.avo), 0, 100),
-    crit: clamp(Math.floor(a.skl/2) - Math.floor(d.skl/4), 0, 100),
+    hit: clamp(75 + a.skl*2 + (a.whit || 0) + tri*15 - (d.spd*2 + t.avo), 0, 100),
+    crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) - Math.floor(d.skl/4), 0, 100),
     dbl: a.spd - d.spd >= 4, tri,
   };
 }
@@ -2848,11 +3016,11 @@ function duelPop(u, text, color){
 }
 
 async function strike(a, d, f){
-  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx, dy), ranged = man(a, d) > 1 && a.w !== 'whip';   // a whip lashes, it doesn't shoot
+  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx, dy), ranged = man(a, d) > 1 && !a.lash;   // a whip lashes, it doesn't shoot
   const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
   const duel = duelEl(), scene = !duel.hidden, A = dEl[sideOf(a)], D = dEl[sideOf(d)], dir = sideOf(a) === 'L' ? 1 : -1;
   if (scene) anim(A.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${dir*(ranged ? 16 : 64)}px) rotate(${dir*3}deg)`}, {transform: 'none'}], 380, {easing: 'ease-in-out'});
-  Sfx.play(a.w === 'whip' ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
+  Sfx.play(a.lash ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
   await tween(140, t => { a.ox = lx*t; a.oy = ly*t; });
   if (ranged){
     const s = {x0: a.x + .5, y0: a.y + .5, x1: d.x + .5, y1: d.y + .5, t: 0}; shots.push(s);
@@ -3785,7 +3953,7 @@ function renderHub(){
 // ---------- Army ----------
 let armyTab = 'roster', armyReturn = 'hub';
 function statsGrid(rec){
-  const s = rec.stats, tb = WEAPON_TIERS[rec.wtier || 0].bonus, w = CLASSES[rec.cls].w;
+  const s = rec.stats, tb = weaponOf(rec).mt, w = CLASSES[rec.cls].w;
   return `<div class="stats">${[['HP', s.mhp], [w === 'staff' ? 'Mag' : 'Atk', s.atk + tb], ['Def', s.def], ['Spd', s.spd], ['Mov', s.mov]]
     .map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -3813,7 +3981,7 @@ function recCard(rec, actions = '', extraClass = ''){
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
-      <div class="ustat"><b>${weaponName(rec)}</b> · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
+      <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
     ${statsGrid(rec)}${actions}</div>`;
 }
@@ -3824,10 +3992,11 @@ function renderArmy(){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
     body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Fallen units do not return. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
       recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r)).join('')}</div>` : ''}`;
-  } else body = recruitTabHTML(ck);
+  } else if (armyTab === 'arms') body = armouryTabHTML(ck);
+  else body = recruitTabHTML(ck);
   $('#army').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="${armyReturn}" type="button">‹ Back</button><h1>Army</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
-    <div class="tabs"><button class="btn${armyTab === 'roster' ? ' on' : ''}" data-tab="roster" type="button">Roster</button><button class="btn${armyTab === 'recruit' ? ' on' : ''}" data-tab="recruit" type="button">Recruit</button></div>
+    <div class="tabs"><button class="btn${armyTab === 'roster' ? ' on' : ''}" data-tab="roster" type="button">Roster</button><button class="btn${armyTab === 'arms' ? ' on' : ''}" data-tab="arms" type="button">Armoury</button><button class="btn${armyTab === 'recruit' ? ' on' : ''}" data-tab="recruit" type="button">Recruit</button></div>
     ${body}</div>`;
   showScreen('army');
 }
@@ -3913,10 +4082,11 @@ async function playChapter(){
     for (const key of ch.reward.joins || []) if (!st.roster.some(r => r.key === key)){ st.roster.push(recordFor(key)); joined.push(CHARACTERS[key].name); }
     st.cleared.push(ch.id);
   }
+  const armed = replay ? [] : grantStoryWeapons(ck, ch.reward.weapons);
   saveGame();
   if (!replay) await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, lost: res.lost.map(u => u.name), departed});
+  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, armed, lost: res.lost.map(u => u.name), departed});
 }
 
 function renderResult(r){
@@ -3931,6 +4101,7 @@ function renderResult(r){
         <div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
+        ${r.armed?.length ? `<div><span>New weapons</span><b>${r.armed.join(', ')}</b></div>` : ''}
         ${ch.star ? `<div class="rstar ${r.star === 'ok' ? 'got' : ''}"><span>${r.star === 'ok' ? '★' : '☆'} Bonus: ${starText(ch, r.ck)}</span><b>${r.starTokens ? `Earned! +${r.starTokens} ${GACHA_ARMY[r.ck].currency}` : r.star === 'ok' ? 'Done (already earned)' : hasStar(ch.id) ? 'Missed (already earned)' : 'Missed: replay to try again'}</b></div>` : ''}
         ${r.lost.length ? `<div><span>Unstitched for good</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
@@ -3967,10 +4138,13 @@ document.addEventListener('click', e => {
       // everyone the story brings into this army (stage rewards and mid-battle joins), if not already there
       const st = SAVE.camps[ck], keys = CAMPAIGNS[ck].stages.flatMap(sg => [...(sg.reward?.joins || []), ...(sg.events || []).map(e => e.join).filter(Boolean)]);
       for (const key of new Set(keys)) if (CHARACTERS[key] && !st.roster.some(r => r.key === key)) st.roster.push(recordFor(key));
+      for (const sg of CAMPAIGNS[ck].stages) grantStoryWeapons(ck, sg.reward?.weapons);
     }
     saveGame();
     toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked, story recruits joined; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
+  else if (d.armPick) openWeaponPicker(d.armPick);
+  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseWeapon(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
   else if (d.trainUnit) trainPartner(d.trainUnit);
@@ -4013,6 +4187,12 @@ const stars = n => '★'.repeat(n || 1);
 
 // The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 function bannerArt(ck, b){
+  if (b.kind === 'arms'){   // the Smithy: its ★★★ weapons, large
+    const tops = smithyPool(ck, 3).map(id => WEAPONS[id]), bg = b.bg && ART.bg?.[b.bg];
+    return `<div class="bhero arms"${bg ? ` style="--bgimg:url(${bg})"` : ''}><div class="brays"></div>
+      <div class="btitle"><div class="bkind">Weapons banner</div><h2>${b.name}</h2></div>
+      <div class="barms">${tops.map((w, i) => `<div class="barm" style="--i:${i}">${weaponIconSVG(w, 40)}<b>${w.name}</b><small>★★★ ${WTYPE[w.type]}</small></div>`).join('')}</div></div>`;
+  }
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const figs = keys.map((k, i) => {
     const src = artFor(k, 'portrait') || plushPortrait(CHARACTERS[k].look || k);
@@ -4040,12 +4220,12 @@ function recruitTabHTML(ck){
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
+  const poolRares = b.kind === 'arms' ? smithyPool(ck, 3).map(id => WEAPONS[id].name).join(', ') : (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
       <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
-      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
+      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : x.kind === 'arms' ? 'Weapons' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
     <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
       ${bannerArt(ck, b)}
@@ -4062,21 +4242,28 @@ function recruitTabHTML(ck){
     </div>
     <details class="rates"><summary>Rates and pool</summary>
       <div class="rlist">
-        <div><span>★★★ Rare: unique characters</span><b>${R[3].rate}%</b></div>
-        <div><span>★★ Uncommon: veteran soldiers</span><b>${R[2].rate}%</b></div>
-        <div><span>★ Common: soldiers</span><b>${R[1].rate}%</b></div>
+        <div><span>★★★ Rare: ${b.kind === 'arms' ? 'the finest weapons' : 'unique characters'}</span><b>${R[3].rate}%</b></div>
+        <div><span>★★ Uncommon: ${b.kind === 'arms' ? 'fine weapons' : 'veteran soldiers'}</span><b>${R[2].rate}%</b></div>
+        <div><span>★ Common: ${b.kind === 'arms' ? 'sturdy weapons' : 'soldiers'}</span><b>${R[1].rate}%</b></div>
       </div>
-      <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
+      ${b.kind === 'arms' ? `<p class="meta">★★★ weapons: ${poolRares}. Weapons go to the Armoury (on the Army screen), where any unit of the right type can carry them. Duplicates are fine: several units can carry the same kind. A ★★★ is guaranteed by pull ${GACHA.pity}.</p>` : `<p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
       Soldiers can be any of: ${army.generic.map(c => CLASSES[c].name).join(', ')}.
       Every ×10 includes at least one ★★. A ★★★ is guaranteed by pull ${GACHA.pity} on each banner.
       Soldiers come from a fixed company of ${companyOf(ck).length}. A soldier or rare you already have gains Bond instead:
       ★ up to ${GACHA.genericBond[1].max}, ★★ up to ${GACHA.genericBond[2].max}, ★★★ up to ${GACHA.bondMax} (bigger boosts at higher rarity).
-      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>
+      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>`}
     </details>`;
 }
 
 // ---------- Pull reveal ----------
 function cardHTML(r, i, single){
+  if (r.weapon){ const w = r.weapon;
+    return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal pull ${i + 1}">
+    <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
+      <div class="gface"><div class="gpor gw">${weaponIconSVG(w, single ? 120 : 52)}</div>
+        <div class="gtxt"><div class="gstars">${stars(r.stars)}</div><div class="gname">${w.name}</div><div class="gcls">${WTYPE[w.type]}${w.lash ? ' · Whip' : ''}</div><div class="gtag">Weapon</div></div>
+      </div></div></button>`;
+  }
   // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
   const rec = r.rec, look = rec.look, art = single ? artFor(rec, 'portrait') : (artFor(rec, 'token') || artFor(rec, 'portrait'));
   const tag = r.kind === 'new' ? 'New' : r.kind === 'bond' ? `Bond ${rec.bond}` : `+${r.refund}`;
@@ -4095,8 +4282,16 @@ function cardHTML(r, i, single){
     </div></button>`;
 }
 function spotlight(r){
-  const rec = r.rec, art = artFor(rec, 'portrait');
   const sp = $('#gspot');
+  if (r.weapon){ const w = r.weapon;
+    sp.innerHTML = `<div class="spin"><div class="sray"></div><div class="sart sw">${weaponIconSVG(w, 160)}</div>
+      <div class="sstars">★★★</div><h2>${w.name}</h2><p>${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText({...w, rng: w.rng || (w.type === 'bow' ? [2, 2] : [1, 1])})}</p>
+      <p class="sdesc">${w.desc}</p><div class="stag">Added to the Armoury</div><div class="meta">Tap to continue</div></div>`;
+    sp.hidden = false; Music.jingle('rare');
+    anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
+    return new Promise(res => { sp.onclick = () => { sp.hidden = true; sp.onclick = null; res(); }; });
+  }
+  const rec = r.rec, art = artFor(rec, 'portrait');
   sp.innerHTML = `<div class="spin"><div class="sray"></div>
       <div class="sart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>
       <div class="sstars">★★★</div><h2>${rec.name}</h2>
@@ -4190,8 +4385,56 @@ function recruitTutorial(ck){
     {who: 'narr', text: `Every recruit is ★ a soldier (${R[1].rate}%), ★★ a veteran (${R[2].rate}%), or ★★★ a unique character with a story of their own (${R[3].rate}%).`},
     {who: 'narr', text: `A ten-recruit call always brings at least one ★★, and every banner guarantees a ★★★ within ${GACHA.pity} recruits. The bar under the banner shows how close you are.`},
     {who: 'narr', text: 'Recruit someone you already have and they gain Bond instead: a small, permanent boost.'},
+    {who: 'narr', text: 'The Smithy banner gives weapons instead of recruits. You\'ll find them in the Armoury, on the Army screen.'},
     {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of this screen.`},
   ]);
+}
+
+// ---------------- 63-arms-ui.js ----------------
+// ================= Armoury tab and the weapon picker =================
+const weaponRowHTML = (w, extra = '') => `<div class="wrow s${w.stars || 0}">${weaponIconSVG(w, 34)}
+  <div class="wtxt"><div class="wname">${w.name} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
+    <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
+    ${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
+
+function armouryTabHTML(ck){
+  const st = SAVE.camps[ck], order = {sword: 0, lance: 1, axe: 2, bow: 3, staff: 4};
+  const items = armsOf(ck).map(it => ({it, w: {...WEAPONS[it.id], rng: WEAPONS[it.id].rng || (WEAPONS[it.id].type === 'bow' ? [2, 2] : [1, 1])}}))
+    .filter(x => x.w.name).sort((a, b) => order[a.w.type] - order[b.w.type] || b.w.stars - a.w.stars || a.w.name.localeCompare(b.w.name));
+  if (!items.length) return `<div class="hint">No weapons yet. Every unit carries their class's basic weapon. Better ones come from the story and from the Smithy banner on the Recruit tab.</div>`;
+  return `<div class="hint">Every weapon the army owns. Tap a unit's weapon on the Roster (or before a battle) to change what they carry.</div>
+    <div class="wlist">${items.map(({it, w}) => {
+      const h = holderOf(ck, it.uid);
+      return weaponRowHTML(w, `<div class="wside"><span class="whold${h ? '' : ' free'}">${h ? h.name : 'Unused'}</span>
+        ${w.owner ? '' : `<button class="btn" data-arm-release="${it.uid}" type="button">Release · +${GACHA.release[w.stars]}</button>`}</div>`);
+    }).join('')}</div>`;
+}
+
+// The picker: every weapon this unit could carry. Picking one held by someone else swaps it over.
+function openWeaponPicker(uid){
+  const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === uid); if (!rec) return;
+  const cur = weaponOf(rec), basic = basicWeapon(rec);
+  const options = armsOf(ck).filter(it => WEAPONS[it.id] && canCarry(rec, WEAPONS[it.id]))
+    .map(it => ({it, w: {...WEAPONS[it.id], rng: WEAPONS[it.id].rng || CLASSES[rec.cls].rng}}))
+    .sort((a, b) => b.w.stars - a.w.stars || b.w.mt - a.w.mt);
+  let ov = $('#armsheet');
+  if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
+  const row = (w, val, holder) => `<button class="wpick${(val || null) === (rec.arm || null) ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">
+      ${weaponRowHTML(w, `<div class="wside">${(val || null) === (rec.arm || null) ? '<span class="whold">Carrying</span>' : holder ? `<span class="whold">From ${holder.name}</span>` : ''}</div>`)}</button>`;
+  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[rec.cls].w]} user · now carrying ${cur.name}</h2>
+    <div class="wlist">${row(basic, null, null)}${options.map(({it, w}) => row(w, it.uid, rec.arm === it.uid ? null : holderOf(ck, it.uid))).join('')}</div>
+    ${options.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[rec.cls].w].toLowerCase()}s yet. They come from the story and the Smithy banner.</p>`}
+    <button class="btn" data-arm-close type="button">Done</button></div>`;
+  ov.hidden = false;
+  ov.onclick = e => {
+    const b = e.target.closest('[data-arm-equip], [data-arm-close]');
+    if (!b && e.target !== ov) return;
+    if (b && 'armEquip' in b.dataset){
+      equipWeapon(ck, rec, b.dataset.armEquip || null); saveGame(); Sfx.play('select');
+      toast(`${rec.name} now carries the ${weaponOf(rec).name}.`);
+    }
+    ov.hidden = true; ov.onclick = null; rerenderKeepScroll();
+  };
 }
 
 // ---------------- 64-camp.js ----------------
@@ -4223,7 +4466,7 @@ const trainCost = rec => SUPPORT.train.cost + SUPPORT.train.step*(rec.trained ||
 // show the gains on the level-up card, with its own heading
 function showGains(rec, gains, title, sub){
   const s = rec.stats;
-  return showLevelUp({...rec, ...s, atk: s.atk + WEAPON_TIERS[rec.wtier || 0].bonus, w: CLASSES[rec.cls].w}, gains, title, sub);
+  return showLevelUp({...rec, ...s, atk: s.atk + weaponOf(rec).mt, w: CLASSES[rec.cls].w}, gains, title, sub);
 }
 function applyGains(rec, gains){ for (const [k, v] of Object.entries(gains)) rec.stats[k] = (rec.stats[k] || 0) + v; }
 function renderCamp(){

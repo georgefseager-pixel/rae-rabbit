@@ -73,7 +73,7 @@ function speakerName(who){
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
 const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[rec.cls].g;
-const weaponName = rec => WEAPON_TIERS[rec.wtier || 0].prefix + rec.wname;
+const weaponName = rec => weaponOf(rec).name;   // see 33-arms.js
 const living = campKey => SAVE.camps[campKey].roster.filter(r => !r.dead);
 
 function findStage(id){

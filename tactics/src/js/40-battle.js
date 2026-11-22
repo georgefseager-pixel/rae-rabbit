@@ -28,11 +28,11 @@ function moveCost(u, x, y){
 
 // ---------- Setup ----------
 function battleUnit(rec, teamId){
-  const c = CLASSES[rec.cls], s = rec.stats, tb = WEAPON_TIERS[rec.wtier || 0].bonus;
+  const c = CLASSES[rec.cls], s = rec.stats, wp = weaponOf(rec), tb = wp.mt;
   const id = nextId++;
   return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, stars: rec.stars, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, name: rec.name, cls: rec.cls,
-    wname: weaponName(rec), tb, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
-    w: c.w, rng: c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
+    wname: wp.name, tb, whit: wp.hit || 0, wcrit: wp.crit || 0, lash: !!wp.lash, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
+    w: wp.type, rng: wp.rng || c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
 }
 function enemyUnit(sp, faction){
@@ -133,8 +133,8 @@ function calc(a, d, ap, dp){
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, a.atk + tri - (d.def + t.def)),
-    hit: clamp(75 + a.skl*2 + tri*15 - (d.spd*2 + t.avo), 0, 100),
-    crit: clamp(Math.floor(a.skl/2) - Math.floor(d.skl/4), 0, 100),
+    hit: clamp(75 + a.skl*2 + (a.whit || 0) + tri*15 - (d.spd*2 + t.avo), 0, 100),
+    crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) - Math.floor(d.skl/4), 0, 100),
     dbl: a.spd - d.spd >= 4, tri,
   };
 }
@@ -206,11 +206,11 @@ function duelPop(u, text, color){
 }
 
 async function strike(a, d, f){
-  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx, dy), ranged = man(a, d) > 1 && a.w !== 'whip';   // a whip lashes, it doesn't shoot
+  const dx = d.x - a.x, dy = d.y - a.y, len = Math.hypot(dx, dy), ranged = man(a, d) > 1 && !a.lash;   // a whip lashes, it doesn't shoot
   const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
   const duel = duelEl(), scene = !duel.hidden, A = dEl[sideOf(a)], D = dEl[sideOf(d)], dir = sideOf(a) === 'L' ? 1 : -1;
   if (scene) anim(A.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${dir*(ranged ? 16 : 64)}px) rotate(${dir*3}deg)`}, {transform: 'none'}], 380, {easing: 'ease-in-out'});
-  Sfx.play(a.w === 'whip' ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
+  Sfx.play(a.lash ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
   await tween(140, t => { a.ox = lx*t; a.oy = ly*t; });
   if (ranged){
     const s = {x0: a.x + .5, y0: a.y + .5, x1: d.x + .5, y1: d.y + .5, t: 0}; shots.push(s);
