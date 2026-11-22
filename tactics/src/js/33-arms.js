@@ -58,5 +58,7 @@ function grantStoryWeapons(ck, list){
   }
   return got;
 }
+// the usual range of a weapon type (bows 2, tomes 1–2, the rest 1)
+const typeRange = type => ({bow: [2, 2], tome: [1, 2]})[type] || [1, 1];
 const rngText = r => r[0] === r[1] ? `${r[0]}` : `${r[0]}–${r[1]}`;
 const weaponStatsText = w => `Mt ${w.mt >= 0 ? '+' : ''}${w.mt}${w.hit ? ` · Hit +${w.hit}` : ''}${w.crit ? ` · Crit +${w.crit}` : ''} · Rng ${rngText(w.rng || [1, 1])}`;

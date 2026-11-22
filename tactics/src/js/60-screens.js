@@ -78,7 +78,7 @@ function renderHub(){
 let armyTab = 'roster', armyReturn = 'hub';
 function statsGrid(rec){
   const s = rec.stats, tb = weaponOf(rec).mt, w = CLASSES[rec.cls].w;
-  return `<div class="stats">${[['HP', s.mhp], [w === 'staff' ? 'Mag' : 'Atk', s.atk + tb], ['Def', s.def], ['Spd', s.spd], ['Mov', s.mov]]
+  return `<div class="stats">${[['HP', s.mhp], [isMagic(w) ? 'Mag' : 'Atk', s.atk + tb], ['Def', s.def], ['Spd', s.spd], ['Mov', s.mov]]
     .map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
 // ---------- Roster order and favourites ----------

@@ -345,6 +345,7 @@ const Sfx = (() => {
     miss(){ noise('bandpass', 1200, 1.5, .25, .35, 400); },
     unstitch(){ for (let i = 0; i < 7; i++) noise('bandpass', 2400 - i*220, 3, .05, .45, null, i*.045); blip(300, 80, .45, .3, 'sawtooth'); },
     flee(){ noise('bandpass', 900, 1, .35, .2, 3000); for (let i = 0; i < 4; i++) setTimeout(() => S.step(), 80 + i*90); },
+    magic(){ notes('bell', ['A5', 'E6', 'A6'], .04, .7, .6); noise('bandpass', 3200, 2, .3, .18, 900); },
     heal(){ notes('bell', ['C6', 'E6', 'G6', 'C7'], .07, .7, .6); },
     exp(){ blip(1400, 1800, .06, .04, 'triangle'); },
     phase(f){ const t = C().currentTime, g = out(.4); INST.tom(t, 0, 0, 1.2, g);

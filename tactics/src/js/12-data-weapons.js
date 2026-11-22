@@ -3,7 +3,7 @@
 // Everyone starts with their class's basic weapon (its `wname`). Better weapons are items: they come from
 // the story (stage reward `weapons`) and from recruiting (as results, and for duplicates), and any unit of the right type
 // can carry one (unless it has an `owner`, then only that character can).
-//   type   sword | lance | axe | bow | staff          stars  1–3 (rarity)
+//   type   sword | lance | axe | bow | staff | tome          stars  1–3 (rarity)
 //   mt     might: added to Atk (for a staff: to Mag, so it mends more)
 //   hit / crit   added to the chance to hit / to land a critical
 //   rng    [min, max] range; leave out to use the class's usual range
@@ -16,16 +16,19 @@ const WEAPONS = {
   tentpole:     {name: 'Tent Pole Spear',  type: 'lance', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'A guard-tent pole with a nail hammered into the end.'},
   spade:        {name: 'Sharpened Spade',  type: 'axe',   stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'Dug with all day. Swung with all night.'},
   braidsling:   {name: 'Braided Sling',    type: 'bow',   stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'Three strands of rope, plaited tight.'},
+  almanac:      {name: 'Tattered Almanac', type: 'tome',  stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'rae', desc: 'Every page says when to plant. Some say when to rise.'},
   boneneedle:   {name: 'Bone Needle',      type: 'staff', stars: 1, mt: 1, hit: 0,  crit: 0,  army: 'rae', desc: 'For quick stitches between fights.'},
   shearsabre:   {name: 'Shear Sabre',      type: 'sword', stars: 2, mt: 2, hit: 10, crit: 5,  army: 'rae', desc: 'One half of a pair of wool shears, wrapped at the grip.'},
   tunnelspear:  {name: 'Tunnel Spear',     type: 'lance', stars: 2, mt: 2, hit: 10, crit: 0,  army: 'rae', desc: 'Short enough to fight with underground.'},
   mattock:      {name: 'Miner\'s Mattock', type: 'axe',   stars: 2, mt: 3, hit: 0,  crit: 5,  army: 'rae', desc: 'Heavy, honest, and very hard to stop.'},
   longsling:    {name: 'Longsling',        type: 'bow',   stars: 2, mt: 2, hit: 5,  crit: 0,  rng: [2, 3], army: 'rae', desc: 'A long cord for a long throw: reaches 3 tiles.'},
+  pamphlets:    {name: 'Rebel Pamphlets',  type: 'tome',  stars: 2, mt: 3, hit: 5,  crit: 0,  army: 'rae', desc: 'Printed by night, passed hand to hand. Words can wound.'},
   patchneedle:  {name: 'Patchwork Needle', type: 'staff', stars: 2, mt: 3, hit: 0,  crit: 0,  army: 'rae', desc: 'Threaded with every colour in the camp.'},
   moonshears:   {name: 'Moonlit Shears',   type: 'sword', stars: 3, mt: 4, hit: 15, crit: 15, army: 'rae', desc: 'Stolen from the overseer\'s own sewing room.'},
   gatehook:     {name: 'Gatehook Pike',    type: 'lance', stars: 3, mt: 4, hit: 15, crit: 5,  army: 'rae', desc: 'The hook that once barred the camp gate.'},
   rockbreaker:  {name: 'Rockbreaker',      type: 'axe',   stars: 3, mt: 5, hit: 5,  crit: 10, army: 'rae', desc: 'It split the deepest seam in the mine.'},
   starsling:    {name: 'Starshot Sling',   type: 'bow',   stars: 3, mt: 4, hit: 15, crit: 10, rng: [2, 3], army: 'rae', desc: 'Its stones glitter like the crystals in the rock. Reaches 3 tiles.'},
+  charter:      {name: 'The Charter',      type: 'tome',  stars: 3, mt: 5, hit: 10, crit: 5,  rng: [1, 3], army: 'rae', desc: 'The founding words of the Republic. Reaches 3 tiles.'},
   thimble:      {name: 'Golden Thimble',   type: 'staff', stars: 3, mt: 5, hit: 0,  crit: 0,  army: 'rae', desc: 'No stitch made with it has ever come loose.'},
   // ---- The Friggliarchy: royal arms ----
   pondsword:    {name: 'Pond Sword',       type: 'sword', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Standard issue, green at the hilt.'},
@@ -97,6 +100,12 @@ const WEAPON_ICON = {
     <path d="M22 44 C34 31 54 40 51 25 C48 12 29 16 35 7" fill="none" stroke="#8a5a34" stroke-width="2.6" stroke-linecap="round"/>
     <path d="M35 7 L39.5 3.5" stroke="${A}" stroke-width="1.8" stroke-linecap="round"/>
     <circle cx="9" cy="57" r="3.4" fill="${A}" stroke="${W_O}" stroke-width="1.3"/><circle cx="22" cy="44" r="3" fill="${A}" stroke="${W_O}" stroke-width="1.3"/>`,
+  tome: A => `<path d="M14 13 C22 9 28 10 32 14 C36 10 42 9 50 13 V52 C42 48 36 49 32 53 C28 49 22 48 14 52 Z" fill="#efe2c4" stroke="${W_O}" stroke-width="1.4"/>
+    <path d="M11 16 V55 C20 51 27 52 32 56 C37 52 44 51 53 55 V16" fill="none" stroke="#6b2a22" stroke-width="3.2" stroke-linejoin="round"/>
+    <path d="M32 14 V53" stroke="${W_O}" stroke-opacity=".45" stroke-width="1.2"/>
+    <path d="M18 20 H28 M18 25 H28 M18 30 H26 M36 20 H46 M36 25 H46 M36 30 H44" stroke="#8d7d63" stroke-width="1.3"/>
+    <circle cx="41" cy="40" r="5.2" fill="${A}" stroke="${W_O}" stroke-width="1.2"/><path d="M41 36.5 L42.2 39.3 L45 39.5 L42.8 41.3 L43.5 44 L41 42.5 L38.5 44 L39.2 41.3 L37 39.5 L39.8 39.3 Z" fill="${W_O}" fill-opacity=".5"/>
+    <path d="M26 6 C30 9 33 12 34 17" fill="none" stroke="${A}" stroke-width="1.6" stroke-linecap="round"/>`,
   needle: A => `<g transform="rotate(45 32 32)">
     <path d="M32 3 L34.4 11 L34.4 51 L32 62 L29.6 51 L29.6 11 Z" fill="url(#wSteel)" stroke="${W_O}" stroke-width="1.3"/>
     <ellipse cx="32" cy="12.5" rx="1.1" ry="3.4" fill="${W_O}"/></g>

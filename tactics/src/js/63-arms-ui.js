@@ -3,7 +3,7 @@ const weaponRowHTML = (w, extra = '', count = 0) => `<div class="wrow s${w.stars
   <div class="wtxt"><div class="wname">${w.name}${count > 1 ? ` <span class="wcount">×${count}</span>` : ''} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
     <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
     ${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
-const withRange = (w, cls) => ({...w, rng: w.rng || (cls ? CLASSES[cls].rng : w.type === 'bow' ? [2, 2] : [1, 1])});
+const withRange = (w, cls) => ({...w, rng: w.rng || (cls ? CLASSES[cls].rng : typeRange(w.type))});
 
 // Every weapon the army owns, stacked: one row per kind, with how many, who carries them, and how many are spare.
 function armouryTabHTML(ck){

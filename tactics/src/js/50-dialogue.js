@@ -98,7 +98,7 @@ function talk(rawLines){
 
 // u is anything with name, lv, key, look, faction, w and flat stats (a battle unit, or a record's stats spread in).
 function showLevelUp(u, ups, title = 'LEVEL UP', sub = null){
-  const label = {mhp: 'HP', atk: u.w === 'staff' ? 'Mag' : 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl'};
+  const label = {mhp: 'HP', atk: isMagic(u.w) ? 'Mag' : 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl'};
   $('#lvlCard').innerHTML = `<div class="urow"><div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>
     <div class="uinfo"><h1>${title}</h1><h2>${sub || `${u.name} · Level ${u.lv}`}</h2></div></div>
     <div class="lv">${STAT_KEYS.map(s => `<div class="${ups[s] ? 'up' : ''}"><small>${label[s]}</small>${u[s]}${ups[s] ? ' ▲' : ''}</div>`).join('')}</div>

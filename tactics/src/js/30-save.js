@@ -13,6 +13,11 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  // Willow became a Scholar (tomes): drop any bow she was carrying
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'willow' && r.cls === 'quarter'){
+    r.cls = 'scholar'; r.wname = CLASSES.scholar.wname; r.wtier = 0;
+    const it = (st.arms || []).find(a => a.uid === r.arm); if (it && WEAPONS[it.id]?.type !== 'tome') r.arm = null;
+  }
   for (const [ck, st] of Object.entries(s.camps)) for (const r of st.roster || []) { const sg = r.dead && st.cleared?.map(id => findStage(id)?.st).find(g => (g?.departs || []).includes(r.key)); if (sg){ r.departed = true; r.fallsIn = sg.fallsIn?.[r.key]; } }
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.dead) r.arm = null;   // the fallen drop their weapons
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
