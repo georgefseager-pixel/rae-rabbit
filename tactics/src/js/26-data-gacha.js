@@ -4,8 +4,7 @@
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
 //   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
-// Some results are weapons instead of recruits (weaponShare), of the rarity rolled (see 12-data-weapons.js).
-// Pulling a recruit you already have gives a weapon of that rarity instead.
+// Pulling a recruit you already have gives a weapon of that rarity instead (see 12-data-weapons.js).
 // Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
 // each rarity, named from RECRUIT_NAMES. A soldier you already have becomes a weapon instead,
 // so the roster can't grow forever.
@@ -18,7 +17,6 @@ const GACHA = {
   pity: 40,               // a ★★★ is guaranteed by this many pulls on the same banner
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
-  weaponShare: .25,       // this share of results is a weapon (of the rolled rarity) instead of a recruit
   company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
