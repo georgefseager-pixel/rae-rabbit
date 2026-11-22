@@ -10,23 +10,25 @@
 // so the roster can't grow forever.
 const GACHA = {
   rarity: {
-    1: {name: 'Common',   rate: 64, color: '#b88a58'},
+    1: {name: 'Common',   rate: 65, color: '#b88a58'},
     2: {name: 'Uncommon', rate: 30, color: '#c8d2de'},
-    3: {name: 'Rare',     rate: 6,  color: '#ecc673'},
+    3: {name: 'Rare',     rate: 5,  color: '#ecc673'},
   },
-  pity: 40,               // a ★★★ is guaranteed by this many pulls on the same banner
+  pity: 50,               // a ★★★ is guaranteed by this many pulls on the same banner
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
   company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
-  release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
-  startTokens: 10,
-  stageTokens: 5,
-  starTokens: 10,         // for earning a stage's bonus star (once per stage)         // awarded for clearing a stage unless the stage's reward sets `tokens`
+  release: {1: 1, 2: 2, 3: 5},    // pull currency returned for releasing a unit (or a spare weapon) of each rarity
+  // Pull currency is meant to be scarce: roughly one ×10 per chapter, plus what bonus stars earn.
+  // (Chapter One: 3 stages × 2, its finale 10, and up to 4 stars × 5 = 16 to 36 when recruiting opens.)
+  startTokens: 0,
+  stageTokens: 2,         // for clearing a stage the first time, unless the stage's reward sets `tokens`
+  starTokens: 5,          // for earning a stage's bonus star (once per stage)
 };
 
 const GACHA_ARMY = {
   rae: {
-    currency: 'Whispers', one: 'Whisper', trade: 100,
+    currency: 'Whispers', one: 'Whisper', trade: 400,   // money for one pull: a last resort, not a currency exchange
     opensAfter: 'R1-4',   // recruiting opens once Chapter One is finished
     guide: 'willow',      // who introduces recruiting (the tutorial)
     tease: 'A folded note, passed hand to hand along the tunnels…', seal: 'R',
@@ -40,7 +42,7 @@ const GACHA_ARMY = {
     ],
   },
   frog: {
-    currency: 'Writs', one: 'Writ', trade: 100,
+    currency: 'Writs', one: 'Writ', trade: 400,
     opensAfter: 'F1-4',
     guide: 'biggle',
     tease: 'A writ under the royal seal, delivered by runner…', seal: 'F',

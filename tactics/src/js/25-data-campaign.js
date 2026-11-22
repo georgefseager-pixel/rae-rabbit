@@ -251,7 +251,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['sister']},
+          reward: {res: 500, tokens: 10, joins: ['sister']},   // the finale: enough for a first ×10 when recruiting opens
         },
       ]},
       // Chapter Two: Rae in her Republic uniform (outfit '' = art/rae-*.png), Little Sister as Flopsy Flora ('flora').
@@ -513,7 +513,7 @@ const CAMPAIGNS = {
             {who: 'tiggle', text: 'If she\'s real, she\'s out there, and she\'s coming. Then I\'ll be the one who stops her.'},
             {card: 'End of Chapter One', sub: 'The Prince'},
           ],
-          reward: {res: 500},
+          reward: {res: 500, tokens: 10},
         },
       ]},
       {id: 'FC2', title: 'Chapter Two', name: 'Still to be written', stub: true, brief: 'Still to be written.'},

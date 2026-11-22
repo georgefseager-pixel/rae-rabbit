@@ -9,11 +9,11 @@
 //              a placeholder scene. Anyone unique without an entry here gets placeholder scenes too.
 const SUPPORT = {
   ranks: ['C', 'B', 'A'],
-  cost: {C: 200, B: 400, A: 800},
+  cost: {C: 300, B: 600, A: 1000},
   // what each rank gives the partner, permanently (HP, Atk, Def, Spd, Skl)
-  boost: {C: {mhp: 2, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 3, atk: 1, def: 1, spd: 1}},
+  boost: {C: {mhp: 1, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 2, atk: 1, def: 1, spd: 1}},
   // after rank A: Train, +1 to two stats (+2 if HP), weighted by the unit's growths. The price rises each time.
-  train: {cost: 300, step: 100, max: 10},
+  train: {cost: 500, step: 250, max: 5},
   opensAfter: {rae: 'R2-1', frog: 'F2-1'},   // the first stage of each army's Chapter Two
   scene: {rae: 'camp', frog: 'camp'},        // the Camp backdrop (art/bg-camp.jpg when it exists)
   kinds: {friend: 'Friendship', learn: 'Lessons', family: 'Family'},

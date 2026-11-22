@@ -127,7 +127,7 @@ function renderArmy(){
   showScreen('army');
 }
 // Fallen units can be stitched back up for money: more for higher levels. Story departures can't.
-const STITCH = {base: 100, perLevel: 25};
+const STITCH = {base: 150, perLevel: 30};
 const stitchCost = rec => STITCH.base + STITCH.perLevel*rec.lv;
 function stitchUp(uid){
   const st = stOf(), rec = st.roster.find(r => r.uid === uid);
@@ -208,7 +208,7 @@ async function playChapter(){
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
   if (starNew) SAVE.stars[ch.id] = true;
-  const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*20, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
+  const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*15, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
   if (!replay){
     for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; r.fallsIn = ch.fallsIn?.[key]; departed.push(r.name || CHARACTERS[key].name); }

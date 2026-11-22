@@ -4,7 +4,7 @@
 // the story (stage reward `weapons`) and from recruiting (as results, and for duplicates), and any unit of the right type
 // can carry one (unless it has an `owner`, then only that character can).
 //   type   sword | lance | axe | bow | staff | tome          stars  1–3 (rarity)
-//   mt     might: added to Atk (for a staff: to Mag, so it mends more)
+//   mt     might (★ 1, ★★ 2, ★★★ 3–4; axes a point higher but less accurate): added to Atk (for a staff: to Mag, so it mends more)
 //   hit / crit   added to the chance to hit / to land a critical
 //   rng    [min, max] range; leave out to use the class's usual range
 //   lash   a whip: a bow-type weapon that lashes instead of firing (no projectile, a crack instead of a twang)
@@ -20,16 +20,16 @@ const WEAPONS = {
   boneneedle:   {name: 'Bone Needle',      type: 'staff', stars: 1, mt: 1, hit: 0,  crit: 0,  army: 'rae', desc: 'For quick stitches between fights.'},
   shearsabre:   {name: 'Shear Sabre',      type: 'sword', stars: 2, mt: 2, hit: 10, crit: 5,  army: 'rae', desc: 'One half of a pair of wool shears, wrapped at the grip.'},
   tunnelspear:  {name: 'Tunnel Spear',     type: 'lance', stars: 2, mt: 2, hit: 10, crit: 0,  army: 'rae', desc: 'Short enough to fight with underground.'},
-  mattock:      {name: 'Miner\'s Mattock', type: 'axe',   stars: 2, mt: 3, hit: 0,  crit: 5,  army: 'rae', desc: 'Heavy, honest, and very hard to stop.'},
+  mattock:      {name: 'Miner\'s Mattock', type: 'axe',   stars: 2, mt: 2, hit: 0, crit: 5,  army: 'rae', desc: 'Heavy, honest, and very hard to stop.'},
   longsling:    {name: 'Longsling',        type: 'bow',   stars: 2, mt: 2, hit: 5,  crit: 0,  rng: [2, 3], army: 'rae', desc: 'A long cord for a long throw: reaches 3 tiles.'},
-  pamphlets:    {name: 'Rebel Pamphlets',  type: 'tome',  stars: 2, mt: 3, hit: 5,  crit: 0,  army: 'rae', desc: 'Printed by night, passed hand to hand. Words can wound.'},
+  pamphlets:    {name: 'Rebel Pamphlets',  type: 'tome',  stars: 2, mt: 2, hit: 5, crit: 0,  army: 'rae', desc: 'Printed by night, passed hand to hand. Words can wound.'},
   patchneedle:  {name: 'Patchwork Needle', type: 'staff', stars: 2, mt: 3, hit: 0,  crit: 0,  army: 'rae', desc: 'Threaded with every colour in the camp.'},
-  moonshears:   {name: 'Moonlit Shears',   type: 'sword', stars: 3, mt: 4, hit: 15, crit: 15, army: 'rae', desc: 'Stolen from the overseer\'s own sewing room.'},
-  gatehook:     {name: 'Gatehook Pike',    type: 'lance', stars: 3, mt: 4, hit: 15, crit: 5,  army: 'rae', desc: 'The hook that once barred the camp gate.'},
-  rockbreaker:  {name: 'Rockbreaker',      type: 'axe',   stars: 3, mt: 5, hit: 5,  crit: 10, army: 'rae', desc: 'It split the deepest seam in the mine.'},
-  starsling:    {name: 'Starshot Sling',   type: 'bow',   stars: 3, mt: 4, hit: 15, crit: 10, rng: [2, 3], army: 'rae', desc: 'Its stones glitter like the crystals in the rock. Reaches 3 tiles.'},
-  charter:      {name: 'The Charter',      type: 'tome',  stars: 3, mt: 5, hit: 10, crit: 5,  rng: [1, 3], army: 'rae', desc: 'The founding words of the Republic. Reaches 3 tiles.'},
-  thimble:      {name: 'Golden Thimble',   type: 'staff', stars: 3, mt: 5, hit: 0,  crit: 0,  army: 'rae', desc: 'No stitch made with it has ever come loose.'},
+  moonshears:   {name: 'Moonlit Shears',   type: 'sword', stars: 3, mt: 3, hit: 15, crit: 10, army: 'rae', desc: 'Stolen from the overseer\'s own sewing room.'},
+  gatehook:     {name: 'Gatehook Pike',    type: 'lance', stars: 3, mt: 3, hit: 15, crit: 5,  army: 'rae', desc: 'The hook that once barred the camp gate.'},
+  rockbreaker:  {name: 'Rockbreaker',      type: 'axe',   stars: 3, mt: 4, hit: 5, crit: 10, army: 'rae', desc: 'It split the deepest seam in the mine.'},
+  starsling:    {name: 'Starshot Sling',   type: 'bow',   stars: 3, mt: 3, hit: 15, crit: 10, rng: [2, 3], army: 'rae', desc: 'Its stones glitter like the crystals in the rock. Reaches 3 tiles.'},
+  charter:      {name: 'The Charter',      type: 'tome',  stars: 3, mt: 3, hit: 10, crit: 5,  rng: [1, 3], army: 'rae', desc: 'The founding words of the Republic. Reaches 3 tiles.'},
+  thimble:      {name: 'Golden Thimble',   type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0,  army: 'rae', desc: 'No stitch made with it has ever come loose.'},
   // ---- The Friggliarchy: royal arms ----
   pondsword:    {name: 'Pond Sword',       type: 'sword', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Standard issue, green at the hilt.'},
   lilypike:     {name: 'Lily Pike',        type: 'lance', stars: 1, mt: 1, hit: 5,  crit: 0,  army: 'frog', desc: 'Topped with a little iron lily.'},
@@ -38,19 +38,19 @@ const WEAPONS = {
   mudcenser:    {name: 'Mud Censer',       type: 'staff', stars: 1, mt: 1, hit: 0,  crit: 0,  army: 'frog', desc: 'Its smoke smells of the marsh, and soothes.'},
   rapier:       {name: 'Crowned Rapier',   type: 'sword', stars: 2, mt: 2, hit: 10, crit: 5,  army: 'frog', desc: 'Carried by officers of the Lily Court.'},
   courthalberd: {name: 'Court Halberd',    type: 'lance', stars: 2, mt: 2, hit: 10, crit: 0,  army: 'frog', desc: 'Polished for parades, sharpened for everything else.'},
-  ironmace:     {name: 'Ironwood Mace',    type: 'axe',   stars: 2, mt: 3, hit: 0,  crit: 5,  army: 'frog', desc: 'A mace that sinks rather than floats.'},
-  lash:         {name: 'Overseer\'s Lash', type: 'bow',   stars: 2, mt: 3, hit: 5,  crit: 0,  lash: true, army: 'frog', desc: 'A whip, used at range like a bow.'},
+  ironmace:     {name: 'Ironwood Mace',    type: 'axe',   stars: 2, mt: 2, hit: 0, crit: 5,  army: 'frog', desc: 'A mace that sinks rather than floats.'},
+  lash:         {name: 'Overseer\'s Lash', type: 'bow',   stars: 2, mt: 2, hit: 5, crit: 0,  lash: true, army: 'frog', desc: 'A whip, used at range like a bow.'},
   silvercenser: {name: 'Silver Censer',    type: 'staff', stars: 2, mt: 3, hit: 0,  crit: 0,  army: 'frog', desc: 'Swung on a silver chain at court blessings.'},
-  lilyblade:    {name: 'Lily Crown Blade', type: 'sword', stars: 3, mt: 4, hit: 15, crit: 15, army: 'frog', desc: 'Forged for a prince, with a lily in the pommel.'},
-  glaive:       {name: 'Royal Glaive',     type: 'lance', stars: 3, mt: 4, hit: 15, crit: 5,  army: 'frog', desc: 'The King\'s guard carry nothing finer.'},
-  kingsfall:    {name: 'Kingsfall Axe',    type: 'axe',   stars: 3, mt: 5, hit: 5,  crit: 10, army: 'frog', desc: 'Named for a king it didn\'t quite fell.'},
-  dragonfly:    {name: 'Dragonfly Bow',    type: 'bow',   stars: 3, mt: 4, hit: 15, crit: 10, rng: [2, 3], army: 'frog', desc: 'Light as a wing and as quick. Reaches 3 tiles.'},
-  thornwhip:    {name: 'Thornwhip',        type: 'bow',   stars: 3, mt: 5, hit: 10, crit: 5,  lash: true, army: 'frog', desc: 'A briar whip from the royal gardens.'},
-  lilycenser:   {name: 'Golden Lily Censer', type: 'staff', stars: 3, mt: 5, hit: 0, crit: 0, army: 'frog', desc: 'Lit only for the King\'s own household.'},
+  lilyblade:    {name: 'Lily Crown Blade', type: 'sword', stars: 3, mt: 3, hit: 15, crit: 10, army: 'frog', desc: 'Forged for a prince, with a lily in the pommel.'},
+  glaive:       {name: 'Royal Glaive',     type: 'lance', stars: 3, mt: 3, hit: 15, crit: 5,  army: 'frog', desc: 'The King\'s guard carry nothing finer.'},
+  kingsfall:    {name: 'Kingsfall Axe',    type: 'axe',   stars: 3, mt: 4, hit: 5, crit: 10, army: 'frog', desc: 'Named for a king it didn\'t quite fell.'},
+  dragonfly:    {name: 'Dragonfly Bow',    type: 'bow',   stars: 3, mt: 3, hit: 15, crit: 10, rng: [2, 3], army: 'frog', desc: 'Light as a wing and as quick. Reaches 3 tiles.'},
+  thornwhip:    {name: 'Thornwhip',        type: 'bow',   stars: 3, mt: 4, hit: 10, crit: 5,  lash: true, army: 'frog', desc: 'A briar whip from the royal gardens.'},
+  lilycenser:   {name: 'Golden Lily Censer', type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, army: 'frog', desc: 'Lit only for the King\'s own household.'},
   // ---- Story weapons (personal) ----
-  laststand:    {name: 'Last Stand',       type: 'sword', stars: 3, mt: 5, hit: 15, crit: 10, owner: 'rae',
+  laststand:    {name: 'Last Stand',       type: 'sword', stars: 3, mt: 4, hit: 15, crit: 10, owner: 'rae',
                  desc: 'Taken, the guards used to boast, from the last rabbit who fought back. Now it\'s Rae Rabbit\'s.'},
-  silverneedle: {name: 'Silver Needle',    type: 'staff', stars: 3, mt: 4, hit: 0,  crit: 0,  owner: 'sister',
+  silverneedle: {name: 'Silver Needle',    type: 'staff', stars: 3, mt: 3, hit: 0, crit: 0,  owner: 'sister',
                  desc: 'From the overseer\'s sewing box. Little Sister mends better with it than anyone.'},
 };
 
