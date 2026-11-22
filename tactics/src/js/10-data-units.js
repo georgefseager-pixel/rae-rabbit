@@ -152,6 +152,9 @@ const CHARACTERS = {
   executioner: {name:'The Executioner', faction:'frog', look:'headsman', cls:'headsman', lv:3, stars:3, stats:{mhp:27,atk:14,def:6,spd:4,skl:6,mov:4},
                 retort:'Nothing personal. It never is.',
                 intro:{title:'The Crown\'s Headsman', text:'He carries out the crown\'s sentences at the block and has never once asked what they were for. He does not hurry, and he does not miss.'}},
+  fragglejr:   {name:'Fraggle Jr.', faction:'frog', look:'fraggle', artFrom:'fraggle', cls:'marshlord', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
+                retort:'Father shouted too. It didn\'t help him.',
+                intro:{title:'Son of the Black Frog', text:'Fraggle Friggle\'s only son. He came to the war camp with a letter from the crown, his father\'s coat, and very little to say. He watches everything. He has never once asked how his father died.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -217,6 +220,7 @@ const ART_CROP = {
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   brigand:  {panel: ['200% auto', '38% 3%'], talk: ['150% auto', '36% 2%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
+  fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},

@@ -54,6 +54,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
+      {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], after: 'F2-4', bg: 'woods',
+       blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',

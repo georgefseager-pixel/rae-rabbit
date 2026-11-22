@@ -62,6 +62,8 @@ function artResolve(ent, kind){
   const at = typeof ATTIRES !== 'undefined' && ATTIRES[ent.attire];
   const k = at ? artKey(ent.key, kind, at.outfit) : artKey(ent.key, kind);
   if (ART[k]?.[kind]) return k;
+  // a character can borrow another's art for what it doesn't have (Fraggle Jr. fights in his father's sprite)
+  const from = CHARACTERS[ent.key]?.artFrom; if (from && ART[from]?.[kind]) return from;
   const sp = speciesOf(ent), fur = furOf(ent);
   if (!sp || !fur) return null;
   const cls = ent.cls || CHARACTERS[ent.key]?.cls;
