@@ -186,7 +186,7 @@ const CAMPAIGNS = {
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
           rename: {rae: 'Rae Rabbit'},
-          departs: ['old'],   // Old Rabbit stays behind with the rearguard (dies in F1-4)
+          departs: ['old'], fallsIn: {old: 'F1-4'},   // Old Rabbit stays behind with the rearguard, and falls in F1-4
           // Little Sister runs onto the field at the start of turn II and won't be sent back. She must not fall.
           events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, talk: [
             {who: 'narr', text: 'Small feet pound across the yard behind the line.'},

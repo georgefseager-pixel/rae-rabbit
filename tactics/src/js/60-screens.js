@@ -105,7 +105,7 @@ function recCard(rec, actions = '', extraClass = ''){
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
-      <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
+      <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ` · <span class="tick">${rec.departed ? departureLabel(rec) : 'Unstitched'}</span>` : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
     ${statsGrid(rec)}${actions}</div>`;
 }
@@ -116,7 +116,7 @@ function renderArmy(){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
     body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Units who fall in a battle you win are unstitched, but can be stitched back up below. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
       recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r, r.departed
-      ? '<div class="uacts"><button class="btn" type="button" disabled>Stayed behind in the story</button></div>'
+      ? `<div class="uacts"><button class="btn" type="button" disabled>${departureLabel(r)}</button></div>`
       : `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${st.res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${F.currency}</button></div>`)).join('')}</div>` : ''}`;
   } else if (armyTab === 'arms') body = armouryTabHTML(ck);
   else body = recruitTabHTML(ck);
@@ -211,7 +211,7 @@ async function playChapter(){
   const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*20, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
   if (!replay){
-    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; departed.push(r.name || CHARACTERS[key].name); }
+    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; r.fallsIn = ch.fallsIn?.[key]; departed.push(r.name || CHARACTERS[key].name); }
     for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
     // anyone who joined mid-battle keeps the experience they earned there
     for (const u of res.survivors) if (!st.roster.includes(u.rec)){ st.roster.push(u.rec); joined.push(u.rec.name); }

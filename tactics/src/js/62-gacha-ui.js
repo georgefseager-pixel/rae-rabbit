@@ -76,7 +76,7 @@ function cardHTML(r, i, single){
   }
   // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
   const rec = r.rec, look = rec.look, art = single ? artFor(rec, 'portrait') : (artFor(rec, 'token') || artFor(rec, 'portrait'));
-  const tag = 'New';
+  const tag = r.kind === 'back' ? 'Returns' : 'New';
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
       <div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
@@ -106,7 +106,7 @@ function spotlight(r){
       <div class="sart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>
       <div class="sstars">★★★</div><h2>${rec.name}</h2>
       <p>${CLASSES[rec.cls].name}${CHARACTERS[rec.key]?.placeholder ? ' · placeholder character' : ''}</p>
-      <div class="stag">Joins the army</div>
+      <div class="stag">${r.kind === 'back' ? 'Stitched back up, and rejoins the army' : 'Joins the army'}</div>
       <div class="meta">Tap to continue</div></div>`;
   sp.hidden = false; Music.jingle('rare');
   anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);

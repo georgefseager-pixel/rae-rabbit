@@ -13,7 +13,7 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
-  for (const [ck, st] of Object.entries(s.camps)) for (const r of st.roster || []) if (r.dead && st.cleared?.some(id => (findStage(id)?.st.departs || []).includes(r.key))) r.departed = true;
+  for (const [ck, st] of Object.entries(s.camps)) for (const r of st.roster || []) { const sg = r.dead && st.cleared?.map(id => findStage(id)?.st).find(g => (g?.departs || []).includes(r.key)); if (sg){ r.departed = true; r.fallsIn = sg.fallsIn?.[r.key]; } }
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.dead) r.arm = null;   // the fallen drop their weapons
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
@@ -36,6 +36,8 @@ function starCheck(star, v){
   }
   return 'pending';
 }
+// A story departure's status on the Army screen: 'Stayed behind', then 'Fallen' once the stage where they fall is won.
+const departureLabel = rec => rec.fallsIn && isCleared(rec.fallsIn) ? 'Fallen' : 'Stayed behind';
 const hasStar = id => !!SAVE.stars?.[id];
 function recordFor(key){
   const c = CHARACTERS[key];

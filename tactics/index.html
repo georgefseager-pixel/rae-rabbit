@@ -2218,7 +2218,7 @@ const CAMPAIGNS = {
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
           rename: {rae: 'Rae Rabbit'},
-          departs: ['old'],   // Old Rabbit stays behind with the rearguard (dies in F1-4)
+          departs: ['old'], fallsIn: {old: 'F1-4'},   // Old Rabbit stays behind with the rearguard, and falls in F1-4
           // Little Sister runs onto the field at the start of turn II and won't be sent back. She must not fall.
           events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, talk: [
             {who: 'narr', text: 'Small feet pound across the yard behind the line.'},
@@ -2597,7 +2597,7 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
-  for (const [ck, st] of Object.entries(s.camps)) for (const r of st.roster || []) if (r.dead && st.cleared?.some(id => (findStage(id)?.st.departs || []).includes(r.key))) r.departed = true;
+  for (const [ck, st] of Object.entries(s.camps)) for (const r of st.roster || []) { const sg = r.dead && st.cleared?.map(id => findStage(id)?.st).find(g => (g?.departs || []).includes(r.key)); if (sg){ r.departed = true; r.fallsIn = sg.fallsIn?.[r.key]; } }
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.dead) r.arm = null;   // the fallen drop their weapons
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
@@ -2620,6 +2620,8 @@ function starCheck(star, v){
   }
   return 'pending';
 }
+// A story departure's status on the Army screen: 'Stayed behind', then 'Fallen' once the stage where they fall is won.
+const departureLabel = rec => rec.fallsIn && isCleared(rec.fallsIn) ? 'Fallen' : 'Stayed behind';
 const hasStar = id => !!SAVE.stars?.[id];
 function recordFor(key){
   const c = CHARACTERS[key];
@@ -2816,7 +2818,8 @@ function grantPull(ck, banner, stars){
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
     if (have) return weaponResult(ck, 3);   // already with you: a ★★★ weapon instead
-    st.roster = st.roster.filter(r => !(r.key === key && r.dead && !r.departed));   // a fallen copy is replaced by the new one
+    const fallen = st.roster.find(r => r.key === key && r.dead && !r.departed);
+    if (fallen){ fallen.dead = false; return {stars, rec: fallen, kind: 'back'}; }   // the same unit, stitched back up
     const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3;
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
@@ -2824,8 +2827,9 @@ function grantPull(ck, banner, stars){
   const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
   const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
   if (have) return weaponResult(ck, stars);   // already with you: a weapon of their rarity instead
-  // a fallen soldier of the same name is replaced by the new one
-  st.roster = st.roster.filter(r => r.gid !== tpl.id);
+  // a fallen soldier comes back, stitched up, with their level
+  const fallen = st.roster.find(r => r.gid === tpl.id && r.dead);
+  if (fallen){ fallen.dead = false; return {stars, rec: fallen, kind: 'back'}; }
   const rec = asCompanySoldier(makeRecruit(ck, tpl.cls), tpl);
   st.roster.push(rec);
   return {stars, rec, kind: 'new'};
@@ -4037,7 +4041,7 @@ function recCard(rec, actions = '', extraClass = ''){
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
-      <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
+      <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ` · <span class="tick">${rec.departed ? departureLabel(rec) : 'Unstitched'}</span>` : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
     ${statsGrid(rec)}${actions}</div>`;
 }
@@ -4048,7 +4052,7 @@ function renderArmy(){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
     body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Units who fall in a battle you win are unstitched, but can be stitched back up below. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
       recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r, r.departed
-      ? '<div class="uacts"><button class="btn" type="button" disabled>Stayed behind in the story</button></div>'
+      ? `<div class="uacts"><button class="btn" type="button" disabled>${departureLabel(r)}</button></div>`
       : `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${st.res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${F.currency}</button></div>`)).join('')}</div>` : ''}`;
   } else if (armyTab === 'arms') body = armouryTabHTML(ck);
   else body = recruitTabHTML(ck);
@@ -4143,7 +4147,7 @@ async function playChapter(){
   const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*20, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
   if (!replay){
-    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; departed.push(r.name || CHARACTERS[key].name); }
+    for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; r.fallsIn = ch.fallsIn?.[key]; departed.push(r.name || CHARACTERS[key].name); }
     for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
     // anyone who joined mid-battle keeps the experience they earned there
     for (const u of res.survivors) if (!st.roster.includes(u.rec)){ st.roster.push(u.rec); joined.push(u.rec.name); }
@@ -4328,7 +4332,7 @@ function cardHTML(r, i, single){
   }
   // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
   const rec = r.rec, look = rec.look, art = single ? artFor(rec, 'portrait') : (artFor(rec, 'token') || artFor(rec, 'portrait'));
-  const tag = 'New';
+  const tag = r.kind === 'back' ? 'Returns' : 'New';
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
       <div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
@@ -4358,7 +4362,7 @@ function spotlight(r){
       <div class="sart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>
       <div class="sstars">★★★</div><h2>${rec.name}</h2>
       <p>${CLASSES[rec.cls].name}${CHARACTERS[rec.key]?.placeholder ? ' · placeholder character' : ''}</p>
-      <div class="stag">Joins the army</div>
+      <div class="stag">${r.kind === 'back' ? 'Stitched back up, and rejoins the army' : 'Joins the army'}</div>
       <div class="meta">Tap to continue</div></div>`;
   sp.hidden = false; Music.jingle('rare');
   anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);

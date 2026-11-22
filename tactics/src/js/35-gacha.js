@@ -40,7 +40,8 @@ function grantPull(ck, banner, stars){
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
     if (have) return weaponResult(ck, 3);   // already with you: a ★★★ weapon instead
-    st.roster = st.roster.filter(r => !(r.key === key && r.dead && !r.departed));   // a fallen copy is replaced by the new one
+    const fallen = st.roster.find(r => r.key === key && r.dead && !r.departed);
+    if (fallen){ fallen.dead = false; return {stars, rec: fallen, kind: 'back'}; }   // the same unit, stitched back up
     const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3;
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
@@ -48,8 +49,9 @@ function grantPull(ck, banner, stars){
   const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
   const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
   if (have) return weaponResult(ck, stars);   // already with you: a weapon of their rarity instead
-  // a fallen soldier of the same name is replaced by the new one
-  st.roster = st.roster.filter(r => r.gid !== tpl.id);
+  // a fallen soldier comes back, stitched up, with their level
+  const fallen = st.roster.find(r => r.gid === tpl.id && r.dead);
+  if (fallen){ fallen.dead = false; return {stars, rec: fallen, kind: 'back'}; }
   const rec = asCompanySoldier(makeRecruit(ck, tpl.cls), tpl);
   st.roster.push(rec);
   return {stars, rec, kind: 'new'};
