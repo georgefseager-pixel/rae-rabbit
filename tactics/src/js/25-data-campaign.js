@@ -362,9 +362,9 @@ const CAMPAIGNS = {
           ],
           enemies: () => [
             E('reed',3,2,2,'guard'), E('reed',3,7,2,'guard'), E('lily',3,4,3), E('bruiser',3,6,4), E('blade',3,3,1),
-            E('toadknight',3,5,2,'charge',{elite: true}), E('bruiser',3,1,8), E('lily',3,8,9),
+            E('toadknight',3,5,2,'charge',{elite: true}), E('gaxe',3,1,8), E('gpike',3,8,9),
           ],
-          reinforce: () => [{turn: 3, units: [E('blade',3,0,11), E('reed',3,9,11,'guard')]}],
+          reinforce: () => [{turn: 3, units: [E('gblade',3,0,11), E('gscribe',3,9,11,'guard')]}],
           events: [{turn: 1, talk: [
               {who: "narr", text: "Down in the ravine, a ring of battered Republic soldiers. At their centre, a one-eyed rabbit with a spear."},
               {who: "patch", text: "Rabbits? Republic rabbits? Ha! Didn't think anyone would come for us!"},
@@ -514,8 +514,8 @@ const CAMPAIGNS = {
           allies: () => [E('tribune',4,4,13,'charge',{key: 'froggle', name: 'Froggle', look: 'froggle'})],
           enemies: () => [
             E('marshlord',5,4,0,'hold',{boss: true, flees: true, key: 'fraggle', name: 'Fraggle Friggle', look: 'fraggle'}),
-            E('toadknight',4,3,1,'guard',{elite: true}), E('croaker',3,5,1,'guard'), E('reed',4,2,2,'guard'), E('reed',4,7,2,'guard'),
-            E('bruiser',4,5,3,'guard'), E('lily',3,4,5), E('bruiser',3,6,6), E('blade',3,2,7), E('lily',3,8,7),
+            E('gpike',4,3,1,'guard',{elite: true}), E('gchaplain',3,5,1,'guard'), E('gscribe',4,2,2,'guard'), E('gscribe',4,7,2,'guard'),
+            E('gaxe',4,5,3,'guard'), E('gpike',3,4,5), E('gaxe',3,6,6), E('gblade',3,2,7), E('gpike',3,8,7),
           ],
           bossTalk: [
             {who: "fraggle", text: "Oh, look! The little hero! I'm going to unstitch you slowly, and wear your name like a scarf!"},
@@ -770,7 +770,9 @@ const CAMPAIGNS = {
           star: {type: 'noLosses', text: 'No one is unstitched'},
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[4,0],[3,0],[6,0],[5,1],[4,1],[1,1],[8,1],[5,0]],
-          brief: 'A rebel column is crossing the ravine. On Fraggle\'s orders: pin it, and break its leader. Don\'t finish it.',
+          brief: 'A rebel column is crossing the ravine. On Fraggle\'s orders: pin it, and break its leader. Don\'t finish it. Fraggle\'s Black Guard hold the far end.',
+          // Fraggle's Black Guard close the far end of the ravine; they fight on Tiggle's side, but on their own
+          allies: () => [E('gpike',3,4,13,'guard'), E('gaxe',3,5,13,'guard'), E('gscribe',3,2,11,'guard'), E('gblade',3,7,11,'guard')],
           enemies: () => [
             E('rfighter',4,4,8,'hold',{boss: true, flees: true, key: 'patch', name: 'Patch', look: 'patch'}),
             E('rfencer',3,3,6), E('rfencer',3,6,6), E('rarcher',3,4,9,'guard'), E('radept',3,6,8,'guard'), E('rfighter',3,2,8),
@@ -899,8 +901,8 @@ const CAMPAIGNS = {
               {who: "guard", text: "Take them! Take all of them!"},
               {who: "biggle", text: "Form up! Protect the prince!"},
             ], units: [
-            E('lily',4,0,4), E('bruiser',4,9,4), E('reed',4,4,0), E('blade',4,1,2), E('toadknight',4,5,1,'charge',{elite: true}),
-            E('reed',4,8,2), E('bruiser',4,3,3), E('croaker',4,6,1),
+            E('gpike',4,0,4), E('gaxe',4,9,4), E('gscribe',4,4,0), E('gblade',4,1,2), E('gpike',4,5,1,'charge',{elite: true}),
+            E('gscribe',4,8,2), E('gaxe',4,3,3), E('gchaplain',4,6,1),
           ]},
           pre: [
             {scene: "woods", place: "The Hollow \u00b7 Evening"},

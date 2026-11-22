@@ -41,6 +41,12 @@ const CLASSES = {
   toadknight:{name: 'Armoured Guard', w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Halberd',           base: {mhp:25,atk:12,def:10,spd:2,skl:5,mov:4}, g: {mhp:85,atk:45,def:55,spd:15,skl:35}},
   croaker:   {name: 'Croaker',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Silt Censer',       base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   headsman:  {name: 'Executioner',    w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Headsman\'s Axe',   base: {mhp:26,atk:13,def:5, spd:4,skl:5,mov:4}, g: {mhp:80,atk:50,def:30,spd:25,skl:35}},
+  // Fraggle Friggle's Black Guard (art/black-*.png; the battle pose follows the weapon)
+  gblade:    {name: 'Black Blade',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Guard Sabre',       base: {mhp:19,atk:11,def:5, spd:8,skl:8,mov:5}, g: {mhp:60,atk:40,def:30,spd:50,skl:50}},
+  gaxe:      {name: 'Black Axe',      w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Thorn Axe',         base: {mhp:22,atk:12,def:4, spd:5,skl:4,mov:5}, g: {mhp:80,atk:50,def:25,spd:30,skl:30}},
+  gpike:     {name: 'Black Pike',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pennant Pike',      base: {mhp:20,atk:10,def:6, spd:5,skl:5,mov:5}, g: {mhp:70,atk:40,def:45,spd:25,skl:35}},
+  gscribe:   {name: 'Black Scribe',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Thorns',    base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
+  gchaplain: {name: 'Black Chaplain', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Thorn Sceptre',     base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -64,6 +70,8 @@ const WEAPON_TIERS = [
 const LOOKS = {
   // art: 'troop' draws them with the Republic soldier art (recoloured to their fur) instead of the mine-rabbit art
   soldier:   {sp:'bun', art:'troop', ears:'lop', fur:'#c8a27a', light:'#e2c4a0', dark:'#8a6a4a', scarf:'#2c3559', gear:'none'},
+  // art: 'black' draws them with Fraggle's Black Guard art (recoloured to their skin)
+  blackguard: {sp:'frog', art:'black', skin:'#8fae3c', light:'#b0cc62', dark:'#4a5e1a', belly:'#d6e49a', gear:'kettle'},
   // Rabbits
   rae:       {sp:'bun', ears:'lop', fur:'#e2c79c', light:'#f4e3c2', dark:'#9c8058', scarf:'#b5302a', gear:'fist'},
   sister:    {sp:'bun', ears:'lop', fur:'#efe0c4', light:'#fbf3e3', dark:'#a8987a', gear:'none', small:true},
@@ -108,6 +116,7 @@ const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle',
+  gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
 };
 
 // ================= Named characters =================
@@ -217,6 +226,7 @@ const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
   minerold: {panel: ['215% auto', '58% 2%'], talk: ['160% auto', '60% 1%']},  // elderly mine rabbit
   minerbulk: {panel: ['215% auto', '60% 2%'], talk: ['160% auto', '62% 1%']}, // bulky mine rabbit
+  black:   {panel: ['230% auto', '42% 9%'], talk: ['165% auto', '42% 7%']},   // Fraggle's Black Guard, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)

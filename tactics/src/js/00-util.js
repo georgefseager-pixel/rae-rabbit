@@ -47,7 +47,8 @@ function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] 
 // recoloured into their coat: mine rabbits (art/miner-*.png, colours in FURS) and frog soldiers
 // (art/grunt-*.png, skin colours in SKINS).
 function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
-const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS}};
+const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS},
+                     black: {base: 'black', palette: () => SKINS}};   // Fraggle's Black Guard (art/black-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
@@ -84,6 +85,11 @@ function artResolve(ent, kind){
     const pose = kind === 'battle' && {axe: 'troopaxe', lance: 'trooplance', bow: 'troopbow', tome: 'troopbook'}[ent.w || CLASSES[cls]?.w];
     if (pose && ART[pose + fur]?.[kind]) return pose + fur;
   }
+  if (sp.base === 'black'){
+    // Fraggle's Black Guard: one portrait and map icon, and a battle pose for each weapon (art/black<weapon>-battle.png; swords use black-battle.png)
+    const pose = kind === 'battle' && {axe: 'blackaxe', lance: 'blacklance', tome: 'blackbook', staff: 'blackstaff'}[ent.w || CLASSES[cls]?.w];
+    if (pose && ART[pose + fur]?.[kind]) return pose + fur;
+  }
   if (sp.base === 'grunt'){
     // ★★ frog soldiers wear red (elite) armour: art built from art/grunt*armour-*.png at load
     const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
@@ -114,6 +120,7 @@ function artImage(ent, kind){
 //                    nose, eyes); the rest of the warm fur is recoloured. Republic soldiers (troop*) work the same
 //                    way: art/troop*mask-<kind>.png keeps the armour, cloth, leather, weapons and ear linings.
 //   grunt (frogs):   art/gruntskin-<kind>.png marks the skin to recolour (the head); armour, cloak,
+//                    (Fraggle's Black Guard, black*, likewise from art/black*skin-<kind>.png)
 //                    plume and banner stay as drawn.
 let furReady = false;
 function rgbToHsl(r, g, b){
@@ -198,7 +205,8 @@ async function buildFurVariants(){
   });
   // Elite (★★) frog art: the green armour, cloak, plume and banner turned red, before the skin colours.
   for (const base of ['grunt', 'gruntbow']) await buildEliteArmour(base);
-  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite']) await buildVariants(base, SKINS, async (kind, px, W, H) => {
+  // Fraggle's Black Guard (black*) recolour the same way, from art/black*skin-<kind>.png.
+  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', 'black', 'blackaxe', 'blacklance', 'blackbook', 'blackstaff']) await buildVariants(base, SKINS, async (kind, px, W, H) => {
     const skin = await maskAlpha(ART[base.replace('elite', '') + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
