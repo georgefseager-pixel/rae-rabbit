@@ -273,6 +273,9 @@ document.addEventListener('click', e => {
       // everyone the story brings into this army (stage rewards and mid-battle joins), if not already there
       const st = SAVE.camps[ck], keys = CAMPAIGNS[ck].stages.flatMap(sg => [...(sg.reward?.joins || []), ...(sg.events || []).map(e => e.join).filter(Boolean)]);
       for (const key of new Set(keys)) if (CHARACTERS[key] && !st.roster.some(r => r.key === key)) st.roster.push(recordFor(key));
+      // story progress so far: chapter outfits and renames, in order (Rae Rabbit, Flopsy Flora and their new clothes)
+      for (const sg of CAMPAIGNS[ck].stages){ if (sg.stub) continue; applyOutfits(ck, sg.chapter.outfits);
+        if (sg.rename) applyRename(ck, sg.rename); for (const l of sg.pre || []) if (l.rename) applyRename(ck, l.rename); }
       for (const sg of CAMPAIGNS[ck].stages){ grantStoryWeapons(ck, sg.reward?.weapons); for (const l of sg.pre || []){ if (l.arm) grantStoryWeapons(ck, l.arm); if (l.attire) grantAttires(ck, l.attire); } }
     }
     saveGame();
