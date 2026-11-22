@@ -189,13 +189,13 @@ const SUPPORTS = {
         sL('biggle', "The King made me do a thousand, when we were tadpoles. Count yourself lucky I'm soft-hearted."),
       ],
       B: [
-        sL('tiggle', "Biggle, did you ever want to be anything else? Not a commander, not the King's eldest. Just… something else."),
+        sL('tiggle', "Biggle, did you ever want to be anything else? Not a commander, not the King's right hand. Just… something else."),
         sL('biggle', "No."),
         sL('tiggle', "Never? Not even when you were small?"),
         sL('biggle', "…When I was small I wanted to keep frogspawn in a jar and watch them grow legs. Friggle said a prince doesn't stare at jars."),
-        sL('biggle', "So I stopped. Someone has to be order, little brother. When the eldest wants things, the kingdom wobbles."),
+        sL('biggle', "So I stopped. Someone has to be order, little brother. Friggle wears the crown, so I hold everything else up. When the King's brother wants things, the kingdom wobbles."),
         sL('tiggle', "That's very sad."),
-        sL('biggle', "It's very necessary. Wanting things is for younger brothers. That's what you're for."),
+        sL('biggle', "It's very necessary. Wanting things is for the youngest. That's what you're for."),
         sT('tiggle', "He said it like a joke. I don't think it was one."),
       ],
       A: [
