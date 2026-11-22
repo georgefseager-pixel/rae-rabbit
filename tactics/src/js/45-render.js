@@ -7,8 +7,13 @@ function resize(){
   if (!B) return;
   const r = boardEl.getBoundingClientRect();
   if (!r.width || !r.height) return;
-  T = Math.max(20, Math.floor(Math.min(r.width/COLS, r.height/ROWS)));
-  dpr = Math.min(3, window.devicePixelRatio || 1);
+  const fit = Math.min(r.width/COLS, r.height/ROWS);
+  // bigger maps start zoomed in to comfortable tiles (about 44px); small maps fit the screen
+  if (mapZoom == null) mapZoom = clamp(44/fit, 1, 2.2);
+  T = Math.max(20, Math.floor(fit*mapZoom));
+  // cap the canvas size (phones refuse very large canvases)
+  dpr = Math.min(3, window.devicePixelRatio || 1, Math.sqrt(12e6/(COLS*T*ROWS*T)));
+  refreshZoomButtons?.();
   cvs.width = COLS*T*dpr; cvs.height = ROWS*T*dpr;
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
@@ -279,20 +284,25 @@ function render(now){
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   if (banner){
-    const F = FACTIONS[banner.f], W = COLS*T, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
-    const h = T*1.9, y = ROWS*T/2 - h/2, slide = (1 - a)*W*.15*(t < .5 ? -1 : 1);
-    ctx.globalAlpha = a*.55; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, ROWS*T);
+    // drawn across the part of the map that's on screen (the map can be zoomed and scrolled)
+    const vw = Math.min(COLS*T, mapView.clientWidth), vh = Math.min(ROWS*T, mapView.clientHeight);
+    const vx = clamp(mapView.scrollLeft - cvs.offsetLeft, 0, COLS*T - vw), vy = clamp(mapView.scrollTop - cvs.offsetTop, 0, ROWS*T - vh);
+    const bT = Math.min(T, vw/8, vh/6);   // the banner's own scale, so it fits the view at any zoom
+    const F = FACTIONS[banner.f], W = vw, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
+    const h = bT*1.9, y = vh/2 - h/2, slide = (1 - a)*W*.15*(t < .5 ? -1 : 1);
+    ctx.globalAlpha = a*.55; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, COLS*T, ROWS*T);
+    ctx.save(); ctx.translate(vx, vy);
     ctx.globalAlpha = a; ctx.save(); ctx.translate(slide, 0);
     tornBand(y, h, W, F.band, banner.f.length);
-    ctx.save(); ctx.setLineDash([T*.12, T*.08]); ctx.lineWidth = 1.5; ctx.strokeStyle = F.stitch;
-    ctx.beginPath(); ctx.moveTo(0, y + T*.18); ctx.lineTo(W, y + T*.18); ctx.moveTo(0, y + h - T*.18); ctx.lineTo(W, y + h - T*.18); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.setLineDash([bT*.12, bT*.08]); ctx.lineWidth = 1.5; ctx.strokeStyle = F.stitch;
+    ctx.beginPath(); ctx.moveTo(0, y + bT*.18); ctx.lineTo(W, y + bT*.18); ctx.moveTo(0, y + h - bT*.18); ctx.lineTo(W, y + h - bT*.18); ctx.stroke(); ctx.restore();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.font = `${Math.round(Math.min(T*.62, W/(banner.text.length*.62)))}px 'Saira Stencil One', Impact, sans-serif`;
+    ctx.font = `${Math.round(Math.min(bT*.62, W/(banner.text.length*.62)))}px 'Saira Stencil One', Impact, sans-serif`;
     ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillText(banner.text, W/2 + 2, y + h*.42 + 3);
     ctx.fillStyle = F.text; ctx.fillText(banner.text, W/2, y + h*.42);
-    ctx.font = `italic ${Math.round(T*.32)}px 'IM Fell English', Georgia, serif`; ctx.fillStyle = F.sub;
+    ctx.font = `italic ${Math.round(bT*.32)}px 'IM Fell English', Georgia, serif`; ctx.fillStyle = F.sub;
     ctx.fillText(banner.sub, W/2, y + h*.74);
-    ctx.restore(); ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1;
+    ctx.restore(); ctx.restore(); ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1;
   }
 }
 function frame(now){

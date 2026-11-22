@@ -49,7 +49,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 
 /* ---- board ---- */
 #board{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
-#cv{display:block;border-radius:10px;touch-action:none;
+#cv{display:block;border-radius:10px;touch-action:pan-x pan-y;margin:auto;flex:none;
   box-shadow:0 0 0 4px #2a1c15, 0 0 0 5px rgba(201,151,63,.55), 0 0 0 9px #1a110d, 0 22px 50px rgba(0,0,0,.7)}
 
 /* ---- banner panel ---- */
@@ -611,6 +611,24 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .whold.swap{color:#a9c8f0}
 .wgets{font-size:10px;color:var(--muted);text-align:right;max-width:110px}
 
+/* scrollable, zoomable map */
+#mapView{position:absolute;inset:0;overflow:auto;display:flex;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+#mapView::-webkit-scrollbar{display:none}
+#zoomCtl{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:3}
+#zoomCtl .btn{width:40px;height:40px;min-height:40px;padding:0;font-size:22px;line-height:1;opacity:.88}
+#zoomCtl .btn:disabled{opacity:.35}
+
+/* dialogue diagrams */
+.tdiag{position:absolute;left:0;right:0;margin:0 auto;top:max(56px, calc(env(safe-area-inset-top, 0px) + 46px));width:min(92vw,360px);z-index:4;
+  background:linear-gradient(180deg,rgba(33,40,68,.96),rgba(22,27,48,.96));border-radius:14px;padding:12px 12px 10px;box-sizing:border-box;
+  outline:1.5px dashed var(--thread);outline-offset:-6px;box-shadow:0 0 0 2px var(--brass),0 18px 40px rgba(0,0,0,.6);animation:up .4s both}
+.tdiag svg{display:block;width:100%;height:auto}
+.tdiag text{fill:#efe3c8;font:600 13px var(--body, sans-serif);letter-spacing:.06em}
+.tdiag .darr path{stroke:#ecc673;stroke-width:3;fill:none}
+.tdiag .dsep{stroke:rgba(239,227,200,.25);stroke-width:1.5;stroke-dasharray:4 4}
+.dtitle{font-family:var(--fell);font-size:16px;color:var(--brass-hi);text-align:center;letter-spacing:.06em;margin-bottom:2px}
+.dnote{font-size:12px;color:#d8cdb4;text-align:center;margin-top:4px}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -622,7 +640,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
     <button class="btn" id="dangerBtn" type="button">Danger</button>
     <button class="btn primary" id="endBtn" type="button">End Turn</button>
   </div>
-  <div id="board"><canvas id="cv"></canvas>
+  <div id="board"><div id="mapView"><canvas id="cv"></canvas></div>
+    <div id="zoomCtl"><button class="btn icon" id="zoomOut" type="button" aria-label="Zoom out">−</button><button class="btn icon" id="zoomIn" type="button" aria-label="Zoom in">+</button></div>
     <div id="duel" hidden>
       <div class="arena"><div class="ground"></div>
         <div class="ftr L" id="dL"><div class="pf"></div><div class="pop"></div></div>
@@ -677,6 +696,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   <div class="sbg" id="sbg"></div>
   <div class="splace" id="splace"></div>
   <div class="actor L" id="actorL"></div><div class="actor R" id="actorR"></div>
+  <div class="tdiag" id="tdiag" hidden></div>
   <div class="tcard" id="tcard" hidden><div class="tc1" id="tc1"></div><div class="tc2" id="tc2"></div></div>
   <div class="tbox" id="tboxWrap"><div class="tpor" id="tpor"></div><div class="tname" id="tname"></div>
     <div class="tbody" id="tbody"><div class="ttext" id="ttext"></div><div class="tmore">▼</div></div></div>
@@ -1337,7 +1357,7 @@ const CLASSES = {
   runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
-  scholar:   {name: 'Scholar',        w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Names',     base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},   // magic: tomes reach 1–2 tiles
+  scholar:   {name: 'Scholar',        w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Names',     base: {mhp:17,atk:10,def:2, spd:7,skl:8,mov:5}, g: {mhp:45,atk:50,def:10,spd:45,skl:55}},   // magic: tomes reach 1–2 tiles; scholars are soft-stitched (low HP and Def), so keep them behind the line
   // Frogs
   prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Blade',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
   lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
@@ -1424,7 +1444,7 @@ const CHARACTERS = {
   patched: {name:'Patched Rabbit', rarity:1, fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   sister:  {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp', cls:'patcher', wname:'Sewing Needle', lv:2,   // joins mid-battle in R1-4; Flopsy Flora from Chapter Two
             stats:{mhp:17,atk:5,def:2,spd:8,skl:6,mov:5}, retort:'I\'m not scared of you! …Much.'},
-  willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
+  willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:19,atk:12,def:2,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
   // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; placeholder:true ones have no art yet.
@@ -1898,6 +1918,7 @@ function portraitInner(ent, where = 'panel'){
 
 // ---------------- 20-data-maps.js ----------------
 // ================= Terrain & maps =================
+// Maps can be any size; anything bigger than the screen scrolls and zooms in battle.
 // Legend: . open ground  F light cover  M heavy cover  W river  B bridge  T fort (heals)  X wall
 // The rules for each letter are the same everywhere; a map's theme changes how it looks and what it is called.
 const TER = {
@@ -2031,6 +2052,25 @@ const MAPS = {
     ".F..F...",
     "..T....F",
     "F......M"]},
+  // Chapter Two, stage 1: a river through the deep woods, one bridge. Bigger than the Chapter One maps (zoom/pan).
+  riverWoods: {theme: 'meadow', names: {'F': ['Felt Forest', 'Old felt trees, thick with moss. Good cover.'], 'M': ['Mossy Rocks', 'Stuffed boulders, slippery with moss. Hard going, harder to hit.']}, rows: [
+    'F.F..MF.FF',
+    '.F..F...F.',
+    'F...F.F..F',
+    '..F.....F.',
+    'F..F.FM...',
+    '.F......F.',
+    '..F..F....',
+    'WWWWWWWBWW',
+    '.F.....F..',
+    'F..F.F...F',
+    '..F...F.F.',
+    '.F..F.....',
+    'F...F..F.F',
+    '.F.F......',
+    'F........F',
+    'FF.F..F.FF',
+  ]},
 };
 let mapDef = null;   // the map being played (set by the battle engine)
 const tileInfo = ch => (mapDef?.names?.[ch]) || THEMES[mapDef?.theme || 'meadow'][ch];
@@ -2064,6 +2104,8 @@ function validateMaps(){
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
 //   reward.weapons  story weapons: [{id, to}] (see 12-data-weapons.js), handed to that character
+//   twist         {talk, objective, units, popup}: when a survive objective is met, the scene plays, the units
+//                 arrive, and the battle goes on with the new objective (e.g. survive, then rout)
 //   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
 //                 at the start of that player turn the character runs onto the field, the lines play, and they fight
 //                 for you; they join the army if the battle is won (skipped if they're already in the army)
@@ -2081,6 +2123,8 @@ function validateMaps(){
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
+//   {who, text, show:'triangle'}                show a diagram above the text (DIAGRAMS in 50-dialogue.js)
+//   {rename: {key: 'Name'}} / {arm: [{id, to}]} rename a character / hand out story weapons mid-scene
 //   any line can carry if:'flag' or unless:'flag'
 // Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}, elite?}
 //   elite: a tougher ★★ soldier: red armour on generic frog art, plus the ★★ stat bonus
@@ -2267,10 +2311,7 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'See? I told you I could help.'},
             {who: 'rae', text: 'You did. Don\'t you dare do it again.'},
             {who: 'sister', text: 'No promises.'},
-            {who: 'narr', text: 'In the overseer\'s tower, a sword hangs above Rhubarb\'s desk. Taken, the guards used to boast, from the last rabbit who ever fought back.'},
-            {who: 'rae', text: 'Then it\'s going back to the rabbits. Last Stand. That\'s what it\'s called now.'},
-            {who: 'sister', text: 'And I\'m having her sewing box. Look, the needles are silver!'},
-            {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Little Sister takes the Silver Needle.'},
+            {who: 'narr', text: 'On the way out, Rae takes the sword that hung above Rhubarb\'s desk. Little Sister takes the overseer\'s sewing box.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
             {who: 'rae', text: 'Let them come.'},
             {scene: 'yard', place: 'The Camp Gate · Night'},
@@ -2297,15 +2338,94 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['willow', 'sister'], weapons: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
+          reward: {res: 500, joins: ['sister']},
         },
       ]},
-      // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
-      // Give the chapter outfits: {rae: ''} so she switches back to the uniform art (art/rae-portrait.png, rae-battle.png).
-      // Little Sister gets her name in Chapter Two: Flopsy Flora, with her new design. Her art is ready as the 'flora'
-      // outfit (art/sisterflora-*.png; she keeps her map icon). Give the chapter outfits: {rae: '', sister: 'flora'},
-      // and rename her with rename: {sister: 'Flopsy Flora'} on the stage where she takes the name.
-      {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', stub: true, brief: 'Still to be written.'},
+      // Chapter Two: Rae in her Republic uniform (outfit '' = art/rae-*.png), Little Sister as Flopsy Flora ('flora').
+      {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', outfits: {rae: '', sister: 'flora'},
+       enemyMods: {mhp: -2, atk: -1},
+       more: 'The rest of Chapter Two is still to be written.', stages: [
+
+        // ---------------- Stage 1 ----------------
+        {
+          id: 'R2-1', title: 'Ambush at the River', map: 'riverWoods', enemyFaction: 'frog',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'survive', turns: 3}, maxDeploy: 6,
+          deploy: [[4,13],[5,13],[3,14],[6,14],[4,14],[5,14],[2,13],[7,13]],
+          brief: 'Deep in the woods, on the way to the Republic, frogs spring an ambush at the river. Hold out until it breaks.',
+          // Willow fights with you from the first turn (she joins the army for good after this battle)
+          events: [{turn: 1, join: 'willow', at: [5, 12], mustSurvive: true, talk: [
+            {who: 'willow', text: 'Archers on the far bank, blades coming round the sides. Keep me off the open bank and I\'ll show you what I meant.'},
+            {who: 'rae', text: 'Stay behind us, then, Scholar. Everyone else, make a wall!'},
+          ]}],
+          enemies: () => [
+            E('reed',2,1,6,'guard'), E('reed',2,4,6,'guard'), E('lily',2,6,6), E('bruiser',2,2,5),
+            E('bruiser',2,0,10), E('blade',2,9,9),
+          ],
+          reinforce: () => [
+            {turn: 2, units: [E('lily',2,8,4), E('reed',2,6,5,'guard'), E('bruiser',2,0,14)]},
+            {turn: 3, units: [E('blade',3,9,12), E('lily',2,3,3)]},
+          ],
+          // after three turns the ambush breaks, and Rae decides nobody leaves the river
+          twist: {objective: {type: 'rout'}, popup: 'Scouts!', units: [E('blade',3,4,0), E('reed',3,6,1,'guard'), E('blade',3,8,0,'charge',{elite: true})], talk: [
+            {who: 'narr', text: 'The ambush breaks against the bank. On the far side of the river, a frog scout turns and runs for the trees.'},
+            {who: 'willow', text: 'They\'re not here to kill us. They\'re following us. They want us to lead them to the Republic!'},
+            {who: 'willow', text: 'We have to run. Now, before more of them come.'},
+            {who: 'rae', text: 'No.'},
+            {who: 'rae', text: 'If we run, they follow. If even one of them gets back to their lines, everyone we\'re running to is in danger.'},
+            {who: 'rae', text: 'We can\'t lead them to the Republic. So nobody leaves this river. We stop them here, and now.'},
+            {who: 'sister', text: 'Rae…'},
+            {who: 'rabbits', text: '…You heard her. Rae Rabbit! Rae Rabbit!'},
+            {who: 'willow', thought: true, text: 'Ha. There it is.'},
+            {who: 'willow', text: 'You heard her! Not one of them leaves these woods!'},
+          ]},
+          pre: [
+            {card: 'Chapter Two', sub: 'Into the Woods'},
+            {scene: 'woods', place: 'The Deep Woods · Morning'},
+            {who: 'narr', text: 'Two days\' walk from the mines, Willow\'s people meet them on the trail with bundles of new clothes.'},
+            {who: 'sister', text: 'Look! LOOK! Flowers! Real stitched flowers, all down the sleeves!'},
+            {who: 'willow', text: 'In the mines, rabbits get tags. In the Republic, rabbits choose their names. Have you chosen yours, little one?'},
+            {who: 'sister', text: 'Flopsy. No: Flopsy Flora. Because of the flowers.'},
+            {rename: {sister: 'Flopsy Flora'}},
+            {who: 'sister', text: 'Flopsy Flora! Say it, Rae!'},
+            {who: 'rae', text: 'Flopsy Flora. It suits you.'},
+            {who: 'narr', text: 'Rae\'s new coat is Republic blue and red, stitched with its mark. It fits as if it were made for her. Perhaps it was.'},
+            {who: 'rae', thought: true, text: 'Good cloth. Warm. Old Rabbit never had a coat like this.'},
+            {who: 'rae', thought: true, text: 'The frogs would have had the yard by dawn. Whoever stayed behind…'},
+            {who: 'willow', text: 'And these. You carried them out of the mines. Now carry them properly.'},
+            {who: 'narr', text: 'The sword from above Rhubarb\'s desk: taken, the guards used to boast, from the last rabbit who ever fought back.'},
+            {who: 'rae', text: 'Then it goes back to the rabbits. Last Stand. That\'s its name now.'},
+            {who: 'sister', text: 'And the silver needle\'s mine! I\'m going to sew everybody up. Properly.'},
+            {arm: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
+            {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Flopsy Flora takes the Silver Needle.'},
+            {who: 'rae', text: 'Why go to all this trouble, Willow? For a few mine workers. You could have left us.'},
+            {who: 'willow', text: 'The Republic can\'t win on numbers. The Friggliarchy has more frogs than we have buttons.'},
+            {who: 'willow', text: 'It needs a hero. And heroes can come from anywhere, even a mine. Finding them is my job.'},
+            {who: 'rae', text: 'And you think I\'m one.'},
+            {who: 'willow', text: 'I think you have talent. Talent without discipline gets rabbits unstitched. So: a lesson.'},
+            {who: 'willow', show: 'triangle', text: 'Swords beat axes. Axes beat lances. Lances beat swords. Pick your fights by what the enemy carries.'},
+            {who: 'willow', show: 'triangle', text: 'And a tome beats a bow. Words reach further than stones, and no archer can dodge an idea.'},
+            {who: 'willow', text: 'But those of us who read are soft-stitched. A tome hits hard and from two tiles away, and that is all it does well.'},
+            {who: 'willow', text: 'Keep your readers behind the line, and keep blades between us and theirs.'},
+            {who: 'rae', text: '…Protect the bookworm. Got it.'},
+            {who: 'willow', text: 'Protect the Scholar.'},
+            {who: 'narr', text: 'A twig snaps. Then another. On the far bank of the river, green helmets move between the trees.'},
+            {who: 'willow', text: 'We\'ve been followed. Frogs!'},
+            {who: 'rae', text: 'Ambush! Everyone, to me!'},
+          ],
+          post: [
+            {who: 'narr', text: 'The river runs quiet again. Not a single frog made it back through the trees.'},
+            {who: 'rabbits', text: 'She didn\'t run. She didn\'t even think about running.'},
+            {who: 'sister', text: 'She never does.'},
+            {who: 'willow', text: 'Rae Rabbit. Do you know how many rabbits I\'ve watched take the safe road?'},
+            {who: 'rae', text: 'Was I wrong?'},
+            {who: 'willow', text: 'You were right. And you had a whole band of frightened rabbits follow you across a river to prove it.'},
+            {who: 'willow', thought: true, text: 'Talent. Nerve. And they follow her without being asked. Oh, the Republic is going to like her.'},
+            {who: 'willow', text: 'Come. Camp\'s a day\'s walk east. And this time, nobody is following us.'},
+          ],
+          reward: {res: 500},
+        },
+      ]},
     ],
   },
 
@@ -2492,7 +2612,9 @@ const CAMPAIGNS = {
 for (const camp of Object.values(CAMPAIGNS)){
   camp.stages = camp.chapters.flatMap((c, ci) => c.stub
     ? [{id: c.id + '-stub', title: c.name, stub: true, brief: c.brief, requires: c.requires, chapter: c, ci, si: 0}]
-    : c.stages.map((s, si) => Object.assign(s, {chapter: c, ci, si})));
+    : [...c.stages.map((s, si) => Object.assign(s, {chapter: c, ci, si})),
+       // more: a chapter that's only partly written ends with a placeholder
+       ...(c.more ? [{id: c.id + '-more', title: 'To be continued', stub: true, brief: c.more, chapter: c, ci, si: c.stages.length}] : [])]);
 }
 
 // ---------------- 26-data-gacha.js ----------------
@@ -2954,7 +3076,8 @@ function freeTileNear(x, y){
 function runBattle(campKey, ch, records){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
-       events: (ch.events || []).filter(ev => !ev.join || !SAVE.camps[campKey].roster.some(r => r.key === ev.join)).map(ev => ({...ev}))};
+       objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
+       events: (ch.events || []).map(ev => ({...ev}))};
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
@@ -2967,7 +3090,8 @@ function runBattle(campKey, ch, records){
   }));
   turn = 1; phase = 'p'; clearSel(); inspect = null; showDanger = false; cursor = null; updateDanger();
   $('#panel').className = 'f-' + B.pf;
-  showScreen('app'); resize(); refreshTop();
+  mapZoom = null; showScreen('app'); resize(); refreshTop();
+  const lord = units.find(u => u.team === 'p' && u.lord) || units.find(u => u.team === 'p'); if (lord) focusOn(lord.x, lord.y, true);
   return new Promise(res => { B.resolve = res; startPlayerPhase(); });
 }
 function finishBattle(win, retreated = false, reason = ''){
@@ -3194,7 +3318,7 @@ async function levelUp(u){
 // ---------- Panel ----------
 function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>`; }
 function objectiveText(){
-  const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
+  const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
   const must = [lord, ...units.filter(u => u.team === 'p' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
@@ -3360,7 +3484,7 @@ async function fortHeal(t){
   await wait(300);
 }
 async function startPlayerPhase(){
-  const ob = B.ch.objective;
+  const ob = B.objective;
   if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
@@ -3377,8 +3501,11 @@ async function battleEvents(){
     if (ev.done || ev.turn !== turn || B.done) continue;
     ev.done = true;
     if (ev.join){
-      const u = battleUnit(recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
-      const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u);
+      if (units.some(u => u.team === 'p' && u.key === ev.join && !u.dead)) continue;   // already deployed
+      // someone already in the army (and standing) runs in as themselves; otherwise they're new
+      const have = SAVE.camps[B.campKey].roster.find(r => r.key === ev.join && !r.dead);
+      const u = battleUnit(have || recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
+      const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u); focusOn(tx, ty);
       // run in from beyond the edge of the map
       const fy = ROWS + .6;
       for (let s = 0; s < 3; s++) setTimeout(() => Sfx.play('step'), s*110);
@@ -3390,13 +3517,28 @@ async function battleEvents(){
     if (ev.talk) await talk(ev.talk);
   }
 }
+// A stage's twist (see `twist` in 25-data-campaign.js): once a survive objective is met, a scene plays,
+// fresh enemies may arrive, and the battle goes on with a new objective.
+async function runTwist(){
+  const tw = B.twist; tw.done = true;
+  if (tw.talk) await talk(tw.talk);
+  let first = true;
+  for (const sp of tw.units || []){
+    const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
+    if (first){ focusOn(u.x, u.y); popup(u, tw.popup || 'More of them!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
+    tween(400, t => { u.alpha = t; });
+  }
+  if (tw.units?.length) await wait(700);
+  B.objective = {...tw.objective};
+  refreshTop(); panelIdle();
+}
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
   let first = true;
   for (const sp of wave.units){
     const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
-    if (first){ popup(u, 'Reinforcements!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
+    if (first){ focusOn(u.x, u.y); popup(u, 'Reinforcements!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
     tween(400, t => { u.alpha = t; });
   }
   await wait(700);
@@ -3412,8 +3554,11 @@ async function enemyPhase(){
     await aiAct(e);
     if (checkEnd()) return;
   }
-  const ob = B.ch.objective;
-  if (ob.type === 'survive' && turn >= ob.turns){ finishBattle(true); return; }
+  const ob = B.objective;
+  if (ob.type === 'survive' && turn >= ob.turns){
+    if (B.twist && !B.twist.done) await runTwist();   // the story turns: a new objective
+    else { finishBattle(true); return; }
+  }
   turn++; busy = false;
   startPlayerPhase();
 }
@@ -3452,6 +3597,7 @@ async function aiHeal(e){
   inspect = null; await doHeal(e, best.a);
 }
 async function aiAct(e){
+  focusOn(e.x, e.y);
   if (e.ai === 'guard' && !e.triggered){
     const th = e.w === 'staff' ? rangeTiles(destinations(e, reach(e)), [1, 2]) : threat(e);
     if (team('p').some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
@@ -3497,14 +3643,50 @@ function checkEnd(){
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
   const vip = units.find(u => u.team === 'p' && u.vip && u.dead);
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
-  const ob = B.ch.objective, boss = units.find(u => u.boss);
+  const ob = B.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
-  if (!team('e').length && !(ob.type === 'survive' && wavesLeft)){ finishBattle(true); return true; }
+  if (!team('e').length && !(ob.type === 'survive' && (wavesLeft || (B.twist && !B.twist.done)))){ finishBattle(true); return true; }
   return false;
 }
 
 // ---------- Input ----------
+// ---------- Zoom and pan (bigger maps) ----------
+// The map sits in a scrolling viewport: drag to pan, pinch / ctrl+wheel / the +/− buttons to zoom.
+let mapZoom = null;   // 1 = the whole map fits; null = choose a comfortable zoom when the battle starts
+const mapView = $('#mapView');
+function setZoom(z, cx, cy){
+  const r = mapView.getBoundingClientRect(), T0 = T;
+  // keep the point under (cx, cy) (or the view centre) in place
+  const px = cx ?? r.width/2, py = cy ?? r.height/2;
+  const mx = (mapView.scrollLeft + px - cvs.offsetLeft)/T0, my = (mapView.scrollTop + py - cvs.offsetTop)/T0;
+  mapZoom = clamp(z, 1, 3.2); resize();
+  mapView.scrollLeft = mx*T + cvs.offsetLeft - px; mapView.scrollTop = my*T + cvs.offsetTop - py;
+  refreshZoomButtons();
+}
+function refreshZoomButtons(){ $('#zoomOut').disabled = (mapZoom || 1) <= 1.001; $('#zoomIn').disabled = mapZoom >= 3.19; }
+// scroll so a tile is comfortably in view
+function focusOn(x, y, instant){
+  if (!B) return;
+  const vw = mapView.clientWidth, vh = mapView.clientHeight, cx = cvs.offsetLeft + (x + .5)*T, cy = cvs.offsetTop + (y + .5)*T, m = T*1.5;
+  const l = mapView.scrollLeft, t = mapView.scrollTop;
+  if (cx - m >= l && cx + m <= l + vw && cy - m >= t && cy + m <= t + vh) return;
+  mapView.scrollTo({left: cx - vw/2, top: cy - vh/2, behavior: instant ? 'auto' : 'smooth'});
+}
+$('#zoomIn').addEventListener('click', () => setZoom((mapZoom || 1)*1.35));
+$('#zoomOut').addEventListener('click', () => setZoom((mapZoom || 1)/1.35));
+mapView.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); setZoom((mapZoom || 1)*Math.exp(-e.deltaY*.01), e.clientX - mapView.getBoundingClientRect().left, e.clientY - mapView.getBoundingClientRect().top); }, {passive: false});
+let pinch = null, pinchRaf = 0;
+const tdist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+mapView.addEventListener('touchstart', e => { if (e.touches.length === 2) pinch = {d: tdist(e.touches), z: mapZoom || 1}; }, {passive: true});
+mapView.addEventListener('touchmove', e => {
+  if (!pinch || e.touches.length !== 2) return;
+  e.preventDefault();
+  const r = mapView.getBoundingClientRect(), z = pinch.z*tdist(e.touches)/pinch.d;
+  const cx = (e.touches[0].clientX + e.touches[1].clientX)/2 - r.left, cy = (e.touches[0].clientY + e.touches[1].clientY)/2 - r.top;
+  cancelAnimationFrame(pinchRaf); pinchRaf = requestAnimationFrame(() => setZoom(z, cx, cy));
+}, {passive: false});
+mapView.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; });
 $('#cv').addEventListener('click', e => {
   const r = $('#cv').getBoundingClientRect();
   const x = Math.floor((e.clientX - r.left)/T), y = Math.floor((e.clientY - r.top)/T);
@@ -3543,8 +3725,13 @@ function resize(){
   if (!B) return;
   const r = boardEl.getBoundingClientRect();
   if (!r.width || !r.height) return;
-  T = Math.max(20, Math.floor(Math.min(r.width/COLS, r.height/ROWS)));
-  dpr = Math.min(3, window.devicePixelRatio || 1);
+  const fit = Math.min(r.width/COLS, r.height/ROWS);
+  // bigger maps start zoomed in to comfortable tiles (about 44px); small maps fit the screen
+  if (mapZoom == null) mapZoom = clamp(44/fit, 1, 2.2);
+  T = Math.max(20, Math.floor(fit*mapZoom));
+  // cap the canvas size (phones refuse very large canvases)
+  dpr = Math.min(3, window.devicePixelRatio || 1, Math.sqrt(12e6/(COLS*T*ROWS*T)));
+  refreshZoomButtons?.();
   cvs.width = COLS*T*dpr; cvs.height = ROWS*T*dpr;
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
@@ -3815,20 +4002,25 @@ function render(now){
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   if (banner){
-    const F = FACTIONS[banner.f], W = COLS*T, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
-    const h = T*1.9, y = ROWS*T/2 - h/2, slide = (1 - a)*W*.15*(t < .5 ? -1 : 1);
-    ctx.globalAlpha = a*.55; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, ROWS*T);
+    // drawn across the part of the map that's on screen (the map can be zoomed and scrolled)
+    const vw = Math.min(COLS*T, mapView.clientWidth), vh = Math.min(ROWS*T, mapView.clientHeight);
+    const vx = clamp(mapView.scrollLeft - cvs.offsetLeft, 0, COLS*T - vw), vy = clamp(mapView.scrollTop - cvs.offsetTop, 0, ROWS*T - vh);
+    const bT = Math.min(T, vw/8, vh/6);   // the banner's own scale, so it fits the view at any zoom
+    const F = FACTIONS[banner.f], W = vw, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
+    const h = bT*1.9, y = vh/2 - h/2, slide = (1 - a)*W*.15*(t < .5 ? -1 : 1);
+    ctx.globalAlpha = a*.55; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, COLS*T, ROWS*T);
+    ctx.save(); ctx.translate(vx, vy);
     ctx.globalAlpha = a; ctx.save(); ctx.translate(slide, 0);
     tornBand(y, h, W, F.band, banner.f.length);
-    ctx.save(); ctx.setLineDash([T*.12, T*.08]); ctx.lineWidth = 1.5; ctx.strokeStyle = F.stitch;
-    ctx.beginPath(); ctx.moveTo(0, y + T*.18); ctx.lineTo(W, y + T*.18); ctx.moveTo(0, y + h - T*.18); ctx.lineTo(W, y + h - T*.18); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.setLineDash([bT*.12, bT*.08]); ctx.lineWidth = 1.5; ctx.strokeStyle = F.stitch;
+    ctx.beginPath(); ctx.moveTo(0, y + bT*.18); ctx.lineTo(W, y + bT*.18); ctx.moveTo(0, y + h - bT*.18); ctx.lineTo(W, y + h - bT*.18); ctx.stroke(); ctx.restore();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.font = `${Math.round(Math.min(T*.62, W/(banner.text.length*.62)))}px 'Saira Stencil One', Impact, sans-serif`;
+    ctx.font = `${Math.round(Math.min(bT*.62, W/(banner.text.length*.62)))}px 'Saira Stencil One', Impact, sans-serif`;
     ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillText(banner.text, W/2 + 2, y + h*.42 + 3);
     ctx.fillStyle = F.text; ctx.fillText(banner.text, W/2, y + h*.42);
-    ctx.font = `italic ${Math.round(T*.32)}px 'IM Fell English', Georgia, serif`; ctx.fillStyle = F.sub;
+    ctx.font = `italic ${Math.round(bT*.32)}px 'IM Fell English', Georgia, serif`; ctx.fillStyle = F.sub;
     ctx.fillText(banner.sub, W/2, y + h*.74);
-    ctx.restore(); ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1;
+    ctx.restore(); ctx.restore(); ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1;
   }
 }
 function frame(now){
@@ -3877,6 +4069,25 @@ window.addEventListener('resize', () => fitActors());
 const NIGHT_LIT = ['quarters', 'ridge'];
 // Where to anchor a backdrop when a tall phone screen crops its sides (default: centre).
 const BG_POS = {ridge: '70% 30%'};
+// Diagrams a line can show with show:'name'.
+const DIAGRAMS = {
+  // the weapon triangle, plus tomes over bows: each arrow points at what it beats
+  triangle(){
+    const ic = (type, x, y, label) => `<g transform="translate(${x - 23} ${y - 23})">${weaponIconSVG({type, stars: 3, name: type}, 46)}</g>
+      <text x="${x}" y="${y < 90 ? y - 30 : y + 38}" text-anchor="middle">${label}</text>`;
+    const arrow = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx/L, uy = dy/L, s = 30, e = 32;
+      return `<path d="M${a[0] + ux*s} ${a[1] + uy*s} L${b[0] - ux*e} ${b[1] - uy*e}" marker-end="url(#dArr)"/>`; };
+    const S = [80, 52], A = [136, 138], Lc = [24, 138], Tm = [238, 52], Bw = [238, 138];
+    return `<div class="dtitle">What beats what</div>
+      <svg viewBox="-8 4 296 182" role="img" aria-label="Swords beat axes, axes beat lances, lances beat swords. Tomes beat bows.">
+        <defs><marker id="dArr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ecc673"/></marker></defs>
+        <g class="darr">${arrow(S, A)}${arrow(A, Lc)}${arrow(Lc, S)}${arrow(Tm, Bw)}</g>
+        ${ic('sword', ...S, 'Sword')}${ic('axe', ...A, 'Axe')}${ic('lance', ...Lc, 'Lance')}${ic('tome', ...Tm, 'Tome')}${ic('bow', ...Bw, 'Bow')}
+        <path d="M188 14 V178" class="dsep"/>
+      </svg>
+      <div class="dnote">The winner gets <b>+1 damage</b> and <b>+15 hit</b>; the loser the opposite.</div>`;
+  },
+};
 function talk(rawLines){
   const lines = linesFor(rawLines);
   if (!lines.length) return Promise.resolve();
@@ -3888,10 +4099,15 @@ function talk(rawLines){
     if (sceneMode) Music.want('story');   // whoever called talk() picks the music that follows
     ov.classList.toggle('scene', sceneMode);
     for (const a of Object.values(actors)){ a.className = a.className.replace(/ on| dim/g, ''); a.innerHTML = ''; }
-    const finish = () => { ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
+    const finish = () => { $('#tdiag').hidden = true; ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
     const show = () => {
       i++; if (i >= lines.length) return finish();
       const l = lines[i];
+      // story actions that happen mid-scene: a new name, new weapons
+      if (l.rename){ applyRename(SAVE.current, l.rename); saveGame(); return show(); }
+      if (l.arm){ grantStoryWeapons(SAVE.current, l.arm); saveGame(); return show(); }
+      // a diagram shown above the text while this line is up (see DIAGRAMS)
+      $('#tdiag').hidden = !l.show; if (l.show) $('#tdiag').innerHTML = DIAGRAMS[l.show]();
       if (l.scene){   // change the backdrop and clear the stage
         $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
         // painted backdrop (art/bg-<scene>.jpg) where there is one; darker for night and dusk scenes
@@ -4678,7 +4894,7 @@ window.claude?.hot?.snapshot?.(() => SAVE ? {save: SAVE} : {});
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
 // Test hook, only with #debug in the address: lets automated checks force a battle result.
 if (location.hash === '#debug') Object.assign(window, {__audio: Audio_, __music: Music, __sfx: Sfx});
-if (location.hash === '#debug') window.RAE_DEBUG = {battle: () => B, tomeTest: () => { const w = units.find(u => u.key === 'willow'), r = units.find(u => u.team === 'e' && u.w === 'bow'), s = units.find(u => u.team === 'e' && u.w !== 'bow'); if (!w || !r) return 'no units'; const at = {x: w.x, y: w.y >= 2 ? w.y - 2 : w.y + 2}, near = {x: w.x, y: w.y >= 1 ? w.y - 1 : w.y + 1}; return {willow: {w: w.w, rng: w.rng, atk: w.atk, wname: w.wname}, vsBowAt2: calc(w, r, w, at), bowBackAt2: calc(r, w, at, w), vsBowAt1: calc(w, r, w, near), bowBackAt1: calc(r, w, near, w), triVsSword: s ? triangle(w.w, s.w) : null}; }, killUnit: key => { const u = units.find(x => x.key === key && x.team === 'p'); if (u){ u.hp = 0; u.dead = true; } }, icons: () => [...['Scrap Blade:sword','Pike:lance','Axe:axe','Longbow:bow','Sling:bow','Lash:bow:lash','Needle:staff','Thimble:staff','Censer:staff'].flatMap(s => { const [name, type, l] = s.split(':'); return [0,1,2,3].map(st => '<div style="color:#eee;font:11px sans-serif;text-align:center">' + weaponIconSVG({name, type, stars: st, lash: !!l}, 72) + '<br>' + name + ' ' + st + '</div>'); })].join(''), win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k), fight: (ak, dk) => { const f = k => units.find(u => !u.dead && u.key === k); return doCombat(f(ak), f(dk)); },
+if (location.hash === '#debug') window.RAE_DEBUG = {battle: () => B, twist: () => runTwist().then(() => { panelIdle(); }), tomeTest: () => { const w = units.find(u => u.key === 'willow'), r = units.find(u => u.team === 'e' && u.w === 'bow'), s = units.find(u => u.team === 'e' && u.w !== 'bow'); if (!w || !r) return 'no units'; const at = {x: w.x, y: w.y >= 2 ? w.y - 2 : w.y + 2}, near = {x: w.x, y: w.y >= 1 ? w.y - 1 : w.y + 1}; return {willow: {w: w.w, rng: w.rng, atk: w.atk, wname: w.wname}, vsBowAt2: calc(w, r, w, at), bowBackAt2: calc(r, w, at, w), vsBowAt1: calc(w, r, w, near), bowBackAt1: calc(r, w, near, w), triVsSword: s ? triangle(w.w, s.w) : null}; }, killUnit: key => { const u = units.find(x => x.key === key && x.team === 'p'); if (u){ u.hp = 0; u.dead = true; } }, icons: () => [...['Scrap Blade:sword','Pike:lance','Axe:axe','Longbow:bow','Sling:bow','Lash:bow:lash','Needle:staff','Thimble:staff','Censer:staff'].flatMap(s => { const [name, type, l] = s.split(':'); return [0,1,2,3].map(st => '<div style="color:#eee;font:11px sans-serif;text-align:center">' + weaponIconSVG({name, type, stars: st, lash: !!l}, 72) + '<br>' + name + ' ' + st + '</div>'); })].join(''), win: () => finishBattle(true), lose: () => finishBattle(false), save: () => SAVE, art: () => ART, artReady: () => furReady, talk: lines => talk(lines), resolve: (e, k) => artResolve(e, k), fight: (ak, dk) => { const f = k => units.find(u => !u.dead && u.key === k); return doCombat(f(ak), f(dk)); },
   duel: (a, d) => { const mk = (e, t) => Object.assign({id: Math.random(), team: t, hp: 20, mhp: 20, atk: 10, def: 3, spd: 5, skl: 5, w: CLASSES[e.cls].w, rng: CLASSES[e.cls].rng, lv: 1}, e);
     B = B || {ch: {}}; if (!MAP.length){ mapDef = MAPS.ford; MAP = mapDef.rows; } showScreen('app'); const A = mk(a, 'p'), D = mk(d, 'e'); A.x = 2; A.y = 6; D.x = 3; D.y = 6; return openDuel(A, D); }};
 

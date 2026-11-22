@@ -23,7 +23,7 @@ const CLASSES = {
   runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
-  scholar:   {name: 'Scholar',        w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Names',     base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},   // magic: tomes reach 1–2 tiles
+  scholar:   {name: 'Scholar',        w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Names',     base: {mhp:17,atk:10,def:2, spd:7,skl:8,mov:5}, g: {mhp:45,atk:50,def:10,spd:45,skl:55}},   // magic: tomes reach 1–2 tiles; scholars are soft-stitched (low HP and Def), so keep them behind the line
   // Frogs
   prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Blade',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
   lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
@@ -110,7 +110,7 @@ const CHARACTERS = {
   patched: {name:'Patched Rabbit', rarity:1, fur:'cream', faction:'rae', cls:'patcher', lv:1, stats:{mhp:16,atk:4,def:2,spd:6,skl:5,mov:5}},
   sister:  {name:'Little Sister', faction:'rae', look:'sister', outfit:'camp', cls:'patcher', wname:'Sewing Needle', lv:2,   // joins mid-battle in R1-4; Flopsy Flora from Chapter Two
             stats:{mhp:17,atk:5,def:2,spd:8,skl:6,mov:5}, retort:'I\'m not scared of you! …Much.'},
-  willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:22,atk:12,def:4,spd:8,skl:11,mov:5}},
+  willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:19,atk:12,def:2,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
   // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; placeholder:true ones have no art yet.

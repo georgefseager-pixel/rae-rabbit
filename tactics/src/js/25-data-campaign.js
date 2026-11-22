@@ -17,6 +17,8 @@
 //   rename        {characterKey: 'New Name'} applied once the pre-battle scene has played
 //   reward        {res, joins:[characterKeys], flags:[...]}
 //   reward.weapons  story weapons: [{id, to}] (see 12-data-weapons.js), handed to that character
+//   twist         {talk, objective, units, popup}: when a survive objective is met, the scene plays, the units
+//                 arrive, and the battle goes on with the new objective (e.g. survive, then rout)
 //   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
 //                 at the start of that player turn the character runs onto the field, the lines play, and they fight
 //                 for you; they join the army if the battle is won (skipped if they're already in the army)
@@ -34,6 +36,8 @@
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
+//   {who, text, show:'triangle'}                show a diagram above the text (DIAGRAMS in 50-dialogue.js)
+//   {rename: {key: 'Name'}} / {arm: [{id, to}]} rename a character / hand out story weapons mid-scene
 //   any line can carry if:'flag' or unless:'flag'
 // Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}, elite?}
 //   elite: a tougher ★★ soldier: red armour on generic frog art, plus the ★★ stat bonus
@@ -220,10 +224,7 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'See? I told you I could help.'},
             {who: 'rae', text: 'You did. Don\'t you dare do it again.'},
             {who: 'sister', text: 'No promises.'},
-            {who: 'narr', text: 'In the overseer\'s tower, a sword hangs above Rhubarb\'s desk. Taken, the guards used to boast, from the last rabbit who ever fought back.'},
-            {who: 'rae', text: 'Then it\'s going back to the rabbits. Last Stand. That\'s what it\'s called now.'},
-            {who: 'sister', text: 'And I\'m having her sewing box. Look, the needles are silver!'},
-            {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Little Sister takes the Silver Needle.'},
+            {who: 'narr', text: 'On the way out, Rae takes the sword that hung above Rhubarb\'s desk. Little Sister takes the overseer\'s sewing box.'},
             {who: 'sister', text: 'What happens now? They\'ll come back. More of them.'},
             {who: 'rae', text: 'Let them come.'},
             {scene: 'yard', place: 'The Camp Gate · Night'},
@@ -250,15 +251,94 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, joins: ['willow', 'sister'], weapons: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
+          reward: {res: 500, joins: ['sister']},
         },
       ]},
-      // NOTE for Chapter Two: it opens with Rae in her new Republic uniform, impressed with its quality.
-      // Give the chapter outfits: {rae: ''} so she switches back to the uniform art (art/rae-portrait.png, rae-battle.png).
-      // Little Sister gets her name in Chapter Two: Flopsy Flora, with her new design. Her art is ready as the 'flora'
-      // outfit (art/sisterflora-*.png; she keeps her map icon). Give the chapter outfits: {rae: '', sister: 'flora'},
-      // and rename her with rename: {sister: 'Flopsy Flora'} on the stage where she takes the name.
-      {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', stub: true, brief: 'Still to be written.'},
+      // Chapter Two: Rae in her Republic uniform (outfit '' = art/rae-*.png), Little Sister as Flopsy Flora ('flora').
+      {id: 'RC2', title: 'Chapter Two', name: 'Into the Woods', outfits: {rae: '', sister: 'flora'},
+       enemyMods: {mhp: -2, atk: -1},
+       more: 'The rest of Chapter Two is still to be written.', stages: [
+
+        // ---------------- Stage 1 ----------------
+        {
+          id: 'R2-1', title: 'Ambush at the River', map: 'riverWoods', enemyFaction: 'frog',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'survive', turns: 3}, maxDeploy: 6,
+          deploy: [[4,13],[5,13],[3,14],[6,14],[4,14],[5,14],[2,13],[7,13]],
+          brief: 'Deep in the woods, on the way to the Republic, frogs spring an ambush at the river. Hold out until it breaks.',
+          // Willow fights with you from the first turn (she joins the army for good after this battle)
+          events: [{turn: 1, join: 'willow', at: [5, 12], mustSurvive: true, talk: [
+            {who: 'willow', text: 'Archers on the far bank, blades coming round the sides. Keep me off the open bank and I\'ll show you what I meant.'},
+            {who: 'rae', text: 'Stay behind us, then, Scholar. Everyone else, make a wall!'},
+          ]}],
+          enemies: () => [
+            E('reed',2,1,6,'guard'), E('reed',2,4,6,'guard'), E('lily',2,6,6), E('bruiser',2,2,5),
+            E('bruiser',2,0,10), E('blade',2,9,9),
+          ],
+          reinforce: () => [
+            {turn: 2, units: [E('lily',2,8,4), E('reed',2,6,5,'guard'), E('bruiser',2,0,14)]},
+            {turn: 3, units: [E('blade',3,9,12), E('lily',2,3,3)]},
+          ],
+          // after three turns the ambush breaks, and Rae decides nobody leaves the river
+          twist: {objective: {type: 'rout'}, popup: 'Scouts!', units: [E('blade',3,4,0), E('reed',3,6,1,'guard'), E('blade',3,8,0,'charge',{elite: true})], talk: [
+            {who: 'narr', text: 'The ambush breaks against the bank. On the far side of the river, a frog scout turns and runs for the trees.'},
+            {who: 'willow', text: 'They\'re not here to kill us. They\'re following us. They want us to lead them to the Republic!'},
+            {who: 'willow', text: 'We have to run. Now, before more of them come.'},
+            {who: 'rae', text: 'No.'},
+            {who: 'rae', text: 'If we run, they follow. If even one of them gets back to their lines, everyone we\'re running to is in danger.'},
+            {who: 'rae', text: 'We can\'t lead them to the Republic. So nobody leaves this river. We stop them here, and now.'},
+            {who: 'sister', text: 'Rae…'},
+            {who: 'rabbits', text: '…You heard her. Rae Rabbit! Rae Rabbit!'},
+            {who: 'willow', thought: true, text: 'Ha. There it is.'},
+            {who: 'willow', text: 'You heard her! Not one of them leaves these woods!'},
+          ]},
+          pre: [
+            {card: 'Chapter Two', sub: 'Into the Woods'},
+            {scene: 'woods', place: 'The Deep Woods · Morning'},
+            {who: 'narr', text: 'Two days\' walk from the mines, Willow\'s people meet them on the trail with bundles of new clothes.'},
+            {who: 'sister', text: 'Look! LOOK! Flowers! Real stitched flowers, all down the sleeves!'},
+            {who: 'willow', text: 'In the mines, rabbits get tags. In the Republic, rabbits choose their names. Have you chosen yours, little one?'},
+            {who: 'sister', text: 'Flopsy. No: Flopsy Flora. Because of the flowers.'},
+            {rename: {sister: 'Flopsy Flora'}},
+            {who: 'sister', text: 'Flopsy Flora! Say it, Rae!'},
+            {who: 'rae', text: 'Flopsy Flora. It suits you.'},
+            {who: 'narr', text: 'Rae\'s new coat is Republic blue and red, stitched with its mark. It fits as if it were made for her. Perhaps it was.'},
+            {who: 'rae', thought: true, text: 'Good cloth. Warm. Old Rabbit never had a coat like this.'},
+            {who: 'rae', thought: true, text: 'The frogs would have had the yard by dawn. Whoever stayed behind…'},
+            {who: 'willow', text: 'And these. You carried them out of the mines. Now carry them properly.'},
+            {who: 'narr', text: 'The sword from above Rhubarb\'s desk: taken, the guards used to boast, from the last rabbit who ever fought back.'},
+            {who: 'rae', text: 'Then it goes back to the rabbits. Last Stand. That\'s its name now.'},
+            {who: 'sister', text: 'And the silver needle\'s mine! I\'m going to sew everybody up. Properly.'},
+            {arm: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
+            {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Flopsy Flora takes the Silver Needle.'},
+            {who: 'rae', text: 'Why go to all this trouble, Willow? For a few mine workers. You could have left us.'},
+            {who: 'willow', text: 'The Republic can\'t win on numbers. The Friggliarchy has more frogs than we have buttons.'},
+            {who: 'willow', text: 'It needs a hero. And heroes can come from anywhere, even a mine. Finding them is my job.'},
+            {who: 'rae', text: 'And you think I\'m one.'},
+            {who: 'willow', text: 'I think you have talent. Talent without discipline gets rabbits unstitched. So: a lesson.'},
+            {who: 'willow', show: 'triangle', text: 'Swords beat axes. Axes beat lances. Lances beat swords. Pick your fights by what the enemy carries.'},
+            {who: 'willow', show: 'triangle', text: 'And a tome beats a bow. Words reach further than stones, and no archer can dodge an idea.'},
+            {who: 'willow', text: 'But those of us who read are soft-stitched. A tome hits hard and from two tiles away, and that is all it does well.'},
+            {who: 'willow', text: 'Keep your readers behind the line, and keep blades between us and theirs.'},
+            {who: 'rae', text: '…Protect the bookworm. Got it.'},
+            {who: 'willow', text: 'Protect the Scholar.'},
+            {who: 'narr', text: 'A twig snaps. Then another. On the far bank of the river, green helmets move between the trees.'},
+            {who: 'willow', text: 'We\'ve been followed. Frogs!'},
+            {who: 'rae', text: 'Ambush! Everyone, to me!'},
+          ],
+          post: [
+            {who: 'narr', text: 'The river runs quiet again. Not a single frog made it back through the trees.'},
+            {who: 'rabbits', text: 'She didn\'t run. She didn\'t even think about running.'},
+            {who: 'sister', text: 'She never does.'},
+            {who: 'willow', text: 'Rae Rabbit. Do you know how many rabbits I\'ve watched take the safe road?'},
+            {who: 'rae', text: 'Was I wrong?'},
+            {who: 'willow', text: 'You were right. And you had a whole band of frightened rabbits follow you across a river to prove it.'},
+            {who: 'willow', thought: true, text: 'Talent. Nerve. And they follow her without being asked. Oh, the Republic is going to like her.'},
+            {who: 'willow', text: 'Come. Camp\'s a day\'s walk east. And this time, nobody is following us.'},
+          ],
+          reward: {res: 500},
+        },
+      ]},
     ],
   },
 
@@ -445,5 +525,7 @@ const CAMPAIGNS = {
 for (const camp of Object.values(CAMPAIGNS)){
   camp.stages = camp.chapters.flatMap((c, ci) => c.stub
     ? [{id: c.id + '-stub', title: c.name, stub: true, brief: c.brief, requires: c.requires, chapter: c, ci, si: 0}]
-    : c.stages.map((s, si) => Object.assign(s, {chapter: c, ci, si})));
+    : [...c.stages.map((s, si) => Object.assign(s, {chapter: c, ci, si})),
+       // more: a chapter that's only partly written ends with a placeholder
+       ...(c.more ? [{id: c.id + '-more', title: 'To be continued', stub: true, brief: c.more, chapter: c, ci, si: c.stages.length}] : [])]);
 }

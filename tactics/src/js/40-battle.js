@@ -62,7 +62,8 @@ function freeTileNear(x, y){
 function runBattle(campKey, ch, records){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
-       events: (ch.events || []).filter(ev => !ev.join || !SAVE.camps[campKey].roster.some(r => r.key === ev.join)).map(ev => ({...ev}))};
+       objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
+       events: (ch.events || []).map(ev => ({...ev}))};
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
@@ -75,7 +76,8 @@ function runBattle(campKey, ch, records){
   }));
   turn = 1; phase = 'p'; clearSel(); inspect = null; showDanger = false; cursor = null; updateDanger();
   $('#panel').className = 'f-' + B.pf;
-  showScreen('app'); resize(); refreshTop();
+  mapZoom = null; showScreen('app'); resize(); refreshTop();
+  const lord = units.find(u => u.team === 'p' && u.lord) || units.find(u => u.team === 'p'); if (lord) focusOn(lord.x, lord.y, true);
   return new Promise(res => { B.resolve = res; startPlayerPhase(); });
 }
 function finishBattle(win, retreated = false, reason = ''){
@@ -302,7 +304,7 @@ async function levelUp(u){
 // ---------- Panel ----------
 function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>`; }
 function objectiveText(){
-  const ob = B.ch.objective, lord = units.find(u => u.team === 'p' && u.lord);
+  const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
   const must = [lord, ...units.filter(u => u.team === 'p' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
@@ -468,7 +470,7 @@ async function fortHeal(t){
   await wait(300);
 }
 async function startPlayerPhase(){
-  const ob = B.ch.objective;
+  const ob = B.objective;
   if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
@@ -485,8 +487,11 @@ async function battleEvents(){
     if (ev.done || ev.turn !== turn || B.done) continue;
     ev.done = true;
     if (ev.join){
-      const u = battleUnit(recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
-      const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u);
+      if (units.some(u => u.team === 'p' && u.key === ev.join && !u.dead)) continue;   // already deployed
+      // someone already in the army (and standing) runs in as themselves; otherwise they're new
+      const have = SAVE.camps[B.campKey].roster.find(r => r.key === ev.join && !r.dead);
+      const u = battleUnit(have || recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
+      const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u); focusOn(tx, ty);
       // run in from beyond the edge of the map
       const fy = ROWS + .6;
       for (let s = 0; s < 3; s++) setTimeout(() => Sfx.play('step'), s*110);
@@ -498,13 +503,28 @@ async function battleEvents(){
     if (ev.talk) await talk(ev.talk);
   }
 }
+// A stage's twist (see `twist` in 25-data-campaign.js): once a survive objective is met, a scene plays,
+// fresh enemies may arrive, and the battle goes on with a new objective.
+async function runTwist(){
+  const tw = B.twist; tw.done = true;
+  if (tw.talk) await talk(tw.talk);
+  let first = true;
+  for (const sp of tw.units || []){
+    const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
+    if (first){ focusOn(u.x, u.y); popup(u, tw.popup || 'More of them!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
+    tween(400, t => { u.alpha = t; });
+  }
+  if (tw.units?.length) await wait(700);
+  B.objective = {...tw.objective};
+  refreshTop(); panelIdle();
+}
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
   let first = true;
   for (const sp of wave.units){
     const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
-    if (first){ popup(u, 'Reinforcements!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
+    if (first){ focusOn(u.x, u.y); popup(u, 'Reinforcements!', '#ffcf5a'); Sfx.play('reinforce'); first = false; }
     tween(400, t => { u.alpha = t; });
   }
   await wait(700);
@@ -520,8 +540,11 @@ async function enemyPhase(){
     await aiAct(e);
     if (checkEnd()) return;
   }
-  const ob = B.ch.objective;
-  if (ob.type === 'survive' && turn >= ob.turns){ finishBattle(true); return; }
+  const ob = B.objective;
+  if (ob.type === 'survive' && turn >= ob.turns){
+    if (B.twist && !B.twist.done) await runTwist();   // the story turns: a new objective
+    else { finishBattle(true); return; }
+  }
   turn++; busy = false;
   startPlayerPhase();
 }
@@ -560,6 +583,7 @@ async function aiHeal(e){
   inspect = null; await doHeal(e, best.a);
 }
 async function aiAct(e){
+  focusOn(e.x, e.y);
   if (e.ai === 'guard' && !e.triggered){
     const th = e.w === 'staff' ? rangeTiles(destinations(e, reach(e)), [1, 2]) : threat(e);
     if (team('p').some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
@@ -605,14 +629,50 @@ function checkEnd(){
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
   const vip = units.find(u => u.team === 'p' && u.vip && u.dead);
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
-  const ob = B.ch.objective, boss = units.find(u => u.boss);
+  const ob = B.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
-  if (!team('e').length && !(ob.type === 'survive' && wavesLeft)){ finishBattle(true); return true; }
+  if (!team('e').length && !(ob.type === 'survive' && (wavesLeft || (B.twist && !B.twist.done)))){ finishBattle(true); return true; }
   return false;
 }
 
 // ---------- Input ----------
+// ---------- Zoom and pan (bigger maps) ----------
+// The map sits in a scrolling viewport: drag to pan, pinch / ctrl+wheel / the +/− buttons to zoom.
+let mapZoom = null;   // 1 = the whole map fits; null = choose a comfortable zoom when the battle starts
+const mapView = $('#mapView');
+function setZoom(z, cx, cy){
+  const r = mapView.getBoundingClientRect(), T0 = T;
+  // keep the point under (cx, cy) (or the view centre) in place
+  const px = cx ?? r.width/2, py = cy ?? r.height/2;
+  const mx = (mapView.scrollLeft + px - cvs.offsetLeft)/T0, my = (mapView.scrollTop + py - cvs.offsetTop)/T0;
+  mapZoom = clamp(z, 1, 3.2); resize();
+  mapView.scrollLeft = mx*T + cvs.offsetLeft - px; mapView.scrollTop = my*T + cvs.offsetTop - py;
+  refreshZoomButtons();
+}
+function refreshZoomButtons(){ $('#zoomOut').disabled = (mapZoom || 1) <= 1.001; $('#zoomIn').disabled = mapZoom >= 3.19; }
+// scroll so a tile is comfortably in view
+function focusOn(x, y, instant){
+  if (!B) return;
+  const vw = mapView.clientWidth, vh = mapView.clientHeight, cx = cvs.offsetLeft + (x + .5)*T, cy = cvs.offsetTop + (y + .5)*T, m = T*1.5;
+  const l = mapView.scrollLeft, t = mapView.scrollTop;
+  if (cx - m >= l && cx + m <= l + vw && cy - m >= t && cy + m <= t + vh) return;
+  mapView.scrollTo({left: cx - vw/2, top: cy - vh/2, behavior: instant ? 'auto' : 'smooth'});
+}
+$('#zoomIn').addEventListener('click', () => setZoom((mapZoom || 1)*1.35));
+$('#zoomOut').addEventListener('click', () => setZoom((mapZoom || 1)/1.35));
+mapView.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); setZoom((mapZoom || 1)*Math.exp(-e.deltaY*.01), e.clientX - mapView.getBoundingClientRect().left, e.clientY - mapView.getBoundingClientRect().top); }, {passive: false});
+let pinch = null, pinchRaf = 0;
+const tdist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+mapView.addEventListener('touchstart', e => { if (e.touches.length === 2) pinch = {d: tdist(e.touches), z: mapZoom || 1}; }, {passive: true});
+mapView.addEventListener('touchmove', e => {
+  if (!pinch || e.touches.length !== 2) return;
+  e.preventDefault();
+  const r = mapView.getBoundingClientRect(), z = pinch.z*tdist(e.touches)/pinch.d;
+  const cx = (e.touches[0].clientX + e.touches[1].clientX)/2 - r.left, cy = (e.touches[0].clientY + e.touches[1].clientY)/2 - r.top;
+  cancelAnimationFrame(pinchRaf); pinchRaf = requestAnimationFrame(() => setZoom(z, cx, cy));
+}, {passive: false});
+mapView.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; });
 $('#cv').addEventListener('click', e => {
   const r = $('#cv').getBoundingClientRect();
   const x = Math.floor((e.clientX - r.left)/T), y = Math.floor((e.clientY - r.top)/T);

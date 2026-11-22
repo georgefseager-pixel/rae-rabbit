@@ -42,7 +42,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 
 /* ---- board ---- */
 #board{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
-#cv{display:block;border-radius:10px;touch-action:none;
+#cv{display:block;border-radius:10px;touch-action:pan-x pan-y;margin:auto;flex:none;
   box-shadow:0 0 0 4px #2a1c15, 0 0 0 5px rgba(201,151,63,.55), 0 0 0 9px #1a110d, 0 22px 50px rgba(0,0,0,.7)}
 
 /* ---- banner panel ---- */
@@ -603,3 +603,21 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .wcount{font-family:var(--stencil);font-size:14px;color:var(--brass-hi)}
 .whold.swap{color:#a9c8f0}
 .wgets{font-size:10px;color:var(--muted);text-align:right;max-width:110px}
+
+/* scrollable, zoomable map */
+#mapView{position:absolute;inset:0;overflow:auto;display:flex;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+#mapView::-webkit-scrollbar{display:none}
+#zoomCtl{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:3}
+#zoomCtl .btn{width:40px;height:40px;min-height:40px;padding:0;font-size:22px;line-height:1;opacity:.88}
+#zoomCtl .btn:disabled{opacity:.35}
+
+/* dialogue diagrams */
+.tdiag{position:absolute;left:0;right:0;margin:0 auto;top:max(56px, calc(env(safe-area-inset-top, 0px) + 46px));width:min(92vw,360px);z-index:4;
+  background:linear-gradient(180deg,rgba(33,40,68,.96),rgba(22,27,48,.96));border-radius:14px;padding:12px 12px 10px;box-sizing:border-box;
+  outline:1.5px dashed var(--thread);outline-offset:-6px;box-shadow:0 0 0 2px var(--brass),0 18px 40px rgba(0,0,0,.6);animation:up .4s both}
+.tdiag svg{display:block;width:100%;height:auto}
+.tdiag text{fill:#efe3c8;font:600 13px var(--body, sans-serif);letter-spacing:.06em}
+.tdiag .darr path{stroke:#ecc673;stroke-width:3;fill:none}
+.tdiag .dsep{stroke:rgba(239,227,200,.25);stroke-width:1.5;stroke-dasharray:4 4}
+.dtitle{font-family:var(--fell);font-size:16px;color:var(--brass-hi);text-align:center;letter-spacing:.06em;margin-bottom:2px}
+.dnote{font-size:12px;color:#d8cdb4;text-align:center;margin-top:4px}

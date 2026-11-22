@@ -1,4 +1,5 @@
 // ================= Terrain & maps =================
+// Maps can be any size; anything bigger than the screen scrolls and zooms in battle.
 // Legend: . open ground  F light cover  M heavy cover  W river  B bridge  T fort (heals)  X wall
 // The rules for each letter are the same everywhere; a map's theme changes how it looks and what it is called.
 const TER = {
@@ -132,6 +133,25 @@ const MAPS = {
     ".F..F...",
     "..T....F",
     "F......M"]},
+  // Chapter Two, stage 1: a river through the deep woods, one bridge. Bigger than the Chapter One maps (zoom/pan).
+  riverWoods: {theme: 'meadow', names: {'F': ['Felt Forest', 'Old felt trees, thick with moss. Good cover.'], 'M': ['Mossy Rocks', 'Stuffed boulders, slippery with moss. Hard going, harder to hit.']}, rows: [
+    'F.F..MF.FF',
+    '.F..F...F.',
+    'F...F.F..F',
+    '..F.....F.',
+    'F..F.FM...',
+    '.F......F.',
+    '..F..F....',
+    'WWWWWWWBWW',
+    '.F.....F..',
+    'F..F.F...F',
+    '..F...F.F.',
+    '.F..F.....',
+    'F...F..F.F',
+    '.F.F......',
+    'F........F',
+    'FF.F..F.FF',
+  ]},
 };
 let mapDef = null;   // the map being played (set by the battle engine)
 const tileInfo = ch => (mapDef?.names?.[ch]) || THEMES[mapDef?.theme || 'meadow'][ch];
