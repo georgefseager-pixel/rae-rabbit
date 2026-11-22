@@ -419,7 +419,42 @@ const CAMPAIGNS = {
           reward: {res: 550},
         },
 
-        // ---------------- Stage 3 ----------------
+        // ---------------- Stage 3: the race back ----------------
+        {
+          id: 'R2-2b', title: 'Race to the Camp', map: 'forestTrail', enemyFaction: 'frog',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'boss', limit: 7}, maxDeploy: 6,
+          limitFail: 'The vanguard reached the camp first, and opened the gate.',
+          deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14],[2,15],[7,15]],
+          brief: 'A frog vanguard is racing you back to the Republic camp. Cut through and defeat its captain before it gets there.',
+          allies: () => [E('rlancer',4,5,13,'charge',{key: 'patch', name: 'Patch', look: 'patch'})],
+          enemies: () => [
+            E('toadknight',4,4,0,'hold',{boss: true, elite: true, key: 'vanguard', name: 'Vanguard Captain'}),
+            E('lily',3,3,2,'guard'), E('reed',3,6,2,'guard'), E('bruiser',3,4,5), E('lily',3,7,6), E('blade',3,2,7),
+            E('reed',3,1,9), E('bruiser',3,8,10), E('blade',3,5,12),
+          ],
+          bossTalk: [
+            {who: "guard", text: "Run, rabbits! Run all the way home! We'll be right behind you!"},
+            {who: "rae", text: "You'll be right behind nothing."},
+          ],
+          pre: [
+            {scene: "woods", place: "The Trail Home \u00b7 Evening"},
+            {who: "narr", text: "They run. Behind them, the ravine. Ahead, the camp. And between them, a line of torches moving fast through the trees."},
+            {who: "patch", text: "Frogs on the trail ahead! A vanguard. They're going to beat us back to the camp."},
+            {who: "willow", text: "If they reach the palisade first, they'll open the gate for the rest of the army."},
+            {who: "rae", text: "Then they don't reach it. Cut through them. Don't stop for anything."},
+            {who: "sister", text: "My legs are too short for this!"},
+            {who: "rae", text: "Then I'll carry you after. Run!"},
+          ],
+          post: [
+            {who: "narr", text: "The vanguard breaks. The trail home is clear, for now."},
+            {who: "willow", text: "That was only the front of it. The rest of their army is an hour behind us. Less."},
+            {who: "rae", text: "Then we have an hour."},
+          ],
+          reward: {res: 500},
+        },
+
+        // ---------------- Stage 4 ----------------
         {
           id: 'R2-3', title: 'Make a Stand', map: 'republicCamp', enemyFaction: 'frog',
           star: {type: 'noLosses', text: 'No one is unstitched'},
@@ -469,7 +504,7 @@ const CAMPAIGNS = {
           reward: {res: 550},
         },
 
-        // ---------------- Stage 4 ----------------
+        // ---------------- Stage 5 ----------------
         {
           id: 'R2-4', title: 'The Raepublic', map: 'thornHill', enemyFaction: 'frog',
           star: {type: 'bossBy', key: 'rae', text: '{lord} drives off Fraggle Friggle herself'},
@@ -805,10 +840,41 @@ const CAMPAIGNS = {
           reward: {res: 550},
         },
 
-        // ---------------- Stage 4 ----------------
+        // ---------------- Stage 4: after Rae's victory on the hill ----------------
+        {
+          id: 'F2-3b', title: 'The Empty Hill', map: 'thornHill', enemyFaction: 'rae',
+          requires: ['R2-4'], convergence: 'After the Hill',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'rout'}, maxDeploy: 6,
+          deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14],[2,15],[7,15]],
+          brief: 'Fraggle Friggle has vanished from his hill, and a Republic rearguard holds it. Clear them off, and find his trail.',
+          enemies: () => [
+            E('rfighter',4,4,0,'hold'), E('rlancer',4,3,1,'guard'), E('radept',4,5,1,'guard'), E('rarcher',4,2,2,'guard'),
+            E('rarcher',4,7,2,'guard'), E('rfighter',4,5,3,'guard'), E('rfencer',3,4,5), E('rfencer',3,2,7), E('rlancer',3,8,7),
+          ],
+          pre: [
+            {scene: "woods", place: "The Black Hill \u00b7 Morning"},
+            {who: "narr", text: "The morning after the battle, Tiggle climbs Fraggle's hill. The cages hang open. The stakes are empty. Fraggle Friggle is gone."},
+            {who: "biggle", text: "The rabbits beat him. Badly, by the look of it. And now he's run off to sulk somewhere."},
+            {who: "scout", text: "Your Highness! Rebels on the hilltop! A rearguard, digging in!"},
+            {who: "tiggle", text: "Rabbits. On our hill."},
+            {who: "biggle", text: "Clear them off. Then we find our cousin, before he does something we'll all regret."},
+            {who: "tiggle", text: "Before. As if he hasn't already.", thought: true},
+          ],
+          post: [
+            {who: "narr", text: "The rearguard breaks and slips away down the far side of the hill."},
+            {who: "scout", text: "Your Highness, tracks. Big ones. Frog. Heading east, into the deep hollows."},
+            {who: "biggle", text: "That's Fraggle. Nobody else walks like that."},
+            {who: "tiggle", text: "There's something with him. Small prints. Lots of them. Shuffling."},
+            {who: "tiggle", text: "Rabbits. Old ones, by the look of it."},
+            {who: "tiggle", text: "I have a very bad feeling about this.", thought: true},
+          ],
+          reward: {res: 550},
+        },
+
+        // ---------------- Stage 5 ----------------
         {
           id: 'F2-4', title: 'Cousin', map: 'hollow', enemyFaction: 'frog', enemyLine: 'FRAGGLE\'S GUARD ATTACKS',
-          requires: ['R2-4'], convergence: 'After the Hill',
           star: {type: 'noLosses', text: 'No one is unstitched'},
           objective: {type: 'boss'}, maxDeploy: 6,
           deploy: [[4,11],[5,11],[3,11],[6,11],[4,10],[5,10],[2,11],[7,11]],
@@ -838,7 +904,7 @@ const CAMPAIGNS = {
           ]},
           pre: [
             {scene: "woods", place: "The Hollow \u00b7 Evening"},
-            {who: "narr", text: "After the battle on the hill, Fraggle Friggle vanishes for two days. Tiggle finds him at last, in a hollow deep in the woods."},
+            {who: "narr", text: "Tiggle follows the tracks for two days. At last he finds Fraggle Friggle, in a hollow deep in the woods."},
             {who: "narr", text: "He isn't alone. Huddled against the roots are rabbits: the old, the sick, the slow. The ones who couldn't run with the rest."},
             {who: "elder", text: "Please. We can't fight. We were only left behind."},
             {who: "fraggle", text: "Cousin! Look what I found! The ones they couldn't be bothered to carry."},

@@ -150,6 +150,25 @@ const MAPS = {
     '.F.F..F.F.',
     'FF......FF',
   ]},
+  // Chapter Two: the long trail back to the Republic camp
+  forestTrail: {theme: 'meadow', names: {'F': ['Felt Forest', 'Old felt trees. Good cover.'], 'M': ['Mossy Rocks', 'Stuffed boulders. Hard going, harder to hit.']}, rows: [
+    'FFF....FFF',
+    'F.F.FF.F.F',
+    '...F..F...',
+    '.F......F.',
+    'F..MM.F..F',
+    '.F......F.',
+    '..F.F..F..',
+    'F........F',
+    '.F.F..F.F.',
+    '...M..M...',
+    'F........F',
+    '.F..F.F.F.',
+    '..F....F..',
+    'F...FF...F',
+    '.F......F.',
+    'FF......FF',
+  ]},
   // Chapter Two: the Republic camp: a palisade with two gaps, tents, and the command tent at its heart
   republicCamp: {theme: 'camp', names: {'.': ['Camp Ground', 'Trodden earth between the tents.'], 'F': ['Felt Trees', 'The forest the camp hides in. Good cover.'],
                  'X': ['Palisade & Tents', 'Stakes and canvas. Nothing gets through.'], 'T': ['Command Tent', 'Froggle\'s tent. Restores 20% HP at the start of each phase.']}, rows: [
