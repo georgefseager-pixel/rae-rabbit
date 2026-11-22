@@ -348,6 +348,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   radial-gradient(ellipse 60% 20% at 50% 62%, rgba(200,220,200,.18), transparent 70%),
   linear-gradient(90deg, transparent 6%, #10180f 6% 11%, transparent 11% 27%, #121b10 27% 31%, transparent 31% 68%, #0f170e 68% 74%, transparent 74% 88%, #131c11 88% 92%, transparent 92%),
   linear-gradient(180deg,#26341f,#1a2716 40%,#2a3a24 58%,#0e140c 100%)}
+.sbg[data-bg=camp]{background:   /* placeholder until art/bg-camp.jpg: a campfire among dark trees */
+  radial-gradient(ellipse 30% 14% at 50% 70%, rgba(255,170,80,.55), transparent 70%),
+  radial-gradient(ellipse 70% 40% at 50% 72%, rgba(220,120,50,.22), transparent 75%),
+  linear-gradient(90deg, transparent 4%, #120c09 4% 9%, transparent 9% 84%, #140d0a 84% 90%, transparent 90%),
+  linear-gradient(180deg,#141022,#1d1626 45%,#2a1d16 70%,#100b08 100%)}
 .sbg[data-bg=legend]{background:radial-gradient(ellipse at 50% 60%, #5a1610, #1a0806 70%)}
 
 .sbg[data-bg=court]{background:

@@ -11,7 +11,7 @@ function supportInfo(ck, key){
 }
 function supportScene(ck, rec, rank){
   const lord = CAMPAIGNS[ck].lord, R = SUPPORT.ranks[rank], info = supportInfo(ck, rec.key);
-  const head = {scene: SUPPORT.scene[ck], place: `Camp · Support ${R}`};
+  const head = {scene: SUPPORT.scene[ck], place: `The Camp · Support ${R}`};
   if (info[R]) return [head, ...info[R]];
   return [head,   // placeholder until the scene is written
     {who: 'narr', text: `Support ${R} · ${SUPPORT.kinds[info.kind]}. ${info.about}`},
@@ -93,7 +93,7 @@ async function viewSupport(key, rank){
 }
 function openCamp(){
   const ck = SAVE.current;
-  if (!campOpen(ck)){ toast(`The Camp opens once Chapter One is finished.`); return; }
+  if (!campOpen(ck)){ toast(`The Camp opens after the first stage of Chapter Two.`); return; }
   renderCamp();
   if (!campSeen(ck)){
     SAVE.flags['tut-camp-' + ck] = true; saveGame();
