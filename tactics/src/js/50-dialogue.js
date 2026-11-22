@@ -63,13 +63,18 @@ function talk(rawLines){
     if (sceneMode) Music.want('story');   // whoever called talk() picks the music that follows
     ov.classList.toggle('scene', sceneMode);
     for (const a of Object.values(actors)){ a.className = a.className.replace(/ on| dim/g, ''); a.innerHTML = ''; }
-    const finish = () => { $('#tdiag').hidden = true; ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
+    // story actions in lines not yet reached still happen when a scene is skipped (or ends early)
+    const applyRest = () => { for (let j = i + 1; j < lines.length; j++){ const l = lines[j];
+      if (l.rename) applyRename(SAVE.current, l.rename); if (l.arm) grantStoryWeapons(SAVE.current, l.arm); if (l.attire) grantAttires(SAVE.current, l.attire); }
+      i = lines.length; saveGame(); };
+    const finish = () => { applyRest(); $('#tdiag').hidden = true; ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
     const show = () => {
       i++; if (i >= lines.length) return finish();
       const l = lines[i];
       // story actions that happen mid-scene: a new name, new weapons
       if (l.rename){ applyRename(SAVE.current, l.rename); saveGame(); return show(); }
       if (l.arm){ grantStoryWeapons(SAVE.current, l.arm); saveGame(); return show(); }
+      if (l.attire){ grantAttires(SAVE.current, l.attire); saveGame(); return show(); }
       // a diagram shown above the text while this line is up (see DIAGRAMS)
       $('#tdiag').hidden = !l.show; if (l.show) $('#tdiag').innerHTML = DIAGRAMS[l.show]();
       if (l.scene){   // change the backdrop and clear the stage

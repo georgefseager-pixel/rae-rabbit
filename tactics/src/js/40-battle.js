@@ -28,9 +28,9 @@ function moveCost(u, x, y){
 
 // ---------- Setup ----------
 function battleUnit(rec, teamId){
-  const c = CLASSES[rec.cls], s = rec.stats, wp = weaponOf(rec), tb = wp.mt;
+  const c = CLASSES[clsOf(rec)], s = statsOf(rec), wp = weaponOf(rec), tb = wp.mt;
   const id = nextId++;
-  return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, stars: rec.stars, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, name: rec.name, cls: rec.cls,
+  return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, stars: rec.stars, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, attire: rec.attire, name: rec.name, cls: clsOf(rec),
     wname: wp.name, tb, whit: wp.hit || 0, wcrit: wp.crit || 0, lash: !!wp.lash, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
     w: wp.type, rng: wp.rng || c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
@@ -59,11 +59,11 @@ function freeTileNear(x, y){
   return [x, y];
 }
 
-function runBattle(campKey, ch, records){
+function runBattle(campKey, ch, records, opts = {}){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
        objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
-       events: (ch.events || []).map(ev => ({...ev}))};
+       events: opts.replay ? [] : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });

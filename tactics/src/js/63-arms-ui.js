@@ -60,9 +60,9 @@ function openWeaponPicker(uid){
   }
   for (const {it, h} of carried.sort((a, b) => byPower(a.it.id, b.it.id)))
     rows.push(pick(withRange(WEAPONS[it.id], rec.cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
-  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[rec.cls].w]} user · carrying ${cur.name}</h2>
+  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[clsOf(rec)].w]} user · carrying ${cur.name}</h2>
     <div class="wlist">${rows.join('')}</div>
-    ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[rec.cls].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}
+    ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[clsOf(rec)].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}
     <button class="btn" data-arm-close type="button">Done</button></div>`;
   ov.hidden = false;
   ov.onclick = e => {
@@ -71,6 +71,42 @@ function openWeaponPicker(uid){
     if (b && 'armEquip' in b.dataset && (b.dataset.armEquip || null) !== (rec.arm || null)){
       equipWeapon(ck, rec, b.dataset.armEquip || null); saveGame(); Sfx.play('select');
       toast(`${rec.name} now carries the ${weaponOf(rec).name}.`);
+    }
+    ov.hidden = true; ov.onclick = null; rerenderKeepScroll();
+  };
+}
+
+// ---------- Attire picker ----------
+function attireChanges(rec, a){
+  if (!a) return 'The outfit from the story.';
+  const bits = [];
+  if (a.cls && a.cls !== rec.cls) bits.push(`${CLASSES[rec.cls].name} → ${CLASSES[a.cls].name} (${WTYPE[CLASSES[a.cls].w]})`);
+  for (const [k, v] of Object.entries(a.mods || {})) bits.push(`${v > 0 ? '+' : ''}${v} ${({mhp: 'HP', atk: 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl', mov: 'Mov'})[k]}`);
+  return bits.length ? bits.join(' · ') : 'Look only: no change to stats or weapon.';
+}
+function openAttirePicker(uid){
+  const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === uid); if (!rec) return;
+  let ov = $('#armsheet');
+  if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
+  const opt = (id, name, desc, a) => { const on = (rec.attire || null) === (id || null);
+    return `<button class="wpick${on ? ' on' : ''}" data-attire-set="${id || ''}" type="button"><div class="wrow arow">
+      <div class="por f-${rec.faction}">${portraitInner({...rec, attire: id || null}, 'panel')}</div>
+      <div class="wtxt"><div class="wname">${name}</div><div class="wmeta">${attireChanges(rec, a)}</div>${desc ? `<div class="wdesc">${desc}</div>` : ''}</div>
+      <div class="wside">${on ? '<span class="whold">Wearing</span>' : ''}</div></div></button>`; };
+  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>Attire · story scenes always show the story outfit</h2>
+    <div class="wlist">${opt(null, 'Story outfit', '', null)}${rec.attires.map(id => opt(id, ATTIRES[id].name, ATTIRES[id].desc, ATTIRES[id])).join('')}</div>
+    <button class="btn" data-arm-close type="button">Done</button></div>`;
+  ov.hidden = false;
+  ov.onclick = e => {
+    const b = e.target.closest('[data-attire-set], [data-arm-close]');
+    if (!b && e.target !== ov) return;
+    if (b && 'attireSet' in b.dataset){
+      rec.attire = b.dataset.attireSet || null;
+      // a different weapon type: their weapon goes back to the Armoury
+      const it = rec.arm && armsOf(ck).find(x => x.uid === rec.arm);
+      if (it && !canCarry(rec, WEAPONS[it.id])) rec.arm = null;
+      saveGame(); Sfx.play('select'); tokenCache.clear();
+      toast(`${rec.name} is wearing ${attireOf(rec)?.name || 'the story outfit'}.`);
     }
     ov.hidden = true; ov.onclick = null; rerenderKeepScroll();
   };

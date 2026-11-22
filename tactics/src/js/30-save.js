@@ -13,6 +13,8 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
+  if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'willow' && r.cls === 'quarter'){
     r.cls = 'scholar'; r.wname = CLASSES.scholar.wname; r.wtier = 0;
@@ -81,7 +83,7 @@ function speakerName(who){
 }
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
-const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[rec.cls].g;
+const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[clsOf(rec)].g;
 const weaponName = rec => weaponOf(rec).name;   // see 33-arms.js
 const living = campKey => SAVE.camps[campKey].roster.filter(r => !r.dead);
 

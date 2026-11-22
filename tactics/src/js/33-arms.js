@@ -5,18 +5,18 @@ const armsOf = ck => (SAVE.camps[ck].arms ||= []);
 function campOfRec(rec){ for (const [k, c] of Object.entries(SAVE?.camps || {})) if (c.roster.includes(rec)) return k; return null; }
 // The class weapon. Older saves may have reinforced it (wtier), which still counts.
 function basicWeapon(rec){
-  const c = CLASSES[rec.cls], t = WEAPON_TIERS[rec.wtier || 0];
+  const c = CLASSES[clsOf(rec)], t = WEAPON_TIERS[rec.wtier || 0];
   return {name: t.prefix + (rec.wname || c.wname), type: c.w, stars: 0, mt: t.bonus, hit: 0, crit: 0, rng: c.rng, lash: !!c.lash, basic: true,
           desc: 'Standard for the class.'};
 }
 function weaponOf(rec){
   if (rec.arm){
     const ck = campOfRec(rec), it = ck && armsOf(ck).find(a => a.uid === rec.arm), w = it && WEAPONS[it.id];
-    if (w) return {...w, rng: w.rng || CLASSES[rec.cls].rng, uid: it.uid, id: it.id};
+    if (w) return {...w, rng: w.rng || CLASSES[clsOf(rec)].rng, uid: it.uid, id: it.id};
   }
   return basicWeapon(rec);
 }
-const canCarry = (rec, w) => w.type === CLASSES[rec.cls].w && (!w.owner || w.owner === rec.key);
+const canCarry = (rec, w) => w.type === CLASSES[clsOf(rec)].w && (!w.owner || w.owner === rec.key);
 const holderOf = (ck, itemUid) => SAVE.camps[ck].roster.find(r => r.arm === itemUid && !r.dead);
 function addWeapon(ck, id){
   const it = {uid: `${id}-${Date.now().toString(36)}${Math.floor(Math.random()*1e4)}`, id};

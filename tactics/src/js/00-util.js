@@ -40,7 +40,7 @@ function outfitOf(key){
   // story-only characters (not in any army) keep their outfit on the save itself
   return S?.outfits?.[key] ?? CHARACTERS[key]?.outfit ?? SPEAKERS[key]?.outfit ?? '';
 }
-function artKey(key, kind){ const o = outfitOf(key); return o && ART[key + o]?.[kind] ? key + o : key; }
+function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] ? key + o : key; }
 
 // Which art to show for a character or unit. `ent` is a character key, or anything with {key, look, uid, name, fur}.
 // Order: the character's own art (in their current outfit), then the shared generic art for their species,
@@ -58,7 +58,9 @@ function furOf(ent){
 }
 function artResolve(ent, kind){
   if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || CHARACTERS[ent]?.look || ent};
-  const k = artKey(ent.key, kind);
+  // a unit or record wearing an attire shows it; a speaker named in a story scene (a plain key) shows the canonical outfit
+  const at = typeof ATTIRES !== 'undefined' && ATTIRES[ent.attire];
+  const k = at ? artKey(ent.key, kind, at.outfit) : artKey(ent.key, kind);
   if (ART[k]?.[kind]) return k;
   const sp = speciesOf(ent), fur = furOf(ent);
   if (!sp || !fur) return null;

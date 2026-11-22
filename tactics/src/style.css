@@ -633,3 +633,5 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .dchip{font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px}
 .dchip.up{color:#9fe89a;background:rgba(126,210,122,.14)}.dchip.down{color:#ff9585;background:rgba(239,111,94,.14)}
 .wrow.cmp-better{box-shadow:inset 4px 0 0 #7ed27a}.wrow.cmp-worse{box-shadow:inset 4px 0 0 #ef6f5e}.wrow.cmp-mixed{box-shadow:inset 4px 0 0 #ecc94f}
+.uattire{display:block;background:none;border:0;padding:2px 0;margin:0;font:inherit;font-family:var(--fell);font-size:13px;color:#a9c8f0;cursor:pointer;text-align:left}
+.arow .por{width:56px;height:56px;flex:none}

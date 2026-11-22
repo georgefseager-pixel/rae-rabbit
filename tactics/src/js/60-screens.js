@@ -76,7 +76,7 @@ function renderHub(){
 // ---------- Army ----------
 let armyTab = 'roster', armyReturn = 'hub';
 function statsGrid(rec){
-  const s = rec.stats, tb = weaponOf(rec).mt, w = CLASSES[rec.cls].w;
+  const s = statsOf(rec), tb = weaponOf(rec).mt, w = CLASSES[clsOf(rec)].w;
   return `<div class="stats">${[['HP', s.mhp], [isMagic(w) ? 'Mag' : 'Atk', s.atk + tb], ['Def', s.def], ['Spd', s.spd], ['Mov', s.mov]]
     .map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -98,11 +98,12 @@ const sortBarHTML = () => `<div class="sortbar" role="group" aria-label="Sort th
 function rerenderKeepScroll(){ const y = window.scrollY; if (!$('#prep').hidden) renderPrep(); else renderArmy(); window.scrollTo(0, y); }
 
 function recCard(rec, actions = '', extraClass = ''){
-  const c = CLASSES[rec.cls];
+  const c = CLASSES[clsOf(rec)];
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     ${rec.dead ? '' : `<button class="ufav${rec.fav ? ' on' : ''}" data-fav="${rec.uid}" type="button" aria-pressed="${!!rec.fav}" aria-label="${rec.fav ? 'Remove from favourites' : 'Add to favourites'}">${rec.fav ? '♥' : '♡'}</button>`}
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
+      ${rec.attires?.length && !rec.dead ? `<button class="uattire" data-attire-pick="${rec.uid}" type="button">Attire: ${attireOf(rec)?.name || 'Story outfit'} ›</button>` : ''}
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ` · <span class="tick">${rec.departed ? departureLabel(rec) : 'Unstitched'}</span>` : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
@@ -189,7 +190,7 @@ async function playChapter(){
     await talk(ch.pre);
     if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   }
-  const res = await runBattle(ck, ch, recs);
+  const res = await runBattle(ck, ch, recs, {replay});
   const kills = B.kills;
   if (!res.win){
     B = null;
@@ -201,6 +202,7 @@ async function playChapter(){
     const r = u.rec;
     r.lv = u.lv; r.exp = u.exp;
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
+    const m = attireOf(r)?.mods; if (m) for (const k in m) r.stats[k] -= m[k];   // the attire's changes aren't kept
   }
   for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }   // their weapon stays in the Armoury
   const departed = [], joined = [];
@@ -271,12 +273,13 @@ document.addEventListener('click', e => {
       // everyone the story brings into this army (stage rewards and mid-battle joins), if not already there
       const st = SAVE.camps[ck], keys = CAMPAIGNS[ck].stages.flatMap(sg => [...(sg.reward?.joins || []), ...(sg.events || []).map(e => e.join).filter(Boolean)]);
       for (const key of new Set(keys)) if (CHARACTERS[key] && !st.roster.some(r => r.key === key)) st.roster.push(recordFor(key));
-      for (const sg of CAMPAIGNS[ck].stages) grantStoryWeapons(ck, sg.reward?.weapons);
+      for (const sg of CAMPAIGNS[ck].stages){ grantStoryWeapons(ck, sg.reward?.weapons); for (const l of sg.pre || []){ if (l.arm) grantStoryWeapons(ck, l.arm); if (l.attire) grantAttires(ck, l.attire); } }
     }
     saveGame();
     toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked, story recruits joined; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
   else if (d.armPick) openWeaponPicker(d.armPick);
+  else if (d.attirePick) openAttirePicker(d.attirePick);
   else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseSpare(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);

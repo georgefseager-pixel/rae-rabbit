@@ -640,6 +640,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .dchip{font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px}
 .dchip.up{color:#9fe89a;background:rgba(126,210,122,.14)}.dchip.down{color:#ff9585;background:rgba(239,111,94,.14)}
 .wrow.cmp-better{box-shadow:inset 4px 0 0 #7ed27a}.wrow.cmp-worse{box-shadow:inset 4px 0 0 #ef6f5e}.wrow.cmp-mixed{box-shadow:inset 4px 0 0 #ecc94f}
+.uattire{display:block;background:none;border:0;padding:2px 0;margin:0;font:inherit;font-family:var(--fell);font-size:13px;color:#a9c8f0;cursor:pointer;text-align:left}
+.arow .por{width:56px;height:56px;flex:none}
 
 </style>
 
@@ -773,7 +775,7 @@ function outfitOf(key){
   // story-only characters (not in any army) keep their outfit on the save itself
   return S?.outfits?.[key] ?? CHARACTERS[key]?.outfit ?? SPEAKERS[key]?.outfit ?? '';
 }
-function artKey(key, kind){ const o = outfitOf(key); return o && ART[key + o]?.[kind] ? key + o : key; }
+function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] ? key + o : key; }
 
 // Which art to show for a character or unit. `ent` is a character key, or anything with {key, look, uid, name, fur}.
 // Order: the character's own art (in their current outfit), then the shared generic art for their species,
@@ -791,7 +793,9 @@ function furOf(ent){
 }
 function artResolve(ent, kind){
   if (typeof ent === 'string') ent = {key: ent, look: SPEAKERS[ent]?.look || CHARACTERS[ent]?.look || ent};
-  const k = artKey(ent.key, kind);
+  // a unit or record wearing an attire shows it; a speaker named in a story scene (a plain key) shows the canonical outfit
+  const at = typeof ATTIRES !== 'undefined' && ATTIRES[ent.attire];
+  const k = at ? artKey(ent.key, kind, at.outfit) : artKey(ent.key, kind);
   if (ART[k]?.[kind]) return k;
   const sp = speciesOf(ent), fur = furOf(ent);
   if (!sp || !fur) return null;
@@ -1697,6 +1701,43 @@ function weaponIconSVG(w, size = 28){
     <circle cx="32" cy="32" r="30.5" fill="${A}" fill-opacity=".13" stroke="${A}" stroke-opacity=".45" stroke-width="1.2"/>${WEAPON_ICON[weaponKind(w)](A)}</svg>`;
 }
 
+// ---------------- 13-data-attires.js ----------------
+// ================= Attires (alternative costumes) =================
+// An attire is another look for an existing character, not a separate unit: level, supports, weapons, Bond-free
+// duplicates, falling and stitching up are all shared. Pick it on the unit card ("Attire ›").
+// Story scenes always show the character's canonical (story) outfit; battles, unit cards, map icons and the Camp
+// list show the attire being worn.
+//   char    the character it belongs to
+//   outfit  the art it uses: art/<char><outfit>-portrait.png, -battle.png, -token.png (falls back to the base art)
+//   name / desc
+//   cls     optional: wearing it changes class (and so usually weapon type, range and growths)
+//   mods    optional: stat changes while worn, e.g. {def: 2, spd: -1}
+// Most attires will change stats slightly and the weapon type; the two below (their mine clothes, kept when they
+// change into Republic colours) are look-only.
+const ATTIRES = {
+  raeRags:   {char: 'rae',    outfit: 'camp', name: 'Mine Rags', desc: 'The patched rags Rae wore in the mines. She kept them, folded small.'},
+  floraRags: {char: 'sister', outfit: 'camp', name: 'Camp Rags', desc: 'Little Sister\'s old camp clothes. Flopsy Flora never threw them away.'},
+};
+const attireOf = rec => rec && ATTIRES[rec.attire];
+// The class a unit fights as: its own, or its attire's.
+const clsOf = rec => attireOf(rec)?.cls || rec.cls;
+// A record's stats with its attire's changes applied (records keep their own stats; the attire is added on top).
+function statsOf(rec){
+  const s = {...rec.stats}, m = attireOf(rec)?.mods;
+  if (m) for (const k in m) s[k] = Math.max(k === 'mhp' ? 1 : 0, (s[k] || 0) + m[k]);
+  return s;
+}
+// Give a character attires (story or recruiting). Returns the names of any that are new.
+function grantAttires(ck, ids){
+  const got = [];
+  for (const id of ids || []){
+    const a = ATTIRES[id], rec = a && SAVE.camps[ck].roster.find(r => r.key === a.char);
+    if (!rec || (rec.attires ||= []).includes(id)) continue;
+    rec.attires.push(id); got.push(`${a.name} (${rec.name})`);
+  }
+  return got;
+}
+
 // ---------------- 15-plush.js ----------------
 // ================= Plush drawing =================
 // Placeholder characters drawn in code: felt shapes, button eyes, running stitches.
@@ -2137,6 +2178,7 @@ function validateMaps(){
 //   {who:'narr', text:'…'}                      narration
 //   {who, text, show:'triangle'}                show a diagram above the text (DIAGRAMS in 50-dialogue.js)
 //   {rename: {key: 'Name'}} / {arm: [{id, to}]} rename a character / hand out story weapons mid-scene
+//   {attire: [ids]}                             give characters attires (see 13-data-attires.js)
 //   any line can carry if:'flag' or unless:'flag'
 // Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}, elite?}
 //   elite: a tougher ★★ soldier: red armour on generic frog art, plus the ★★ stat bonus
@@ -2410,6 +2452,8 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'And the silver needle\'s mine! I\'m going to sew everybody up. Properly.'},
             {arm: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
             {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Flopsy Flora takes the Silver Needle.'},
+            {who: 'narr', text: 'Neither of them throws their old mine clothes away. They fold them small, and keep them.'},
+            {attire: ['raeRags', 'floraRags']},
             {who: 'rae', text: 'Why go to all this trouble, Willow? For a few mine workers. You could have left us.'},
             {who: 'willow', text: 'The Republic can\'t win on numbers. The Friggliarchy has more frogs than we have buttons.'},
             {who: 'willow', text: 'It needs a hero. And heroes can come from anywhere, even a mine. Finding them is my job.'},
@@ -2992,6 +3036,8 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
+  if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'willow' && r.cls === 'quarter'){
     r.cls = 'scholar'; r.wname = CLASSES.scholar.wname; r.wtier = 0;
@@ -3060,7 +3106,7 @@ function speakerName(who){
 }
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
-const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[rec.cls].g;
+const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[clsOf(rec)].g;
 const weaponName = rec => weaponOf(rec).name;   // see 33-arms.js
 const living = campKey => SAVE.camps[campKey].roster.filter(r => !r.dead);
 
@@ -3119,18 +3165,18 @@ const armsOf = ck => (SAVE.camps[ck].arms ||= []);
 function campOfRec(rec){ for (const [k, c] of Object.entries(SAVE?.camps || {})) if (c.roster.includes(rec)) return k; return null; }
 // The class weapon. Older saves may have reinforced it (wtier), which still counts.
 function basicWeapon(rec){
-  const c = CLASSES[rec.cls], t = WEAPON_TIERS[rec.wtier || 0];
+  const c = CLASSES[clsOf(rec)], t = WEAPON_TIERS[rec.wtier || 0];
   return {name: t.prefix + (rec.wname || c.wname), type: c.w, stars: 0, mt: t.bonus, hit: 0, crit: 0, rng: c.rng, lash: !!c.lash, basic: true,
           desc: 'Standard for the class.'};
 }
 function weaponOf(rec){
   if (rec.arm){
     const ck = campOfRec(rec), it = ck && armsOf(ck).find(a => a.uid === rec.arm), w = it && WEAPONS[it.id];
-    if (w) return {...w, rng: w.rng || CLASSES[rec.cls].rng, uid: it.uid, id: it.id};
+    if (w) return {...w, rng: w.rng || CLASSES[clsOf(rec)].rng, uid: it.uid, id: it.id};
   }
   return basicWeapon(rec);
 }
-const canCarry = (rec, w) => w.type === CLASSES[rec.cls].w && (!w.owner || w.owner === rec.key);
+const canCarry = (rec, w) => w.type === CLASSES[clsOf(rec)].w && (!w.owner || w.owner === rec.key);
 const holderOf = (ck, itemUid) => SAVE.camps[ck].roster.find(r => r.arm === itemUid && !r.dead);
 function addWeapon(ck, id){
   const it = {uid: `${id}-${Date.now().toString(36)}${Math.floor(Math.random()*1e4)}`, id};
@@ -3300,9 +3346,9 @@ function moveCost(u, x, y){
 
 // ---------- Setup ----------
 function battleUnit(rec, teamId){
-  const c = CLASSES[rec.cls], s = rec.stats, wp = weaponOf(rec), tb = wp.mt;
+  const c = CLASSES[clsOf(rec)], s = statsOf(rec), wp = weaponOf(rec), tb = wp.mt;
   const id = nextId++;
-  return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, stars: rec.stars, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, name: rec.name, cls: rec.cls,
+  return {id, uid: rec.uid || `enemy-${id}`, fur: rec.fur, stars: rec.stars, rec, team: teamId, faction: rec.faction, key: rec.key, look: rec.look, attire: rec.attire, name: rec.name, cls: clsOf(rec),
     wname: wp.name, tb, whit: wp.hit || 0, wcrit: wp.crit || 0, lash: !!wp.lash, lv: rec.lv, exp: rec.exp || 0, hp: s.mhp, mhp: s.mhp, atk: s.atk + tb, def: s.def, spd: s.spd, skl: s.skl, mov: s.mov,
     w: wp.type, rng: wp.rng || c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
@@ -3331,11 +3377,11 @@ function freeTileNear(x, y){
   return [x, y];
 }
 
-function runBattle(campKey, ch, records){
+function runBattle(campKey, ch, records, opts = {}){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
        objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
-       events: (ch.events || []).map(ev => ({...ev}))};
+       events: opts.replay ? [] : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
@@ -4357,13 +4403,18 @@ function talk(rawLines){
     if (sceneMode) Music.want('story');   // whoever called talk() picks the music that follows
     ov.classList.toggle('scene', sceneMode);
     for (const a of Object.values(actors)){ a.className = a.className.replace(/ on| dim/g, ''); a.innerHTML = ''; }
-    const finish = () => { $('#tdiag').hidden = true; ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
+    // story actions in lines not yet reached still happen when a scene is skipped (or ends early)
+    const applyRest = () => { for (let j = i + 1; j < lines.length; j++){ const l = lines[j];
+      if (l.rename) applyRename(SAVE.current, l.rename); if (l.arm) grantStoryWeapons(SAVE.current, l.arm); if (l.attire) grantAttires(SAVE.current, l.attire); }
+      i = lines.length; saveGame(); };
+    const finish = () => { applyRest(); $('#tdiag').hidden = true; ov.hidden = true; skip.hidden = true; card.hidden = true; ov.onclick = null; skip.onclick = null; clearInterval(typing); res(); };
     const show = () => {
       i++; if (i >= lines.length) return finish();
       const l = lines[i];
       // story actions that happen mid-scene: a new name, new weapons
       if (l.rename){ applyRename(SAVE.current, l.rename); saveGame(); return show(); }
       if (l.arm){ grantStoryWeapons(SAVE.current, l.arm); saveGame(); return show(); }
+      if (l.attire){ grantAttires(SAVE.current, l.attire); saveGame(); return show(); }
       // a diagram shown above the text while this line is up (see DIAGRAMS)
       $('#tdiag').hidden = !l.show; if (l.show) $('#tdiag').innerHTML = DIAGRAMS[l.show]();
       if (l.scene){   // change the backdrop and clear the stage
@@ -4508,7 +4559,7 @@ function renderHub(){
 // ---------- Army ----------
 let armyTab = 'roster', armyReturn = 'hub';
 function statsGrid(rec){
-  const s = rec.stats, tb = weaponOf(rec).mt, w = CLASSES[rec.cls].w;
+  const s = statsOf(rec), tb = weaponOf(rec).mt, w = CLASSES[clsOf(rec)].w;
   return `<div class="stats">${[['HP', s.mhp], [isMagic(w) ? 'Mag' : 'Atk', s.atk + tb], ['Def', s.def], ['Spd', s.spd], ['Mov', s.mov]]
     .map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -4530,11 +4581,12 @@ const sortBarHTML = () => `<div class="sortbar" role="group" aria-label="Sort th
 function rerenderKeepScroll(){ const y = window.scrollY; if (!$('#prep').hidden) renderPrep(); else renderArmy(); window.scrollTo(0, y); }
 
 function recCard(rec, actions = '', extraClass = ''){
-  const c = CLASSES[rec.cls];
+  const c = CLASSES[clsOf(rec)];
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     ${rec.dead ? '' : `<button class="ufav${rec.fav ? ' on' : ''}" data-fav="${rec.uid}" type="button" aria-pressed="${!!rec.fav}" aria-label="${rec.fav ? 'Remove from favourites' : 'Add to favourites'}">${rec.fav ? '♥' : '♡'}</button>`}
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
     <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
+      ${rec.attires?.length && !rec.dead ? `<button class="uattire" data-attire-pick="${rec.uid}" type="button">Attire: ${attireOf(rec)?.name || 'Story outfit'} ›</button>` : ''}
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ` · <span class="tick">${rec.departed ? departureLabel(rec) : 'Unstitched'}</span>` : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
@@ -4621,7 +4673,7 @@ async function playChapter(){
     await talk(ch.pre);
     if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   }
-  const res = await runBattle(ck, ch, recs);
+  const res = await runBattle(ck, ch, recs, {replay});
   const kills = B.kills;
   if (!res.win){
     B = null;
@@ -4633,6 +4685,7 @@ async function playChapter(){
     const r = u.rec;
     r.lv = u.lv; r.exp = u.exp;
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
+    const m = attireOf(r)?.mods; if (m) for (const k in m) r.stats[k] -= m[k];   // the attire's changes aren't kept
   }
   for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }   // their weapon stays in the Armoury
   const departed = [], joined = [];
@@ -4703,12 +4756,13 @@ document.addEventListener('click', e => {
       // everyone the story brings into this army (stage rewards and mid-battle joins), if not already there
       const st = SAVE.camps[ck], keys = CAMPAIGNS[ck].stages.flatMap(sg => [...(sg.reward?.joins || []), ...(sg.events || []).map(e => e.join).filter(Boolean)]);
       for (const key of new Set(keys)) if (CHARACTERS[key] && !st.roster.some(r => r.key === key)) st.roster.push(recordFor(key));
-      for (const sg of CAMPAIGNS[ck].stages) grantStoryWeapons(ck, sg.reward?.weapons);
+      for (const sg of CAMPAIGNS[ck].stages){ grantStoryWeapons(ck, sg.reward?.weapons); for (const l of sg.pre || []){ if (l.arm) grantStoryWeapons(ck, l.arm); if (l.attire) grantAttires(ck, l.attire); } }
     }
     saveGame();
     toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked, story recruits joined; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
   else if (d.armPick) openWeaponPicker(d.armPick);
+  else if (d.attirePick) openAttirePicker(d.attirePick);
   else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseSpare(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
@@ -5014,9 +5068,9 @@ function openWeaponPicker(uid){
   }
   for (const {it, h} of carried.sort((a, b) => byPower(a.it.id, b.it.id)))
     rows.push(pick(withRange(WEAPONS[it.id], rec.cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
-  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[rec.cls].w]} user · carrying ${cur.name}</h2>
+  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[clsOf(rec)].w]} user · carrying ${cur.name}</h2>
     <div class="wlist">${rows.join('')}</div>
-    ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[rec.cls].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}
+    ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[clsOf(rec)].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}
     <button class="btn" data-arm-close type="button">Done</button></div>`;
   ov.hidden = false;
   ov.onclick = e => {
@@ -5025,6 +5079,42 @@ function openWeaponPicker(uid){
     if (b && 'armEquip' in b.dataset && (b.dataset.armEquip || null) !== (rec.arm || null)){
       equipWeapon(ck, rec, b.dataset.armEquip || null); saveGame(); Sfx.play('select');
       toast(`${rec.name} now carries the ${weaponOf(rec).name}.`);
+    }
+    ov.hidden = true; ov.onclick = null; rerenderKeepScroll();
+  };
+}
+
+// ---------- Attire picker ----------
+function attireChanges(rec, a){
+  if (!a) return 'The outfit from the story.';
+  const bits = [];
+  if (a.cls && a.cls !== rec.cls) bits.push(`${CLASSES[rec.cls].name} → ${CLASSES[a.cls].name} (${WTYPE[CLASSES[a.cls].w]})`);
+  for (const [k, v] of Object.entries(a.mods || {})) bits.push(`${v > 0 ? '+' : ''}${v} ${({mhp: 'HP', atk: 'Atk', def: 'Def', spd: 'Spd', skl: 'Skl', mov: 'Mov'})[k]}`);
+  return bits.length ? bits.join(' · ') : 'Look only: no change to stats or weapon.';
+}
+function openAttirePicker(uid){
+  const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === uid); if (!rec) return;
+  let ov = $('#armsheet');
+  if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
+  const opt = (id, name, desc, a) => { const on = (rec.attire || null) === (id || null);
+    return `<button class="wpick${on ? ' on' : ''}" data-attire-set="${id || ''}" type="button"><div class="wrow arow">
+      <div class="por f-${rec.faction}">${portraitInner({...rec, attire: id || null}, 'panel')}</div>
+      <div class="wtxt"><div class="wname">${name}</div><div class="wmeta">${attireChanges(rec, a)}</div>${desc ? `<div class="wdesc">${desc}</div>` : ''}</div>
+      <div class="wside">${on ? '<span class="whold">Wearing</span>' : ''}</div></div></button>`; };
+  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>Attire · story scenes always show the story outfit</h2>
+    <div class="wlist">${opt(null, 'Story outfit', '', null)}${rec.attires.map(id => opt(id, ATTIRES[id].name, ATTIRES[id].desc, ATTIRES[id])).join('')}</div>
+    <button class="btn" data-arm-close type="button">Done</button></div>`;
+  ov.hidden = false;
+  ov.onclick = e => {
+    const b = e.target.closest('[data-attire-set], [data-arm-close]');
+    if (!b && e.target !== ov) return;
+    if (b && 'attireSet' in b.dataset){
+      rec.attire = b.dataset.attireSet || null;
+      // a different weapon type: their weapon goes back to the Armoury
+      const it = rec.arm && armsOf(ck).find(x => x.uid === rec.arm);
+      if (it && !canCarry(rec, WEAPONS[it.id])) rec.arm = null;
+      saveGame(); Sfx.play('select'); tokenCache.clear();
+      toast(`${rec.name} is wearing ${attireOf(rec)?.name || 'the story outfit'}.`);
     }
     ov.hidden = true; ov.onclick = null; rerenderKeepScroll();
   };
@@ -5059,7 +5149,7 @@ const trainCost = rec => SUPPORT.train.cost + SUPPORT.train.step*(rec.trained ||
 // show the gains on the level-up card, with its own heading
 function showGains(rec, gains, title, sub){
   const s = rec.stats;
-  return showLevelUp({...rec, ...s, atk: s.atk + weaponOf(rec).mt, w: CLASSES[rec.cls].w}, gains, title, sub);
+  return showLevelUp({...rec, ...s, atk: s.atk + weaponOf(rec).mt, w: CLASSES[clsOf(rec)].w}, gains, title, sub);
 }
 function applyGains(rec, gains){ for (const [k, v] of Object.entries(gains)) rec.stats[k] = (rec.stats[k] || 0) + v; }
 function renderCamp(){

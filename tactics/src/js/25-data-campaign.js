@@ -38,6 +38,7 @@
 //   {who:'narr', text:'…'}                      narration
 //   {who, text, show:'triangle'}                show a diagram above the text (DIAGRAMS in 50-dialogue.js)
 //   {rename: {key: 'Name'}} / {arm: [{id, to}]} rename a character / hand out story weapons mid-scene
+//   {attire: [ids]}                             give characters attires (see 13-data-attires.js)
 //   any line can carry if:'flag' or unless:'flag'
 // Spawns: {cls, lv, x, y, ai:'charge'|'guard'|'hold', boss?, key?, name?, look?, bonus?:{stat:+n}, elite?}
 //   elite: a tougher ★★ soldier: red armour on generic frog art, plus the ★★ stat bonus
@@ -311,6 +312,8 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'And the silver needle\'s mine! I\'m going to sew everybody up. Properly.'},
             {arm: [{id: 'laststand', to: 'rae'}, {id: 'silverneedle', to: 'sister'}]},
             {who: 'narr', text: 'Rae Rabbit takes up Last Stand. Flopsy Flora takes the Silver Needle.'},
+            {who: 'narr', text: 'Neither of them throws their old mine clothes away. They fold them small, and keep them.'},
+            {attire: ['raeRags', 'floraRags']},
             {who: 'rae', text: 'Why go to all this trouble, Willow? For a few mine workers. You could have left us.'},
             {who: 'willow', text: 'The Republic can\'t win on numbers. The Friggliarchy has more frogs than we have buttons.'},
             {who: 'willow', text: 'It needs a hero. And heroes can come from anywhere, even a mine. Finding them is my job.'},
