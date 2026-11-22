@@ -182,6 +182,7 @@ function showIntro(uid){
 
 // ---------- First visit: a short guide to recruiting ----------
 const recruitSeen = ck => !!SAVE.flags['tut-recruit-' + ck];
+// Played over the campaign screen as soon as recruiting opens (see unlockTutorials).
 function recruitTutorial(ck){
   if (!recruitOpen(ck) || recruitSeen(ck)) return;
   SAVE.flags['tut-recruit-' + ck] = true; saveGame();
@@ -189,13 +190,14 @@ function recruitTutorial(ck){
   const hello = ck === 'rae'
     ? 'Word of you is spreading through the tunnels, Rae Rabbit. Rabbits are coming to find you. Let\'s see who answers.'
     : 'The crown rewards loyalty, little brother. Put out the call and see who answers it.';
-  talk([
+  return talk([
     {who: a.guide, text: hello},
     {who: 'narr', text: `Recruiting is open. Spend ${a.currency} on a banner to bring new units into your army: one at a time, or ten at once.`},
     {who: 'narr', text: `Every recruit is ★ a soldier (${R[1].rate}%), ★★ a veteran (${R[2].rate}%), or ★★★ a unique character with a story of their own (${R[3].rate}%).`},
     {who: 'narr', text: `A ten-recruit call always brings at least one ★★, and every banner guarantees a ★★★ within ${GACHA.pity} recruits. The bar under the banner shows how close you are.`},
     {who: 'narr', text: 'Recruit someone you already have, and you get a weapon of their rarity instead.'},
     {who: 'narr', text: 'Weapons go to the Armoury, on the Army screen. Any unit of the right type can carry them.'},
-    {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of this screen.`},
+    {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of the Recruit screen.`},
+    {who: 'narr', text: 'To begin, tap Army & Armoury, then the Recruit tab.'},
   ]);
 }

@@ -4494,9 +4494,7 @@ function renderHub(){
       <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         <div class="hbtns"><button class="btn" data-go="army" type="button">Army &amp; Armoury</button>
-        <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div>
-        ${campOpen(ck) && !campSeen(ck) ? `<button class="btn primary newrec" data-camp-open type="button">New: the Camp is open</button>` : ''}
-        ${recruitOpen(ck) && !recruitSeen(ck) ? `<button class="btn primary newrec" data-recruit-now type="button">New: Recruiting is open</button>` : ''}</div>
+        <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
     ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
@@ -4504,6 +4502,7 @@ function renderHub(){
     <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button></div>
   </div>`;
   showScreen('hub');
+  unlockTutorials(ck);   // anything that just opened explains itself here
 }
 
 // ---------- Army ----------
@@ -4674,8 +4673,6 @@ function renderResult(r){
         ${r.lost.length ? `<div><span>Unstitched (stitch them up on the Army screen)</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
-      ${ch.id === GACHA_ARMY[r.ck].opensAfter && !r.replay ? `<div class="gatebox recopen"><span><b>Recruiting is now open.</b> Spend ${GACHA_ARMY[r.ck].currency} to bring new units into the ${FACTIONS[camp.faction].name}'s army.</span><button class="btn primary" data-recruit-now type="button">Go to Recruiting</button></div>` : ''}
-      ${ch.id === SUPPORT.opensAfter[r.ck] && !r.replay ? `<div class="gatebox recopen"><span><b>The Camp is now open.</b> Spend time with the army's unique members, and grow stronger together through supports.</span><button class="btn primary" data-camp-open type="button">Visit the Camp</button></div>` : ''}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
@@ -4698,7 +4695,6 @@ document.addEventListener('click', e => {
   else if (d.go === 'prep') renderPrep();
   else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
-  else if ('recruitNow' in d){ armyTab = 'recruit'; armyReturn = 'hub'; renderArmy(); recruitTutorial(SAVE.current); }
   else if ('debug' in d){
     if (!armed(t, SAVE.debugUnlock ? 'Tap again to relock' : 'Tap again to unlock all')) return;
     SAVE.debugUnlock = !SAVE.debugUnlock;
@@ -4935,6 +4931,7 @@ function showIntro(uid){
 
 // ---------- First visit: a short guide to recruiting ----------
 const recruitSeen = ck => !!SAVE.flags['tut-recruit-' + ck];
+// Played over the campaign screen as soon as recruiting opens (see unlockTutorials).
 function recruitTutorial(ck){
   if (!recruitOpen(ck) || recruitSeen(ck)) return;
   SAVE.flags['tut-recruit-' + ck] = true; saveGame();
@@ -4942,14 +4939,15 @@ function recruitTutorial(ck){
   const hello = ck === 'rae'
     ? 'Word of you is spreading through the tunnels, Rae Rabbit. Rabbits are coming to find you. Let\'s see who answers.'
     : 'The crown rewards loyalty, little brother. Put out the call and see who answers it.';
-  talk([
+  return talk([
     {who: a.guide, text: hello},
     {who: 'narr', text: `Recruiting is open. Spend ${a.currency} on a banner to bring new units into your army: one at a time, or ten at once.`},
     {who: 'narr', text: `Every recruit is ★ a soldier (${R[1].rate}%), ★★ a veteran (${R[2].rate}%), or ★★★ a unique character with a story of their own (${R[3].rate}%).`},
     {who: 'narr', text: `A ten-recruit call always brings at least one ★★, and every banner guarantees a ★★★ within ${GACHA.pity} recruits. The bar under the banner shows how close you are.`},
     {who: 'narr', text: 'Recruit someone you already have, and you get a weapon of their rarity instead.'},
     {who: 'narr', text: 'Weapons go to the Armoury, on the Army screen. Any unit of the right type can carry them.'},
-    {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of this screen.`},
+    {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of the Recruit screen.`},
+    {who: 'narr', text: 'To begin, tap Army & Armoury, then the Recruit tab.'},
   ]);
 }
 
@@ -5130,17 +5128,33 @@ function openCamp(){
   const ck = SAVE.current;
   if (!campOpen(ck)){ toast(`The Camp opens after the first stage of Chapter Two.`); return; }
   renderCamp();
-  if (!campSeen(ck)){
-    SAVE.flags['tut-camp-' + ck] = true; saveGame();
-    const lord = CAMPAIGNS[ck].lord, F = FACTIONS[campOf().faction];
-    talk([
-      {who: lord, text: ck === 'rae' ? 'A night without guards or bells. We should use it to get to know who\'s standing with us.'
-                                    : 'Biggle says a prince should know his soldiers. On that, at least, he may be right.'},
-      {who: 'narr', text: `The Camp is open. Here, ${speakerName(lord)} can spend time with the unique (★★★) members of the army.`},
-      {who: 'narr', text: 'Each of them has three support conversations, ranked C, B and A. Some become friends. Others have something to teach.'},
-      {who: 'narr', text: `Unlocking a rank costs ${F.currency}: ${SUPPORT.cost.C} for C, ${SUPPORT.cost.B} for B, ${SUPPORT.cost.A} for A. Anything you've unlocked can be watched again at any time.`},
-    ]);
-  }
+}
+
+// Played over the campaign screen as soon as the Camp opens (see unlockTutorials).
+function campTutorial(ck){
+  if (!campOpen(ck) || campSeen(ck)) return;
+  SAVE.flags['tut-camp-' + ck] = true; saveGame();
+  const lord = CAMPAIGNS[ck].lord, F = FACTIONS[CAMPAIGNS[ck].faction];
+  return talk([
+    {who: lord, text: ck === 'rae' ? 'A night without guards or bells. We should use it to get to know who\'s standing with us.'
+                                  : 'Biggle says a prince should know his soldiers. On that, at least, he may be right.'},
+    {who: 'narr', text: `The Camp is open. Here, ${speakerName(lord)} can spend time with the unique (★★★) members of the army.`},
+    {who: 'narr', text: 'Each of them has three support conversations, ranked C, B and A. Some become friends. Others have something to teach. Every rank makes them permanently stronger.'},
+    {who: 'narr', text: `Unlocking a rank costs ${F.currency}: ${SUPPORT.cost.C} for C, ${SUPPORT.cost.B} for B, ${SUPPORT.cost.A} for A. Anything you've unlocked can be watched again at any time.`},
+    {who: 'narr', text: 'To visit, tap Camp.'},
+  ]);
+}
+// When a feature opens, its tutorial plays straight away on the campaign screen, one after another.
+let tutorialsRunning = false;
+async function unlockTutorials(ck){
+  if (tutorialsRunning || !$('#title').hidden) return;
+  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck))) return;
+  tutorialsRunning = true;
+  await wait(50); $('#hub').scrollTo({top: 0});   // the buttons the tutorial points at are at the top
+  try {
+    if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
+    if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
+  } finally { tutorialsRunning = false; }
 }
 
 // ---------------- 90-main.js ----------------
