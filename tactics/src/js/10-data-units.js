@@ -203,6 +203,7 @@ const STAGE_SIZE = {
   sistercamp: {h: .8}, sisterflora: {h: .8},     // the little sister
   king: {h: 1.15},                                // full-body art: a little taller than everyone, as befits a king
   condemned: {h: .92},                            // big ears: a touch smaller so they stay on screen
+  fragglejr: {h: .84},                            // the young son: shorter than Tiggle
   biggle: {h: 1.12, drop: .035},                  // the older brother stands taller than Tiggle; drop lines his planted foot up with Tiggle's
 };
 
