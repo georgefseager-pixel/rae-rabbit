@@ -86,9 +86,12 @@ function artResolve(ent, kind){
     if (pose && ART[pose + fur]?.[kind]) return pose + fur;
   }
   if (sp.base === 'black'){
-    // Fraggle's Black Guard: one portrait and map icon, and a battle pose for each weapon (art/black<weapon>-battle.png; swords use black-battle.png)
-    const pose = kind === 'battle' && {axe: 'blackaxe', lance: 'blacklance', tome: 'blackbook', staff: 'blackstaff'}[ent.w || CLASSES[cls]?.w];
-    if (pose && ART[pose + fur]?.[kind]) return pose + fur;
+    // Fraggle's Black Guard: one portrait and map icon, and a battle pose for each weapon (art/black<weapon>-battle.png; swords use black-battle.png).
+    // ★★ (elite) guards wear the closed helm: the same set as art/blackelite*-*.png.
+    const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w];
+    if (pose && ART['black' + e + pose + fur]?.[kind]) return 'black' + e + pose + fur;
+    if (ART['black' + e + fur]?.[kind]) return 'black' + e + fur;
   }
   if (sp.base === 'grunt'){
     // ★★ frog soldiers wear red (elite) armour: art built from art/grunt*armour-*.png at load
@@ -206,8 +209,10 @@ async function buildFurVariants(){
   // Elite (★★) frog art: the green armour, cloak, plume and banner turned red, before the skin colours.
   for (const base of ['grunt', 'gruntbow']) await buildEliteArmour(base);
   // Fraggle's Black Guard (black*) recolour the same way, from art/black*skin-<kind>.png.
-  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', 'black', 'blackaxe', 'blacklance', 'blackbook', 'blackstaff']) await buildVariants(base, SKINS, async (kind, px, W, H) => {
-    const skin = await maskAlpha(ART[base.replace('elite', '') + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
+  const black = ['', 'axe', 'lance', 'book', 'staff'].flatMap(p => ['black' + p, 'blackelite' + p]);
+  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', ...black]) await buildVariants(base, SKINS, async (kind, px, W, H) => {
+    // the elite grunts reuse the plain grunt masks; the elite Black Guard have masks of their own
+    const skin = await maskAlpha(ART[(ART[base + 'skin'] ? base : base.replace('elite', '')) + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
       // colourless pixels (eye highlights) and near-black ink keep their colour

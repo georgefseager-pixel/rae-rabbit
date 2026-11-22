@@ -515,7 +515,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('marshlord',5,4,0,'hold',{boss: true, flees: true, key: 'fraggle', name: 'Fraggle Friggle', look: 'fraggle'}),
             E('gpike',4,3,1,'guard',{elite: true}), E('gchaplain',3,5,1,'guard'), E('gscribe',4,2,2,'guard'), E('gscribe',4,7,2,'guard'),
-            E('gaxe',4,5,3,'guard'), E('gpike',3,4,5), E('gaxe',3,6,6), E('gblade',3,2,7), E('gpike',3,8,7),
+            E('gaxe',4,5,3,'guard',{elite: true}), E('gpike',3,4,5), E('gaxe',3,6,6), E('gblade',3,2,7), E('gpike',3,8,7),
           ],
           bossTalk: [
             {who: "fraggle", text: "Oh, look! The little hero! I'm going to unstitch you slowly, and wear your name like a scarf!"},
@@ -901,7 +901,7 @@ const CAMPAIGNS = {
               {who: "guard", text: "Take them! Take all of them!"},
               {who: "biggle", text: "Form up! Protect the prince!"},
             ], units: [
-            E('gpike',4,0,4), E('gaxe',4,9,4), E('gscribe',4,4,0), E('gblade',4,1,2), E('gpike',4,5,1,'charge',{elite: true}),
+            E('gpike',4,0,4), E('gaxe',4,9,4), E('gscribe',4,4,0), E('gblade',4,1,2,'charge',{elite: true}), E('gpike',4,5,1,'charge',{elite: true}),
             E('gscribe',4,8,2), E('gaxe',4,3,3), E('gchaplain',4,6,1),
           ]},
           pre: [

@@ -53,14 +53,15 @@ const GACHA_ARMY = {
     tease: 'A writ under the royal seal, delivered by runner…', seal: 'F',
     generic: ['lily', 'bruiser', 'reed', 'croaker', 'blade'],
     rares: ['duckweed', 'glimmer', 'bogsworth'],
-    // Fraggle Friggle's Black Guard: the ★ soldiers on Fraggle Jr.'s banner
-    troops: {fraggle: {stars: [1], generic: ['gblade', 'gaxe', 'gpike', 'gscribe', 'gchaplain'],
-      names: ['Thornback', 'Gloam', 'Blackwater', 'Nettlejaw', 'Sedge', 'Murkmire', 'Briarwick', 'Fen', 'Rook', 'Sloe']}},
+    // Fraggle Friggle's Black Guard: the ★ and ★★ soldiers on Fraggle Jr.'s banner (★★ wear the closed helm)
+    troops: {fraggle: {stars: [1, 2], generic: ['gblade', 'gaxe', 'gpike', 'gscribe', 'gchaplain'],
+      names: ['Thornback', 'Gloam', 'Blackwater', 'Nettlejaw', 'Sedge', 'Murkmire', 'Briarwick', 'Fen', 'Rook', 'Sloe',
+              'Blackthorn', 'Wormwood', 'Grimsby', 'Tarn', 'Hollin']}},
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
       {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], after: 'F2-4', bg: 'woods', troops: 'fraggle',
-       blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and the ★ soldiers who answer are his father\'s Black Guard.'},
+       blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',
