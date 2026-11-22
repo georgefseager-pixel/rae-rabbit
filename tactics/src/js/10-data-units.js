@@ -94,7 +94,7 @@ const LOOKS = {
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   froggle:   {sp:'frog', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
   fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
-  patch:     {sp:'bun', art:'none', ears:'up', fur:'#9a8a78', light:'#bcae9c', dark:'#5a4a3c', scarf:'#2c3559', gear:'eyepatch'},
+  patch:     {sp:'bun', ears:'up', fur:'#d8742a', light:'#ee9a52', dark:'#8a4214', scarf:'#2c3559', gear:'eyepatch'},
   rhubarb:   {sp:'frog', skin:'#d9779a', light:'#f2a7c2', dark:'#7e3352', belly:'#f8d6e2', gear:'cap', big:true},
   headsman:  {sp:'frog', skin:'#46603a', light:'#647e52', dark:'#1f2c18', belly:'#a9b68c', gear:'hood', hood:'#151214', big:true},
   guard:     {sp:'frog', skin:'#5e8a3c', light:'#80aa5a', dark:'#2f4a1e', belly:'#bfd38a', gear:'kettle'},
@@ -128,6 +128,9 @@ const CHARACTERS = {
   froggle:  {name:'Froggle', faction:'rae', look:'froggle', cls:'tribune', lv:4, stars:3, stats:{mhp:24,atk:12,def:7,spd:7,skl:10,mov:5},   // founder of the Republic; recruited from the second Raepublic banner
              retort:'Every rabbit you ever chained, I wrote down. Every one.',
              intro:{title:'Founder of the Republic', text:'She kept the ledgers for the crown\'s mines, until one night the numbers stopped adding up. For years after, she kept the Republic hidden in the woods. She has handed it to Rae now, and picked up a spear instead.'}},
+  patch:    {name:'Patch', faction:'rae', look:'patch', cls:'rfighter', wname:'Corporal\'s Axe', lv:4, stars:3, stats:{mhp:27,atk:13,def:7,spd:6,skl:6,mov:5},   // one-eyed Republic corporal; second Raepublic banner
+             retort:'Only the one eye left, frog, and it\'s on you!',
+             intro:{title:'Corporal, East Company', text:'He has marched at the front of the Republic\'s columns longer than anyone, and been caught by the frogs more times than he will admit. One of those times cost him an eye. He laughs about it. He laughs about most things.'}},
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:19,atk:12,def:2,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
@@ -174,7 +177,6 @@ const SPEAKERS = Object.assign({
   thin:        {name:'Thin Rabbit', faction:'rae', look:'thin', fur:'cream'},
   // Chapter Two (placeholder art)
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
-  patch:       {name:'Patch', faction:'rae', look:'patch'},                  // one-eyed Republic corporal
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
@@ -223,6 +225,7 @@ const ART_CROP = {
   rhubarb:  {panel: ['220% auto', '50% 5%'], talk: ['160% auto', '50% 4%']},
   executioner: {panel: ['210% auto', '30% 6%'], talk: ['150% auto', '30% 4%']},
   brigand:  {panel: ['200% auto', '38% 3%'], talk: ['150% auto', '36% 2%']},
+  patch:    {panel: ['170% auto', '55% 9%'], talk: ['135% auto', '55% 8%']},
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's

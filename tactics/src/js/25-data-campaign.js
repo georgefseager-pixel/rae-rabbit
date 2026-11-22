@@ -356,7 +356,7 @@ const CAMPAIGNS = {
           brief: 'Patch\'s column is pinned in a ravine. Break through, rout the frogs, and keep Patch alive. His soldiers fight beside you, but on their own (blue coasters).',
           // allies: Republic soldiers who fight on your side but act on their own (green coasters)
           allies: () => [
-            E('rlancer',4,4,7,'hold',{key: 'patch', name: 'Patch', look: 'patch', vip: true}),
+            E('rfighter',4,4,7,'hold',{key: 'patch', name: 'Patch', look: 'patch', vip: true}),
             E('rfencer',2,5,7,'guard',{key: 'ally', name: 'Nettle'}), E('rarcher',2,4,6,'guard',{key: 'ally', name: 'Fern'}),
             E('rfighter',2,3,8,'guard',{key: 'ally', name: 'Burr'}), E('radept',2,5,6,'guard',{key: 'ally', name: 'Moss'}),
           ],
@@ -427,7 +427,7 @@ const CAMPAIGNS = {
           limitFail: 'The vanguard reached the camp first, and opened the gate.',
           deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14],[2,15],[7,15]],
           brief: 'A frog vanguard is racing you back to the Republic camp. Cut through and defeat its captain before it gets there.',
-          allies: () => [E('rlancer',4,5,13,'charge',{key: 'patch', name: 'Patch', look: 'patch'})],
+          allies: () => [E('rfighter',4,5,13,'charge',{key: 'patch', name: 'Patch', look: 'patch'})],
           enemies: () => [
             E('toadknight',4,4,0,'hold',{boss: true, elite: true, key: 'vanguard', name: 'Vanguard Captain'}),
             E('lily',3,3,2,'guard'), E('reed',3,6,2,'guard'), E('bruiser',3,4,5), E('lily',3,7,6), E('blade',3,2,7),
@@ -462,7 +462,7 @@ const CAMPAIGNS = {
           deploy: [[4,9],[5,9],[3,11],[6,11],[4,12],[5,12],[2,12],[7,12]],
           brief: 'The frogs followed the trail to the Republic camp. Hold the palisade until dawn.',
           allies: () => [
-            E('rlancer',4,3,7,'guard',{key: 'patch', name: 'Patch', look: 'patch'}),
+            E('rfighter',4,3,7,'guard',{key: 'patch', name: 'Patch', look: 'patch'}),
             E('rfencer',3,6,7,'guard',{key: 'ally', name: 'Nettle'}), E('rarcher',3,4,8,'guard',{key: 'ally', name: 'Fern'}),
           ],
           enemies: () => [
@@ -772,7 +772,7 @@ const CAMPAIGNS = {
           deploy: [[4,0],[3,0],[6,0],[5,1],[4,1],[1,1],[8,1],[5,0]],
           brief: 'A rebel column is crossing the ravine. On Fraggle\'s orders: pin it, and break its leader. Don\'t finish it.',
           enemies: () => [
-            E('rlancer',4,4,8,'hold',{boss: true, flees: true, key: 'patch', name: 'Patch', look: 'patch'}),
+            E('rfighter',4,4,8,'hold',{boss: true, flees: true, key: 'patch', name: 'Patch', look: 'patch'}),
             E('rfencer',3,3,6), E('rfencer',3,6,6), E('rarcher',3,4,9,'guard'), E('radept',3,6,8,'guard'), E('rfighter',3,2,8),
             E('rlancer',3,7,10,'guard'),
           ],
