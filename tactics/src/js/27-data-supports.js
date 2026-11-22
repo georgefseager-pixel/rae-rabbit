@@ -15,7 +15,7 @@ const SUPPORT = {
   // after rank A: Train, +1 to two stats (+2 if HP), weighted by the unit's growths. The price rises each time.
   train: {cost: 500, step: 250, max: 5},
   opensAfter: {rae: 'R2-1', frog: 'F2-1'},   // the first stage of each army's Chapter Two
-  scene: {rae: 'republic', frog: 'camp'},    // the Camp backdrop: the Republic camp (art/bg-republic.jpg); Tiggle's 'camp' is a placeholder until art/bg-camp.jpg
+  scene: {rae: 'republic', frog: 'warcamp'}, // the Camp backdrops: the Republic camp (art/bg-republic.jpg), Tiggle's war camp (art/bg-warcamp.jpg)
   kinds: {friend: 'Friendship', learn: 'Lessons', family: 'Family'},
 };
 // Keyed by the leader, then by the unit. Conversations are set at the Camp and can be watched at any point

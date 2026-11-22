@@ -32,7 +32,7 @@
 //
 // Scene lines
 //   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
-//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods, court, ridge, republic, camp)
+//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods, court, ridge, republic, warcamp)
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
