@@ -600,3 +600,6 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .gpor.gw{display:grid;place-items:center}
 .sart.sw{display:grid;place-items:center;filter:drop-shadow(0 0 30px rgba(236,198,115,.5))}
 .spin .sdesc{font-style:italic;max-width:320px;color:#d8cdb4}
+.wcount{font-family:var(--stencil);font-size:14px;color:var(--brass-hi)}
+.whold.swap{color:#a9c8f0}
+.wgets{font-size:10px;color:var(--muted);text-align:right;max-width:110px}

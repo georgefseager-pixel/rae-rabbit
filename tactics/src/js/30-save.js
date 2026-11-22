@@ -13,6 +13,7 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.dead) r.arm = null;   // the fallen drop their weapons
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
     const c = CHARACTERS.condemned;
@@ -51,7 +52,7 @@ function applyOutfits(ck, outfits){
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, stars: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
-  // starting soldiers are members of the army's fixed company (★), so they can gain Bond later
+  // starting soldiers are members of the army's fixed company (★), so pulling them again gives a weapon
   for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []){
     const st = SAVE.camps[k], tpl = companyOf(k).find(t => t.stars === 1 && t.cls === cls && !st.roster.some(r => r.gid === t.id));
     const rec = makeRecruit(k, cls, c.startLevel || 1);

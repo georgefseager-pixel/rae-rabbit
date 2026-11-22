@@ -1,14 +1,14 @@
 // ================= Weapons =================
 // Every unit uses one weapon type, set by its class (CLASSES[cls].w): sword, lance, axe, bow or staff.
 // Everyone starts with their class's basic weapon (its `wname`). Better weapons are items: they come from
-// the story (stage reward `weapons`) and from each army's Smithy banner, and any unit of the right type
+// the story (stage reward `weapons`) and from recruiting (as results, and for duplicates), and any unit of the right type
 // can carry one (unless it has an `owner`, then only that character can).
 //   type   sword | lance | axe | bow | staff          stars  1–3 (rarity)
 //   mt     might: added to Atk (for a staff: to Mag, so it mends more)
 //   hit / crit   added to the chance to hit / to land a critical
 //   rng    [min, max] range; leave out to use the class's usual range
 //   lash   a whip: a bow-type weapon that lashes instead of firing (no projectile, a crack instead of a twang)
-//   army   'rae' | 'frog': which army's Smithy offers it (story weapons have none)
+//   army   'rae' | 'frog': which army can get it from recruiting (story weapons have none)
 //   owner  a character key: only they can carry it (personal story weapons)
 const WEAPONS = {
   // ---- The Raepublic: tools and scraps from the mines, then better ----

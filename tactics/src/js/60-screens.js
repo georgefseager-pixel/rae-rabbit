@@ -103,7 +103,7 @@ function recCard(rec, actions = '', extraClass = ''){
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     ${rec.dead ? '' : `<button class="ufav${rec.fav ? ' on' : ''}" data-fav="${rec.uid}" type="button" aria-pressed="${!!rec.fav}" aria-label="${rec.fav ? 'Remove from favourites' : 'Add to favourites'}">${rec.fav ? '♥' : '♡'}</button>`}
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
-    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
+    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
@@ -191,7 +191,7 @@ async function playChapter(){
     r.lv = u.lv; r.exp = u.exp;
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
   }
-  for (const u of res.lost) u.rec.dead = true;
+  for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }   // their weapon stays in the Armoury
   const departed = [], joined = [];
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
@@ -268,7 +268,7 @@ document.addEventListener('click', e => {
     toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked, story recruits joined; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
   else if (d.armPick) openWeaponPicker(d.armPick);
-  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseWeapon(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
+  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseSpare(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
   else if (d.trainUnit) trainPartner(d.trainUnit);

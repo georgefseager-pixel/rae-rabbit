@@ -22,10 +22,23 @@ function addWeapon(ck, id){
   const it = {uid: `${id}-${Date.now().toString(36)}${Math.floor(Math.random()*1e4)}`, id};
   armsOf(ck).push(it); return it;
 }
-// Give a unit an item (or null for the class weapon). Whoever had the item goes back to their class weapon.
+// Give a unit an item (or null for the class weapon). If someone else carries it, the two swap: they take
+// this unit's weapon when they can carry it, and otherwise go back to their class weapon.
 function equipWeapon(ck, rec, itemUid){
-  if (itemUid) for (const r of SAVE.camps[ck].roster) if (r.arm === itemUid) r.arm = null;
+  const prev = rec.arm, prevW = prev && WEAPONS[armsOf(ck).find(a => a.uid === prev)?.id];
+  if (itemUid) for (const r of SAVE.camps[ck].roster) if (r !== rec && r.arm === itemUid)
+    r.arm = !r.dead && prevW && canCarry(r, prevW) ? prev : null;
   rec.arm = itemUid || null;
+}
+// What swapping would leave the current holder with (for the picker).
+function swapResult(ck, rec, holder){
+  const prevW = rec.arm && WEAPONS[armsOf(ck).find(a => a.uid === rec.arm)?.id];
+  return prevW && canCarry(holder, prevW) ? prevW.name : basicWeapon(holder).name;
+}
+// Release one unused copy of a weapon.
+function releaseSpare(ck, id){
+  const it = armsOf(ck).find(a => a.id === id && !holderOf(ck, a.uid));
+  return it ? releaseWeapon(ck, it.uid) : 0;
 }
 function releaseWeapon(ck, itemUid){
   const list = armsOf(ck), i = list.findIndex(a => a.uid === itemUid), w = i >= 0 && WEAPONS[list[i].id];

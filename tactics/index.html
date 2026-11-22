@@ -607,6 +607,9 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .gpor.gw{display:grid;place-items:center}
 .sart.sw{display:grid;place-items:center;filter:drop-shadow(0 0 30px rgba(236,198,115,.5))}
 .spin .sdesc{font-style:italic;max-width:320px;color:#d8cdb4}
+.wcount{font-family:var(--stencil);font-size:14px;color:var(--brass-hi)}
+.whold.swap{color:#a9c8f0}
+.wgets{font-size:10px;color:var(--muted);text-align:right;max-width:110px}
 
 </style>
 
@@ -1520,14 +1523,14 @@ const RECRUIT_NAMES = {
 // ================= Weapons =================
 // Every unit uses one weapon type, set by its class (CLASSES[cls].w): sword, lance, axe, bow or staff.
 // Everyone starts with their class's basic weapon (its `wname`). Better weapons are items: they come from
-// the story (stage reward `weapons`) and from each army's Smithy banner, and any unit of the right type
+// the story (stage reward `weapons`) and from recruiting (as results, and for duplicates), and any unit of the right type
 // can carry one (unless it has an `owner`, then only that character can).
 //   type   sword | lance | axe | bow | staff          stars  1–3 (rarity)
 //   mt     might: added to Atk (for a staff: to Mag, so it mends more)
 //   hit / crit   added to the chance to hit / to land a critical
 //   rng    [min, max] range; leave out to use the class's usual range
 //   lash   a whip: a bow-type weapon that lashes instead of firing (no projectile, a crack instead of a twang)
-//   army   'rae' | 'frog': which army's Smithy offers it (story weapons have none)
+//   army   'rae' | 'frog': which army can get it from recruiting (story weapons have none)
 //   owner  a character key: only they can carry it (personal story weapons)
 const WEAPONS = {
   // ---- The Raepublic: tools and scraps from the mines, then better ----
@@ -2419,14 +2422,13 @@ for (const camp of Object.values(CAMPAIGNS)){
 // Each army recruits through its own banners with its own pull currency.
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
-//   (a banner with kind:'arms' gives weapons of that rarity instead; see 12-data-weapons.js)
 //   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
-// Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
-// past that, it refunds pull currency.
+// Some results are weapons instead of recruits (weaponShare), of the rarity rolled (see 12-data-weapons.js).
+// Pulling a recruit you already have gives a weapon of that rarity instead.
 // Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
-// each rarity, named from RECRUIT_NAMES. A soldier you already have gains a smaller Bond instead
-// (genericBond); once maxed, the duplicate refunds the release value. So the roster can't grow forever.
+// each rarity, named from RECRUIT_NAMES. A soldier you already have becomes a weapon instead,
+// so the roster can't grow forever.
 const GACHA = {
   rarity: {
     1: {name: 'Common',   rate: 64, color: '#b88a58'},
@@ -2436,9 +2438,8 @@ const GACHA = {
   pity: 40,               // a ★★★ is guaranteed by this many pulls on the same banner
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
-  bondMax: 5,
+  weaponShare: .25,       // this share of results is a weapon (of the rolled rarity) instead of a recruit
   company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
-  genericBond: {1: {max: 3, hp: 0, stats: 1}, 2: {max: 4, hp: 1, stats: 1}},   // per Bond level
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
   stageTokens: 5,
@@ -2456,8 +2457,6 @@ const GACHA_ARMY = {
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
-      {id: 'rae-smithy', name: 'The Tunnel Smithy', kind: 'arms', bg: 'mine',
-       blurb: 'Weapons instead of recruits: tools and scraps from the mines, sharpened and better. ★ to ★★★.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
     ],
@@ -2472,8 +2471,6 @@ const GACHA_ARMY = {
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
-      {id: 'frog-smithy', name: 'The Royal Armoury', kind: 'arms', bg: 'court',
-       blurb: 'Weapons instead of recruits: arms from the Lily Court, ★ to ★★★.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',
@@ -2539,6 +2536,7 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.dead) r.arm = null;   // the fallen drop their weapons
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (CHARACTERS[r.key] && !CHARACTERS[r.key].stars) r.stars = CHARACTERS[r.key].rarity || 3;   // story characters: ★★★, camp rabbits ★
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'masked'){
     const c = CHARACTERS.condemned;
@@ -2577,7 +2575,7 @@ function applyOutfits(ck, outfits){
 function newSave(){
   SAVE = {v: 2, current: 'rae', flags: {}, stars: {}, camps: Object.fromEntries(Object.entries(CAMPAIGNS).map(([k, c]) =>
     [k, {cleared: [], res: c.startRes, roster: c.start.map(recordFor), recruited: 0}]))};
-  // starting soldiers are members of the army's fixed company (★), so they can gain Bond later
+  // starting soldiers are members of the army's fixed company (★), so pulling them again gives a weapon
   for (const [k, c] of Object.entries(CAMPAIGNS)) for (const cls of c.startRecruits || []){
     const st = SAVE.camps[k], tpl = companyOf(k).find(t => t.stars === 1 && t.cls === cls && !st.roster.some(r => r.gid === t.id));
     const rec = makeRecruit(k, cls, c.startLevel || 1);
@@ -2674,10 +2672,23 @@ function addWeapon(ck, id){
   const it = {uid: `${id}-${Date.now().toString(36)}${Math.floor(Math.random()*1e4)}`, id};
   armsOf(ck).push(it); return it;
 }
-// Give a unit an item (or null for the class weapon). Whoever had the item goes back to their class weapon.
+// Give a unit an item (or null for the class weapon). If someone else carries it, the two swap: they take
+// this unit's weapon when they can carry it, and otherwise go back to their class weapon.
 function equipWeapon(ck, rec, itemUid){
-  if (itemUid) for (const r of SAVE.camps[ck].roster) if (r.arm === itemUid) r.arm = null;
+  const prev = rec.arm, prevW = prev && WEAPONS[armsOf(ck).find(a => a.uid === prev)?.id];
+  if (itemUid) for (const r of SAVE.camps[ck].roster) if (r !== rec && r.arm === itemUid)
+    r.arm = !r.dead && prevW && canCarry(r, prevW) ? prev : null;
   rec.arm = itemUid || null;
+}
+// What swapping would leave the current holder with (for the picker).
+function swapResult(ck, rec, holder){
+  const prevW = rec.arm && WEAPONS[armsOf(ck).find(a => a.uid === rec.arm)?.id];
+  return prevW && canCarry(holder, prevW) ? prevW.name : basicWeapon(holder).name;
+}
+// Release one unused copy of a weapon.
+function releaseSpare(ck, id){
+  const it = armsOf(ck).find(a => a.id === id && !holderOf(ck, a.uid));
+  return it ? releaseWeapon(ck, it.uid) : 0;
 }
 function releaseWeapon(ck, itemUid){
   const list = armsOf(ck), i = list.findIndex(a => a.uid === itemUid), w = i >= 0 && WEAPONS[list[i].id];
@@ -2719,11 +2730,6 @@ function rollRarity(pity){
   const r = Math.random()*100, R = GACHA.rarity;
   return r < R[3].rate ? 3 : r < R[3].rate + R[2].rate ? 2 : 1;
 }
-function bondBoost(rec){
-  rec.stats.mhp += 1;
-  const keys = ['atk', 'def', 'spd', 'skl'];
-  for (let i = 0; i < 2; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
-}
 // The fixed company of generic soldiers for an army: [{id, cls, stars, name}].
 function companyOf(ck){
   const army = GACHA_ARMY[ck], names = RECRUIT_NAMES[CAMPAIGNS[ck].faction], out = [];
@@ -2734,41 +2740,28 @@ function companyOf(ck){
 }
 // Turn a fresh generic recruit into a particular company soldier (stable id, name and look).
 function asCompanySoldier(rec, tpl){
-  rec.uid = tpl.id; rec.gid = tpl.id; rec.name = tpl.name; rec.stars = tpl.stars; rec.bond = 0;
+  rec.uid = tpl.id; rec.gid = tpl.id; rec.name = tpl.name; rec.stars = tpl.stars;
   if (tpl.stars === 2){ rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; rec.wtier = 1; }
   return rec;
 }
-function genericBondBoost(rec, stars){
-  const gb = GACHA.genericBond[stars]; rec.stats.mhp += gb.hp;
-  const keys = gb.hp ? ['atk', 'def', 'spd', 'skl'] : ['mhp', 'atk', 'def', 'spd', 'skl'];
-  for (let i = 0; i < gb.stats; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
-}
-// Weapons this army's Smithy can give at a rarity.
-const smithyPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
+// Weapons this army can get from recruiting, at a rarity.
+const weaponPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
+function weaponResult(ck, stars, dupOf){ const it = addWeapon(ck, pick(weaponPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new', dupOf}; }
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
-  if (banner.kind === 'arms'){ const it = addWeapon(ck, pick(smithyPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new'}; }
+  if (Math.random() < GACHA.weaponShare) return weaponResult(ck, stars);
   if (stars === 3){
     const pool = banner.pool || army.rares;
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
-    if (have){
-      if ((have.bond || 0) < GACHA.bondMax){ have.bond = (have.bond || 0) + 1; bondBoost(have); return {stars, rec: have, kind: 'bond'}; }
-      gachaState(ck).tokens += GACHA.release[3];
-      return {stars, rec: have, kind: 'refund', refund: GACHA.release[3]};
-    }
-    const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3; rec.bond = 0;
+    if (have) return weaponResult(ck, 3, have.name);   // already with you: a ★★★ weapon instead
+    const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3;
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
   }
   const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
   const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
-  if (have){
-    const gb = GACHA.genericBond[stars];
-    if ((have.bond || 0) < gb.max){ have.bond = (have.bond || 0) + 1; genericBondBoost(have, stars); return {stars, rec: have, kind: 'bond'}; }
-    gachaState(ck).tokens += GACHA.release[stars];
-    return {stars, rec: have, kind: 'refund', refund: GACHA.release[stars]};
-  }
+  if (have) return weaponResult(ck, stars, have.name);
   // a fallen soldier of the same name is replaced by the new one
   st.roster = st.roster.filter(r => r.gid !== tpl.id);
   const rec = asCompanySoldier(makeRecruit(ck, tpl.cls), tpl);
@@ -2803,6 +2796,7 @@ function releaseUnit(ck, uid){
   const st = SAVE.camps[ck], i = st.roster.findIndex(r => r.uid === uid), rec = st.roster[i];
   if (!rec || rec.lord || !isGachaUnit(rec)) return 0;
   const back = rec.dead ? 0 : GACHA.release[rec.stars || 1];
+  rec.arm = null;   // their weapon stays in the Armoury
   st.roster.splice(i, 1); gachaState(ck).tokens += back; saveGame();
   return back;
 }
@@ -3979,7 +3973,7 @@ function recCard(rec, actions = '', extraClass = ''){
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     ${rec.dead ? '' : `<button class="ufav${rec.fav ? ' on' : ''}" data-fav="${rec.uid}" type="button" aria-pressed="${!!rec.fav}" aria-label="${rec.fav ? 'Remove from favourites' : 'Add to favourites'}">${rec.fav ? '♥' : '♡'}</button>`}
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
-    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}${rec.bond ? ` <small>Bond ${rec.bond}</small>` : ''}</span>` : ''}</div>
+    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ' · <span class="tick">Unstitched</span>' : ''}</div>
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
@@ -4067,7 +4061,7 @@ async function playChapter(){
     r.lv = u.lv; r.exp = u.exp;
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
   }
-  for (const u of res.lost) u.rec.dead = true;
+  for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }   // their weapon stays in the Armoury
   const departed = [], joined = [];
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
@@ -4144,7 +4138,7 @@ document.addEventListener('click', e => {
     toast(SAVE.debugUnlock ? 'Debug: every fight and banner unlocked, story recruits joined; +100,000 money and +1,000 pulls on both sides.' : 'Relocked: normal progression.'); renderHub();
   }
   else if (d.armPick) openWeaponPicker(d.armPick);
-  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseWeapon(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
+  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseSpare(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
   else if (d.trainUnit) trainPartner(d.trainUnit);
@@ -4187,12 +4181,6 @@ const stars = n => '★'.repeat(n || 1);
 
 // The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 function bannerArt(ck, b){
-  if (b.kind === 'arms'){   // the Smithy: its ★★★ weapons, large
-    const tops = smithyPool(ck, 3).map(id => WEAPONS[id]), bg = b.bg && ART.bg?.[b.bg];
-    return `<div class="bhero arms"${bg ? ` style="--bgimg:url(${bg})"` : ''}><div class="brays"></div>
-      <div class="btitle"><div class="bkind">Weapons banner</div><h2>${b.name}</h2></div>
-      <div class="barms">${tops.map((w, i) => `<div class="barm" style="--i:${i}">${weaponIconSVG(w, 40)}<b>${w.name}</b><small>★★★ ${WTYPE[w.type]}</small></div>`).join('')}</div></div>`;
-  }
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const figs = keys.map((k, i) => {
     const src = artFor(k, 'portrait') || plushPortrait(CHARACTERS[k].look || k);
@@ -4220,12 +4208,12 @@ function recruitTabHTML(ck){
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = b.kind === 'arms' ? smithyPool(ck, 3).map(id => WEAPONS[id].name).join(', ') : (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
+  const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
       <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
-      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : x.kind === 'arms' ? 'Weapons' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
+      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
     <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
       ${bannerArt(ck, b)}
@@ -4242,16 +4230,16 @@ function recruitTabHTML(ck){
     </div>
     <details class="rates"><summary>Rates and pool</summary>
       <div class="rlist">
-        <div><span>★★★ Rare: ${b.kind === 'arms' ? 'the finest weapons' : 'unique characters'}</span><b>${R[3].rate}%</b></div>
-        <div><span>★★ Uncommon: ${b.kind === 'arms' ? 'fine weapons' : 'veteran soldiers'}</span><b>${R[2].rate}%</b></div>
-        <div><span>★ Common: ${b.kind === 'arms' ? 'sturdy weapons' : 'soldiers'}</span><b>${R[1].rate}%</b></div>
+        <div><span>★★★ Rare: unique characters, or a ★★★ weapon</span><b>${R[3].rate}%</b></div>
+        <div><span>★★ Uncommon: veteran soldiers, or a ★★ weapon</span><b>${R[2].rate}%</b></div>
+        <div><span>★ Common: soldiers, or a ★ weapon</span><b>${R[1].rate}%</b></div>
       </div>
-      ${b.kind === 'arms' ? `<p class="meta">★★★ weapons: ${poolRares}. Weapons go to the Armoury (on the Army screen), where any unit of the right type can carry them. Duplicates are fine: several units can carry the same kind. A ★★★ is guaranteed by pull ${GACHA.pity}.</p>` : `<p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare results are the featured unit.` : ''}
+      <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare characters are the featured unit.` : ''}
       Soldiers can be any of: ${army.generic.map(c => CLASSES[c].name).join(', ')}.
-      Every ×10 includes at least one ★★. A ★★★ is guaranteed by pull ${GACHA.pity} on each banner.
-      Soldiers come from a fixed company of ${companyOf(ck).length}. A soldier or rare you already have gains Bond instead:
-      ★ up to ${GACHA.genericBond[1].max}, ★★ up to ${GACHA.genericBond[2].max}, ★★★ up to ${GACHA.bondMax} (bigger boosts at higher rarity).
-      After that, a duplicate returns ${GACHA.release[1]} / ${GACHA.release[2]} / ${GACHA.release[3]} ${army.currency}.</p>`}
+      About ${Math.round(GACHA.weaponShare*100)}% of results are a weapon of that rarity instead of a recruit.
+      Recruiting someone you already have also gives you a weapon of their rarity instead.
+      Soldiers come from a fixed company of ${companyOf(ck).length}.
+      Every ×10 includes at least one ★★, and a ★★★ is guaranteed by pull ${GACHA.pity} on each banner. Weapons go to the Armoury, on the Army screen.</p>
     </details>`;
 }
 
@@ -4261,12 +4249,12 @@ function cardHTML(r, i, single){
     return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal pull ${i + 1}">
     <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
       <div class="gface"><div class="gpor gw">${weaponIconSVG(w, single ? 120 : 52)}</div>
-        <div class="gtxt"><div class="gstars">${stars(r.stars)}</div><div class="gname">${w.name}</div><div class="gcls">${WTYPE[w.type]}${w.lash ? ' · Whip' : ''}</div><div class="gtag">Weapon</div></div>
+        <div class="gtxt"><div class="gstars">${stars(r.stars)}</div><div class="gname">${w.name}</div><div class="gcls">${WTYPE[w.type]}${w.lash ? ' · Whip' : ''}</div><div class="gtag">${r.dupOf ? 'Repeat: weapon' : 'Weapon'}</div></div>
       </div></div></button>`;
   }
   // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
   const rec = r.rec, look = rec.look, art = single ? artFor(rec, 'portrait') : (artFor(rec, 'token') || artFor(rec, 'portrait'));
-  const tag = r.kind === 'new' ? 'New' : r.kind === 'bond' ? `Bond ${rec.bond}` : `+${r.refund}`;
+  const tag = 'New';
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
       <div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
@@ -4286,7 +4274,7 @@ function spotlight(r){
   if (r.weapon){ const w = r.weapon;
     sp.innerHTML = `<div class="spin"><div class="sray"></div><div class="sart sw">${weaponIconSVG(w, 160)}</div>
       <div class="sstars">★★★</div><h2>${w.name}</h2><p>${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText({...w, rng: w.rng || (w.type === 'bow' ? [2, 2] : [1, 1])})}</p>
-      <p class="sdesc">${w.desc}</p><div class="stag">Added to the Armoury</div><div class="meta">Tap to continue</div></div>`;
+      <p class="sdesc">${w.desc}</p><div class="stag">${r.dupOf ? `${r.dupOf} is already with you, so: a weapon instead.` : 'Added to the Armoury'}</div><div class="meta">Tap to continue</div></div>`;
     sp.hidden = false; Music.jingle('rare');
     anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
     return new Promise(res => { sp.onclick = () => { sp.hidden = true; sp.onclick = null; res(); }; });
@@ -4296,7 +4284,7 @@ function spotlight(r){
       <div class="sart">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(rec.look)}">`}</div>
       <div class="sstars">★★★</div><h2>${rec.name}</h2>
       <p>${CLASSES[rec.cls].name}${CHARACTERS[rec.key]?.placeholder ? ' · placeholder character' : ''}</p>
-      <div class="stag">${r.kind === 'new' ? 'Joins the army' : r.kind === 'bond' ? `Bond rises to ${rec.bond}` : `Bond is full: +${r.refund} ${GACHA_ARMY[SAVE.current].currency}`}</div>
+      <div class="stag">Joins the army</div>
       <div class="meta">Tap to continue</div></div>`;
   sp.hidden = false; Music.jingle('rare');
   anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
@@ -4384,52 +4372,70 @@ function recruitTutorial(ck){
     {who: 'narr', text: `Recruiting is open. Spend ${a.currency} on a banner to bring new units into your army: one at a time, or ten at once.`},
     {who: 'narr', text: `Every recruit is ★ a soldier (${R[1].rate}%), ★★ a veteran (${R[2].rate}%), or ★★★ a unique character with a story of their own (${R[3].rate}%).`},
     {who: 'narr', text: `A ten-recruit call always brings at least one ★★, and every banner guarantees a ★★★ within ${GACHA.pity} recruits. The bar under the banner shows how close you are.`},
-    {who: 'narr', text: 'Recruit someone you already have and they gain Bond instead: a small, permanent boost.'},
-    {who: 'narr', text: 'The Smithy banner gives weapons instead of recruits. You\'ll find them in the Armoury, on the Army screen.'},
+    {who: 'narr', text: 'Some results are weapons instead of recruits. And recruit someone you already have, and you get a weapon of their rarity instead.'},
+    {who: 'narr', text: 'Weapons go to the Armoury, on the Army screen. Any unit of the right type can carry them.'},
     {who: 'narr', text: `Earn ${a.currency} by clearing stages and winning bonus ★s, or trade ${a.trade} ${F.currency} for one at the top of this screen.`},
   ]);
 }
 
 // ---------------- 63-arms-ui.js ----------------
 // ================= Armoury tab and the weapon picker =================
-const weaponRowHTML = (w, extra = '') => `<div class="wrow s${w.stars || 0}">${weaponIconSVG(w, 34)}
-  <div class="wtxt"><div class="wname">${w.name} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
+const weaponRowHTML = (w, extra = '', count = 0) => `<div class="wrow s${w.stars || 0}">${weaponIconSVG(w, 34)}
+  <div class="wtxt"><div class="wname">${w.name}${count > 1 ? ` <span class="wcount">×${count}</span>` : ''} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
     <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
     ${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
+const withRange = (w, cls) => ({...w, rng: w.rng || (cls ? CLASSES[cls].rng : w.type === 'bow' ? [2, 2] : [1, 1])});
 
+// Every weapon the army owns, stacked: one row per kind, with how many, who carries them, and how many are spare.
 function armouryTabHTML(ck){
-  const st = SAVE.camps[ck], order = {sword: 0, lance: 1, axe: 2, bow: 3, staff: 4};
-  const items = armsOf(ck).map(it => ({it, w: {...WEAPONS[it.id], rng: WEAPONS[it.id].rng || (WEAPONS[it.id].type === 'bow' ? [2, 2] : [1, 1])}}))
-    .filter(x => x.w.name).sort((a, b) => order[a.w.type] - order[b.w.type] || b.w.stars - a.w.stars || a.w.name.localeCompare(b.w.name));
-  if (!items.length) return `<div class="hint">No weapons yet. Every unit carries their class's basic weapon. Better ones come from the story and from the Smithy banner on the Recruit tab.</div>`;
-  return `<div class="hint">Every weapon the army owns. Tap a unit's weapon on the Roster (or before a battle) to change what they carry.</div>
-    <div class="wlist">${items.map(({it, w}) => {
-      const h = holderOf(ck, it.uid);
-      return weaponRowHTML(w, `<div class="wside"><span class="whold${h ? '' : ' free'}">${h ? h.name : 'Unused'}</span>
-        ${w.owner ? '' : `<button class="btn" data-arm-release="${it.uid}" type="button">Release · +${GACHA.release[w.stars]}</button>`}</div>`);
+  const order = {sword: 0, lance: 1, axe: 2, bow: 3, staff: 4}, groups = {};
+  for (const it of armsOf(ck)) if (WEAPONS[it.id]) (groups[it.id] ||= []).push(it);
+  const ids = Object.keys(groups).sort((a, b) => order[WEAPONS[a].type] - order[WEAPONS[b].type] || WEAPONS[b].stars - WEAPONS[a].stars || WEAPONS[a].name.localeCompare(WEAPONS[b].name));
+  if (!ids.length) return `<div class="hint">No weapons yet. Every unit carries their class's basic weapon. Better ones come from the story and from recruiting.</div>`;
+  return `<div class="hint">Every weapon the army owns. Tap a unit's weapon on the Roster (or before a battle) to change what they carry. Weapons stay here when a unit falls or is released.</div>
+    <div class="wlist">${ids.map(id => {
+      const w = withRange(WEAPONS[id]), items = groups[id], holders = items.map(it => holderOf(ck, it.uid)).filter(Boolean), spare = items.length - holders.length;
+      return weaponRowHTML(w, `<div class="wside">
+        ${holders.length ? `<span class="whold">${holders.map(h => h.name).join(', ')}</span>` : ''}
+        ${spare ? `<span class="whold free">${spare} spare</span>` : ''}
+        ${!w.owner && spare ? `<button class="btn" data-arm-release="${id}" type="button">Release one · +${GACHA.release[w.stars]}</button>` : ''}</div>`, items.length);
     }).join('')}</div>`;
 }
 
-// The picker: every weapon this unit could carry. Picking one held by someone else swaps it over.
+// The picker: everything this unit could carry. Spares are stacked; weapons other units carry are listed
+// by who carries them, and picking one swaps.
 function openWeaponPicker(uid){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === uid); if (!rec) return;
-  const cur = weaponOf(rec), basic = basicWeapon(rec);
-  const options = armsOf(ck).filter(it => WEAPONS[it.id] && canCarry(rec, WEAPONS[it.id]))
-    .map(it => ({it, w: {...WEAPONS[it.id], rng: WEAPONS[it.id].rng || CLASSES[rec.cls].rng}}))
-    .sort((a, b) => b.w.stars - a.w.stars || b.w.mt - a.w.mt);
+  const cur = weaponOf(rec), basic = basicWeapon(rec), mine = rec.arm;
+  const usable = armsOf(ck).filter(it => WEAPONS[it.id] && canCarry(rec, WEAPONS[it.id]));
+  const spares = {}, carried = [];
+  for (const it of usable){
+    const h = holderOf(ck, it.uid);
+    if (it.uid === mine) continue;
+    if (h) carried.push({it, h}); else (spares[it.id] ||= []).push(it);
+  }
+  const byPower = (a, b) => WEAPONS[b].stars - WEAPONS[a].stars || WEAPONS[b].mt - WEAPONS[a].mt;
   let ov = $('#armsheet');
   if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
-  const row = (w, val, holder) => `<button class="wpick${(val || null) === (rec.arm || null) ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">
-      ${weaponRowHTML(w, `<div class="wside">${(val || null) === (rec.arm || null) ? '<span class="whold">Carrying</span>' : holder ? `<span class="whold">From ${holder.name}</span>` : ''}</div>`)}</button>`;
-  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[rec.cls].w]} user · now carrying ${cur.name}</h2>
-    <div class="wlist">${row(basic, null, null)}${options.map(({it, w}) => row(w, it.uid, rec.arm === it.uid ? null : holderOf(ck, it.uid))).join('')}</div>
-    ${options.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[rec.cls].w].toLowerCase()}s yet. They come from the story and the Smithy banner.</p>`}
+  const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count)}</button>`;
+  const rows = [];
+  if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], rec.cls), mine, '<span class="whold">Carrying</span>', 0, true));
+  rows.push(pick(withRange(basic, rec.cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));
+  for (const id of Object.keys(spares).sort(byPower)){
+    const n = spares[id].length;
+    rows.push(pick(withRange(WEAPONS[id], rec.cls), spares[id][0].uid, `<span class="whold free">${n > 1 ? `${n} spare` : 'Spare'}</span>`, n));
+  }
+  for (const {it, h} of carried.sort((a, b) => byPower(a.it.id, b.it.id)))
+    rows.push(pick(withRange(WEAPONS[it.id], rec.cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
+  ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[rec.cls].w]} user · carrying ${cur.name}</h2>
+    <div class="wlist">${rows.join('')}</div>
+    ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[rec.cls].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}
     <button class="btn" data-arm-close type="button">Done</button></div>`;
   ov.hidden = false;
   ov.onclick = e => {
     const b = e.target.closest('[data-arm-equip], [data-arm-close]');
     if (!b && e.target !== ov) return;
-    if (b && 'armEquip' in b.dataset){
+    if (b && 'armEquip' in b.dataset && (b.dataset.armEquip || null) !== (rec.arm || null)){
       equipWeapon(ck, rec, b.dataset.armEquip || null); saveGame(); Sfx.play('select');
       toast(`${rec.name} now carries the ${weaponOf(rec).name}.`);
     }

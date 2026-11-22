@@ -2,14 +2,13 @@
 // Each army recruits through its own banners with its own pull currency.
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
-//   (a banner with kind:'arms' gives weapons of that rarity instead; see 12-data-weapons.js)
 //   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
 //         its own ★★★ characters; otherwise it draws from the army's `rares`.
-// Pulling a rare you already have raises their Bond instead (a small stat boost, up to bondMax);
-// past that, it refunds pull currency.
+// Some results are weapons instead of recruits (weaponShare), of the rarity rolled (see 12-data-weapons.js).
+// Pulling a recruit you already have gives a weapon of that rarity instead.
 // Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
-// each rarity, named from RECRUIT_NAMES. A soldier you already have gains a smaller Bond instead
-// (genericBond); once maxed, the duplicate refunds the release value. So the roster can't grow forever.
+// each rarity, named from RECRUIT_NAMES. A soldier you already have becomes a weapon instead,
+// so the roster can't grow forever.
 const GACHA = {
   rarity: {
     1: {name: 'Common',   rate: 64, color: '#b88a58'},
@@ -19,9 +18,8 @@ const GACHA = {
   pity: 40,               // a ★★★ is guaranteed by this many pulls on the same banner
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
-  bondMax: 5,
+  weaponShare: .25,       // this share of results is a weapon (of the rolled rarity) instead of a recruit
   company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
-  genericBond: {1: {max: 3, hp: 0, stats: 1}, 2: {max: 4, hp: 1, stats: 1}},   // per Bond level
   release: {1: 1, 2: 3, 3: 10},   // pull currency returned for releasing a unit of each rarity
   startTokens: 10,
   stageTokens: 5,
@@ -39,8 +37,6 @@ const GACHA_ARMY = {
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
-      {id: 'rae-smithy', name: 'The Tunnel Smithy', kind: 'arms', bg: 'mine',
-       blurb: 'Weapons instead of recruits: tools and scraps from the mines, sharpened and better. ★ to ★★★.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R1-2', bg: 'mine',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often.'},
     ],
@@ -55,8 +51,6 @@ const GACHA_ARMY = {
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
-      {id: 'frog-smithy', name: 'The Royal Armoury', kind: 'arms', bg: 'court',
-       blurb: 'Weapons instead of recruits: arms from the Lily Court, ★ to ★★★.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',

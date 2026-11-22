@@ -16,11 +16,6 @@ function rollRarity(pity){
   const r = Math.random()*100, R = GACHA.rarity;
   return r < R[3].rate ? 3 : r < R[3].rate + R[2].rate ? 2 : 1;
 }
-function bondBoost(rec){
-  rec.stats.mhp += 1;
-  const keys = ['atk', 'def', 'spd', 'skl'];
-  for (let i = 0; i < 2; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
-}
 // The fixed company of generic soldiers for an army: [{id, cls, stars, name}].
 function companyOf(ck){
   const army = GACHA_ARMY[ck], names = RECRUIT_NAMES[CAMPAIGNS[ck].faction], out = [];
@@ -31,41 +26,28 @@ function companyOf(ck){
 }
 // Turn a fresh generic recruit into a particular company soldier (stable id, name and look).
 function asCompanySoldier(rec, tpl){
-  rec.uid = tpl.id; rec.gid = tpl.id; rec.name = tpl.name; rec.stars = tpl.stars; rec.bond = 0;
+  rec.uid = tpl.id; rec.gid = tpl.id; rec.name = tpl.name; rec.stars = tpl.stars;
   if (tpl.stars === 2){ rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; rec.wtier = 1; }
   return rec;
 }
-function genericBondBoost(rec, stars){
-  const gb = GACHA.genericBond[stars]; rec.stats.mhp += gb.hp;
-  const keys = gb.hp ? ['atk', 'def', 'spd', 'skl'] : ['mhp', 'atk', 'def', 'spd', 'skl'];
-  for (let i = 0; i < gb.stats; i++) rec.stats[keys.splice(Math.floor(Math.random()*keys.length), 1)[0]] += 1;
-}
-// Weapons this army's Smithy can give at a rarity.
-const smithyPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
+// Weapons this army can get from recruiting, at a rarity.
+const weaponPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
+function weaponResult(ck, stars, dupOf){ const it = addWeapon(ck, pick(weaponPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new', dupOf}; }
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
-  if (banner.kind === 'arms'){ const it = addWeapon(ck, pick(smithyPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new'}; }
+  if (Math.random() < GACHA.weaponShare) return weaponResult(ck, stars);
   if (stars === 3){
     const pool = banner.pool || army.rares;
     const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
     const have = st.roster.find(r => r.key === key && !r.dead);
-    if (have){
-      if ((have.bond || 0) < GACHA.bondMax){ have.bond = (have.bond || 0) + 1; bondBoost(have); return {stars, rec: have, kind: 'bond'}; }
-      gachaState(ck).tokens += GACHA.release[3];
-      return {stars, rec: have, kind: 'refund', refund: GACHA.release[3]};
-    }
-    const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3; rec.bond = 0;
+    if (have) return weaponResult(ck, 3, have.name);   // already with you: a ★★★ weapon instead
+    const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3;
     st.roster.push(rec);
     return {stars, rec, kind: 'new'};
   }
   const tpl = pick(companyOf(ck).filter(t => t.stars === stars));
   const have = st.roster.find(r => r.gid === tpl.id && !r.dead);
-  if (have){
-    const gb = GACHA.genericBond[stars];
-    if ((have.bond || 0) < gb.max){ have.bond = (have.bond || 0) + 1; genericBondBoost(have, stars); return {stars, rec: have, kind: 'bond'}; }
-    gachaState(ck).tokens += GACHA.release[stars];
-    return {stars, rec: have, kind: 'refund', refund: GACHA.release[stars]};
-  }
+  if (have) return weaponResult(ck, stars, have.name);
   // a fallen soldier of the same name is replaced by the new one
   st.roster = st.roster.filter(r => r.gid !== tpl.id);
   const rec = asCompanySoldier(makeRecruit(ck, tpl.cls), tpl);
@@ -100,6 +82,7 @@ function releaseUnit(ck, uid){
   const st = SAVE.camps[ck], i = st.roster.findIndex(r => r.uid === uid), rec = st.roster[i];
   if (!rec || rec.lord || !isGachaUnit(rec)) return 0;
   const back = rec.dead ? 0 : GACHA.release[rec.stars || 1];
+  rec.arm = null;   // their weapon stays in the Armoury
   st.roster.splice(i, 1); gachaState(ck).tokens += back; saveGame();
   return back;
 }
