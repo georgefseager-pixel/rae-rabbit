@@ -148,9 +148,15 @@ let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
   const ch = CAMPAIGNS[ck].stages[i], alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
-  const order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
+  // mustDeploy: characters this stage needs (always picked, after the leader)
+  const must = r => (ch.mustDeploy || []).includes(r.key);
+  const order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord && must(r)), ...alive.filter(r => !r.lord && !must(r))];
   if (!prep || prep.ck !== ck || prep.i !== i) prep = {ck, i, picks: new Set(order.slice(0, max).map(r => r.uid))};
   for (const uid of [...prep.picks]) if (!alive.some(r => r.uid === uid)) prep.picks.delete(uid);
+  for (const r of alive) if (must(r) && !prep.picks.has(r.uid)){
+    if (prep.picks.size >= max){ const drop = [...prep.picks].reverse().find(uid => { const x = alive.find(a => a.uid === uid); return x && !x.lord && !must(x); }); if (drop) prep.picks.delete(drop); }
+    prep.picks.add(r.uid);
+  }
   renderPrep();
 }
 function renderPrep(){
@@ -162,6 +168,7 @@ function renderPrep(){
     <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
       <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span></div>
       ${ch.star ? `<div class="starrow${hasStar(ch.id) ? ' got' : ''}">${hasStar(ch.id) ? '★ Bonus earned' : '☆ Bonus'}: ${starText(ch, ck)}${hasStar(ch.id) ? '' : ` · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b>`}${ch.star.type === 'fewer' && prep.picks.size > ch.star.n ? ` <span class="warn">(you're deploying ${prep.picks.size})</span>` : ''}</div>` : ''}
+      ${ch.prepNote ? `<p class="meta prepnote">${ch.prepNote}</p>` : ''}
       ${replaying ? '<p class="meta">Replay: the story scenes are skipped and nobody new joins. Your army keeps any experience earned, and anyone unstitched is still lost.</p>' : ''}</div>
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     ${sortBarHTML()}
@@ -174,6 +181,7 @@ function togglePick(uid){
   const ch = CAMPAIGNS[prep.ck].stages[prep.i], rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
   if (!rec) return;
   if (rec.lord){ toast(`${rec.name} leads every battle.`); return; }
+  if ((ch.mustDeploy || []).includes(rec.key)){ toast(`${rec.name} must come on this one.`); return; }
   if (prep.picks.has(uid)) prep.picks.delete(uid);
   else if (prep.picks.size >= max){ toast(`Only ${max} can deploy here.`); return; }
   else prep.picks.add(uid);

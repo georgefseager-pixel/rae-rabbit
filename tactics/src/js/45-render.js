@@ -182,13 +182,14 @@ function drawThemedTile(g, x, y, ch, theme){
   if (ch === 'T') drawFort(g, X, Y, x, y);
 }
 function tokenFor(u, variant){
-  const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.w}|${variant}|${T}|${dpr}`;
+  const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
   const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
-  g.fillStyle = F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
-  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, F.stitch, T*.5);
+  const ally = u.team === 'a';   // allies stand on a blue coaster
+  g.fillStyle = ally ? 'rgba(40,110,190,.92)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
+  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : F.stitch, T*.5);
   const icon = artImage(u, 'token');
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
   if (icon){

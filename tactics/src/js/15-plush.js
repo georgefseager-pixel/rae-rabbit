@@ -71,6 +71,11 @@ function bunny(g, cx, cy, s, L){
     g.lineWidth = s*.03; g.beginPath(); g.moveTo(cx + .62*s, cy + .05*s); g.quadraticCurveTo(cx + .8*s, cy + .5*s, cx + .6*s, cy + .75*s); g.stroke();
   }
   if (L.gear === 'bandana') bandana(g, cx, cy - .05*s, s, L.band || '#3b2a6b', s*.98, s*.62);
+  if (L.gear === 'eyepatch'){   // a patch over the left eye, strap across the head
+    g.strokeStyle = '#1a1614'; g.lineWidth = s*.07; g.beginPath(); g.moveTo(cx - .9*s, cy - .42*s); g.lineTo(cx + .85*s, cy + .12*s); g.stroke();
+    g.fillStyle = '#1a1614'; ell(g, cx - .4*s, cy - .06*s, .2*s, .17*s); g.fill();
+    g.beginPath(); g.ellipse(cx - .4*s, cy - .06*s, .16*s, .13*s, 0, 0, Math.PI*2); stitchStroke(g, '#6a5a50', s, .5);
+  }
   if (L.gear === 'shoe'){ g.strokeStyle = '#c9973f'; g.lineWidth = s*.1; g.beginPath(); g.arc(cx + .45*s, cy + .9*s, .17*s, Math.PI*.1, Math.PI*.9, true); g.stroke(); }
   g.restore();
 }

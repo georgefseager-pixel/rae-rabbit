@@ -36,6 +36,7 @@ function starCheck(star, v){
   if (!star) return 'pending';
   switch (star.type){
     case 'noLosses': return v.lost > 0 ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'allies':   return v.allyLost > 0 ? 'missed' : v.over ? 'ok' : 'pending';
     case 'turns':    return v.turn > star.n ? 'missed' : v.over ? 'ok' : 'pending';
     case 'unhurt':   return v.lordHit ? 'missed' : v.over ? 'ok' : 'pending';
     case 'bossBy':   return v.bossBy ? (v.bossBy === star.key ? 'ok' : 'missed') : 'pending';

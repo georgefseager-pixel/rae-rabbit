@@ -13,6 +13,10 @@ const ter = (x, y) => TER[MAP[y][x]];
 const K = (x, y) => y*COLS + x, KX = k => k % COLS, KY = k => Math.floor(k / COLS);
 const man = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 const team = t => units.filter(u => !u.dead && u.team === t);
+// Allies (team 'a') fight on the player's side but act on their own, in an allied phase.
+const sideOfTeam = u => u.team === 'e' ? 'e' : 'p';
+const foes = u => units.filter(o => !o.dead && sideOfTeam(o) !== sideOfTeam(u));
+const friends = u => units.filter(o => !o.dead && sideOfTeam(o) === sideOfTeam(u));
 const unitAt = (x, y) => units.find(u => !u.dead && u.x === x && u.y === y);
 const inBounds = (x, y) => x >= 0 && y >= 0 && x < COLS && y < ROWS;
 const healAmt = u => 8 + Math.floor(u.atk/2);
@@ -35,15 +39,15 @@ function battleUnit(rec, teamId){
     w: wp.type, rng: wp.rng || c.rng, mt: c.mt, ai: 'charge', lord: !!rec.lord, boss: false, g: growthOf(rec),
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
 }
-function enemyUnit(sp, faction){
+function enemyUnit(sp, faction, teamId = 'e'){
   const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls,
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
-  for (const [k, v] of Object.entries(B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
+  if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, 'e'), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, talk, talked: false});
+  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -66,7 +70,11 @@ function runBattle(campKey, ch, records, opts = {}){
        events: opts.replay ? [] : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
-  records.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
+  // solo: only the leader starts on the field; the rest arrive with the stage's twist
+  const starting = ch.solo ? records.filter(r => r.lord) : records;
+  B.reserve = ch.solo ? records.filter(r => !r.lord) : [];
+  starting.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
+  for (const sp of ch.allies ? ch.allies(SAVE.flags) : []){ const u = enemyUnit(sp, B.pf, 'a'); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   fortOwner = new Map();
   MAP.forEach((row, y) => [...row].forEach((c, x) => {
@@ -97,7 +105,7 @@ function reach(u){
       const nx = cx + dx, ny = cy + dy;
       if (!inBounds(nx, ny)) continue;
       const c = moveCost(u, nx, ny); if (c >= 99) continue;
-      const o = unitAt(nx, ny); if (o && o.team !== u.team) continue;
+      const o = unitAt(nx, ny); if (o && sideOfTeam(o) !== sideOfTeam(u)) continue;
       const nd = cd + c; if (nd > u.mov) continue;
       const nk = K(nx, ny), prev = map.get(nk);
       if (!prev || nd < prev.d){ map.set(nk, {d: nd, prev: cur}); open.push(nk); }
@@ -158,7 +166,7 @@ async function moveAlong(u, path){
 const duelEl = () => $('#duel');
 const dEl = {L: $('#dL'), R: $('#dR')}, pEl = {L: $('#pL'), R: $('#pR')};
 let duelSides = {};
-const sideOf = u => duelSides[u.id] || (u.team === 'p' ? 'L' : 'R');
+const sideOf = u => duelSides[u.id] || (sideOfTeam(u) === 'p' ? 'L' : 'R');
 function sprite(u, side){
   // Battle poses face right; flip them when the unit stands on the right as the defender.
   const art = artFor(u, 'battle');
@@ -274,12 +282,14 @@ async function doCombat(a, d){
   for (const [x, y, f] of seq){ if (a.dead || d.dead) break; await strike(x, y, f); }
   await closeDuel();
   speed = 1;
-  const p = a.team === 'p' ? a : d, e = p === a ? d : a;
-  if (!p.dead){
+  const p = a.team === 'p' ? a : d.team === 'p' ? d : null, e = p === a ? d : a;   // allies don't gain experience
+  if (p && !p.dead){
     const dealt = (p === a ? hp0.d - d.hp : hp0.a - a.hp) > 0;
     const xp = e.dead ? Math.max(10, 30 + (e.lv - p.lv)*3 + (e.boss ? 40 : 0)) : dealt ? Math.max(1, 10 + (e.lv - p.lv)) : 1;
     await giveExp(p, xp);
   }
+  // a twist on the boss's fall (e.g. a duel, then everyone else arrives)
+  if (B.twist && !B.twist.done && B.twist.on === 'boss' && units.some(u => u.boss && u.dead)) await runTwist();
 }
 async function doHeal(h, t){
   const amt = Math.min(healAmt(h), t.mhp - t.hp), from = t.hp;
@@ -307,10 +317,10 @@ function objectiveText(){
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
     : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
-  const must = [lord, ...units.filter(u => u.team === 'p' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
+  const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
-const starLive = () => ({lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
+const starLive = () => ({allyLost: units.filter(u => u.team === 'a' && u.dead).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
 function starHTML(){
   if (!B.ch.star) return '';
   const st = starCheck(B.ch.star, starLive()), had = hasStar(B.ch.id);
@@ -319,7 +329,7 @@ function starHTML(){
 function unitHTML(u){
   const t = ter(u.x, u.y), tn = tileInfo(MAP[u.y][u.x])[0], pct = u.hp/u.mhp*100;
   const col = pct > 50 ? '#6fbf6a' : pct > 25 ? '#e0b44c' : '#e0533d';
-  const note = u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
+  const note = u.team === 'a' ? ' · Ally: fights on its own' : u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
       <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
@@ -375,8 +385,8 @@ function refreshTop(){
 }
 
 // ---------- Player flow ----------
-const enemiesInRange = u => team(u.team === 'p' ? 'e' : 'p').filter(o => { const d = man(u, o); return d >= u.rng[0] && d <= u.rng[1]; });
-const healTargets = u => team(u.team).filter(o => o !== u && man(u, o) === 1 && o.hp < o.mhp);
+const enemiesInRange = u => foes(u).filter(o => { const d = man(u, o); return d >= u.rng[0] && d <= u.rng[1]; });
+const healTargets = u => friends(u).filter(o => o !== u && man(u, o) === 1 && o.hp < o.mhp);
 function clearSel(){ sel = null; orig = null; reachMap = null; moveKeys = new Set(); atkKeys = new Set(); healKeys = new Set(); targets = []; fc = null; tmode = null; }
 
 function select(u){
@@ -508,6 +518,12 @@ async function battleEvents(){
 async function runTwist(){
   const tw = B.twist; tw.done = true;
   if (tw.talk) await talk(tw.talk);
+  // arrive: the units held back (a solo start) join now
+  if (tw.arrive) for (const [i, r] of B.reserve.entries()){
+    const u = battleUnit(r, 'p'), [x, y] = B.ch.deploy[i + 1] || B.ch.deploy[0];
+    place(u, ...freeTileNear(x, y)); u.alpha = 0; units.push(u); tween(400, t => { u.alpha = t; });
+  }
+  if (tw.arrive && B.reserve.length){ const r = units.filter(u => u.team === 'p').pop(); focusOn(r.x, r.y); Sfx.play('step'); await wait(400); }
   let first = true;
   for (const sp of tw.units || []){
     const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
@@ -531,8 +547,18 @@ async function spawnReinforcements(){
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
+  if (team('a').length){   // allied phase: they fight on their own
+    Sfx.play('phase', 'p');
+    await showBanner(B.ch.allyLine || 'ALLIES ADVANCE', `Turn ${ROMAN(turn)}`, B.pf);
+    await fortHeal('a');
+    for (const u of team('a')){
+      if (u.dead || B.done) continue;
+      await aiAct(u);
+      if (checkEnd()) return;
+    }
+  }
   Music.want(B.bossMusic ? 'boss' : 'enemy'); Sfx.play('phase', 'e');
-  await showBanner(FACTIONS[B.ef].enemyLine, `Turn ${ROMAN(turn)}`, B.ef);
+  await showBanner(B.ch.enemyLine || FACTIONS[B.ef].enemyLine, `Turn ${ROMAN(turn)}`, B.ef);
   await fortHeal('e');
   await spawnReinforcements();
   for (const e of team('e')){
@@ -552,7 +578,7 @@ async function enemyPhase(){
 // ---------- Enemy AI ----------
 function distField(e){
   const f = new Array(COLS*ROWS).fill(Infinity), open = [];
-  for (const p of team('p')){ const k = K(p.x, p.y); f[k] = 0; open.push(k); }
+  for (const p of foes(e)){ const k = K(p.x, p.y); f[k] = 0; open.push(k); }
   while (open.length){
     open.sort((a, b) => f[a] - f[b]);
     const cur = open.shift(), cx = KX(cur), cy = KY(cur);
@@ -571,7 +597,7 @@ async function aiHeal(e){
   let best = null;
   for (const dk of destinations(e, map)){
     const pos = {x: KX(dk), y: KY(dk)};
-    for (const a of team('e')){
+    for (const a of friends(e)){
       if (a === e || a.hp >= a.mhp || man(pos, a) !== 1) continue;
       const need = a.mhp - a.hp - map.get(dk).d*.1;
       if (!best || need > best.need) best = {need, dk, a};
@@ -586,7 +612,7 @@ async function aiAct(e){
   focusOn(e.x, e.y);
   if (e.ai === 'guard' && !e.triggered){
     const th = e.w === 'staff' ? rangeTiles(destinations(e, reach(e)), [1, 2]) : threat(e);
-    if (team('p').some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
+    if (foes(e).some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
   }
   if (e.w === 'staff') return aiHeal(e);
   const map = e.ai === 'hold' ? new Map([[K(e.x, e.y), {d: 0, prev: -1}]]) : reach(e);
@@ -594,13 +620,13 @@ async function aiAct(e){
   let best = null;
   for (const dk of dests){
     const pos = {x: KX(dk), y: KY(dk)};
-    for (const p of team('p')){
+    for (const p of foes(e)){
       const d = man(pos, p); if (d < e.rng[0] || d > e.rng[1]) continue;
       const A = calc(e, p, pos, p), D = calc(p, e, p, pos), hits = A.dbl ? 2 : 1;
       let score = A.dmg*A.hit/100*hits;
       if (A.dmg*hits >= p.hp) score += 40*A.hit/100;
       if (D.can) score -= D.dmg*D.hit/100*(D.dbl ? 2 : 1)*.4;
-      score += ter(pos.x, pos.y).def*1.5 + (p.lord ? 2 : 0) - map.get(dk).d*.05;
+      score += ter(pos.x, pos.y).def*1.5 + (p.lord ? 2 : 0) + (p.vip ? 3 : 0) - map.get(dk).d*.05;
       if (!best || score > best.score) best = {score, dk, p};
     }
   }
@@ -627,7 +653,7 @@ function checkEnd(){
   if (!B || B.done) return true;
   const lord = units.find(u => u.team === 'p' && u.lord);
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
-  const vip = units.find(u => u.team === 'p' && u.vip && u.dead);
+  const vip = units.find(u => u.team !== 'e' && u.vip && u.dead);
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
