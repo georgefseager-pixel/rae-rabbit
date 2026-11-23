@@ -31,7 +31,8 @@
 //                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage)
 //                        | bossBy (key: that unit defeats the boss) | fewer (n: deploy at most n units)
 // A chapter with stub:true is a placeholder for story not written yet.
-// A chapter can set enemyMods: {stat: +/-n}, added to every enemy in its stages (difficulty tuning).
+// A chapter can set enemyMods: {stat: +/-n}, added to every enemy in its stages (difficulty tuning). A stage can set
+// its own enemyMods instead.
 // A chapter can set outfits: {characterKey: 'outfit'}, applied when any of its stages starts (see art/ naming in README).
 //
 // Scene lines
@@ -145,13 +146,14 @@ const CAMPAIGNS = {
           id: 'R1-3', title: 'The Unstitching', map: 'blockYard', enemyFaction: 'frog',
           star: {type: 'bossBy', key: 'rae', text: '{lord} defeats the Executioner herself'},
           objective: {type: 'boss', limit: 8}, maxDeploy: 6,
+          enemyMods: {mhp: -2, atk: -1},   // eases off Chapter One's weakening towards its finale (see recommendedLevel)
           limitFail: 'The bell stopped ringing before you reached the block. The axe fell.',
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[2,10],[5,10]],
           brief: 'Dawn. Reach the execution block and defeat the Executioner before the bell stops ringing and the axe falls.',
           enemies: () => [
-            E('headsman',2,3,0,'hold',{boss: true, key: 'executioner', name: 'The Executioner', look: 'headsman'}),
-            E('lily',1,4,0,'guard'), E('reed',1,1,2,'guard'), E('reed',1,6,2,'guard'),
-            E('bruiser',1,2,5), E('lily',1,5,5), E('bruiser',2,3,7,'charge',{elite: true}),
+            E('headsman',3,3,0,'hold',{boss: true, key: 'executioner', name: 'The Executioner', look: 'headsman'}),
+            E('lily',2,4,0,'guard'), E('reed',2,1,2,'guard'), E('reed',2,6,2,'guard'),
+            E('bruiser',2,2,5), E('lily',2,5,5), E('bruiser',2,3,7,'charge',{elite: true}),
           ],
           pre: [
             {scene: 'block', place: 'The Execution Block · Dawn'},
@@ -192,6 +194,7 @@ const CAMPAIGNS = {
           star: {type: 'noLosses', text: 'No one is unstitched'},
           requires: ['F1-3'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
+          enemyMods: {mhp: -2, atk: -1},   // eases off Chapter One's weakening towards its finale (see recommendedLevel)
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and bring down Rhubarb.',
           rename: {rae: 'Rae Rabbit'},
@@ -361,10 +364,10 @@ const CAMPAIGNS = {
             E('rfighter',2,3,8,'guard',{key: 'ally', name: 'Burr'}), E('radept',2,5,6,'guard',{key: 'ally', name: 'Moss'}),
           ],
           enemies: () => [
-            E('reed',3,2,2,'guard'), E('reed',3,7,2,'guard'), E('lily',3,4,3), E('bruiser',3,6,4), E('blade',3,3,1),
+            E('reed',3,2,2,'guard'), E('reed',3,7,2,'guard'), E('lily',4,4,3), E('bruiser',3,6,4), E('blade',4,3,1),
             E('toadknight',3,5,2,'charge',{elite: true}), E('gaxe',3,1,8), E('gpike',3,8,9),
           ],
-          reinforce: () => [{turn: 3, units: [E('gblade',3,0,11), E('gscribe',3,9,11,'guard')]}],
+          reinforce: () => [{turn: 3, units: [E('gblade',4,0,11), E('gscribe',3,9,11,'guard')]}],
           events: [{turn: 1, talk: [
               {who: "narr", text: "Down in the ravine, a ring of battered Republic soldiers. At their centre, a one-eyed rabbit with a spear."},
               {who: "patch", text: "Rabbits? Republic rabbits? Ha! Didn't think anyone would come for us!"},
@@ -514,8 +517,8 @@ const CAMPAIGNS = {
           allies: () => [E('tribune',4,4,13,'charge',{key: 'froggle', name: 'Froggle', look: 'froggle'})],
           enemies: () => [
             E('marshlord',5,4,0,'hold',{boss: true, flees: true, key: 'fraggle', name: 'Fraggle Friggle', look: 'fraggle'}),
-            E('gpike',4,3,1,'guard',{elite: true}), E('gchaplain',3,5,1,'guard'), E('gscribe',4,2,2,'guard'), E('gscribe',4,7,2,'guard'),
-            E('gaxe',4,5,3,'guard',{elite: true}), E('gpike',3,4,5), E('gaxe',3,6,6), E('gblade',3,2,7), E('gpike',3,8,7),
+            E('gpike',4,3,1,'guard',{elite: true}), E('gchaplain',4,5,1,'guard'), E('gscribe',4,2,2,'guard'), E('gscribe',4,7,2,'guard'),
+            E('gaxe',4,5,3,'guard',{elite: true}), E('gpike',4,4,5), E('gaxe',4,6,6), E('gblade',4,2,7), E('gpike',3,8,7),
           ],
           bossTalk: [
             {who: "fraggle", text: "Oh, look! The little hero! I'm going to unstitch you slowly, and wear your name like a scarf!"},
@@ -642,13 +645,14 @@ const CAMPAIGNS = {
           id: 'F1-3', title: 'The Ridge', map: 'ridge', enemyFaction: 'rae',
           star: {type: 'unhurt', text: '{lord} takes no damage'},
           objective: {type: 'survive', turns: 5}, maxDeploy: 6,
+          enemyMods: {mhp: -2, atk: -1},   // eases off Chapter One's weakening towards its finale (see recommendedLevel)
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'Rebel scouts are climbing the ridge. Hold it for five turns until the main column arrives.',
-          enemies: () => [E('runner',1,2,3), E('runner',1,6,2), E('pebbler',1,4,5)],
+          enemies: () => [E('runner',2,2,3), E('runner',2,6,2), E('pebbler',2,4,5)],
           reinforce: () => [
-            {turn: 2, units: [E('hauler',1,3,0), E('digger',1,6,0)]},
-            {turn: 3, units: [E('runner',2,1,0)]},
-            {turn: 4, units: [E('digger',2,0,1)]},
+            {turn: 2, units: [E('hauler',2,3,0), E('digger',2,6,0)]},
+            {turn: 3, units: [E('runner',2,1,0,'charge',{elite: true})]},
+            {turn: 4, units: [E('digger',3,0,1,'charge',{elite: true})]},
           ],
           pre: [
             {scene: 'ridge', place: 'The Ridge Above the Mines · Night'},
@@ -676,6 +680,7 @@ const CAMPAIGNS = {
           star: {type: 'fewer', n: 4, text: 'Win with 4 or fewer units deployed'},
           requires: ['R1-4'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
+          enemyMods: {mhp: -2, atk: -1},   // eases off Chapter One's weakening towards its finale (see recommendedLevel)
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The rebels have fled into the woods and left a rearguard in the yard, led by an old enemy. Break it and retake the mines.',
           enemies: () => [
@@ -737,7 +742,7 @@ const CAMPAIGNS = {
           deploy: [[4,0],[5,0],[3,1],[6,1],[4,1],[5,1],[2,1],[7,1]],
           brief: 'The rebels\' trail leads into the deep woods, and a patrol of Republic soldiers bars the way. Rout them.',
           enemies: () => [
-            E('rfencer',2,3,4), E('rfencer',2,6,5), E('rlancer',3,7,8), E('rarcher',2,2,9,'guard'), E('rarcher',2,6,9,'guard'),
+            E('rfencer',3,3,4), E('rfencer',2,6,5), E('rlancer',3,7,8), E('rarcher',2,2,9,'guard'), E('rarcher',2,6,9,'guard'),
             E('radept',2,4,10,'guard'), E('rfighter',3,8,12),
           ],
           pre: [
@@ -1006,6 +1011,6 @@ function recommendedLevel(sg){
   const avg = units.reduce((a, u) => a + u.lv + (u.elite ? 1 : 0) + (u.boss ? 2 : 0), 0)/units.length;
   const crowd = Math.max(0, units.length - 2*sg.maxDeploy)*.25;
   // a level is worth about 2.3 stat points (HP counted at half): turn the chapter's weakening into levels
-  const weak = Object.entries(sg.chapter.enemyMods || {}).reduce((t, [k, v]) => t - v*(k === 'mhp' ? .5 : 1), 0)/2.3;
+  const weak = Object.entries(sg.enemyMods || sg.chapter.enemyMods || {}).reduce((t, [k, v]) => t - v*(k === 'mhp' ? .5 : 1), 0)/2.3;
   return Math.max(1, Math.round(avg + crowd - weak));
 }
