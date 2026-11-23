@@ -656,3 +656,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 
 /* very narrow phones: a slimmer portrait column so the title and buttons fit */
 @media (max-width:350px){ .hero{grid-template-columns:104px minmax(0,1fr);gap:8px} .hero .btn{padding-left:8px;padding-right:8px} }
+
+/* Main Story / Side Stories tabs on the campaign screen */
+.htabs{display:flex;gap:6px;margin:16px 0 4px;background:rgba(0,0,0,.28);border-radius:12px;padding:4px}
+.htabs button{flex:1;min-height:42px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-family:var(--fell);font-size:16px;cursor:pointer}
+.htabs button.on{background:rgba(236,198,115,.16);color:var(--cream);box-shadow:inset 0 0 0 1.5px rgba(236,198,115,.5)}
+.hbadge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--red);color:var(--cream);font-family:var(--fell);font-size:13px;line-height:20px;margin-left:4px}
+.chip.under{background:rgba(200,70,50,.25);color:#ffb9a6}
+.starrow.side{border-style:solid}

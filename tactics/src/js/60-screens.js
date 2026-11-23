@@ -9,34 +9,48 @@ function showScreen(id){
 const campOf = () => CAMPAIGNS[SAVE.current];
 const stOf = () => SAVE.camps[SAVE.current];
 const otherCamp = ck => Object.keys(CAMPAIGNS).find(k => k !== ck);
+// A main stage is a number (its index); a side story is 's<n>'.
+const stageAt = (ck, i) => typeof i === 'string' ? CAMPAIGNS[ck].sides[+i.slice(1)] : CAMPAIGNS[ck].stages[i];
+// average level of the units you'd deploy (the leader and the strongest of the rest)
+function teamLevel(ck, n){
+  const alive = living(ck), lord = alive.filter(r => r.lord), rest = alive.filter(r => !r.lord).sort((a, b) => b.lv - a.lv);
+  const team = [...lord, ...rest].slice(0, n); return team.length ? team.reduce((a, r) => a + r.lv, 0)/team.length : 0;
+}
+function recChip(ck, sg, team){
+  const rec = recommendedLevel(sg); if (!rec) return '';
+  const have = team ?? teamLevel(ck, Math.min(sg.maxDeploy, sg.deploy.length));
+  const low = have < rec - .5;
+  return `<span class="chip${low ? " under" : ""}" title="Your team's average: Lv ${have.toFixed(1)}">Rec. Lv ${rec}${low ? ` · yours ${have.toFixed(1)}` : ''}</span>`;
+}
 const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? `Survive ${ob.turns} turns` : 'Rout the enemy';
 function chapterRef(id){
   const f = findStage(id); if (!f) return id;
   return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
 }
-const stageLabel = sg => sg.stub ? sg.chapter.title : `${sg.chapter.title.replace('Chapter ', 'Ch. ')}, Stage ${sg.si + 1}`;
+const stageLabel = sg => sg.side ? 'Side Story' : sg.stub ? sg.chapter.title : `${sg.chapter.title.replace('Chapter ', 'Ch. ')}, Stage ${sg.si + 1}`;
 function progressLabel(ck){
-  const chs = CAMPAIGNS[ck].stages.filter(c => !c.stub), done = SAVE.camps[ck].cleared.length;
+  const chs = CAMPAIGNS[ck].stages.filter(c => !c.stub), done = chs.filter(c => SAVE.camps[ck].cleared.includes(c.id)).length;
   const i = currentStageIndex(ck), s = stageState(ck, i).s;
   const got = chs.filter(c => c.star && hasStar(c.id)).length, of = chs.filter(c => c.star).length;
   return `${s === 'gate' ? `${done}/${chs.length} · waiting` : `${done}/${chs.length} cleared`}${of ? ` · ★ ${got}/${of}` : ''}`;
 }
 
 // ---------- Hub ----------
-function nodeHTML(ck, ch, i){
-  const st = stageState(ck, i), n = ch.stub ? '…' : ch.si + 1;
+function nodeHTML(ck, ch, i, st = stageState(ck, i)){
+  const n = ch.stub ? '…' : ch.side ? '✦' : ch.si + 1;
   const conv = ch.convergence ? `<span class="chip conv">Convergence · ${ch.convergence}</span>` : '';
   if (st.s === 'done'){
     const got = hasStar(ch.id);
     return `<div class="node"><div class="pin done">${n}</div><div class="ncard"><div class="nhead"><h3>${ch.title}</h3>${ch.star ? `<span class="nstar${got ? ' got' : ''}" aria-label="${got ? 'Bonus star earned' : 'Bonus star not earned'}">${got ? '★' : '☆'}</span>` : ''}</div>
-      <div class="chips"><span class="chip ok">Cleared</span>${conv}</div>
+      <div class="chips"><span class="chip ok">Cleared</span>${recChip(ck, ch)}${conv}</div>
       ${ch.star ? `<div class="starrow${got ? ' got' : ''}">${got ? '★ Bonus earned' : '☆ Bonus'}: ${starText(ch, ck)}${got ? '' : ` · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b>`}</div>` : ''}
       <button class="btn" data-play="${i}" type="button">${got ? 'Replay' : 'Replay for the ★'}</button></div></div>`;
   }
   if (st.s === 'next') return `<div class="node"><div class="pin next">${n}</div><div class="ncard">
       <h3>${ch.title}</h3><div class="nmeta">${ch.brief}</div>
-      <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${conv}</div>
+      <div class="chips">${recChip(ck, ch)}<span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span>${conv}</div>
       ${ch.star ? `<div class="starrow">☆ Bonus: ${starText(ch, ck)} · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b></div>` : ''}
+      ${ch.side ? sideRewardHTML(ck, ch) : ''}
       <button class="btn primary" data-play="${i}" type="button">Prepare for Battle</button></div></div>`;
   if (st.s === 'gate'){
     const other = findStage(st.missing[0]).camp;
@@ -47,6 +61,29 @@ function nodeHTML(ck, ch, i){
   }
   if (st.s === 'stub') return `<div class="node"><div class="pin stub">${n}</div><div class="ncard dim"><h3>${ch.title}</h3><div class="nmeta">${ch.brief}</div></div></div>`;
   return `<div class="node"><div class="pin future">${n}</div><div class="ncard dim"><h3>${ch.title}</h3><div class="chips">${conv}<span class="chip">Locked</span></div></div></div>`;
+}
+// ---------- Side Stories ----------
+let hubTab = 'main';
+const sideState = (ck, j) => { const s = CAMPAIGNS[ck].sides[j];
+  return SAVE.camps[ck].cleared.includes(s.id) ? {s: 'done'} : (SAVE.debugUnlock || isCleared(s.unlock)) ? {s: 'next'} : {s: 'locked'}; };
+const sidesNew = ck => CAMPAIGNS[ck].sides.filter((s, j) => sideState(ck, j).s === 'next').length;
+function sideRewardHTML(ck, s){
+  const r = s.reward, bits = [`${r.res} ${FACTIONS[CAMPAIGNS[ck].faction].currency}`];
+  if (r.tokens) bits.push(`${r.tokens} ${GACHA_ARMY[ck].currency}`);
+  for (const w of r.weapons || []) if (WEAPONS[w.id]) bits.push(`the ${WEAPONS[w.id].name}`);
+  return `<div class="starrow side">Reward: ${bits.join(' · ')}</div>`;
+}
+function sideNodeHTML(ck, s, j){
+  const st = sideState(ck, j);
+  if (st.s === 'locked') return `<div class="node"><div class="pin future">?</div><div class="ncard dim"><h3>${s.title}</h3>
+    ${s.teaser ? `<div class="nmeta">${s.teaser}</div>` : ''}<div class="chips"><span class="chip">Opens after ${chapterRef(s.unlock)}</span></div></div></div>`;
+  return nodeHTML(ck, s, 's' + j, st);
+}
+function sidesHTML(ck){
+  const sides = CAMPAIGNS[ck].sides;
+  if (!sides.length) return '<div class="hint">No side stories on this route yet.</div>';
+  return `<div class="hint">Optional battles that open as the story goes on. Their rewards are extras: the main story never needs them.</div>
+    <div class="track">${sides.map((s, j) => sideNodeHTML(ck, s, j)).join('')}</div>`;
 }
 function renderHub(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
@@ -65,7 +102,8 @@ function renderHub(){
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
-    ${camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
+    <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button">Side Stories${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
+    ${hubTab === 'side' ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
     <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button></div>
   </div>`;
@@ -146,7 +184,7 @@ function release(btn){
 // ---------- Battle preparation ----------
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
-  const ch = CAMPAIGNS[ck].stages[i], alive = living(ck);
+  const ch = stageAt(ck, i), alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
   // mustDeploy: characters this stage needs (always picked, after the leader)
   const must = r => (ch.mustDeploy || []).includes(r.key);
@@ -160,13 +198,14 @@ function openPrep(ck, i){
   renderPrep();
 }
 function renderPrep(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], alive = living(ck);
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), alive = living(ck);
   const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
   const replaying = SAVE.camps[ck].cleared.includes(ch.id);
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
     <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
-      <div class="chips"><span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span></div>
+      <div class="chips">${recChip(ck, ch, prep.picks.size ? [...prep.picks].map(u => alive.find(r => r.uid === u)?.lv || 0).reduce((a, b) => a + b, 0)/prep.picks.size : 0)}<span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span></div>
+      ${ch.side ? sideRewardHTML(ck, ch) : ''}
       ${ch.star ? `<div class="starrow${hasStar(ch.id) ? ' got' : ''}">${hasStar(ch.id) ? '★ Bonus earned' : '☆ Bonus'}: ${starText(ch, ck)}${hasStar(ch.id) ? '' : ` · <b>+${GACHA.starTokens} ${GACHA_ARMY[ck].currency}</b>`}${ch.star.type === 'fewer' && prep.picks.size > ch.star.n ? ` <span class="warn">(you're deploying ${prep.picks.size})</span>` : ''}</div>` : ''}
       ${ch.prepNote ? `<p class="meta prepnote">${ch.prepNote}</p>` : ''}
       ${replaying ? '<p class="meta">Replay: the story scenes are skipped and nobody new joins. Your army keeps any experience earned, and anyone unstitched is still lost.</p>' : ''}</div>
@@ -178,7 +217,7 @@ function renderPrep(){
   showScreen('prep');
 }
 function togglePick(uid){
-  const ch = CAMPAIGNS[prep.ck].stages[prep.i], rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
+  const ch = stageAt(prep.ck, prep.i), rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
   if (!rec) return;
   if (rec.lord){ toast(`${rec.name} leads every battle.`); return; }
   if ((ch.mustDeploy || []).includes(rec.key)){ toast(`${rec.name} must come on this one.`); return; }
@@ -190,7 +229,7 @@ function togglePick(uid){
 
 // ---------- Playing a chapter ----------
 async function playChapter(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = camp.stages[i], st = SAVE.camps[ck];
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
   const replay = st.cleared.includes(ch.id);   // replays skip the story and its one-time rewards
   if (!replay){
@@ -235,7 +274,7 @@ async function playChapter(){
 }
 
 function renderResult(r){
-  const camp = CAMPAIGNS[r.ck], ch = camp.stages[r.i], F = FACTIONS[camp.faction];
+  const camp = CAMPAIGNS[r.ck], ch = stageAt(r.ck, r.i), F = FACTIONS[camp.faction];
   let html;
   if (r.win){
     const other = otherCamp(r.ck), opened = CAMPAIGNS[other].stages
@@ -251,6 +290,7 @@ function renderResult(r){
         ${r.lost.length ? `<div><span>Unstitched (stitch them up on the Army screen)</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
+      ${Object.entries(CAMPAIGNS).flatMap(([k, c]) => c.sides.filter(s => s.unlock === ch.id && !r.replay).map(s => `<div class="gatebox"><span>A side story has opened: <b>${s.title}</b>.</span><button class="btn" data-sidego="${k}" type="button">Side Stories</button></div>`)).join('')}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
@@ -302,7 +342,9 @@ document.addEventListener('click', e => {
   else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }
   else if (d.pull) runPull(SAVE.current, +d.pull);
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
-  else if (d.play !== undefined) openPrep(SAVE.current, +d.play);
+  else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
+  else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
+  else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
   else if ('begin' in d) playChapter();
   else if ('retry' in d) openPrep(prep.ck, prep.i);
   else if (d.fav){ const rec = stOf().roster.find(r => r.uid === d.fav); if (rec){ rec.fav = !rec.fav; saveGame(); rerenderKeepScroll(); } }
