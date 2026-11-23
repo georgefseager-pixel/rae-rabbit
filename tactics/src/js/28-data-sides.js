@@ -8,6 +8,8 @@
 //   ban: [keys]   characters who can't be deployed
 //   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
 //   teaser        one line shown while it's locked
+//   flashback     set years ago: only the `lead` and ordinary soldiers can deploy
+//   yields        the stage's fleeing boss surrenders ("Yields!") instead of escaping
 // Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
 const SIDE_OPENS = SUPPORT.opensAfter;
 
@@ -220,8 +222,3 @@ const SIDE_SETS = {
     ]},
 };
 
-// Each set's quests go on its route's side story list, in the order they open.
-for (const [key, set] of Object.entries(SIDE_SETS)){
-  const camp = CAMPAIGNS[set.camp], at = camp.stages.find(s => s.id === SIDE_OPENS[set.camp]);
-  set.quests.forEach((q, k) => { Object.assign(q, {side: true, char: key, rank: k + 1, set, chapter: at.chapter, ci: at.ci, si: k}); camp.sides.push(q); });
-}

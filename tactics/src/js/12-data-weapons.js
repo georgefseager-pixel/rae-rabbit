@@ -52,6 +52,23 @@ const WEAPONS = {
                  desc: 'Taken, the guards used to boast, from the last rabbit who fought back. Now it\'s Rae Rabbit\'s.'},
   silverneedle: {name: 'Silver Needle',    type: 'staff', stars: 3, mt: 3, hit: 0, crit: 0,  owner: 'sister',
                  desc: 'From the overseer\'s sewing box. Little Sister mends better with it than anyone.'},
+  // side story rewards (29-data-sides-more.js), one per character
+  highwayhatchet: {name: 'Highway Hatchet', type: 'axe', stars: 3, mt: 4, hit: 5, crit: 15, owner: 'brigand',
+                 desc: 'Magpie\'s, once. She handed it over the day the gang stopped running.'},
+  cutchain:     {name: 'Cut Chain',        type: 'sword', stars: 3, mt: 4, hit: 15, crit: 10, owner: 'condemned',
+                 desc: 'The last length of the chain that held him, ground to an edge.'},
+  quillspear:   {name: 'Quill Spear',      type: 'lance', stars: 3, mt: 3, hit: 20, crit: 5, owner: 'froggle',
+                 desc: 'Her old ledger pen, bound to the head of a spear. She still counts with it. Now she counts the right things.'},
+  frontaxe:     {name: 'Front-Line Axe',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 5, owner: 'patch',
+                 desc: 'Notched once for every column that came home.'},
+  spawnwatch:   {name: 'Spawnwatch Halberd', type: 'lance', stars: 3, mt: 4, hit: 10, crit: 5, owner: 'biggle',
+                 desc: 'A little jar hangs from the haft. He says it\'s for luck. It is not for luck.'},
+  oldstory:     {name: 'The Old Story',    type: 'bow',   stars: 3, mt: 4, hit: 10, crit: 5, lash: true, owner: 'rhubarb',
+                 desc: 'The whip from the hill. She has told the story about it so many times she has nearly forgotten what really happened.'},
+  unsignedaxe:  {name: 'The Unsigned Axe', type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'executioner',
+                 desc: 'He hasn\'t used it on a block since the day the prince didn\'t sign.'},
+  provencleaver:{name: 'Proven Cleaver',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'fragglejr',
+                 desc: 'His father\'s own, left in the mud by the river. Fraggle Friggle never asked for it back.'},
 };
 
 // Weapon icons: drawn upright in a 64×64 box (blades and needles then tilted to a diagonal), with steel,

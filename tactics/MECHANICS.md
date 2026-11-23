@@ -82,7 +82,7 @@ one whose character isn't in the army, becomes a ★★★ weapon instead.
 | `guard` | waits until a player unit comes within its reach, then charges ("Waits for you") | defenders on rocks or forts; lets the player pull enemies out one at a time (**WL-1**, **WL-3**) |
 | `hold` | never moves; attacks anything in range | bosses on forts, gate-keepers |
 
-Spawn extras: `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
+Spawn extras: `faction` (fight for another side), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
 `talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`.
 
 ## Stage-level mechanics
@@ -103,6 +103,12 @@ Spawn extras: `boss`, `elite` (★★ art and +stats), `flees` (escapes when bea
 | Someone else leads | `lead` | FD-1, FD-2, FD-3 (Flopsy) |
 | Characters kept out | `ban` | WL-* (Willow), FD-* (Rae) |
 | Training fight (no permanent losses, the boss yields) | `spar` | WL-1, WL-2, WL-3 |
+| Flashback (years ago: only the leader and ordinary soldiers) | `flashback` + `lead` | RH-1–3 (Rhubarb), FJ-1–3 (Fraggle Jr.) |
+| Boss surrenders ("Yields!") instead of fleeing | `yields` + a `flees` boss | EX-1, EX-3 |
+| Enemies from another side (mixed factions) | spawn `faction` | BR-2 (Magpie's gang with the reeve's frogs) |
+| Lone leader (deploy 1) | `maxDeploy: 1` | FJ-1 |
+| Twist when the boss falls, bringing more enemies | `twist: {on: 'boss', units}` | RH-3 (the help arrives too late) |
+| Captive ally who must survive | `allies` + `vip` (+ `bonus` to keep them alive) | FG-2 (Twelve), BG-3 (Tiggle) |
 | Difficulty | `enemyMods` on a chapter or a stage | Ch. 1 (heavy), Ch. 2 (light), R1-3/R1-4/F1-3/F1-4 (eased), side stories `{}` |
 | Enemy banner text | `enemyLine` | F2-4, WL-* |
 | Prepare-screen note | `prepNote` | F2-4, all side stories |
@@ -126,6 +132,7 @@ Spawn extras: `boss`, `elite` (★★ art and +stats), `flees` (escapes when bea
 | Weapon triangle | WL-2 | stages that field one weapon type per flank or bridge; bosses with an obvious counter |
 | Danger view, choke points, moving together | WL-3 | walls with gaps (republicCamp, flowerField), bridges (ford, riverWoods) |
 | Protect a fragile leader | FD-1 to FD-3 | escort or VIP stages |
+| Choke points at a bridge | BR-3, PT-3 | riverWoods, ford |
 
 ## Recommended level
 
@@ -150,3 +157,13 @@ experience rules) run roughly a level above it by late Chapter Two.
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |
 | Training | after Support A |
+
+## Side stories written so far
+
+Each set steps recommended Lv 3 → 4 → 5. Rae: Willow's Lessons (WL), Flopsy's Day Out (FD), Heads I Go (BR, Brigand),
+Every Scaffold (CD, the Condemned), The Ledger (FG, Froggle), Someone Comes (PT, Patch). Tiggle: Wanting Things (BG,
+Biggle), Before the Monster (RH, Rhubarb, flashback), The Sentence (EX, the Executioner), Worth (FJ, Fraggle Jr.,
+flashback). Placeholder characters (Lantern, Iron-Ear, Duckweed, Glimmer, Bogsworth) have none yet.
+
+Story ties to keep consistent: Hawthorn (RH-3) is Willow's lost hero, and the grey rabbit who arrives too late is
+Willow; CD-2 and EX-2 are the same fight from each side (the Condemned vs the Executioner at the block yard).

@@ -189,6 +189,17 @@ const SPEAKERS = Object.assign({
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
   sludge:      {name:'Sergeant Sludge', faction:'frog', look:'guard'},     // Flopsy's Day Out
+  // side stories (29-data-sides-more.js)
+  magpie:      {name:'Magpie', faction:'rae', look:'workerBig', fur:'chocolate'},   // Brigand's old gang
+  reeve:       {name:'Reeve Puddock', faction:'frog', look:'guard'},
+  grubb:       {name:'Warden Grubb', faction:'frog', look:'guard'},              // hooded the Condemned
+  tally:       {name:'The Tallyman', faction:'frog', look:'guard'},              // Froggle's old master
+  twelve:      {name:'Twelve', faction:'rae', look:'workerLop', fur:'cream', elderly:true},
+  hawthorn:    {name:'Hawthorn', faction:'rae', look:'worker', fur:'ginger'},    // Willow's lost hero (Rhubarb's flashback)
+  greyone:     {name:'The Grey Rabbit', faction:'rae', look:'workerLop', fur:'grey'},
+  gristle:     {name:'Gristle', faction:'frog', look:'blackguard'},              // Fraggle Friggle's champion
+  gloamjaw:    {name:'Gloamjaw', faction:'frog', look:'blackguard'},             // Fraggle's outlaw guard captain
+  burdock:     {name:'Captain Burdock', faction:'rae', look:'soldier'},
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 

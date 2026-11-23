@@ -40,6 +40,7 @@ function battleUnit(rec, teamId){
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
 }
 function enemyUnit(sp, faction, teamId = 'e'){
+  faction = sp.faction || faction;   // a spawn can belong to another side (e.g. rabbit bandits among frog soldiers)
   const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls,
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
@@ -251,7 +252,7 @@ async function strike(a, d, f){
   if (d.hp <= 0){
     if (d.boss && !B.bossBy) B.bossBy = a.key;   // who brought the boss down (for bonus stars)
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
-      stamp(B.ch.spar ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
+      stamp(B.ch.spar || B.ch.yields ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
       await wait(500);
     } else if (scene){
@@ -259,7 +260,7 @@ async function strike(a, d, f){
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
-    if (d.flees) popup(d, B.ch.spar ? 'Yields!' : 'Fled!', '#ecc673');
+    if (d.flees) popup(d, B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
     await tween(380, t => { d.alpha = 1 - t; }); d.dead = true;
     if (d.team === 'e') B.kills++;
   }

@@ -1605,6 +1605,17 @@ const SPEAKERS = Object.assign({
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
   sludge:      {name:'Sergeant Sludge', faction:'frog', look:'guard'},     // Flopsy's Day Out
+  // side stories (29-data-sides-more.js)
+  magpie:      {name:'Magpie', faction:'rae', look:'workerBig', fur:'chocolate'},   // Brigand's old gang
+  reeve:       {name:'Reeve Puddock', faction:'frog', look:'guard'},
+  grubb:       {name:'Warden Grubb', faction:'frog', look:'guard'},              // hooded the Condemned
+  tally:       {name:'The Tallyman', faction:'frog', look:'guard'},              // Froggle's old master
+  twelve:      {name:'Twelve', faction:'rae', look:'workerLop', fur:'cream', elderly:true},
+  hawthorn:    {name:'Hawthorn', faction:'rae', look:'worker', fur:'ginger'},    // Willow's lost hero (Rhubarb's flashback)
+  greyone:     {name:'The Grey Rabbit', faction:'rae', look:'workerLop', fur:'grey'},
+  gristle:     {name:'Gristle', faction:'frog', look:'blackguard'},              // Fraggle Friggle's champion
+  gloamjaw:    {name:'Gloamjaw', faction:'frog', look:'blackguard'},             // Fraggle's outlaw guard captain
+  burdock:     {name:'Captain Burdock', faction:'rae', look:'soldier'},
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
@@ -1732,6 +1743,23 @@ const WEAPONS = {
                  desc: 'Taken, the guards used to boast, from the last rabbit who fought back. Now it\'s Rae Rabbit\'s.'},
   silverneedle: {name: 'Silver Needle',    type: 'staff', stars: 3, mt: 3, hit: 0, crit: 0,  owner: 'sister',
                  desc: 'From the overseer\'s sewing box. Little Sister mends better with it than anyone.'},
+  // side story rewards (29-data-sides-more.js), one per character
+  highwayhatchet: {name: 'Highway Hatchet', type: 'axe', stars: 3, mt: 4, hit: 5, crit: 15, owner: 'brigand',
+                 desc: 'Magpie\'s, once. She handed it over the day the gang stopped running.'},
+  cutchain:     {name: 'Cut Chain',        type: 'sword', stars: 3, mt: 4, hit: 15, crit: 10, owner: 'condemned',
+                 desc: 'The last length of the chain that held him, ground to an edge.'},
+  quillspear:   {name: 'Quill Spear',      type: 'lance', stars: 3, mt: 3, hit: 20, crit: 5, owner: 'froggle',
+                 desc: 'Her old ledger pen, bound to the head of a spear. She still counts with it. Now she counts the right things.'},
+  frontaxe:     {name: 'Front-Line Axe',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 5, owner: 'patch',
+                 desc: 'Notched once for every column that came home.'},
+  spawnwatch:   {name: 'Spawnwatch Halberd', type: 'lance', stars: 3, mt: 4, hit: 10, crit: 5, owner: 'biggle',
+                 desc: 'A little jar hangs from the haft. He says it\'s for luck. It is not for luck.'},
+  oldstory:     {name: 'The Old Story',    type: 'bow',   stars: 3, mt: 4, hit: 10, crit: 5, lash: true, owner: 'rhubarb',
+                 desc: 'The whip from the hill. She has told the story about it so many times she has nearly forgotten what really happened.'},
+  unsignedaxe:  {name: 'The Unsigned Axe', type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'executioner',
+                 desc: 'He hasn\'t used it on a block since the day the prince didn\'t sign.'},
+  provencleaver:{name: 'Proven Cleaver',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'fragglejr',
+                 desc: 'His father\'s own, left in the mud by the river. Fraggle Friggle never asked for it back.'},
 };
 
 // Weapon icons: drawn upright in a 64×64 box (blades and needles then tilted to a diagonal), with steel,
@@ -3575,6 +3603,7 @@ const SUPPORTS = {
         sL('brigand', "Ha! A natural. Give it a week and you'll be lifting purses off the King's own guard."),
         sL('rae', "I don't want to steal purses."),
         sL('brigand', "Of course not. You want to steal mines. Much bigger purses. I respect that."),
+        sL('brigand', "Funny. The rabbit who taught me my first lock was called Magpie. I wonder what she's robbing these days."),
       ],
       B: [
         sL('rae', "Can I ask you something? Why did you spend so long on your own? Robbing carts."),
@@ -3586,6 +3615,7 @@ const SUPPORTS = {
         sL('brigand', "Ha. You say that now."),
         sL('rae', "I'm saying it now because it's true now. You're one of us. If you don't come back, I'll come and find out why."),
         sL('brigand', "…Well. That's a new feeling. I'm not sure I like it. I'm not sure I don't, either."),
+        sT('rae', "He says 'running' like it's a place he used to live. I wonder who still lives there."),
       ],
       A: [
         sL('brigand', "Here. Catch."),
@@ -3598,6 +3628,22 @@ const SUPPORTS = {
         sL('brigand', "Then you do the brave thing anyway, same as always. It's very annoying to watch, frankly."),
         sL('rae', "…Thank you, Brigand. Really."),
         sL('brigand', "Don't get soppy. I'll want it back if we ever retire. Somewhere quiet. With a road outside I never have to take."),
+        sL('brigand', "Mind, if we ever do retire, there's one road I'd need to see one more time first. With some very loud old friends on it."),
+      ],
+      // after all three side stories
+      S: [
+        sN("Night. Brigand is sitting on the Republic's palisade, looking at the road."),
+        sL('brigand', "Magpie's got the whole gang digging latrines for the Republic. She's furious. It's wonderful."),
+        sL('rae', "And you?"),
+        sL('brigand', "Me? I keep waiting to want to leave. It doesn't come. I sit here looking at the road, and the road just looks like a road."),
+        sN("Rae takes out his old coin and holds it up."),
+        sL('rae', "You said to flip it when I needed to decide something brave."),
+        sL('brigand', "Go on, then. What are we deciding?"),
+        sL('rae', "Whether you stay."),
+        sN("She flips it. Neither of them looks at how it lands."),
+        sL('brigand', "…Heads I stay. Tails I stay anyway."),
+        sL('rae', "It's very annoying to watch, frankly."),
+        sL('brigand', "Ha! Using my own lines on me. Keep the coin, Rae. I don't need to decide anything any more."),
       ],
     },
     condemned: {kind: 'friend', about: 'He owes Rae his life. Little by little, she earns his trust.',
@@ -3610,6 +3656,7 @@ const SUPPORTS = {
         sN("He eats under the hood, carefully, without lifting it."),
         sL('rae', "You know, you can sit closer to the fire. Nobody would mind."),
         sL('condemned', "I know. I'm not used to being where people can see me, Rae. For a long time, being seen meant being next."),
+        sL('condemned', "There's a convoy on the north road every month. Full on the way there. Empty on the way back."),
       ],
       B: [
         sL('rae', "I'm going to ask. You can say no."),
@@ -3621,6 +3668,7 @@ const SUPPORTS = {
         sL('rae', "Then don't be. Not until you want to. Out here nobody gets told who to be. Not even by me."),
         sL('condemned', "…That's a strange kind of kindness."),
         sL('rae', "It's the only kind we've got. Republic issue."),
+        sL('condemned', "The block yard in the mine camp is still standing. The same steps. The same bell."),
       ],
       A: [
         sL('condemned', "Rae. I've decided something."),
@@ -3633,6 +3681,21 @@ const SUPPORTS = {
         sL('condemned', "I owed you my life, Rae. I don't think of it as a debt any more. I'd give it to you anyway. That's different, isn't it?"),
         sL('rae', "That's called a friend."),
         sL('condemned', "…A friend. I'll remember that one as well."),
+        sL('condemned', "And there's the camp where they hooded me. The warden still runs it. I know his name."),
+      ],
+      // after all three side stories
+      S: [
+        sN("The fire is low. The Condemned sits closer to it than he ever has."),
+        sL('condemned', "Two scaffolds. One warden. One chain I don't wear any more."),
+        sL('rae', "And the hood?"),
+        sL('condemned', "Stays on. I made a promise. But I've been thinking about the rabbit under it."),
+        sL('condemned', "For a long time he was just the one who was next. Then he was the one who walked away. Now he's the one who burns scaffolds."),
+        sL('condemned', "I think he'd like his name back. Not to use. Not yet. Just so one person knows it."),
+        sN("He leans over and says something very quietly. Rae nods, and doesn't repeat it."),
+        sL('rae', "It's a good name."),
+        sL('condemned', "It was my mother's choice. I'd forgotten that, until today."),
+        sL('condemned', "When the last block burns, I'll take the hood off, and you can say it out loud. Promise?"),
+        sL('rae', "Promise."),
       ],
     },
     // Froggle is only recruited after R2-4, so these can speak about the Republic's past.
@@ -3649,6 +3712,7 @@ const SUPPORTS = {
         sL('froggle', "That, and a great deal of walking in the dark."),
         sL('rae', "…Teach me. All of it."),
         sL('froggle', "Gladly. Start with the river. Again."),
+        sL('froggle', "Every rabbit I ever counted is still in the crown's ledgers, you know. In the counting house, by number."),
       ],
       B: [
         sL('rae', "Can I ask about the stitches? On your face."),
@@ -3660,6 +3724,7 @@ const SUPPORTS = {
         sL('froggle', "Her. Under the fallen rock, still breathing. I dug her out with my hands. The guard who caught me didn't think a ledger-frog should be digging."),
         sL('froggle', "He was right, as it happens. I haven't kept a ledger since."),
         sT('rae', "She tells it like it happened to someone else. I know that voice. I used it for years."),
+        sT('froggle', "Twelve on the morning roll. I never found out what became of her."),
       ],
       A: [
         sN("Late. Rae finds Froggle at the edge of the camp, looking north."),
@@ -3675,6 +3740,19 @@ const SUPPORTS = {
         sL('rae', "…I promise. And if I ever do, you'll tell me."),
         sL('froggle', "Every step of the way. You did ask."),
         sT('rae', "She gave me the Republic. I think she's just given me the hardest part of it, too."),
+        sL('froggle', "Names, Rae. Out of the ledgers and back to the rabbits they belong to. That's the last thing I owe them."),
+      ],
+      // after all three side stories
+      S: [
+        sN("The command tent. Froggle has the last page of the last ledger open in front of her."),
+        sL('froggle', "That's every name returned. The ones we found, given back. The ones we didn't, read aloud at the fire."),
+        sL('froggle', "Twelve chose a name, by the way. Primrose. She says it's because it's the first thing she saw when she came up."),
+        sL('rae', "Primrose. That's lovely."),
+        sL('froggle', "There's one more line. The last one in the book. I wrote it myself, the night I ran."),
+        sN("She turns the ledger around. In small, careful writing: 'Clerk, resigned.'"),
+        sL('froggle', "I never had a name either, Rae. Not in the ledger. Just 'the clerk'. I chose Froggle that night, because it was the silliest name I could think of, and no frog in the counting house had ever been silly."),
+        sL('rae', "Don't stop counting. You told me that."),
+        sL('froggle', "I did. So here's my count: one Republic, one commander, a great many names. And one silly frog, who's glad she resigned."),
       ],
     },
     // Patch is recruited after R2-4 too.
@@ -3689,6 +3767,7 @@ const SUPPORTS = {
         sL('patch', "That one's a secret. I tell it to everyone, mind. Still a secret."),
         sL('rae', "…That doesn't make any sense."),
         sL('patch', "Neither do I. You'll get used to it."),
+        sL('patch', "The first stitch is from a ditch on the east road. I'll show you that one sometime."),
       ],
       B: [
         sL('rae', "The medals on your chest. What are they for?"),
@@ -3699,6 +3778,7 @@ const SUPPORTS = {
         sL('patch', "The first time. A frog with a lantern hook. We sat in a ditch for three days, waiting for someone to come. Nobody did. Nobody was meant to."),
         sL('patch', "I'm not angry about it. That's what frightens me, some nights. I should be angry, and I'm not. I just thought that's what I was for."),
         sT('rae', "In the mines, I thought that too. That digging was what I was for."),
+        sL('patch', "There's a column out on the east road right now, Commander. Same road. Same ditch, near enough."),
       ],
       A: [
         sN("Before dawn. Patch is at the front of the line again, axe on his shoulder."),
@@ -3712,6 +3792,21 @@ const SUPPORTS = {
         sL('patch', "The Commander, up front with the likes of me? Froggle will have kittens."),
         sL('rae', "Froggle is a frog."),
         sL('patch', "Tadpoles, then. Come on. And mind your skin. I've only got the one eye left to lose, and I'm keeping it on you."),
+        sL('patch', "There's a bridge the frogs hold, two days north. I'd like to be first over it. With you next to me."),
+      ],
+      // after all three side stories
+      S: [
+        sN("Patch is sitting very still while Rae ties off a stitch in his ear."),
+        sL('patch', "Forty-three. First one I didn't put in myself."),
+        sL('rae', "How does it feel?"),
+        sL('patch', "Itchy. And like somebody came. Both at once."),
+        sL('rae', "You promised to tell me about the one across your nose."),
+        sL('patch', "Ah. The secret. Right. You'll be the first to hear the true version."),
+        sL('patch', "Bramble bush."),
+        sL('rae', "…The same bramble bush?"),
+        sL('patch', "The very same. Fell in it twice. Once going in, once coming out. Nobody was chasing me either time."),
+        sN("Rae laughs so hard she has to sit down. Patch looks very pleased with himself."),
+        sL('patch', "Every stitch is a story, Commander. Most of them are just sillier than people think."),
       ],
     },
     lantern:   {kind: 'friend', about: 'Placeholder character.'},
@@ -3729,6 +3824,7 @@ const SUPPORTS = {
         sL('biggle', "Better. Terrible, but better. Again. A hundred times."),
         sL('tiggle', "A HUNDRED?"),
         sL('biggle', "The King made me do a thousand, when we were tadpoles. Count yourself lucky I'm soft-hearted."),
+        sL('biggle', "And when the rebels come to see what the noise is, we'll find out if a hundred was enough."),
       ],
       B: [
         sL('tiggle', "Biggle, did you ever want to be anything else? Not a commander, not the King's right hand. Just… something else."),
@@ -3739,6 +3835,7 @@ const SUPPORTS = {
         sL('tiggle', "That's very sad."),
         sL('biggle', "It's very necessary. Wanting things is for the youngest. That's what you're for."),
         sT('tiggle', "He said it like a joke. I don't think it was one."),
+        sT('tiggle', "There's a pond past the ford, full of frogspawn. I wonder if he knows."),
       ],
       A: [
         sL('biggle', "I watched you today."),
@@ -3751,6 +3848,21 @@ const SUPPORTS = {
         sL('tiggle', "…I'll get you a jar. For frogspawn. You can keep it in your tent."),
         sL('biggle', "Don't you dare."),
         sT('tiggle', "He's smiling. He thinks I can't tell."),
+        sL('biggle', "And Tiggle. Don't go getting yourself caught. I'd have to come and get you, and I'd never hear the end of it."),
+      ],
+      // after all three side stories
+      S: [
+        sN("Biggle's tent. On the table, very carefully hidden behind a map, is a jar."),
+        sL('tiggle', "Biggle. Is that…"),
+        sL('biggle', "Strategic resources. Under observation."),
+        sN("In the jar, a dozen tiny frogs are swimming in circles. They have legs now."),
+        sL('biggle', "They grew legs this morning. All of them. I watched."),
+        sL('tiggle', "Friggle said a prince doesn't stare at jars."),
+        sL('biggle', "Friggle isn't here. And I wanted to. That turns out to be reason enough, now and then."),
+        sL('biggle', "I came for you in the ravine without orders. I kept a jar. The kingdom hasn't fallen over yet."),
+        sL('tiggle', "I'm proud of you, Biggle."),
+        sL('biggle', "…Don't tell the King."),
+        sT('tiggle', "He's smiling. He doesn't even try to hide it this time."),
       ],
     },
     rhubarb: {kind: 'learn', about: 'The overseer shows the prince how the mines are really run.',
@@ -3763,6 +3875,7 @@ const SUPPORTS = {
         sL('rhubarb', "It's enough for twenty, so it's enough for forty if they share nicely. Which they do, on account of me."),
         sL('rhubarb', "Every cart's counted, every rabbit's counted, every bucket's counted. Numbers keep a camp running, Your Highness. Not feelings."),
         sT('tiggle', "She knows exactly how much it takes to keep them going. And not a drop more."),
+        sL('rhubarb', "Last time a seam stopped counting, mind, I had to start it up again. Long before you were hatched."),
       ],
       B: [
         sL('tiggle', "The story you told every morning. About Rae, the monster. Was any of it true?"),
@@ -3772,6 +3885,7 @@ const SUPPORTS = {
         sL('rhubarb', "Tell a rabbit every day that wanting a name makes you a monster, and they'll stop wanting one. Cheapest lock ever made."),
         sL('tiggle', "That's horrible."),
         sL('rhubarb', "That's management. Don't look at me like that. I didn't invent it. I just told it better than most."),
+        sL('rhubarb', "Where did I get the story? There was a rabbit, once. Ask me about him some other night."),
       ],
       A: [
         sL('rhubarb', "You want to know the real lesson, Your Highness? The one they don't teach in palaces?"),
@@ -3783,6 +3897,21 @@ const SUPPORTS = {
         sL('rhubarb', "So you've a choice, love. Keep them frightened forever, which you can't. Or give them summat worth not running away from."),
         sL('tiggle', "…Water, for a start."),
         sL('rhubarb', "Water for a start. See? You're not daft. Soft, but not daft."),
+        sL('rhubarb', "…There was a hill, once. I've never told anyone about the hill."),
+      ],
+      // after all three side stories
+      S: [
+        sN("Rhubarb sits by the water butt, counting buckets out of habit."),
+        sL('tiggle', "Hawthorn. You knew his name all along. You never once said it."),
+        sL('rhubarb', "Names are dangerous, love. That's the whole lesson of the mines. Say a name often enough and folk start wanting one."),
+        sL('rhubarb', "So I gave them a monster instead. Same story every morning, for years. Then one day a little rabbit with a stolen sword walked out of my seam, and the story came true backwards."),
+        sL('tiggle', "Rae isn't a monster."),
+        sL('rhubarb', "No. Neither was he. That's what made the story necessary."),
+        sL('rhubarb', "The grey one who came over that hill too late. I've wondered about her. Whether she ever stopped running."),
+        sT('tiggle', "Willow. It has to be. And she's still fighting the same fight. On the other side."),
+        sL('tiggle', "She didn't stop running. She just started running towards things."),
+        sL('rhubarb', "…Did she, now. Well. Good for her, love. Good for her."),
+        sL('rhubarb', "Water for a start, you said, once. I've been thinking. Maybe names for a second."),
       ],
     },
     executioner: {kind: 'learn', about: 'The headsman teaches Tiggle what carrying out a sentence means.',
@@ -3794,6 +3923,7 @@ const SUPPORTS = {
         sL('executioner', "Easier means you stop feeling it. Quieter means you stop saying so."),
         sL('tiggle', "…I don't think I understand."),
         sL('executioner', "Good. Stay that way as long as you can, Highness."),
+        sL('executioner', "Fraggle's old guard are outlaws now. Someone will have to bring them in. And then someone will have to sentence them."),
       ],
       B: [
         sL('tiggle', "You've never asked what any of them did. The ones you… sentenced."),
@@ -3804,6 +3934,7 @@ const SUPPORTS = {
         sL('executioner', "Then the only one who watched was me. And the one under the hood."),
         sN("The stone stops."),
         sL('executioner', "You ask good questions, Highness. Most princes ask what time it will be finished."),
+        sL('executioner', "The rabbits will come for the block yard one day. The hooded one, I expect. I'd like to be there."),
       ],
       A: [
         sL('executioner', "Stand up. Feet apart. No, wider. Hold this."),
@@ -3816,6 +3947,22 @@ const SUPPORTS = {
         sL('executioner', "If you can't bear to watch, Highness, don't sign it."),
         sT('tiggle', "He's never said so many words at once. I don't think he's ever said them to anyone."),
         sL('tiggle', "…I'll remember. I promise."),
+        sL('executioner', "You'll get your chance soon, Highness. The outlaws' writ is on your table."),
+      ],
+      // after all three side stories
+      S: [
+        sN("Afternoon. The Executioner sits outside his tent with nothing in his hands."),
+        sL('tiggle', "Your afternoon off. How is it?"),
+        sL('executioner', "I don't know what to do with it. I've never had one."),
+        sL('executioner', "The outlaws are laying stones in the burned village. The rabbits watch them. Nobody has died. It's very strange."),
+        sL('tiggle', "You told me that if I couldn't bear to watch, I shouldn't sign. I couldn't. So I didn't."),
+        sL('executioner', "I know. It's the first sentence in thirty years I wasn't asked to carry."),
+        sL('executioner', "The hooded one asked me what he'd done. I didn't know. I've started asking now, Highness. Every writ. What it's for."),
+        sL('tiggle', "And?"),
+        sL('executioner', "Most of the time, nobody can tell me."),
+        sN("A long pause."),
+        sL('executioner', "My mother called me Ash. Nobody's called me that since I took the axe. You may, if you like."),
+        sL('tiggle', "…Thank you, Ash."),
       ],
     },
     // Fraggle Jr. only joins after F2-4, so these can speak about the hollow.
@@ -3832,6 +3979,7 @@ const SUPPORTS = {
         sL('tiggle', "I don't feel brave."),
         sL('fragglejr', "No. You don't look it, either."),
         sT('tiggle', "He said it the way you'd mention the weather. I can't tell what he knows."),
+        sL('fragglejr', "My father liked tests. The first was the hollow. Alone, until sundown. I was very small."),
       ],
       B: [
         sL('fragglejr', "You sleep badly."),
@@ -3846,6 +3994,7 @@ const SUPPORTS = {
         sL('fragglejr', "It's a true thing. Cold and true are often found together. Frogs confuse them, and decide a thing must be false because it's cold."),
         sT('tiggle', "Tell him. Tell him what happened in the hollow. He deserves to hear it from you."),
         sT('tiggle', "…Not tonight."),
+        sL('fragglejr', "He had a champion called Gristle. I fought him when I was nine. Ask the old guard how that went."),
       ],
       A: [
         sN("Night. The camp is quiet. Fraggle Jr. finds Tiggle by the stream."),
@@ -3870,6 +4019,21 @@ const SUPPORTS = {
         sT('tiggle', "Fraggle looked at a few old rabbits and decided they were dangerous. That made sense to him too. Everyone's a danger. That's the secret, cousin."),
         sT('tiggle', "You can reason your way to anything, if you stop feeling for whoever's at the end of the sum."),
         sT('tiggle', "I don't want to be clever like that. I'd rather lie awake."),
+        sL('fragglejr', "He sent me to the river once, to see if I'd call for help. I didn't. He came anyway."),
+      ],
+      // after all three side stories
+      S: [
+        sN("Night. Fraggle Jr. stands watch, as he always does. Tiggle brings two bowls of stew."),
+        sL('tiggle', "The old guard told me about the hollow. And the hill. And the river."),
+        sL('fragglejr', "Did they. They tell it as a joke, mostly. The boy who wouldn't cry."),
+        sL('tiggle', "I don't think it's funny."),
+        sL('fragglejr', "No. You wouldn't. That's the strange thing about you, cousin."),
+        sL('tiggle', "You don't have to prove anything to me. You don't have to be worth anything. You can just be here."),
+        sN("For a long time, Fraggle Jr. says nothing."),
+        sL('fragglejr', "Then what am I supposed to do?"),
+        sL('tiggle', "Eat your stew. It's getting cold."),
+        sN("He eats it. Slowly. He doesn't say anything else, but he stays by the fire after the bowl is empty, which he has never done before."),
+        sT('tiggle', "It's not much. But it isn't a test, and he knows it. That might be enough to start with."),
       ],
     },
     duckweed:    {kind: 'friend', about: 'Placeholder character.'},
@@ -3889,6 +4053,8 @@ const SUPPORTS = {
 //   ban: [keys]   characters who can't be deployed
 //   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
 //   teaser        one line shown while it's locked
+//   flashback     set years ago: only the `lead` and ordinary soldiers can deploy
+//   yields        the stage's fleeing boss surrenders ("Yields!") instead of escaping
 // Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
 const SIDE_OPENS = SUPPORT.opensAfter;
 
@@ -4100,6 +4266,776 @@ const SIDE_SETS = {
       },
     ]},
 };
+
+
+// ---------------- 29-data-sides-more.js ----------------
+// ================= Side Stories: the rest of the unique characters =================
+// Same format as 28-data-sides.js. Rhubarb's and Fraggle Jr.'s are flashbacks, set years before the war.
+const sideReward = (n, weapon, to) => ({res: [400, 500, 600][n], tokens: [3, 3, 5][n], ...(weapon ? {weapons: [{id: weapon, to}]} : {})});
+
+Object.assign(SIDE_SETS, {
+  // ======================================== The Raepublic ========================================
+  brigand: {camp: 'rae', title: 'Heads I Go', about: 'His old gang never stopped running. Brigand goes back to the road to find out what he left behind.',
+    quests: [
+      {
+        id: 'BR-1', title: 'The Old Road', map: 'ford', enemyFaction: 'rae', enemyLine: 'THE GANG MOVES', mustDeploy: ['brigand'], enemyMods: {},
+        teaser: 'Someone is robbing the Republic\'s supply carts. Someone who knows all the tricks.',
+        star: {type: 'bossBy', key: 'brigand', text: 'Brigand drives off Magpie himself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'Brigand\'s old gang is robbing Republic carts at the ford. Drive them off, and their leader with them. Brigand must come.',
+        prepNote: 'Brigand must come. The gang are rabbits, not frogs: they stand on grey.',
+        enemies: () => [
+          E('captain',4,4,1,'hold',{boss: true, flees: true, key: 'magpie', name: 'Magpie', look: 'workerBig', fur: 'chocolate'}),
+          E('runner',3,2,3), E('pebbler',3,1,2,'guard'), E('pebbler',3,6,3,'guard'), E('digger',3,2,5), E('hauler',3,6,6), E('runner',3,5,8),
+        ],
+        bossTalk: [
+          {who: 'magpie', text: "Well, well. Look who's wearing a Republic armband. Did they give you a name tag too, love?"},
+          {who: 'brigand', text: "These carts feed people, Magpie. Real people. Leave them be."},
+          {who: 'magpie', text: "Everything feeds somebody. That's never stopped us before."},
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Ford · Side Story'},
+          {who: 'republic', text: "Third cart this week, Commander. Wheels off, sacks gone, drivers tied to a tree with their own reins."},
+          {who: 'brigand', text: "Tied with their own reins? …Reef knots, were they? Double, with a twist at the end?"},
+          {who: 'republic', text: "How did you know that?"},
+          {who: 'brigand', thought: true, text: "Because I taught her that knot."},
+          {who: 'brigand', text: "Rae. I know who this is. Let me come."},
+        ],
+        post: [
+          {who: 'magpie', text: "You've gone soft, you have! Soft and stitched and FLAGGED! We'll see you on the road!"},
+          {who: 'brigand', text: "She taught me to pick my first lock. Now she's robbing the people I'm supposed to protect."},
+          {who: 'rae', text: "She ran. You can still catch her up."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'BR-2', title: 'Tails', map: 'forestTrail', enemyFaction: 'frog', mustDeploy: ['brigand'], enemyMods: {},
+        teaser: 'Magpie sends word: meet her on the old trail. Alone.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'boss'}, maxDeploy: 5,
+        deploy: [[4,15],[5,15],[3,14],[6,14],[4,14]],
+        brief: 'Magpie wanted a meeting. What\'s waiting is the crown\'s reeve, with a bounty on Brigand\'s head and the gang working for him. Defeat the reeve.',
+        prepNote: 'Brigand must come. Magpie\'s gang fight beside the frogs.',
+        enemies: () => [
+          E('lily',4,4,0,'hold',{boss: true, key: 'reeve', name: 'Reeve Puddock', look: 'guard'}),
+          E('captain',4,5,3,'charge',{faction: 'rae', flees: true, key: 'magpie', name: 'Magpie', look: 'workerBig', fur: 'chocolate', talk: [
+            {who: 'magpie', text: "Nothing personal. The reeve pays in silver, and the road's been thin since you left."},
+            {who: 'brigand', text: "You'd sell me to the crown? After everything?"},
+            {who: 'magpie', text: "You sold us first, love. You just paid in Republic armbands."},
+          ]}),
+          E('reed',4,2,2,'guard'), E('reed',4,7,2,'guard'), E('runner',4,3,6,'charge',{faction: 'rae'}), E('digger',4,6,7,'charge',{faction: 'rae'}),
+          E('lily',4,4,9,'guard'), E('bruiser',4,7,10),
+        ],
+        bossTalk: [
+          {who: 'reeve', text: "The famous Brigand! Two hundred silver, alive. Fifty if you're difficult. Be difficult, please. It's less paperwork."},
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Old Trail · Side Story'},
+          {who: 'brigand', text: "She said come alone. So naturally, I've brought everyone."},
+          {who: 'rae', text: "You think it's a trap."},
+          {who: 'brigand', text: "I know it's a trap. I taught her this one too."},
+          {who: 'narr', text: "On the trail ahead: Magpie and her gang. And behind them, in the crown's green, a frog with a ledger and a very large purse."},
+        ],
+        post: [
+          {who: 'magpie', text: "…He never meant to pay us, did he. Not a coin."},
+          {who: 'brigand', text: "The crown never pays, Magpie. That's the first thing the road should have taught you."},
+          {who: 'magpie', text: "Then what now? They'll hang the lot of us for this."},
+          {who: 'brigand', thought: true, text: "Heads I go. Tails I go anyway."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'BR-3', title: 'A Road I Never Have to Take', map: 'riverWoods', enemyFaction: 'frog', mustDeploy: ['brigand'], enemyMods: {},
+        teaser: 'The crown wants the gang gone, and their hideout burned.',
+        star: {type: 'allies', text: 'None of the gang falls'},
+        objective: {type: 'rout'}, maxDeploy: 6,
+        deploy: [[4,13],[5,13],[3,14],[6,14],[4,14],[5,14]],
+        brief: 'The reeve has come back with soldiers to burn the gang\'s hideout. Magpie\'s gang fight beside you this time. Hold them at the river\'s one bridge.',
+        prepNote: 'Brigand must come. Magpie\'s gang are your allies (blue). The frogs can only cross at the bridge.',
+        allies: () => [
+          E('captain',5,6,9,'guard',{key: 'magpie', name: 'Magpie', look: 'workerBig', fur: 'chocolate'}),
+          E('digger',4,8,9,'guard',{key: 'ally', name: 'Jackdaw'}), E('pebbler',4,5,10,'guard',{key: 'ally', name: 'Rook-Eye'}),
+        ],
+        enemies: () => [
+          E('lily',6,3,1,'charge',{elite: true, key: 'reeve', name: 'Reeve Puddock', look: 'guard'}),
+          E('lily',5,6,3), E('bruiser',5,7,5), E('blade',5,5,6), E('reed',5,2,3,'guard'), E('reed',5,8,3,'guard'), E('lily',6,6,1,'guard',{elite: true}),
+        ],
+        reinforce: () => [{turn: 3, units: [E('blade',5,4,0), E('bruiser',5,3,0)]}],
+        pre: [
+          {scene: 'woods', place: 'The Gang\'s Hideout · Side Story'},
+          {who: 'magpie', text: "They're coming to burn us out. Every hut, every cart, every sack."},
+          {who: 'magpie', text: "I know I've no right to ask. I'm asking anyway."},
+          {who: 'brigand', text: "You don't have to ask, Magpie. That's the thing I couldn't explain, when I left. Out here, you don't have to ask."},
+          {who: 'rae', text: "Everyone to the bridge. The frogs only have the one way over."},
+        ],
+        post: [
+          {who: 'magpie', text: "Well. The hideout's still standing. The reeve isn't."},
+          {who: 'magpie', text: "This Republic of yours. Does it take thieves?"},
+          {who: 'rae', text: "It took him."},
+          {who: 'magpie', text: "Ha! Fair. …Here. Take my hatchet, then. You'll do more good with it than I ever did."},
+        ],
+        reward: sideReward(2, 'highwayhatchet', 'brigand'),
+      },
+    ]},
+
+  condemned: {camp: 'rae', title: 'Every Scaffold', about: 'He swore to wear the hood until every block in the Friggliarchy burns. He means to start now.',
+    quests: [
+      {
+        id: 'CD-1', title: 'Before the Bell', map: 'forestTrail', enemyFaction: 'frog', mustDeploy: ['condemned'], enemyMods: {},
+        teaser: 'A prison convoy passes on the north road every month.',
+        star: {type: 'allies', text: 'Every prisoner is saved'},
+        objective: {type: 'rout'}, maxDeploy: 6,
+        deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14]],
+        brief: 'A convoy is taking prisoners to the block. They\'re chained in the middle of the trail. Rout the guards before they reach them. The Condemned must come.',
+        prepNote: 'The Condemned must come. The prisoners (blue) are chained in place and can\'t move.',
+        allies: () => [E('hauler',2,4,7,'hold',{key: 'ally', name: 'Prisoner'}), E('pebbler',2,5,7,'hold',{key: 'ally', name: 'Prisoner'})],
+        enemies: () => [
+          E('lily',3,3,6), E('lily',3,6,6), E('bruiser',3,2,9), E('reed',3,7,4,'guard'), E('blade',3,5,9), E('toadknight',3,5,4,'guard',{elite: true}),
+        ],
+        pre: [
+          {scene: 'woods', place: 'The North Road · Side Story'},
+          {who: 'condemned', text: "Every month. Full on the way there. Empty on the way back."},
+          {who: 'condemned', text: "I rode it once. With the hood already on."},
+          {who: 'rae', text: "Then nobody rides it today."},
+          {who: 'narr', text: "Ahead, the convoy has stopped. The prisoners are chained to the cart, and the guards have seen you."},
+        ],
+        post: [
+          {who: 'narr', text: "The chains come off. One of the prisoners stares at the Condemned for a long time."},
+          {who: 'rabbits', text: "You're him. The one who walked away from the block."},
+          {who: 'condemned', text: "I'm the one who was next. Now you're not. That's all."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'CD-2', title: 'The Block Yard', map: 'blockYard', enemyFaction: 'frog', mustDeploy: ['condemned'], enemyMods: {},
+        teaser: 'The scaffold in the mine camp is still standing.',
+        star: {type: 'bossBy', key: 'condemned', text: 'The Condemned drives off the Executioner himself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,10],[5,10],[3,10],[4,10]],
+        brief: 'Back to the mine camp\'s block yard, to burn the scaffold. The Executioner is waiting on it. The Condemned must come.',
+        prepNote: 'The Condemned must come.',
+        enemies: () => [
+          E('headsman',4,3,0,'hold',{boss: true, flees: true, key: 'executioner', name: 'The Executioner', look: 'headsman'}),
+          E('lily',4,2,2,'guard'), E('lily',4,5,2,'guard'), E('reed',4,1,4,'guard'), E('reed',4,6,4,'guard'), E('bruiser',4,3,5), E('bruiser',4,4,7), E('blade',4,0,7),
+        ],
+        bossTalk: [
+          {who: 'executioner', text: "I wondered when you'd come back. You walked away from my block. Nobody's ever done that."},
+          {who: 'condemned', text: "I'm not here for you. I'm here for the block."},
+          {who: 'executioner', text: "…Then we want different things. That's never stopped anyone fighting."},
+        ],
+        pre: [
+          {scene: 'block', place: 'The Block Yard · Side Story'},
+          {who: 'condemned', text: "It's the same. The same steps, the same bell, the same stone."},
+          {who: 'rae', text: "Are you all right?"},
+          {who: 'condemned', text: "No. But I will be when it's burning."},
+        ],
+        post: [
+          {who: 'narr', text: "The scaffold burns. The Condemned watches until the last beam falls."},
+          {who: 'condemned', text: "One."},
+          {who: 'rae', text: "How many are there?"},
+          {who: 'condemned', text: "I don't know. I'm going to find out."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'CD-3', title: 'The Rabbit Under the Hood', map: 'outerCamp', enemyFaction: 'frog', mustDeploy: ['condemned'], enemyMods: {},
+        teaser: 'He knows the camp where they hooded him. He knows the warden\'s name.',
+        star: {type: 'bossBy', key: 'condemned', text: 'The Condemned defeats Warden Grubb himself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'The prison camp where the Condemned was hooded. Warden Grubb still runs it. Bring him down and free everyone inside.',
+        prepNote: 'The Condemned must come.',
+        enemies: () => [
+          E('lilyknight',5,3,0,'hold',{boss: true, key: 'grubb', name: 'Warden Grubb', look: 'guard'}),
+          E('reed',5,1,1,'guard'), E('reed',5,6,1,'guard'), E('lily',5,3,3,'guard',{elite: true}), E('lily',5,4,3,'guard'),
+          E('bruiser',5,0,5), E('bruiser',5,7,5), E('blade',5,3,8), E('croaker',4,4,1,'guard'),
+        ],
+        bossTalk: [
+          {who: 'grubb', text: "I know that hood. I put it on you. You were crying."},
+          {who: 'condemned', text: "I remember. You told me to stop, because I didn't have a face any more, so there was nothing to cry with."},
+          {who: 'grubb', text: "And look at you now. Still wearing it."},
+          {who: 'condemned', text: "Because I chose to. That's the difference, Warden."},
+        ],
+        pre: [
+          {scene: 'yard', place: 'The Prison Camp · Side Story'},
+          {who: 'condemned', text: "This is where they did it. The night before. Hood on, so you learn not to be anyone."},
+          {who: 'rae', text: "You don't have to go in first."},
+          {who: 'condemned', text: "Yes, I do. I want him to see me coming."},
+        ],
+        post: [
+          {who: 'narr', text: "The cells are opened. The hoods in the warden's store are carried out and burned, every one."},
+          {who: 'condemned', text: "Two."},
+          {who: 'rae', text: "Two scaffolds."},
+          {who: 'condemned', text: "Two. And one warden who won't hood anyone else. I think that counts for something."},
+          {who: 'condemned', text: "There's a chain in the warden's store. The one they used on me. I'd like to keep it. I know what to do with it."},
+        ],
+        reward: sideReward(2, 'cutchain', 'condemned'),
+      },
+    ]},
+
+  froggle: {camp: 'rae', title: 'The Ledger', about: 'Every rabbit Froggle ever counted is written in the crown\'s ledgers. She means to give the names back.',
+    quests: [
+      {
+        id: 'FG-1', title: 'The Counting House', map: 'tower', enemyFaction: 'frog', mustDeploy: ['froggle'], enemyMods: {},
+        teaser: 'The crown\'s ledgers are kept in the mine\'s counting house.',
+        star: {type: 'bossBy', key: 'froggle', text: 'Froggle defeats the Tallyman herself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'Break into the mine\'s counting house and take the ledgers. The Tallyman guards them from the tower. Froggle must come.',
+        prepNote: 'Froggle must come.',
+        enemies: () => [
+          E('lily',4,3,0,'hold',{boss: true, key: 'tally', name: 'The Tallyman', look: 'guard'}),
+          E('lily',3,1,3), E('lily',3,6,3), E('reed',3,0,5,'guard'), E('reed',3,7,5,'guard'), E('bruiser',3,3,7), E('blade',3,4,8), E('croaker',3,4,1,'guard'),
+        ],
+        bossTalk: [
+          {who: 'tally', text: "Froggle? FROGGLE? You were my best clerk! Your columns always added up!"},
+          {who: 'froggle', text: "That was the trouble with them, Tallyman. They added up to rabbits."},
+        ],
+        pre: [
+          {scene: 'mine', place: 'The Counting House · Side Story'},
+          {who: 'froggle', text: "I worked in that tower for six years. Up there, behind the window, the ledgers. Every rabbit who ever worked these mines."},
+          {who: 'rae', text: "By name?"},
+          {who: 'froggle', text: "By number. Row, seam, cart. That's what I mean to fix."},
+        ],
+        post: [
+          {who: 'narr', text: "Froggle carries the ledgers down from the tower herself. There are a great many of them."},
+          {who: 'froggle', text: "Row nine, seam four. Twelve on the morning roll."},
+          {who: 'rae', text: "What is it?"},
+          {who: 'froggle', text: "The night I dug her out. She's still on the roll, Rae. She's still down there."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'FG-2', title: 'Twelve on the Morning Roll', map: 'lowerSeam', enemyFaction: 'frog', mustDeploy: ['froggle'], enemyMods: {},
+        teaser: 'Row nine, seam four. She\'s still on the roll.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'survive', turns: 5}, maxDeploy: 6,
+        deploy: [[3,6],[4,5],[2,7],[5,7],[3,8],[4,8]],
+        brief: 'Twelve is still working the seam where Froggle once dug her out. Hold the seam until the tunnel behind you is clear. Twelve must not fall.',
+        prepNote: 'Froggle must come. Twelve (blue) must not fall.',
+        allies: () => [E('pebbler',3,4,7,'hold',{key: 'twelve', name: 'Twelve', look: 'workerLop', fur: 'cream', elderly: true, vip: true})],
+        enemies: () => [E('lily',4,3,11), E('bruiser',4,4,11), E('reed',4,2,9,'guard'), E('lily',4,3,1), E('reed',4,5,2,'guard')],
+        reinforce: () => [
+          {turn: 2, units: [E('blade',4,3,0), E('bruiser',4,4,0)]},
+          {turn: 3, units: [E('lily',4,3,11), E('reed',4,4,11,'guard')]},
+          {turn: 4, units: [E('toadknight',4,4,11,'charge',{elite: true})]},
+        ],
+        pre: [
+          {scene: 'mine', place: 'The Lower Seam · Side Story'},
+          {who: 'narr', text: "Deep in the seam, an old rabbit is still swinging a pick. Her ears are grey now. She doesn't look up."},
+          {who: 'froggle', text: "Twelve? It's me. The ledger frog. The one who dug."},
+          {who: 'twelve', text: "…You. They took you away. I thought they'd unstitched you."},
+          {who: 'froggle', text: "Nearly. We're getting you out. Today."},
+          {who: 'republic', text: "Frogs at both ends of the tunnel, Commander!"},
+        ],
+        post: [
+          {who: 'twelve', text: "Out. I'm out. I haven't seen the sky since before you were hatched, I should think."},
+          {who: 'froggle', text: "In the Republic, rabbits choose their names. You don't have to be Twelve any more."},
+          {who: 'twelve', text: "…I'll have to think about it. Nobody's ever asked me before."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'FG-3', title: 'Names Returned', map: 'forestTrail', enemyFaction: 'frog', mustDeploy: ['froggle'], enemyMods: {},
+        teaser: 'The crown wants its ledgers back.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'survive', turns: 4}, maxDeploy: 6,
+        deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14]],
+        brief: 'The crown\'s hunters are after the ledgers. Hold the trail until the carts are safely away.',
+        prepNote: 'Froggle must come.',
+        enemies: () => [E('blade',5,3,3), E('blade',5,6,3), E('reed',5,1,2,'guard'), E('reed',5,8,2,'guard'), E('lily',5,4,5), E('bruiser',5,5,7)],
+        reinforce: () => [{turn: 2, units: [E('lily',5,4,0)]}, {turn: 3, units: [E('toadknight',5,5,0,'charge',{elite: true})]}],
+        twist: {objective: {type: 'rout'}, popup: 'Carts away!', units: [E('lily',5,3,0), E('blade',5,6,0)], talk: [
+          {who: 'republic', text: "The carts are through! The ledgers are safe!"},
+          {who: 'froggle', text: "Then there's nothing left to protect but ourselves. And I'm feeling very protective."},
+          {who: 'rae', text: "Clear the trail. Nobody follows those carts."},
+        ]},
+        pre: [
+          {scene: 'woods', place: 'The Forest Trail · Side Story'},
+          {who: 'froggle', text: "Three carts of paper. The heaviest thing I've ever carried, and it's only names."},
+          {who: 'rae', text: "The crown's hunters are an hour behind."},
+          {who: 'froggle', text: "Then we give the carts an hour."},
+        ],
+        post: [
+          {who: 'froggle', text: "Every one of those pages goes back to the rabbit it belongs to. Or to whoever remembers them."},
+          {who: 'froggle', text: "I kept my old ledger pen, you know. I think it's time it did something useful."},
+        ],
+        reward: sideReward(2, 'quillspear', 'froggle'),
+      },
+    ]},
+
+  patch: {camp: 'rae', title: 'Someone Comes', about: 'A lifetime of being bait, and one corporal finding out what it\'s like when help arrives.',
+    quests: [
+      {
+        id: 'PT-1', title: 'The Ditch', map: 'ravine', enemyFaction: 'frog', mustDeploy: ['patch'], enemyMods: {},
+        teaser: 'A column is pinned on the east road. The same road. The same ditch, near enough.',
+        star: {type: 'allies', text: 'No one in the column falls'},
+        objective: {type: 'rout'}, maxDeploy: 6,
+        deploy: [[4,13],[5,13],[3,12],[6,12],[4,12],[5,12]],
+        brief: 'A Republic column is pinned in a ditch, just like Patch\'s was. This time someone comes. Rout the frogs and keep the column alive.',
+        prepNote: 'Patch must come. The pinned column fights beside you (blue).',
+        allies: () => [
+          E('rfencer',2,4,7,'guard',{key: 'ally', name: 'Bracken'}), E('rarcher',2,5,7,'guard',{key: 'ally', name: 'Gorse'}), E('radept',2,4,8,'guard',{key: 'ally', name: 'Heather'}),
+        ],
+        enemies: () => [
+          E('reed',3,1,2,'guard'), E('reed',3,8,2,'guard'), E('lily',3,4,3), E('bruiser',3,6,4), E('blade',3,1,9), E('lily',3,8,10), E('toadknight',3,5,2,'charge',{elite: true}),
+        ],
+        pre: [
+          {scene: 'woods', place: 'The East Road · Side Story'},
+          {who: 'patch', text: "That's it. That's the ditch. Or its twin. I'd know it with my eye shut."},
+          {who: 'patch', text: "Three days I sat in one like it, waiting. They'll be counting the hours down there."},
+          {who: 'rae', text: "Then let's not make them count many."},
+        ],
+        post: [
+          {who: 'republic', text: "You came. Nobody comes for the columns. That's… that's the whole point of the columns."},
+          {who: 'patch', text: "Not any more, lad. Not any more."},
+          {who: 'patch', thought: true, text: "I said those exact words, once. Now I'm the one saying the other ones."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'PT-2', title: 'Bait, By Choice', map: 'riverWoods', enemyFaction: 'frog', lead: 'patch', ban: ['rae'], enemyMods: {},
+        teaser: 'Patch volunteers to be bait one last time. On his terms.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'survive', turns: 4}, maxDeploy: 4,
+        deploy: [[4,13],[5,13],[3,14],[6,14]],
+        brief: 'Patch leads a small decoy squad across the river, to draw the frog patrol away while Rae\'s army hits their camp. Survive four turns. Patch must not fall.',
+        prepNote: 'Patch leads. Rae is with the main army, raiding the frog camp.',
+        enemies: () => [E('lily',4,3,3), E('lily',4,6,2), E('bruiser',4,5,5), E('blade',4,7,6), E('reed',4,8,4,'guard')],
+        reinforce: () => [{turn: 2, units: [E('blade',4,4,0)]}, {turn: 3, units: [E('toadknight',4,3,0,'charge',{elite: true})]}],
+        pre: [
+          {scene: 'woods', place: 'The River · Side Story'},
+          {who: 'rae', text: "I don't like this, Patch. You've been bait your whole life."},
+          {who: 'patch', text: "Aye. And every time, somebody else decided. This time I'm deciding. And I know exactly when you're coming."},
+          {who: 'patch', text: "Four turns, Commander. Hit the camp, and I'll keep their whole patrol busy chasing one eye."},
+        ],
+        post: [
+          {who: 'narr', text: "Smoke rises over the trees: the frog camp is burning. The patrol stops chasing Patch and runs for home."},
+          {who: 'patch', text: "Ha! Four turns, like I said."},
+          {who: 'patch', text: "Bait's not so bad, when you know someone's on the other end of the line."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'PT-3', title: 'Front of the Line', map: 'ford', enemyFaction: 'frog', mustDeploy: ['patch'], enemyMods: {},
+        teaser: 'There\'s a bridge the frogs hold, two days north. Patch would like to be first over it.',
+        star: {type: 'bossBy', key: 'patch', text: 'Patch defeats the Bridge Captain himself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'Take the ford. The frogs hold both bridges, and their captain holds the fort beyond. Patch leads the charge, and Rae walks next to him.',
+        prepNote: 'Patch must come. Two bridges, both guarded: choke points.',
+        enemies: () => [
+          E('toadknight',5,4,0,'hold',{boss: true, key: 'bridgecap', name: 'Bridge Captain'}),
+          E('lily',5,2,5,'guard'), E('bruiser',5,6,5,'guard'), E('reed',5,1,2,'guard'), E('reed',5,6,2,'guard'), E('blade',5,3,1), E('croaker',4,5,1,'guard'),
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Ford · Side Story'},
+          {who: 'patch', text: "Two bridges. Frogs on both. And a fort behind, with the captain sitting in it like a toad on a lily pad."},
+          {who: 'rae', text: "You're at the front."},
+          {who: 'patch', text: "I'm at the front. And you?"},
+          {who: 'rae', text: "Next to you. Same as I said."},
+        ],
+        post: [
+          {who: 'patch', text: "Well. That's the bridge. And that's… ow. That's a new hole in my ear."},
+          {who: 'rae', text: "Hold still. I'll stitch it."},
+          {who: 'patch', text: "Every stitch I put in myself, that's the rule. …Oh, go on. Just this once."},
+        ],
+        reward: sideReward(2, 'frontaxe', 'patch'),
+      },
+    ]},
+
+  // ======================================== The Friggliarchy ========================================
+  biggle: {camp: 'frog', title: 'Wanting Things', about: 'The King\'s brother isn\'t supposed to want anything. Biggle wants a few things anyway.',
+    quests: [
+      {
+        id: 'BG-1', title: 'A Hundred Times', map: 'outerCamp', enemyFaction: 'rae', mustDeploy: ['biggle'], enemyMods: {},
+        teaser: 'Biggle says the column\'s drill is a disgrace.',
+        star: {type: 'unhurt', text: 'Tiggle Taggle is never hit'},
+        objective: {type: 'survive', turns: 4}, maxDeploy: 6,
+        deploy: [[3,5],[4,5],[2,5],[5,5],[3,3],[4,3]],
+        brief: 'Rebels raid the camp in the middle of Biggle\'s drill. Hold the yard for four turns. Biggle must come.',
+        prepNote: 'Biggle must come. Rebels come from both ends of the camp.',
+        enemies: () => [E('rfencer',3,2,0), E('rfighter',3,5,0), E('rarcher',3,1,1,'guard'), E('rfencer',3,3,11), E('rlancer',3,5,11), E('rarcher',3,6,10,'guard')],
+        reinforce: () => [{turn: 2, units: [E('rfighter',3,1,0)]}, {turn: 3, units: [E('rlancer',3,6,11), E('radept',3,2,11,'guard')]}],
+        pre: [
+          {scene: 'warcamp', place: 'The War Camp · Side Story'},
+          {who: 'biggle', text: "Again! Shields UP, not sideways! A hundred times!"},
+          {who: 'tiggle', text: "Biggle, they've done it two hundred times."},
+          {who: 'biggle', text: "Then they'll do it three hundred. Order doesn't happen by itself, little brother."},
+          {who: 'scout', text: "Rebels! Both gates!"},
+          {who: 'biggle', text: "…Well. Now we'll find out if the drill was a disgrace or not."},
+        ],
+        post: [
+          {who: 'biggle', text: "Shields up. Every one of them. Not one sideways."},
+          {who: 'tiggle', text: "Are you smiling?"},
+          {who: 'biggle', text: "I'm inspecting. It looks similar."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'BG-2', title: 'The Pond', map: 'ford', enemyFaction: 'rae', mustDeploy: ['biggle'], enemyMods: {},
+        teaser: 'There\'s a pond past the ford. Biggle has been sneaking off to it.',
+        star: {type: 'fewer', n: 4, text: 'Win with 4 or fewer deployed (quietly)'},
+        objective: {type: 'rout'}, maxDeploy: 6,
+        deploy: [[4,0],[3,1],[5,1],[2,1],[4,1],[6,1]],
+        brief: 'Rebel scouts have camped on the far bank of Biggle\'s pond, right among the frogspawn. Drive them off without trampling anything. Biggle must come.',
+        prepNote: 'Biggle must come.',
+        enemies: () => [E('rfencer',4,2,6), E('rlancer',4,6,6), E('rarcher',4,1,9,'guard'), E('radept',4,5,9,'guard'), E('rfighter',4,3,8), E('rfencer',4,6,10)],
+        pre: [
+          {scene: 'woods', place: 'The Pond · Side Story'},
+          {who: 'tiggle', text: "Biggle? What are you doing down here?"},
+          {who: 'biggle', text: "Inspecting the river."},
+          {who: 'tiggle', text: "You're looking at frogspawn."},
+          {who: 'biggle', text: "…I'm inspecting the frogspawn. It's a strategic resource."},
+          {who: 'scout', text: "Highness! Rebels camped on the far bank, right in the shallows!"},
+          {who: 'biggle', text: "In the SHALLOWS? On the SPAWN? Right. Nobody move. Nobody except me."},
+        ],
+        post: [
+          {who: 'biggle', text: "Not one egg trampled. Not one."},
+          {who: 'tiggle', text: "You wanted something. You went and got it."},
+          {who: 'biggle', text: "Don't tell the King."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'BG-3', title: 'The Youngest', map: 'ravine', enemyFaction: 'rae', lead: 'biggle', ban: ['tiggle'], enemyMods: {},
+        teaser: 'Tiggle went scouting alone. He hasn\'t come back.',
+        star: {type: 'bossBy', key: 'biggle', text: 'Biggle defeats Captain Burdock himself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[4,0],[3,0],[6,0],[5,1],[4,1],[1,1]],
+        brief: 'Tiggle has been captured by a Republic patrol and is tied up at the bottom of the ravine. Biggle leads the rescue. Defeat Captain Burdock, and keep Tiggle alive.',
+        prepNote: 'Biggle leads. Tiggle is a prisoner (blue) and must not fall.',
+        // the prisoner: tied up in the corner, away from the guards (they need him alive: extra HP and Def)
+        allies: () => [E('prince',4,0,13,'hold',{key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', vip: true, bonus: {mhp: 12, def: 6}})],
+        enemies: () => [
+          E('rfighter',5,6,12,'hold',{boss: true, elite: true, key: 'burdock', name: 'Captain Burdock', look: 'soldier'}),
+          E('rfencer',4,3,8), E('rlancer',4,6,8), E('rarcher',4,7,10,'guard'), E('radept',4,8,11,'guard'), E('rfighter',4,4,6), E('rfencer',4,6,11,'guard'),
+        ],
+        bossTalk: [
+          {who: 'burdock', text: "The King's own brother, come for the little prince. Didn't think you'd come yourself."},
+          {who: 'biggle', text: "Neither did I. Order says I should wait for orders. I'm not waiting."},
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Ravine · Side Story'},
+          {who: 'scout', text: "Commander! The prince went scouting alone at dawn. A rebel patrol has him at the bottom of the ravine."},
+          {who: 'scout', text: "Shall I send to the King for orders?"},
+          {who: 'biggle', text: "…No."},
+          {who: 'biggle', thought: true, text: "Order says wait. I've done what order says my whole life."},
+          {who: 'biggle', text: "Every frog who can hold a pike, with me. Now."},
+        ],
+        post: [
+          {who: 'tiggle', text: "You came. You didn't wait for orders. You never don't wait for orders."},
+          {who: 'biggle', text: "Don't make a fuss. Are you hurt? Weight on the back foot. Let me see."},
+          {who: 'tiggle', text: "Biggle. You wanted something."},
+          {who: 'biggle', text: "I wanted my little brother back. It turns out the kingdom doesn't wobble. Who knew."},
+        ],
+        reward: sideReward(2, 'spawnwatch', 'biggle'),
+      },
+    ]},
+
+  // ---------- Rhubarb: a flashback, years before the war. The last rabbit rebellion in the mines. ----------
+  rhubarb: {camp: 'frog', title: 'Before the Monster', about: 'Years ago, before anyone had heard of Rae: the last rabbit rebellion in the mines, and the overseer who ended it.',
+    quests: [
+      {
+        id: 'RH-1', title: 'Years Ago: The Quota', map: 'lowerSeam', enemyFaction: 'rae', lead: 'rhubarb', flashback: true, enemyMods: {},
+        teaser: 'Rhubarb tells Tiggle about the last time the rabbits stopped digging.',
+        star: {type: 'turns', n: 6, text: 'Restore order by the end of turn VI'},
+        objective: {type: 'rout'}, maxDeploy: 6,
+        deploy: [[3,1],[4,1],[2,1],[5,1],[1,1],[6,1]],
+        brief: 'Years ago. The rabbits of the lower seam have downed picks. Overseer Rhubarb comes to get them digging again.',
+        prepNote: 'A flashback, years before the war: Rhubarb leads, with ordinary soldiers. Nobody else from the story is there.',
+        enemies: () => [
+          E('digger',3,3,7,'charge',{talk: [
+            {who: 'rabbits', text: "We're not digging! Hawthorn says we don't have to dig if we all stop at once!"},
+            {who: 'rhubarb', text: "Does he now, love. And where's Hawthorn? Not down here with you, I notice."},
+          ]}),
+          E('hauler',3,4,7), E('pebbler',3,2,9,'guard'), E('runner',3,6,5), E('digger',3,3,10), E('patcher',3,4,10,'guard'),
+        ],
+        pre: [
+          {scene: 'warcamp', place: 'The War Camp · Now'},
+          {who: 'tiggle', text: "You said there was another rebellion. Before Rae."},
+          {who: 'rhubarb', text: "There's always another one, love. That one was mine."},
+          {card: 'Years Ago', sub: 'The Last Rebellion'},
+          {scene: 'mine', place: 'The Lower Seam · Years Ago'},
+          {who: 'narr', text: "The lower seam is silent. No picks. No carts. Forty rabbits sitting on the rock, arms folded."},
+          {who: 'rhubarb', text: "Well, isn't this cosy. A sit-down. Very nice. Quota's due at sundown, lads, so let's have them picks moving."},
+          {who: 'rabbits', text: "No."},
+          {who: 'rhubarb', text: "…No. Right. Nobody's said that to me in eleven years."},
+        ],
+        post: [
+          {who: 'narr', text: "The picks start again before sundown. Rhubarb counts every cart herself."},
+          {who: 'rhubarb', text: "Hawthorn. That's the name. Everyone says it, and nobody's seen him."},
+          {who: 'rhubarb', text: "Find me his friends. A rabbit with a name has always got friends."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'RH-2', title: 'Years Ago: His Friends', map: 'bunkhouses', enemyFaction: 'rae', lead: 'rhubarb', flashback: true, enemyMods: {},
+        teaser: 'A rabbit with a name has always got friends.',
+        star: {type: 'turns', n: 6, text: 'Win by the end of turn VI'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'Years ago. Hawthorn\'s friends are hiding in the bunkhouses. Round them up before word reaches him.',
+        prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
+        enemies: () => [
+          E('runner',4,3,1,'hold',{boss: true, flees: true, key: 'greyone', name: 'The Grey Rabbit', look: 'workerLop', fur: 'grey'}),
+          E('pebbler',4,1,1,'guard'), E('hauler',4,6,1,'guard'), E('digger',4,3,4), E('runner',4,4,5), E('digger',4,1,8), E('hauler',4,6,8),
+        ],
+        bossTalk: [
+          {who: 'greyone', text: "You'll never find him. And even if you do, he won't be alone. We'll come. All of us."},
+          {who: 'rhubarb', text: "Will you, love? We'll see."},
+        ],
+        pre: [
+          {card: 'Years Ago', sub: 'The Last Rebellion'},
+          {scene: 'quarters', place: 'The Bunkhouses · Years Ago, Night'},
+          {who: 'rhubarb', text: "Lanterns out, lads. They're in the end bunks. Quietly, now."},
+          {who: 'narr', text: "In the dark: whispering. A grey rabbit is giving orders."},
+        ],
+        post: [
+          {who: 'narr', text: "The grey rabbit is gone, over the wall and into the dark."},
+          {who: 'rhubarb', text: "Let her run. She's going for help. And when she brings it, Hawthorn will be waiting for her somewhere."},
+          {who: 'rhubarb', text: "So we'll find out where first. And make sure the help never gets there."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'RH-3', title: 'Years Ago: A Hill Away', map: 'ridge', enemyFaction: 'rae', lead: 'rhubarb', flashback: true, enemyMods: {},
+        teaser: 'Rhubarb has never told anyone about the hill.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,0],[4,0],[3,1],[4,1],[1,1],[5,1]],
+        brief: 'Years ago. Hawthorn waits on the ridge for the help that\'s coming. Reach him before it does.',
+        prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
+        enemies: () => [
+          E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger'}),
+          E('pebbler',5,2,8,'guard'), E('digger',5,5,9,'guard'), E('runner',5,6,7),
+        ],
+        bossTalk: [
+          {who: 'hawthorn', text: "So you're the overseer. The one with the stories."},
+          {who: 'rhubarb', text: "And you're Hawthorn. On your own, love?"},
+          {who: 'hawthorn', text: "Not for long. They're coming. Every rabbit in the seam."},
+          {who: 'rhubarb', text: "They're a hill away. That's the trouble with hills."},
+        ],
+        twist: {on: 'boss', objective: {type: 'rout'}, popup: 'Too late', units: [
+          E('runner',5,1,11), E('pebbler',5,6,11), E('runner',5,4,11,'charge',{flees: true, key: 'greyone', name: 'The Grey Rabbit', look: 'workerLop', fur: 'grey'}),
+        ], talk: [
+          {who: 'narr', text: "Hawthorn falls, alone, at the top of the ridge."},
+          {who: 'narr', text: "And over the next hill, too late by minutes, comes the help: a grey rabbit, and every friend she could find."},
+          {who: 'greyone', text: "HAWTHORN!"},
+          {who: 'rhubarb', text: "Drive them off. All of them. And then, lads, I'm going to tell you a story."},
+        ]},
+        pre: [
+          {card: 'Years Ago', sub: 'The Last Rebellion'},
+          {scene: 'ridge', place: 'The Ridge · Years Ago, Dawn'},
+          {who: 'narr', text: "One rabbit stands on the ridge. He chose his name from the only tree that grew by the mine."},
+          {who: 'rhubarb', text: "Up we go, lads. And quick. There's help on its way to him, and I'd like to be finished before it arrives."},
+        ],
+        post: [
+          {scene: 'warcamp', place: 'The War Camp · Now'},
+          {who: 'rhubarb', text: "That night I told the seam a story. About a rabbit who wanted a name, and turned into a monster for it."},
+          {who: 'rhubarb', text: "I told it every morning for years. It worked a treat. Nobody wanted a name after that."},
+          {who: 'tiggle', text: "That's the story you told about Rae."},
+          {who: 'rhubarb', text: "Same story, love. Different rabbit. I just changed the name."},
+        ],
+        reward: sideReward(2, 'oldstory', 'rhubarb'),
+      },
+    ]},
+
+  executioner: {camp: 'frog', title: 'The Sentence', about: 'The headsman has never asked what a sentence is for. Now the prince has to sign one.',
+    quests: [
+      {
+        id: 'EX-1', title: 'Outlaws', map: 'forestTrail', enemyFaction: 'frog', enemyLine: 'FRAGGLE\'S LOYALISTS RAID', mustDeploy: ['executioner'], yields: true, enemyMods: {},
+        teaser: 'Fraggle\'s old guard are outlaws now, raiding the villages.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[4,0],[5,0],[3,0],[6,0],[4,1],[5,1]],
+        brief: 'Fraggle\'s loyal guard have turned outlaw since the hollow. Bring in their captain, Gloamjaw, for sentence. The Executioner must come.',
+        prepNote: 'The Executioner must come. The outlaws are frogs (grey).',
+        enemies: () => [
+          E('gaxe',3,4,14,'hold',{boss: true, flees: true, elite: true, key: 'gloamjaw', name: 'Gloamjaw', look: 'blackguard'}),
+          E('gpike',3,3,11), E('gpike',3,7,12), E('gblade',3,5,9), E('gscribe',3,2,13,'guard'), E('gaxe',3,6,7), E('gchaplain',3,5,15,'guard'),
+        ],
+        bossTalk: [
+          {who: 'gloamjaw', text: "The prince who killed our lord. Come to finish the job?"},
+          {who: 'tiggle', text: "Come to bring you in. That's all."},
+          {who: 'gloamjaw', text: "To the block, you mean. Your headsman's right there, Highness. Why not save the walk?"},
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Forest Trail · Side Story'},
+          {who: 'executioner', text: "The crown's writ, Highness. Gloamjaw and his band, to be brought in for sentence."},
+          {who: 'tiggle', text: "What did they do?"},
+          {who: 'executioner', text: "Burned two villages. Robbed a third. Followed orders, before that."},
+          {who: 'tiggle', text: "Fraggle's orders."},
+          {who: 'executioner', text: "The writ doesn't say. Writs never do."},
+        ],
+        post: [
+          {who: 'gloamjaw', text: "Fine. I yield. Take us to your block."},
+          {who: 'executioner', text: "You'll be sentenced in a week. Highness, the writ will need a signature."},
+          {who: 'tiggle', thought: true, text: "If you sign it, come and watch."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'EX-2', title: 'The Block Yard', map: 'blockYard', enemyFaction: 'rae', mustDeploy: ['executioner'], enemyMods: {},
+        teaser: 'The rabbits are coming for the scaffold. The hooded one, most likely.',
+        star: {type: 'bossBy', key: 'executioner', text: 'The Executioner drives off the Condemned himself'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,1],[4,1],[2,1],[5,1],[3,2],[4,2]],
+        brief: 'Rebels have come to burn the mine camp\'s scaffold, led by the hooded rabbit who once walked away from it. Defend the yard. The Executioner must come.',
+        prepNote: 'The Executioner must come.',
+        enemies: () => [
+          E('runner',4,4,10,'charge',{boss: true, flees: true, key: 'condemned', name: 'The Condemned', look: 'condemned'}),
+          E('rfencer',4,2,9), E('rfighter',4,5,9), E('rarcher',4,3,10,'guard'), E('rlancer',4,1,7), E('rfencer',4,6,7), E('radept',4,4,11,'guard'),
+        ],
+        bossTalk: [
+          {who: 'condemned', text: "You. You were holding the axe that morning."},
+          {who: 'executioner', text: "I was. I've been wondering, since. What did they say you'd done?"},
+          {who: 'condemned', text: "…They never told me."},
+          {who: 'executioner', text: "No. They never told me either."},
+        ],
+        pre: [
+          {scene: 'block', place: 'The Block Yard · Side Story'},
+          {who: 'executioner', text: "Hooded rabbits at the gate, Highness. I believe one of them is mine. The one that got away."},
+          {who: 'tiggle', text: "Do you want him back?"},
+          {who: 'executioner', text: "I want to ask him something. I'd have to catch him first."},
+        ],
+        post: [
+          {who: 'executioner', text: "He got away again. That's twice."},
+          {who: 'tiggle', text: "You let him."},
+          {who: 'executioner', text: "…I asked him what he'd done. He didn't know. Neither did I. It's hard to swing an axe at a question."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'EX-3', title: 'Sign It and Watch', map: 'riverWoods', enemyFaction: 'frog', enemyLine: 'THE OUTLAWS BREAK FOR THE RIVER', mustDeploy: ['executioner'], yields: true, enemyMods: {},
+        teaser: 'The night before the sentence, the outlaws break out.',
+        star: {type: 'bossBy', key: 'tiggle', text: '{lord} brings in Gloamjaw himself'},
+        objective: {type: 'boss', limit: 7}, maxDeploy: 6,
+        deploy: [[4,13],[5,13],[3,14],[6,14],[4,14],[5,14]],
+        limitFail: 'Gloamjaw got across the river and away.',
+        brief: 'The outlaws have broken out and are making for the river. Catch Gloamjaw before he crosses, by the end of turn VII. The Executioner must come.',
+        prepNote: 'The Executioner must come. Catch Gloamjaw within seven turns.',
+        enemies: () => [
+          E('gaxe',5,4,2,'hold',{boss: true, flees: true, elite: true, key: 'gloamjaw', name: 'Gloamjaw', look: 'blackguard'}),
+          E('gblade',4,6,9), E('gaxe',4,3,10), E('gpike',4,7,8), E('gscribe',4,8,5,'guard'), E('gpike',4,6,4,'guard',{elite: true}), E('gchaplain',4,5,1,'guard'),
+        ],
+        bossTalk: [
+          {who: 'gloamjaw', text: "We were only ever doing what we were told! Fraggle said burn, we burned!"},
+          {who: 'tiggle', text: "I know. That's what I can't get past."},
+        ],
+        pre: [
+          {scene: 'warcamp', place: 'The War Camp · Night'},
+          {who: 'tiggle', text: "The writ's on my table. I've been looking at it for an hour."},
+          {who: 'executioner', text: "Highness. The outlaws have broken out. They're making for the river."},
+          {who: 'tiggle', text: "…Then I'll bring them back myself. And then I'll decide."},
+        ],
+        post: [
+          {who: 'gloamjaw', text: "Go on, then. Sign it."},
+          {who: 'tiggle', text: "No. You'll rebuild the villages you burned. Every one. Stone by stone, with the rabbits watching."},
+          {who: 'gloamjaw', text: "…That's worse than the block."},
+          {who: 'tiggle', text: "Then it'll take longer. Good."},
+          {who: 'executioner', text: "No sentence for me to carry, then."},
+          {who: 'tiggle', text: "No. You can have the afternoon off."},
+        ],
+        reward: sideReward(2, 'unsignedaxe', 'executioner'),
+      },
+    ]},
+
+  // ---------- Fraggle Jr.: a flashback, years ago in the black frog's woods. ----------
+  fragglejr: {camp: 'frog', title: 'Worth', about: 'Years ago, in the black frog\'s woods: a father who tested his son until there was nothing soft left.',
+    quests: [
+      {
+        id: 'FJ-1', title: 'Years Ago: Until Sundown', map: 'hollow', enemyFaction: 'frog', enemyLine: 'FATHER\'S GUARD', lead: 'fragglejr', flashback: true, enemyMods: {},
+        teaser: 'The first test was the hollow. Alone. Until sundown.',
+        star: {type: 'unhurt', text: 'Fraggle Jr. is never hit'},
+        objective: {type: 'survive', turns: 4}, maxDeploy: 1,
+        deploy: [[4,6]],
+        brief: 'Years ago. Fraggle Friggle leaves his son alone in the hollow, and sets his own guard on him. Survive until sundown.',
+        prepNote: 'A flashback, years ago: Fraggle Jr. fights alone. His father\'s guard are frogs (grey).',
+        enemies: () => [E('gblade',2,0,2), E('gpike',2,9,4), E('gaxe',2,2,10)],
+        reinforce: () => [{turn: 2, units: [E('gblade',2,3,0)]}, {turn: 3, units: [E('gscribe',2,6,0,'guard')]}],
+        pre: [
+          {scene: 'warcamp', place: 'The War Camp · Now'},
+          {who: 'fragglejr', text: "You asked about my father. Most frogs ask about the end. You're the first to ask about the rest."},
+          {card: 'Years Ago', sub: 'Worth'},
+          {scene: 'woods', place: 'The Hollow · Years Ago'},
+          {who: 'fraggle', text: "Here's the game, little one! You stay in the hollow until sundown. My guard try to drag you out. Ha!"},
+          {who: 'fragglejr', text: "And if they drag me out?"},
+          {who: 'fraggle', text: "Then you're not worth the coat! Off you go! Don't cry, it makes them faster!"},
+        ],
+        post: [
+          {who: 'narr', text: "The sun goes down. The guard stop. The small frog in the hollow is still standing."},
+          {who: 'fraggle', text: "Huh. Still there. Didn't think you'd manage it. Don't expect a prize."},
+          {who: 'fragglejr', thought: true, text: "I didn't. I learned something better than a prize: nobody was coming. So I stopped expecting anyone to."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'FJ-2', title: 'Years Ago: The Champion', map: 'thornHill', enemyFaction: 'frog', enemyLine: 'GRISTLE\'S GUARD', lead: 'fragglejr', flashback: true, enemyMods: {},
+        teaser: 'His father had a champion. Fraggle Jr. was nine.',
+        star: {type: 'bossBy', key: 'fragglejr', text: 'Fraggle Jr. defeats Gristle himself'},
+        objective: {type: 'boss'}, maxDeploy: 4,
+        deploy: [[4,15],[5,15],[3,14],[6,14]],
+        brief: 'Years ago. To prove he\'s worth his name, Fraggle Jr. must take the hill from his father\'s champion, Gristle, with only three soldiers.',
+        prepNote: 'A flashback: Fraggle Jr. leads, with three ordinary soldiers.',
+        enemies: () => [
+          E('gaxe',4,4,0,'hold',{boss: true, elite: true, key: 'gristle', name: 'Gristle', look: 'blackguard'}),
+          E('gpike',3,3,3,'guard'), E('gpike',3,6,3,'guard'), E('gscribe',3,2,1,'guard'), E('gblade',3,4,6), E('gaxe',3,5,9), E('gchaplain',3,5,1,'guard'),
+        ],
+        bossTalk: [
+          {who: 'gristle', text: "Your father says go easy. He was laughing when he said it."},
+          {who: 'fragglejr', text: "Then don't."},
+        ],
+        pre: [
+          {card: 'Years Ago', sub: 'Worth'},
+          {scene: 'woods', place: 'The Thorn Hill · Years Ago'},
+          {who: 'fraggle', text: "Gristle has the hill. Take it off him, and you can keep your name. Lose, and you're just 'the boy'."},
+          {who: 'fragglejr', text: "Gristle is twice my size."},
+          {who: 'fraggle', text: "Then you'll have to be twice as clever! Ha! I've never managed it!"},
+        ],
+        post: [
+          {who: 'gristle', text: "…The boy took the hill. My lord? The boy took the hill."},
+          {who: 'fraggle', text: "I can SEE that. Stop saying it."},
+          {who: 'fragglejr', thought: true, text: "He was angry. I'd won, and he was angry. That was the day I understood him."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'FJ-3', title: 'Years Ago: Nobody Comes', map: 'riverWoods', enemyFaction: 'frog', enemyLine: 'THE RAIDERS ATTACK', lead: 'fragglejr', flashback: true, enemyMods: {},
+        teaser: 'He sent his son to the river, to see if he\'d call for help.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'survive', turns: 4}, maxDeploy: 5,
+        deploy: [[4,13],[5,13],[3,14],[6,14],[4,14]],
+        brief: 'Years ago. Fraggle Friggle sends his son to hold the river against raiders, with orders to call if he needs help. Hold for four turns.',
+        prepNote: 'A flashback: Fraggle Jr. leads, with ordinary soldiers.',
+        enemies: () => [E('gblade',5,3,3), E('gaxe',5,6,2), E('gpike',5,5,5), E('gscribe',5,8,4,'guard'), E('gblade',5,7,6)],
+        reinforce: () => [{turn: 2, units: [E('gaxe',5,4,0)]}, {turn: 3, units: [E('gpike',5,3,0,'charge',{elite: true})]}],
+        twist: {objective: {type: 'boss'}, popup: 'Father', units: [
+          E('marshlord',6,4,1,'charge',{boss: true, flees: true, key: 'fraggle', name: 'Fraggle Friggle', look: 'fraggle'}), E('gchaplain',5,6,0,'guard'),
+        ], talk: [
+          {who: 'narr', text: "The raiders pull off their masks. They're the black frog's own guard. And behind them, laughing, the black frog himself."},
+          {who: 'fraggle', text: "You didn't call for help! Not once! I'd have so enjoyed refusing!"},
+          {who: 'fragglejr', text: "You were never going to send any."},
+          {who: 'fraggle', text: "Of course not! Now let's see what you're really worth, boy!"},
+        ]},
+        pre: [
+          {card: 'Years Ago', sub: 'Worth'},
+          {scene: 'woods', place: 'The River · Years Ago'},
+          {who: 'fraggle', text: "Raiders on the river! Hold the bank, boy. And if you need help, just shout. Loud as you like."},
+          {who: 'fragglejr', thought: true, text: "He was smiling. He only smiles like that when he's set a trap."},
+        ],
+        post: [
+          {who: 'narr', text: "Fraggle Friggle crashes away into the trees, shrieking, his cleaver left behind in the mud."},
+          {who: 'fragglejr', text: "He shouted the whole way. He always shouts."},
+          {who: 'fragglejr', thought: true, text: "That was when I knew. A frog who has to shout is a frog who isn't sure he'll be obeyed. And he was never sure of anything."},
+          {scene: 'warcamp', place: 'The War Camp · Now'},
+          {who: 'fragglejr', text: "I kept the cleaver. He never asked for it back. I think he hoped I'd forget I had it."},
+        ],
+        reward: sideReward(2, 'provencleaver', 'fragglejr'),
+      },
+    ]},
+});
 
 // Each set's quests go on its route's side story list, in the order they open.
 for (const [key, set] of Object.entries(SIDE_SETS)){
@@ -4458,6 +5394,7 @@ function battleUnit(rec, teamId){
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
 }
 function enemyUnit(sp, faction, teamId = 'e'){
+  faction = sp.faction || faction;   // a spawn can belong to another side (e.g. rabbit bandits among frog soldiers)
   const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls,
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
@@ -4669,7 +5606,7 @@ async function strike(a, d, f){
   if (d.hp <= 0){
     if (d.boss && !B.bossBy) B.bossBy = a.key;   // who brought the boss down (for bonus stars)
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
-      stamp(B.ch.spar ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
+      stamp(B.ch.spar || B.ch.yields ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
       await wait(500);
     } else if (scene){
@@ -4677,7 +5614,7 @@ async function strike(a, d, f){
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
-    if (d.flees) popup(d, B.ch.spar ? 'Yields!' : 'Fled!', '#ecc673');
+    if (d.flees) popup(d, B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
     await tween(380, t => { d.alpha = 1 - t; }); d.dead = true;
     if (d.team === 'e') B.kills++;
   }
@@ -5829,7 +6766,8 @@ function release(btn){
 // ---------- Battle preparation ----------
 // A stage can name its own leader (lead: key) and keep characters out (ban: [keys]).
 const isLead = (ch, r) => ch.lead ? r.key === ch.lead : r.lord;
-const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key);
+// flashback: set years ago, so only the leader and ordinary soldiers (no other named characters) can deploy
+const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key) && (!ch.flashback || r.key === 'recruit' || r.key === ch.lead);
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
   const ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
