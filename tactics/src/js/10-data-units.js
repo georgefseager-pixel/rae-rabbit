@@ -247,6 +247,7 @@ const ART_CROP = {
   black:   {panel: ['230% auto', '42% 9%'], talk: ['165% auto', '42% 7%']},   // Fraggle's Black Guard, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
+  tiggleformal: {panel: ['200% auto', '50% 2%'], talk: ['150% auto', '50% 1%']}, // Formal Wear (log-in reward)
   raecasual: {panel: ['215% auto', '50% 2%'], talk: ['160% auto', '50% 1%']},   // Casual Wear (log-in reward)
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One

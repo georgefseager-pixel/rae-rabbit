@@ -161,8 +161,10 @@ experience rules) run roughly a level above it by late Chapter Two.
 ## Economy
 
 Pull currency (Whispers / Writs) comes only from clearing stages, bonus stars, side stories, the daily log-in, or
-trading 400 money for one. Daily log-in (`66-login.js`): once per calendar day, a 7-day cycle giving both stories
-2, 2, 3, 2, 3, 3, then 5 + Rae's Casual Wear (look-only costume) on day 7 (10 instead once owned): 18 per side per week. Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), never pull currency: 100 pulls
+trading 400 money for one. Daily log-in (`66-login.js`): every new calendar day counts as one
+more log-in (not necessarily consecutive). Log-ins give both stories 2, 2, 3, 2, 3, 3 and, every seventh, a milestone
+with a reveal: log-in 7 is Rae's Casual Wear (+5 each), log-in 14 Tiggle's Formal Wear (+5 each); after that the
+second week repeats with 10 each on the seventh. The campaign screen's "Debug: New Day" makes it claimable again. Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), never pull currency: 100 pulls
 released in full return about 2,900 money, about 7 pulls' worth when traded, so there is no loop.
 
 ## Side stories written so far

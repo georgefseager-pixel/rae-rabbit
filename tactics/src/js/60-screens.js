@@ -120,7 +120,7 @@ function renderHub(){
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
-    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button></div>
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button></div>
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
@@ -380,6 +380,7 @@ document.addEventListener('click', e => {
   else if (d.pull) runPull(SAVE.current, +d.pull);
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
+  else if ('newday' in d) debugNewDay();
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
   else if ('begin' in d) playChapter();
