@@ -13,6 +13,12 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  // the day-7 log-in placeholders became Rae's Casual Wear (Tiggle's was dropped)
+  for (const c of Object.values(s.camps)) for (const r of c.roster || []){
+    if (!r.attires) continue;
+    r.attires = [...new Set(r.attires.map(id => id === 'raeWeek' ? 'raeCasual' : id).filter(id => id !== 'tiggleWeek'))];
+    if (r.attire === 'raeWeek') r.attire = 'raeCasual'; if (r.attire === 'tiggleWeek') r.attire = null;
+  }
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
   if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying
