@@ -37,7 +37,8 @@ const GACHA_ARMY = {
     // Other companies a banner can draw its soldiers from (troops: '<name>'). Republic soldiers choose their names.
     // (★★ Republic veterans wear the plumed helmet)
     troops: {republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
-      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy', 'Yarrow', 'Burdock',
+      // the ten ★ soldiers take the first ten names, the five ★★ veterans the last five
+      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy',
               'Comfrey', 'Mallow', 'Teasel', 'Vetch', 'Woad']}},
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],

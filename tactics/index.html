@@ -227,13 +227,13 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .fswitch button.on.f-frog{background:linear-gradient(180deg,#3f6a28,#243f16);color:#e2f2b8}
 
 /* faction hero */
-.hero{position:relative;display:grid;grid-template-columns:132px 1fr;gap:12px;align-items:end;border-radius:14px;padding:14px 14px 14px 6px;min-height:178px;overflow:hidden;
+.hero{position:relative;display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;align-items:end;border-radius:14px;padding:14px 14px 14px 6px;min-height:178px;overflow:hidden;
   outline:1.5px dashed var(--thread);outline-offset:-7px;box-shadow:0 14px 34px rgba(0,0,0,.5)}
 .hero.f-rae{background:radial-gradient(ellipse at 20% 30%, rgba(200,50,40,.45), transparent 65%), linear-gradient(180deg,var(--navy2),var(--navy))}
 .hero.f-frog{background:radial-gradient(ellipse at 20% 30%, rgba(120,170,60,.4), transparent 65%), linear-gradient(180deg,#2f4320,#16200e)}
 .himg{height:164px;align-self:end;display:flex;align-items:flex-end;justify-content:center;min-width:0}
 .himg img{display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 10px 12px rgba(0,0,0,.6))}
-.hero h2{font-family:var(--stencil);font-size:28px;line-height:1;margin:0;letter-spacing:.03em;text-wrap:balance}
+.hero h2{font-family:var(--stencil);font-size:clamp(21px,7.6vw,28px);overflow-wrap:anywhere;line-height:1;margin:0;letter-spacing:.03em;text-wrap:balance}
 .hero .tagl{font-family:var(--fell-i);font-style:italic;font-size:17px;color:var(--brass-hi);margin:6px 0 10px}
 .hero .hstats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin-bottom:10px}
 .hero .hstats b{color:var(--cream);font-weight:500}
@@ -660,6 +660,9 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   padding:8px 12px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.5)}
 .bdone b{display:block;font-family:var(--stencil);font-weight:400;letter-spacing:.14em;font-size:24px;color:var(--brass-hi)}
 .bdone span{font-size:13px;color:var(--cream)}
+
+/* very narrow phones: a slimmer portrait column so the title and buttons fit */
+@media (max-width:350px){ .hero{grid-template-columns:104px minmax(0,1fr);gap:8px} .hero .btn{padding-left:8px;padding-right:8px} }
 
 </style>
 
@@ -3312,7 +3315,8 @@ const GACHA_ARMY = {
     // Other companies a banner can draw its soldiers from (troops: '<name>'). Republic soldiers choose their names.
     // (★★ Republic veterans wear the plumed helmet)
     troops: {republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
-      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy', 'Yarrow', 'Burdock',
+      // the ten ★ soldiers take the first ten names, the five ★★ veterans the last five
+      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy',
               'Comfrey', 'Mallow', 'Teasel', 'Vetch', 'Woad']}},
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
