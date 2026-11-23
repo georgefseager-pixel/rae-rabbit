@@ -1,5 +1,6 @@
 // ================= Recruitment banners (gacha) =================
-// Each army recruits through its own banners with its own pull currency.
+// Each army recruits through its own banners with its own pull currency. Until the route's Chapter Two is finished
+// only the first (standard) banner is open; every other banner waits for R2-4 / F2-4 (`after`).
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
 //   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
@@ -45,7 +46,7 @@ const GACHA_ARMY = {
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
       {id: 'rae-froggle', name: 'The Republic Stands', kind: 'featured', featured: ['froggle', 'patch'], after: 'R2-4', bg: 'republic', troops: 'republic',
        blurb: 'Out of hiding at last: the frog who built the Republic and gave it away, and the one-eyed corporal who always marches at the front. The ★ soldiers who answer are trained troops of the Republic, and the ★★ are its helmeted veterans.'},
-      {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R2-1', bg: 'mine', troops: 'republic',
+      {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R2-4', bg: 'mine', troops: 'republic',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often, and the ★ soldiers who answer are trained troops of the Republic.'},
     ],
   },
@@ -65,9 +66,9 @@ const GACHA_ARMY = {
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
       {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], attires: ['rose'], after: 'F2-4', bg: 'woods', troops: 'fraggle',
        blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard. Biggle\'s Rose Knight attire is featured too.'},
-      {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
+      {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F2-4', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
-      {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',
+      {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F2-4', bg: 'woods',
        blurb: 'Placeholder banner. Captain Glimmer answers more often.'},
     ],
   },

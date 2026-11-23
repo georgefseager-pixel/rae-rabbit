@@ -171,8 +171,8 @@ let duelSides = {};
 const sideOf = u => duelSides[u.id] || (sideOfTeam(u) === 'p' ? 'L' : 'R');
 function sprite(u, side){
   // Battle poses face right; flip them when the unit stands on the right as the defender.
-  const art = artFor(u, 'battle');
-  if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}>`;
+  const art = artFor(u, 'battle'), sc = BATTLE_SIZE[artResolve(u, 'battle')] || 1;
+  if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}${sc !== 1 ? ` style="height:calc(var(--sprH, 100%)*${sc})"` : ''}>`;
   return `<img alt="" class="plush" src="${plushPortrait(u.look)}">`;
 }
 function fillFighter(side, u, f){

@@ -223,6 +223,10 @@ const STAGE_SIZE = {
   biggle: {h: 1.12, drop: .035},                  // the older brother stands taller than Tiggle; drop lines his planted foot up with Tiggle's
 };
 
+// Battle poses are all drawn at the same height in fights; these are drawn bigger (per art key), e.g. a rider whose
+// pose includes the whole horse.
+const BATTLE_SIZE = {bigglerose: 1.3};
+
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur

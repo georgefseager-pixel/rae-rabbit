@@ -145,6 +145,7 @@ experience rules) run roughly a level above it by late Chapter Two.
 | What | Opens |
 |---|---|
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
+| Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |
