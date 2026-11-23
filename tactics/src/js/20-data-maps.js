@@ -189,6 +189,25 @@ const MAPS = {
     '.F......F.',
     'FF.F..F.FF',
   ]},
+  // Side story (Flopsy's Day Out): the meadow the frogs tore up to build their barricade
+  flowerField: {theme: 'meadow', names: {'.': ['Trampled Field', 'What the frogs left of the meadow.'], 'F': ['Last Flowers', 'The patches the frogs missed. Good cover.'],
+                'X': ['Barricade', 'Torn-up flowerbeds, stems and all, piled into a wall. Nothing gets through.'], 'M': ['Heaped Earth', 'Dug out for the barricade. Hard going, harder to hit.'],
+                'T': ['Frog Stockade', 'Restores 20% HP at the start of each phase.']}, rows: [
+    'FF.M..M.FF',
+    'F...T....F',
+    '..M....M..',
+    '.F......F.',
+    '..........',
+    'XXX.XX.XXX',
+    '.M......M.',
+    '..........',
+    '.F..M...F.',
+    '..........',
+    'F...FF...F',
+    '..........',
+    '.F......F.',
+    'FF......FF',
+  ]},
   // Chapter Two: the black frog's hill, his lookout at the top
   thornHill: {theme: 'meadow', names: {'F': ['Thorn Thicket', 'Felt thorns. Good cover, if you don\'t mind the prickles.'], 'M': ['Hill Rocks', 'Stuffed boulders. Hard going, harder to hit.'],
               'T': ['Fraggle\'s Lookout', 'A frog lookout on the hilltop. Restores 20% HP at the start of each phase.']}, rows: [

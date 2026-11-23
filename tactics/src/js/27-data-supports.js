@@ -8,10 +8,11 @@
 //   C / B / A: the scene for that rank, as dialogue lines (see 25-data-campaign.js). Leave a rank out to get
 //              a placeholder scene. Anyone unique without an entry here gets placeholder scenes too.
 const SUPPORT = {
-  ranks: ['C', 'B', 'A'],
-  cost: {C: 300, B: 600, A: 1000},
+  // S: the final rank, for characters with side stories (28-data-sides.js): open once all three are cleared
+  ranks: ['C', 'B', 'A', 'S'],
+  cost: {C: 300, B: 600, A: 1000, S: 1500},
   // what each rank gives the partner, permanently (HP, Atk, Def, Spd, Skl)
-  boost: {C: {mhp: 1, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 2, atk: 1, def: 1, spd: 1}},
+  boost: {C: {mhp: 1, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 2, atk: 1, def: 1, spd: 1}, S: {mhp: 3, atk: 2, def: 1, spd: 1, skl: 2}},
   // after rank A: Train, +1 to two stats (+2 if HP), weighted by the unit's growths. The price rises each time.
   train: {cost: 500, step: 250, max: 5},
   opensAfter: {rae: 'R2-1', frog: 'F2-1'},   // the first stage of each army's Chapter Two
@@ -23,7 +24,7 @@ const SUPPORT = {
 const sL = (who, text) => ({who, text}), sT = (who, text) => ({who, text, thought: true}), sN = text => ({who: 'narr', text});
 const SUPPORTS = {
   rae: {
-    sister: {kind: 'family', about: 'Two sisters, and everything they never had time to say in the mines.',
+    sister: {kind: 'family', about: 'Two sisters, and everything they never had time to say in the mines. And one very long day out.',
       C: [
         sN("By the fire, Flopsy Flora is sewing. Her tongue sticks out of the corner of her mouth."),
         sL('rae', "What are you making?"),
@@ -34,6 +35,9 @@ const SUPPORTS = {
         sL('sister', "A small one! Nobody will see it unless they're very close. And if a frog's that close, you've got bigger problems."),
         sL('rae', "…Thank you, Flopsy."),
         sL('sister', "Flopsy FLORA. You have to say all of it. That's the whole point of choosing it."),
+        sL('sister', "There's a whole meadow of them past the stream, you know. Every colour. One day I'm going to pick them all."),
+        sL('rae', "Not on your own, you're not."),
+        sT('sister', "We'll see about that."),
       ],
       B: [
         sN("Late. The fire is low. Flopsy Flora sits up, wide awake."),
@@ -47,6 +51,7 @@ const SUPPORTS = {
         sL('rae', "All the time. I'm just better at hiding it. Big sisters get practice."),
         sL('sister', "…Then we'll keep watch on each other. You wake me if you dream it, and I'll wake you."),
         sL('rae', "Deal."),
+        sL('sister', "I'm not scared of frogs, though. Just bells. Frogs are mostly mouth."),
       ],
       A: [
         sL('sister', "Rae. I need to say something, and you have to listen all the way to the end without saying 'little one'."),
@@ -60,9 +65,25 @@ const SUPPORTS = {
         sL('sister', "Next to! Yes!"),
         sL('sister', "Oh, and hold still, your ear seam's coming loose. …There. Now we've both got a stitch in the same place. We match."),
         sL('rae', "We always matched, Flopsy Flora."),
+        sT('sister', "Next to. She said next to. One day I'll show her I can lead, too."),
+      ],
+      // after all three of Flopsy's Day Out
+      S: [
+        sN("Rae finds Flopsy Flora by the fire, mud to the knees, sewing something very small."),
+        sL('rae', "Three times. You went out without me three times. Willow told me everything."),
+        sL('sister', "And I came back three times. With everyone. Did Willow tell you that bit?"),
+        sL('rae', "…She did. She also told me a frog sergeant called you 'the little one with the needle' and then ran away screaming."),
+        sL('sister', "He wasn't screaming. He was yelling. There's a difference. …Mostly."),
+        sL('sister', "They pulled up the whole meadow, Rae. Every colour, just to build a wall. I found one flower left under the barricade."),
+        sN("She holds out the coat. Next to the little flower she sewed on the elbow, there's a second one now."),
+        sL('sister', "That one's from the field. So they didn't get all of them."),
+        sL('rae', "…You were scary out there. Willow said so, and Willow doesn't say things."),
+        sL('sister', "I learned from the best. And she's very scary."),
+        sL('rae', "Next to me, then. And sometimes in front. When it's your turn."),
+        sL('sister', "In front! You said it! I'm sewing that on a flag too!"),
       ],
     },
-    willow: {kind: 'learn', about: 'Willow teaches Rae to see a battlefield, and what being a hero really costs.',
+    willow: {kind: 'learn', about: 'Willow teaches Rae to see a battlefield, and what being a hero really costs. Her lessons continue on the practice field.',
       C: [
         sL('willow', "Sit. Tell me what you see."),
         sL('rae', "Trees. A hill. Some rocks. Is this a test?"),
@@ -75,6 +96,7 @@ const SUPPORTS = {
         sL('willow', "In the mines you had nothing to lose. Now you have an army. Again. What do you see?"),
         sL('rae', "…A place to make a stand. And a place to make them pay for coming at us."),
         sL('willow', "Better. Much better."),
+        sL('willow', "But words only go so far. Meet me on the practice field at first light. I'll show you what the ground can do, from the other side of it."),
       ],
       B: [
         sL('rae', "Willow. Why 'Willow'? You said you chose it."),
@@ -86,6 +108,7 @@ const SUPPORTS = {
         sT('rae', "Old Rabbit never chose a name. He never got to."),
         sL('rae', "…Then we make it worth paying for."),
         sL('willow', "Yes. That's the whole of it."),
+        sL('willow', "A willow bends to the storm. A good soldier bends to whatever's in front of them. Tomorrow, on the practice field: swords, axes and spears."),
       ],
       A: [
         sL('rae', "You've done this before. Found someone. A hero."),
@@ -98,6 +121,22 @@ const SUPPORTS = {
         sL('willow', "You have that. I saw it at the river. They didn't follow you because you told them to. They followed because they wanted to stand where you were standing."),
         sL('rae', "Then I'll make sure they're never standing there alone. Me included."),
         sL('willow', "…Good. Don't you dare make me wrong twice."),
+        sL('willow', "One more lesson, then. The last one. Tomorrow I'll show you exactly what happens to anyone who stands alone."),
+      ],
+      // after all three of Willow's Lessons
+      S: [
+        sN("The practice field, at dusk. Willow is packing away the wooden swords."),
+        sL('willow', "That's the last of them. No more lessons."),
+        sL('rae', "You're stopping? I've only just stopped losing."),
+        sL('willow', "You stopped losing on the first day. You just didn't notice, because you were busy watching everyone else."),
+        sL('willow', "That's the thing I couldn't teach him, you know. The one we say quietly."),
+        sL('rae', "…Will you tell me his name?"),
+        sN("A long pause."),
+        sL('willow', "Hawthorn. His name was Hawthorn. He chose it because it was the only tree that would grow by the mine."),
+        sL('willow', "He beat me on the practice field every single time. And he died on his own, a hill away from help."),
+        sL('willow', "You beat me today by never once letting anyone stand alone. That's the lesson. It was always the only one."),
+        sL('rae', "Then no more lessons. From now on we plan together, Willow. Every battle."),
+        sL('willow', "Together. Yes. …Hawthorn would have liked you. He'd have hated losing to you, but he'd have liked you."),
       ],
     },
     brigand: {kind: 'friend', about: 'A bandit who stopped running, and the rebel who gave him a reason to.',

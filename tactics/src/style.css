@@ -664,3 +664,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .hbadge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--red);color:var(--cream);font-family:var(--fell);font-size:13px;line-height:20px;margin-left:4px}
 .chip.under{background:rgba(200,70,50,.25);color:#ffb9a6}
 .starrow.side{border-style:solid}
+/* Side Stories: one header per character's set */
+.sset{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center;margin:18px 0 6px}
+.sset .por{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(236,198,115,.5)}
+.sset h3{font-family:var(--fell);font-weight:400;font-size:19px;margin:0 0 2px;color:var(--cream)}
+.sset .meta{margin:0 0 6px}

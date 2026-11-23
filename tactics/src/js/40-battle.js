@@ -74,6 +74,8 @@ function runBattle(campKey, ch, records, opts = {}){
   const starting = ch.solo ? records.filter(r => r.lord) : records;
   B.reserve = ch.solo ? records.filter(r => !r.lord) : [];
   starting.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
+  // lead: someone else leads this battle (it's lost if they fall), e.g. Flopsy Flora's side stories
+  if (ch.lead) for (const u of units) if (u.team === 'p') u.lord = u.key === ch.lead;
   for (const sp of ch.allies ? ch.allies(SAVE.flags) : []){ const u = enemyUnit(sp, B.pf, 'a'); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   fortOwner = new Map();
@@ -249,7 +251,7 @@ async function strike(a, d, f){
   if (d.hp <= 0){
     if (d.boss && !B.bossBy) B.bossBy = a.key;   // who brought the boss down (for bonus stars)
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
-      stamp('FLEES', '#ecc673'); Sfx.play('flee');
+      stamp(B.ch.spar ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
       await wait(500);
     } else if (scene){
@@ -257,7 +259,7 @@ async function strike(a, d, f){
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
-    if (d.flees) popup(d, 'Fled!', '#ecc673');
+    if (d.flees) popup(d, B.ch.spar ? 'Yields!' : 'Fled!', '#ecc673');
     await tween(380, t => { d.alpha = 1 - t; }); d.dead = true;
     if (d.team === 'e') B.kills++;
   }

@@ -64,8 +64,18 @@ function nodeHTML(ck, ch, i, st = stageState(ck, i)){
 }
 // ---------- Side Stories ----------
 let hubTab = 'main';
+// Each unique character's set of three (28-data-sides.js): all open once the route's Chapter Two is over,
+// one more with each support rank (C, B, A). The character has to be in the army.
+function sideLock(ck, s){
+  const st = SAVE.camps[ck];
+  if (SAVE.debugUnlock) return null;
+  if (!isCleared(SIDE_OPENS[ck])) return `Opens after ${chapterRef(SIDE_OPENS[ck])}`;
+  if (!st.roster.some(r => r.key === s.char && !r.departed)) return `${CHARACTERS[s.char].name} isn't in the army`;
+  if (supportRank(ck, s.char) < s.rank) return `Opens with Support ${SUPPORT.ranks[s.rank - 1]} with ${speakerName(s.char)}`;
+  return null;
+}
 const sideState = (ck, j) => { const s = CAMPAIGNS[ck].sides[j];
-  return SAVE.camps[ck].cleared.includes(s.id) ? {s: 'done'} : (SAVE.debugUnlock || isCleared(s.unlock)) ? {s: 'next'} : {s: 'locked'}; };
+  return SAVE.camps[ck].cleared.includes(s.id) ? {s: 'done'} : sideLock(ck, s) ? {s: 'locked', why: sideLock(ck, s)} : {s: 'next'}; };
 const sidesNew = ck => CAMPAIGNS[ck].sides.filter((s, j) => sideState(ck, j).s === 'next').length;
 function sideRewardHTML(ck, s){
   const r = s.reward, bits = [`${r.res} ${FACTIONS[CAMPAIGNS[ck].faction].currency}`];
@@ -75,15 +85,20 @@ function sideRewardHTML(ck, s){
 }
 function sideNodeHTML(ck, s, j){
   const st = sideState(ck, j);
-  if (st.s === 'locked') return `<div class="node"><div class="pin future">?</div><div class="ncard dim"><h3>${s.title}</h3>
-    ${s.teaser ? `<div class="nmeta">${s.teaser}</div>` : ''}<div class="chips"><span class="chip">Opens after ${chapterRef(s.unlock)}</span></div></div></div>`;
+  if (st.s === 'locked') return `<div class="node"><div class="pin future">${s.rank}</div><div class="ncard dim"><h3>${s.title}</h3>
+    ${s.teaser ? `<div class="nmeta">${s.teaser}</div>` : ''}<div class="chips"><span class="chip">${st.why}</span></div></div></div>`;
   return nodeHTML(ck, s, 's' + j, st);
 }
 function sidesHTML(ck){
+  const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
+  if (!sets.length) return '<div class="hint">No side stories on this route yet.</div>';
   const sides = CAMPAIGNS[ck].sides;
-  if (!sides.length) return '<div class="hint">No side stories on this route yet.</div>';
-  return `<div class="hint">Optional battles that open as the story goes on. Their rewards are extras: the main story never needs them.</div>
-    <div class="track">${sides.map((s, j) => sideNodeHTML(ck, s, j)).join('')}</div>`;
+  return `<div class="hint">Every unique member of the army has three side stories. They open once Chapter Two is over: one with each support rank (C, B and A) you reach at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
+    ${sets.map(([key, set]) => { const done = sidesDone(ck, key), rank = supportRank(ck, key);
+      const sTag = rank >= 4 ? '<span class="chip ok">Support S reached</span>' : done === 3 ? '<span class="chip conv">Support S ready at the Camp</span>' : `<span class="chip">Support S: clear all three</span>`;
+      return `<div class="sset"><div class="por f-${CAMPAIGNS[ck].faction}">${portraitInner({key, look: CHARACTERS[key].look || key}, 'panel')}</div>
+        <div><h3>${set.title}</h3><p class="meta">${set.about}</p><div class="chips"><span class="chip">${done} of 3 cleared</span>${sTag}</div></div></div>
+        <div class="track">${sides.map((s, j) => s.char === key ? sideNodeHTML(ck, s, j) : '').join('')}</div>`; }).join('')}`;
 }
 function renderHub(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
@@ -182,24 +197,27 @@ function release(btn){
 }
 
 // ---------- Battle preparation ----------
+// A stage can name its own leader (lead: key) and keep characters out (ban: [keys]).
+const isLead = (ch, r) => ch.lead ? r.key === ch.lead : r.lord;
+const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key);
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
-  const ch = stageAt(ck, i), alive = living(ck);
+  const ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
   // mustDeploy: characters this stage needs (always picked, after the leader)
   const must = r => (ch.mustDeploy || []).includes(r.key);
-  const order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord && must(r)), ...alive.filter(r => !r.lord && !must(r))];
+  const order = [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r) && must(r)), ...alive.filter(r => !isLead(ch, r) && !must(r))];
   if (!prep || prep.ck !== ck || prep.i !== i) prep = {ck, i, picks: new Set(order.slice(0, max).map(r => r.uid))};
   for (const uid of [...prep.picks]) if (!alive.some(r => r.uid === uid)) prep.picks.delete(uid);
   for (const r of alive) if (must(r) && !prep.picks.has(r.uid)){
-    if (prep.picks.size >= max){ const drop = [...prep.picks].reverse().find(uid => { const x = alive.find(a => a.uid === uid); return x && !x.lord && !must(x); }); if (drop) prep.picks.delete(drop); }
+    if (prep.picks.size >= max){ const drop = [...prep.picks].reverse().find(uid => { const x = alive.find(a => a.uid === uid); return x && !isLead(ch, x) && !must(x); }); if (drop) prep.picks.delete(drop); }
     prep.picks.add(r.uid);
   }
   renderPrep();
 }
 function renderPrep(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), alive = living(ck);
-  const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
+  const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r))];
   const replaying = SAVE.camps[ck].cleared.includes(ch.id);
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
@@ -219,7 +237,7 @@ function renderPrep(){
 function togglePick(uid){
   const ch = stageAt(prep.ck, prep.i), rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
   if (!rec) return;
-  if (rec.lord){ toast(`${rec.name} leads every battle.`); return; }
+  if (isLead(ch, rec)){ toast(`${rec.name} leads ${ch.lead ? 'this battle' : 'every battle'}.`); return; }
   if ((ch.mustDeploy || []).includes(rec.key)){ toast(`${rec.name} must come on this one.`); return; }
   if (prep.picks.has(uid)) prep.picks.delete(uid);
   else if (prep.picks.size >= max){ toast(`Only ${max} can deploy here.`); return; }
@@ -230,7 +248,7 @@ function togglePick(uid){
 // ---------- Playing a chapter ----------
 async function playChapter(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), st = SAVE.camps[ck];
-  const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
+  const recs = [...st.roster.filter(r => isLead(ch, r)), ...st.roster.filter(r => !isLead(ch, r) && canDeploy(ch, r) && prep.picks.has(r.uid))].filter(r => !r.dead);
   const replay = st.cleared.includes(ch.id);   // replays skip the story and its one-time rewards
   if (!replay){
     applyOutfits(ck, ch.chapter.outfits);
@@ -251,7 +269,8 @@ async function playChapter(){
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
     const m = attireOf(r)?.mods; if (m) for (const k in m) r.stats[k] -= m[k];   // the attire's changes aren't kept
   }
-  for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }   // their weapon stays in the Armoury
+  // their weapon stays in the Armoury. Training (spar) knocks nobody out for good.
+  if (!ch.spar) for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }
   const departed = [], joined = [];
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
@@ -287,15 +306,15 @@ function renderResult(r){
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${r.armed?.length ? `<div><span>New weapons</span><b>${r.armed.join(', ')}</b></div>` : ''}
         ${ch.star ? `<div class="rstar ${r.star === 'ok' ? 'got' : ''}"><span>${r.star === 'ok' ? '★' : '☆'} Bonus: ${starText(ch, r.ck)}</span><b>${r.starTokens ? `Earned! +${r.starTokens} ${GACHA_ARMY[r.ck].currency}` : r.star === 'ok' ? 'Done (already earned)' : hasStar(ch.id) ? 'Missed (already earned)' : 'Missed: replay to try again'}</b></div>` : ''}
-        ${r.lost.length ? `<div><span>Unstitched (stitch them up on the Army screen)</span><b>${r.lost.join(', ')}</b></div>` : ''}
+        ${r.lost.length ? `<div><span>${ch.spar ? 'Knocked out in training (no harm done)' : 'Unstitched (stitch them up on the Army screen)'}</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
-      ${Object.entries(CAMPAIGNS).flatMap(([k, c]) => c.sides.filter(s => s.unlock === ch.id && !r.replay).map(s => `<div class="gatebox"><span>A side story has opened: <b>${s.title}</b>.</span><button class="btn" data-sidego="${k}" type="button">Side Stories</button></div>`)).join('')}
+      ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>Side Stories are open.</b> Each unique member of the army has three, one for each support rank.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;

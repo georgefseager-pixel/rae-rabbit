@@ -187,6 +187,7 @@ const SPEAKERS = Object.assign({
   // Chapter Two (placeholder art)
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
+  sludge:      {name:'Sergeant Sludge', faction:'frog', look:'guard'},     // Flopsy's Day Out
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 

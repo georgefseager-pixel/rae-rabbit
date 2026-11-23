@@ -2,7 +2,11 @@
 const campOpen = ck => !!SAVE?.debugUnlock || isCleared(SUPPORT.opensAfter[ck]);
 const campSeen = ck => !!SAVE.flags['tut-camp-' + ck];
 const supportState = ck => ((SAVE.supports ||= {})[ck] ||= {});
-const supportRank = (ck, key) => supportState(ck)[key] || 0;   // ranks unlocked: 0 (none) to 3 (A)
+const supportRank = (ck, key) => supportState(ck)[key] || 0;   // ranks unlocked: 0 (none) to 3 (A), 4 (S)
+// Characters with side stories (28-data-sides.js) go on to S once all three are cleared; everyone else stops at A.
+const sideSetOf = (ck, key) => SIDE_SETS[key]?.camp === ck ? SIDE_SETS[key] : null;
+const sidesDone = (ck, key) => (sideSetOf(ck, key)?.quests || []).filter(q => SAVE.camps[ck].cleared.includes(q.id)).length;
+const maxRank = (ck, key) => sideSetOf(ck, key) ? 4 : 3;
 // Unique units who can support the leader: alive, ★★★, not the leader.
 const supportPartners = ck => living(ck).filter(r => !r.lord && r.stars === 3 && CHARACTERS[r.key]);
 function supportInfo(ck, key){
@@ -33,9 +37,11 @@ function renderCamp(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction], lord = camp.lord;
   const partners = supportPartners(ck);
   const card = r => {
-    const rank = supportRank(ck, r.key), info = supportInfo(ck, r.key), next = SUPPORT.ranks[rank], cost = next && SUPPORT.cost[next];
-    const tc = trainCost(r), maxed = (r.trained || 0) >= SUPPORT.train.max;
-    const pips = SUPPORT.ranks.map((R, i) => i < rank
+    const rank = supportRank(ck, r.key), info = supportInfo(ck, r.key), next = rank < maxRank(ck, r.key) ? SUPPORT.ranks[rank] : null, cost = next && SUPPORT.cost[next];
+    const tc = trainCost(r), maxed = (r.trained || 0) >= SUPPORT.train.max, done = sidesDone(ck, r.key);
+    const trainBtn = maxed ? '<button class="btn" type="button" disabled>Fully trained</button>'
+        : `<button class="btn${next ? '' : ' primary'}" data-train-unit="${r.key}" type="button" ${st.res < tc ? 'disabled' : ''}>Train · ${tc} ${F.currency}<small>+1 to two stats${r.trained ? ` · trained ×${r.trained}` : ''}</small></button>`;
+    const pips = SUPPORT.ranks.slice(0, maxRank(ck, r.key)).map((R, i) => i < rank
       ? `<button class="spip on" data-support-view="${r.key}" data-rank="${i}" type="button" aria-label="Watch support ${R} again">${R}</button>`
       : `<span class="spip">${R}</span>`).join('');
     return `<div class="scard">
@@ -44,14 +50,14 @@ function renderCamp(){
         <p class="meta">${info.about}</p>
         <div class="spips" aria-label="Support rank">${pips}</div></div>
       ${statsGrid(r)}
-      ${next ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost ? 'disabled' : ''}>Support ${next} · ${cost} ${F.currency}<small>${boostText(SUPPORT.boost[next])}</small></button>`
-        : maxed ? '<button class="btn" type="button" disabled>Fully trained</button>'
-        : `<button class="btn primary" data-train-unit="${r.key}" type="button" ${st.res < tc ? 'disabled' : ''}>Train · ${tc} ${F.currency}<small>+1 to two stats${r.trained ? ` · trained ×${r.trained}` : ''}</small></button>`}
+      ${next === 'S' ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost || done < 3 ? 'disabled' : ''}>Support S · ${cost} ${F.currency}<small>${done < 3 ? `Clear all three of ${sideSetOf(ck, r.key).title} (${done}/3)` : boostText(SUPPORT.boost.S)}</small></button>${trainBtn}`
+        : next ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost ? 'disabled' : ''}>Support ${next} · ${cost} ${F.currency}<small>${boostText(SUPPORT.boost[next])}</small></button>`
+        : trainBtn}
     </div>`;
   };
   $('#camp').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Camp</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
-    <div class="hint">Spend time with the unique members of the army. Each conversation unlocks a support rank with ${speakerName(lord)}, from C to A, and makes them permanently stronger. After A, they can keep training. Tap a rank you've reached to watch it again.</div>
+    <div class="hint">Spend time with the unique members of the army. Each conversation unlocks a support rank with ${speakerName(lord)}, from C to A, and makes them permanently stronger. Those with side stories go on to a final rank, S, once all three are cleared. After A, they can keep training. Tap a rank you've reached to watch it again.</div>
     ${partners.length ? `<div class="ulist">${partners.map(card).join('')}</div>`
       : `<div class="gatebox"><span>No one to sit with yet. Unique (★★★) members of the army appear here: some join in the story, others through Recruiting.</span></div>`}
   </div>`;
@@ -60,7 +66,8 @@ function renderCamp(){
 async function unlockSupport(key){
   const ck = SAVE.current, st = stOf(), rec = st.roster.find(r => r.key === key && !r.dead);
   const rank = supportRank(ck, key), next = SUPPORT.ranks[rank];
-  if (!rec || !next) return;
+  if (!rec || !next || rank >= maxRank(ck, key)) return;
+  if (next === 'S' && sidesDone(ck, key) < 3) return;
   const cost = SUPPORT.cost[next];
   if (st.res < cost){ toast(`Not enough ${FACTIONS[campOf().faction].currency}.`); return; }
   const gains = SUPPORT.boost[next];
@@ -68,11 +75,14 @@ async function unlockSupport(key){
   await talk(supportScene(ck, rec, rank));
   Music.want(campTrack()); renderCamp();
   await showGains(rec, gains, `SUPPORT ${next}`, `${rec.name} & ${speakerName(campOf().lord)}`);
+  // a support rank opens that character's next side story (once Chapter Two is over)
+  const q = sideSetOf(ck, key)?.quests[rank];
+  if (q && next !== 'S' && isCleared(SIDE_OPENS[ck])) toast(`A side story has opened: ${q.title}.`);
 }
 // After rank A: +1 to two different stats (+2 HP), chosen by the unit's growth rates. No conversation.
 async function trainPartner(key){
   const ck = SAVE.current, st = stOf(), rec = st.roster.find(r => r.key === key && !r.dead);
-  if (!rec || supportRank(ck, key) < SUPPORT.ranks.length || (rec.trained || 0) >= SUPPORT.train.max) return;
+  if (!rec || supportRank(ck, key) < 3 || (rec.trained || 0) >= SUPPORT.train.max) return;
   const cost = trainCost(rec); if (st.res < cost) return;
   const g = growthOf(rec), pool = Object.keys(STAT_SHORT), gains = {};
   for (let n = 0; n < 2; n++){
@@ -111,15 +121,32 @@ function campTutorial(ck){
     {who: 'narr', text: 'To visit, tap Camp.'},
   ]);
 }
+// Side Stories open with the end of each route's Chapter Two.
+const sidesOpen = ck => isCleared(SIDE_OPENS[ck]) && Object.values(SIDE_SETS).some(s => s.camp === ck);
+const sidesSeen = ck => !!SAVE.flags['tut-sides-' + ck];
+function sideTutorial(ck){
+  if (!sidesOpen(ck) || sidesSeen(ck)) return;
+  SAVE.flags['tut-sides-' + ck] = true; saveGame();
+  const lord = CAMPAIGNS[ck].lord;
+  return talk([
+    {who: lord, text: ck === 'rae' ? 'For the first time since the mines, nobody is chasing us. Maybe there\'s time for something other than the war.'
+                                  : 'The column can rest. There are other things a prince ought to see to.'},
+    {who: 'narr', text: 'Side Stories are open. Each unique (★★★) member of the army has three side stories of their own.'},
+    {who: 'narr', text: 'One opens with each support rank you reach with them at the Camp: the first at C, the second at B, the third at A.'},
+    {who: 'narr', text: 'Clear all three to unlock their final conversation at the Camp: Support S.'},
+    {who: 'narr', text: 'Side stories are optional, and their rewards are extras. Find them on the Side Stories tab.'},
+  ]);
+}
 // When a feature opens, its tutorial plays straight away on the campaign screen, one after another.
 let tutorialsRunning = false;
 async function unlockTutorials(ck){
   if (tutorialsRunning || !$('#title').hidden) return;
-  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck))) return;
+  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck)) && !(sidesOpen(ck) && !sidesSeen(ck))) return;
   tutorialsRunning = true;
   await wait(50); $('#hub').scrollTo({top: 0});   // the buttons the tutorial points at are at the top
   try {
     if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
+    if (sidesOpen(ck) && !sidesSeen(ck)){ await sideTutorial(ck); hubTab = 'side'; renderHub(); }
   } finally { tutorialsRunning = false; }
 }

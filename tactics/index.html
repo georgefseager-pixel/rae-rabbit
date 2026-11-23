@@ -671,6 +671,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .hbadge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--red);color:var(--cream);font-family:var(--fell);font-size:13px;line-height:20px;margin-left:4px}
 .chip.under{background:rgba(200,70,50,.25);color:#ffb9a6}
 .starrow.side{border-style:solid}
+/* Side Stories: one header per character's set */
+.sset{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center;margin:18px 0 6px}
+.sset .por{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(236,198,115,.5)}
+.sset h3{font-family:var(--fell);font-weight:400;font-size:19px;margin:0 0 2px;color:var(--cream)}
+.sset .meta{margin:0 0 6px}
 
 </style>
 
@@ -1592,6 +1597,7 @@ const SPEAKERS = Object.assign({
   // Chapter Two (placeholder art)
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
+  sludge:      {name:'Sergeant Sludge', faction:'frog', look:'guard'},     // Flopsy's Day Out
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
@@ -2264,6 +2270,25 @@ const MAPS = {
     'F.X....X.F',
     '.F......F.',
     'FF.F..F.FF',
+  ]},
+  // Side story (Flopsy's Day Out): the meadow the frogs tore up to build their barricade
+  flowerField: {theme: 'meadow', names: {'.': ['Trampled Field', 'What the frogs left of the meadow.'], 'F': ['Last Flowers', 'The patches the frogs missed. Good cover.'],
+                'X': ['Barricade', 'Torn-up flowerbeds, stems and all, piled into a wall. Nothing gets through.'], 'M': ['Heaped Earth', 'Dug out for the barricade. Hard going, harder to hit.'],
+                'T': ['Frog Stockade', 'Restores 20% HP at the start of each phase.']}, rows: [
+    'FF.M..M.FF',
+    'F...T....F',
+    '..M....M..',
+    '.F......F.',
+    '..........',
+    'XXX.XX.XXX',
+    '.M......M.',
+    '..........',
+    '.F..M...F.',
+    '..........',
+    'F...FF...F',
+    '..........',
+    '.F......F.',
+    'FF......FF',
   ]},
   // Chapter Two: the black frog's hill, his lookout at the top
   thornHill: {theme: 'meadow', names: {'F': ['Thorn Thicket', 'Felt thorns. Good cover, if you don\'t mind the prickles.'], 'M': ['Hill Rocks', 'Stuffed boulders. Hard going, harder to hit.'],
@@ -3279,49 +3304,6 @@ const CAMPAIGNS = {
   },
 };
 
-// ---------- Side Stories ----------
-// Optional battles for each route, listed on their own tab. Each opens once its `unlock` stage (from either
-// story) is cleared, and is set at that point in the story (it uses that chapter's outfits). Their rewards are
-// extras: nothing in the main story needs them. Same fields as a main stage, plus:
-//   unlock   the stage id that opens it
-//   teaser   one line shown while it's still locked
-CAMPAIGNS.rae.sides = [
-  {
-    id: 'RS-1', title: 'Placeholder: The Lost Patrol', unlock: 'R2-1', map: 'riverWoods', enemyFaction: 'frog',
-    teaser: 'Something is moving in the woods by the river.',
-    star: {type: 'noLosses', text: 'No one is unstitched'},
-    objective: {type: 'rout'}, maxDeploy: 6,
-    deploy: [[4,13],[5,13],[3,14],[6,14],[4,14],[5,14],[2,13],[7,13]],
-    brief: 'Placeholder side story. A frog patrol lost in the woods has stumbled onto the trail. Drive it off.',
-    enemies: () => [E('reed',3,2,4,'guard'), E('reed',3,7,4,'guard'), E('lily',3,4,6), E('bruiser',3,6,7), E('blade',3,1,8), E('lily',3,8,9)],
-    pre: [
-      {scene: 'woods', place: 'The Deep Woods · Side Story'},
-      {who: 'narr', text: '(Placeholder) A side story is still to be written here.'},
-      {who: 'rae', text: '(Placeholder) Frogs, off the main trail. Let\'s see what they\'re up to.'},
-    ],
-    post: [{who: 'rae', text: '(Placeholder) That\'s the last of them. Back to the trail.'}],
-    reward: {res: 400, tokens: 3, weapons: [{id: 'longsling', to: 'willow'}]},
-  },
-];
-CAMPAIGNS.frog.sides = [
-  {
-    id: 'FS-1', title: 'Placeholder: Rebels in the Reeds', unlock: 'F2-1', map: 'riverWoods', enemyFaction: 'rae',
-    teaser: 'Reports of rebels hiding along the river.',
-    star: {type: 'noLosses', text: 'No one is unstitched'},
-    objective: {type: 'rout'}, maxDeploy: 6,
-    deploy: [[4,0],[5,0],[3,1],[6,1],[4,1],[5,1],[2,1],[7,1]],
-    brief: 'Placeholder side story. A rebel band is hiding in the reeds by the river. Flush them out.',
-    enemies: () => [E('rfencer',3,3,8), E('rfencer',3,6,8), E('rarcher',3,2,11,'guard'), E('rlancer',3,7,10,'guard'), E('radept',3,4,12,'guard'), E('rfighter',3,5,10)],
-    pre: [
-      {scene: 'woods', place: 'Cousin Fraggle\'s Woods · Side Story'},
-      {who: 'narr', text: '(Placeholder) A side story is still to be written here.'},
-      {who: 'tiggle', text: '(Placeholder) Rebels in the reeds. Biggle, take the left bank.'},
-    ],
-    post: [{who: 'tiggle', text: '(Placeholder) The river\'s clear. Back to the column.'}],
-    reward: {res: 400, tokens: 3, weapons: [{id: 'rapier', to: 'tiggle'}]},
-  },
-];
-
 // Flatten chapters into one ordered list of stages per campaign. A stub chapter becomes one placeholder stage.
 for (const camp of Object.values(CAMPAIGNS)){
   camp.stages = camp.chapters.flatMap((c, ci) => c.stub
@@ -3330,11 +3312,7 @@ for (const camp of Object.values(CAMPAIGNS)){
        // more: a chapter that's only partly written ends with a placeholder
        ...(c.more ? [{id: c.id + '-more', title: 'To be continued', stub: true, brief: c.more, chapter: c, ci, si: c.stages.length}] : [])]);
 }
-// Side stories take the chapter of the stage that unlocks them (for outfits and labels).
-for (const camp of Object.values(CAMPAIGNS)) (camp.sides ||= []).forEach((s, j) => {
-  const at = Object.values(CAMPAIGNS).flatMap(c => c.stages).find(x => x.id === s.unlock);
-  Object.assign(s, {side: true, sj: j, si: j, chapter: at.chapter, ci: at.ci});
-});
+for (const camp of Object.values(CAMPAIGNS)) camp.sides = [];   // filled by 28-data-sides.js
 
 // Recommended average level for a stage: the enemies' average level (an elite counts a level higher, a boss two),
 // across everyone who will take the field (reinforcements and twists too), less however many levels' worth
@@ -3437,10 +3415,11 @@ const GACHA_ARMY = {
 //   C / B / A: the scene for that rank, as dialogue lines (see 25-data-campaign.js). Leave a rank out to get
 //              a placeholder scene. Anyone unique without an entry here gets placeholder scenes too.
 const SUPPORT = {
-  ranks: ['C', 'B', 'A'],
-  cost: {C: 300, B: 600, A: 1000},
+  // S: the final rank, for characters with side stories (28-data-sides.js): open once all three are cleared
+  ranks: ['C', 'B', 'A', 'S'],
+  cost: {C: 300, B: 600, A: 1000, S: 1500},
   // what each rank gives the partner, permanently (HP, Atk, Def, Spd, Skl)
-  boost: {C: {mhp: 1, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 2, atk: 1, def: 1, spd: 1}},
+  boost: {C: {mhp: 1, atk: 1, def: 1}, B: {mhp: 2, spd: 1, skl: 1}, A: {mhp: 2, atk: 1, def: 1, spd: 1}, S: {mhp: 3, atk: 2, def: 1, spd: 1, skl: 2}},
   // after rank A: Train, +1 to two stats (+2 if HP), weighted by the unit's growths. The price rises each time.
   train: {cost: 500, step: 250, max: 5},
   opensAfter: {rae: 'R2-1', frog: 'F2-1'},   // the first stage of each army's Chapter Two
@@ -3452,7 +3431,7 @@ const SUPPORT = {
 const sL = (who, text) => ({who, text}), sT = (who, text) => ({who, text, thought: true}), sN = text => ({who: 'narr', text});
 const SUPPORTS = {
   rae: {
-    sister: {kind: 'family', about: 'Two sisters, and everything they never had time to say in the mines.',
+    sister: {kind: 'family', about: 'Two sisters, and everything they never had time to say in the mines. And one very long day out.',
       C: [
         sN("By the fire, Flopsy Flora is sewing. Her tongue sticks out of the corner of her mouth."),
         sL('rae', "What are you making?"),
@@ -3463,6 +3442,9 @@ const SUPPORTS = {
         sL('sister', "A small one! Nobody will see it unless they're very close. And if a frog's that close, you've got bigger problems."),
         sL('rae', "…Thank you, Flopsy."),
         sL('sister', "Flopsy FLORA. You have to say all of it. That's the whole point of choosing it."),
+        sL('sister', "There's a whole meadow of them past the stream, you know. Every colour. One day I'm going to pick them all."),
+        sL('rae', "Not on your own, you're not."),
+        sT('sister', "We'll see about that."),
       ],
       B: [
         sN("Late. The fire is low. Flopsy Flora sits up, wide awake."),
@@ -3476,6 +3458,7 @@ const SUPPORTS = {
         sL('rae', "All the time. I'm just better at hiding it. Big sisters get practice."),
         sL('sister', "…Then we'll keep watch on each other. You wake me if you dream it, and I'll wake you."),
         sL('rae', "Deal."),
+        sL('sister', "I'm not scared of frogs, though. Just bells. Frogs are mostly mouth."),
       ],
       A: [
         sL('sister', "Rae. I need to say something, and you have to listen all the way to the end without saying 'little one'."),
@@ -3489,9 +3472,25 @@ const SUPPORTS = {
         sL('sister', "Next to! Yes!"),
         sL('sister', "Oh, and hold still, your ear seam's coming loose. …There. Now we've both got a stitch in the same place. We match."),
         sL('rae', "We always matched, Flopsy Flora."),
+        sT('sister', "Next to. She said next to. One day I'll show her I can lead, too."),
+      ],
+      // after all three of Flopsy's Day Out
+      S: [
+        sN("Rae finds Flopsy Flora by the fire, mud to the knees, sewing something very small."),
+        sL('rae', "Three times. You went out without me three times. Willow told me everything."),
+        sL('sister', "And I came back three times. With everyone. Did Willow tell you that bit?"),
+        sL('rae', "…She did. She also told me a frog sergeant called you 'the little one with the needle' and then ran away screaming."),
+        sL('sister', "He wasn't screaming. He was yelling. There's a difference. …Mostly."),
+        sL('sister', "They pulled up the whole meadow, Rae. Every colour, just to build a wall. I found one flower left under the barricade."),
+        sN("She holds out the coat. Next to the little flower she sewed on the elbow, there's a second one now."),
+        sL('sister', "That one's from the field. So they didn't get all of them."),
+        sL('rae', "…You were scary out there. Willow said so, and Willow doesn't say things."),
+        sL('sister', "I learned from the best. And she's very scary."),
+        sL('rae', "Next to me, then. And sometimes in front. When it's your turn."),
+        sL('sister', "In front! You said it! I'm sewing that on a flag too!"),
       ],
     },
-    willow: {kind: 'learn', about: 'Willow teaches Rae to see a battlefield, and what being a hero really costs.',
+    willow: {kind: 'learn', about: 'Willow teaches Rae to see a battlefield, and what being a hero really costs. Her lessons continue on the practice field.',
       C: [
         sL('willow', "Sit. Tell me what you see."),
         sL('rae', "Trees. A hill. Some rocks. Is this a test?"),
@@ -3504,6 +3503,7 @@ const SUPPORTS = {
         sL('willow', "In the mines you had nothing to lose. Now you have an army. Again. What do you see?"),
         sL('rae', "…A place to make a stand. And a place to make them pay for coming at us."),
         sL('willow', "Better. Much better."),
+        sL('willow', "But words only go so far. Meet me on the practice field at first light. I'll show you what the ground can do, from the other side of it."),
       ],
       B: [
         sL('rae', "Willow. Why 'Willow'? You said you chose it."),
@@ -3515,6 +3515,7 @@ const SUPPORTS = {
         sT('rae', "Old Rabbit never chose a name. He never got to."),
         sL('rae', "…Then we make it worth paying for."),
         sL('willow', "Yes. That's the whole of it."),
+        sL('willow', "A willow bends to the storm. A good soldier bends to whatever's in front of them. Tomorrow, on the practice field: swords, axes and spears."),
       ],
       A: [
         sL('rae', "You've done this before. Found someone. A hero."),
@@ -3527,6 +3528,22 @@ const SUPPORTS = {
         sL('willow', "You have that. I saw it at the river. They didn't follow you because you told them to. They followed because they wanted to stand where you were standing."),
         sL('rae', "Then I'll make sure they're never standing there alone. Me included."),
         sL('willow', "…Good. Don't you dare make me wrong twice."),
+        sL('willow', "One more lesson, then. The last one. Tomorrow I'll show you exactly what happens to anyone who stands alone."),
+      ],
+      // after all three of Willow's Lessons
+      S: [
+        sN("The practice field, at dusk. Willow is packing away the wooden swords."),
+        sL('willow', "That's the last of them. No more lessons."),
+        sL('rae', "You're stopping? I've only just stopped losing."),
+        sL('willow', "You stopped losing on the first day. You just didn't notice, because you were busy watching everyone else."),
+        sL('willow', "That's the thing I couldn't teach him, you know. The one we say quietly."),
+        sL('rae', "…Will you tell me his name?"),
+        sN("A long pause."),
+        sL('willow', "Hawthorn. His name was Hawthorn. He chose it because it was the only tree that would grow by the mine."),
+        sL('willow', "He beat me on the practice field every single time. And he died on his own, a hill away from help."),
+        sL('willow', "You beat me today by never once letting anyone stand alone. That's the lesson. It was always the only one."),
+        sL('rae', "Then no more lessons. From now on we plan together, Willow. Every battle."),
+        sL('willow', "Together. Yes. …Hawthorn would have liked you. He'd have hated losing to you, but he'd have liked you."),
       ],
     },
     brigand: {kind: 'friend', about: 'A bandit who stopped running, and the rebel who gave him a reason to.',
@@ -3843,6 +3860,234 @@ const SUPPORTS = {
     bogsworth:   {kind: 'friend', about: 'Placeholder character.'},
   },
 };
+
+// ---------------- 28-data-sides.js ----------------
+// ================= Side Stories =================
+// Every unique character gets a set of three side stories. All three open once the route's Chapter Two is over
+// (SIDE_OPENS), and then one at a time: the first with Support C at the Camp, the second with B, the third with A.
+// Clearing all three opens Support S (the final conversation, in 27-data-supports.js).
+// A side story is a stage (same fields as 25-data-campaign.js), plus a few that only side stories tend to use:
+//   lead: key     someone else leads (the battle is lost if they fall)
+//   ban: [keys]   characters who can't be deployed
+//   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
+//   teaser        one line shown while it's locked
+// Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
+const SIDE_OPENS = {rae: 'R2-4', frog: 'F2-4'};
+
+const SIDE_SETS = {
+  // ---------- Willow's Lessons: Willow trains Rae on the practice field. Each teaches one thing. ----------
+  willow: {camp: 'rae', title: 'Willow\'s Lessons', about: 'On the practice field, Willow takes the other side, and teaches Rae what she can\'t learn from words.',
+    quests: [
+      {
+        id: 'WL-1', title: 'Lesson One: The High Ground', map: 'ridge', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
+        spar: true, ban: ['willow'], enemyMods: {},
+        teaser: 'Willow wants to show Rae what the ground can do.',
+        star: {type: 'turns', n: 8, text: 'Win within 8 turns'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'Willow\'s squad holds the rocks on the ridge. Rocks make anyone standing on them hard to hit. Use the cover yourself, and draw them off it.',
+        prepNote: 'Training: nobody is unstitched for real. Willow leads the other side, so she can\'t be deployed.',
+        enemies: () => [
+          E('scholar',5,3,2,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('rarcher',4,2,3,'guard'), E('rarcher',4,6,4,'guard'), E('radept',4,3,3,'guard'),
+          E('rfencer',4,4,6,'guard'), E('rlancer',4,5,6,'guard'), E('rfighter',4,1,8,'guard'),
+        ],
+        bossTalk: [
+          {who: 'willow', text: 'There you are. Now: are you going to stand in the open and let me hit you, or are you going to think?'},
+        ],
+        pre: [
+          {scene: 'ridge', place: 'The Practice Field · First Light'},
+          {who: 'willow', text: 'Today you\'re the one climbing the hill. My squad has the rocks.'},
+          {who: 'willow', text: 'Look at the ground before you look at the enemy. Rocks are hard to cross and harder to hit anyone on. Trees are cover too, only less.'},
+          {who: 'rae', text: 'So I stay off the open grass, and I don\'t attack anyone standing on a rock.'},
+          {who: 'willow', text: 'Not if you can help it. Make them come down to you. Tap the ground to see what each tile gives.'},
+          {who: 'willow', text: 'Wooden swords and padded spears. Nobody gets unstitched today. Except perhaps your pride.'},
+        ],
+        post: [
+          {who: 'willow', text: 'You waited in the trees and let my soldiers come off the rocks to find you. Good.'},
+          {who: 'rae', text: 'In the mines, I\'d have charged straight up.'},
+          {who: 'willow', text: 'In the mines, you had nothing to lose. Same time tomorrow? No. Rest. You\'ll know when the next lesson is.'},
+        ],
+        reward: {res: 400, tokens: 3},
+      },
+      {
+        id: 'WL-2', title: 'Lesson Two: Swords, Axes and Spears', map: 'ford', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
+        spar: true, ban: ['willow'], enemyMods: {},
+        teaser: 'Willow is sorting the practice weapons into three piles.',
+        star: {type: 'noLosses', text: 'No one is knocked out'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
+        brief: 'Willow\'s squad crosses the river: axes at the west bridge, spears at the east. Send the right weapon against each.',
+        prepNote: 'Training: nobody is unstitched for real. Bring a mix of swords, axes and spears. Willow can\'t be deployed.',
+        enemies: () => [
+          E('scholar',5,2,0,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('rfighter',4,2,5), E('rfighter',4,1,6), E('rlancer',4,6,5), E('rlancer',4,5,7),
+          E('rfencer',5,3,2,'guard'), E('rfencer',5,6,2,'guard'), E('radept',4,5,1,'guard'),
+        ],
+        bossTalk: [
+          {who: 'willow', text: 'A sword against my axes, a spear against my swords? Show me you were listening.'},
+        ],
+        pre: [
+          {scene: 'ridge', place: 'The Practice Field · Morning'},
+          {who: 'willow', text: 'Three piles. Swords, axes, spears. Every soldier on that field is carrying one of them.'},
+          {show: 'triangle'},
+          {who: 'willow', text: 'A sword beats an axe. An axe beats a spear. A spear beats a sword. Win the match-up and you hit harder and more often.'},
+          {who: 'rae', text: 'And lose it and they do the same to me.'},
+          {who: 'willow', text: 'Exactly. My axes are coming over the west bridge, my spears over the east. Who are you sending where?'},
+        ],
+        post: [
+          {who: 'willow', text: 'Swords to the axes, axes to the spears. Not one wasted fight.'},
+          {who: 'rae', text: 'It\'s like a game of stones and scissors.'},
+          {who: 'willow', text: 'It is a game of stones and scissors. Only the scissors are very sharp. One lesson left.'},
+        ],
+        reward: {res: 500, tokens: 3},
+      },
+      {
+        id: 'WL-3', title: 'Lesson Three: Never Alone', map: 'republicCamp', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
+        spar: true, ban: ['willow'], enemyMods: {},
+        teaser: 'Willow says the last lesson is the only one that matters.',
+        star: {type: 'unhurt', text: 'Rae Rabbit is never hit'},
+        objective: {type: 'boss'}, maxDeploy: 6,
+        deploy: [[4,9],[5,9],[3,11],[6,11],[4,12],[5,12]],
+        brief: 'Willow\'s squad waits behind the palisade, ready to pounce on anyone who comes through a gap alone. Use Danger to see where they can reach, and move together.',
+        prepNote: 'Training: nobody is unstitched for real. Tap Danger in battle to see everywhere the enemy can strike. Willow can\'t be deployed.',
+        enemies: () => [
+          E('scholar',5,4,1,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('rfencer',5,2,4,'guard'), E('rfighter',5,7,4,'guard'), E('rlancer',5,3,3,'guard'),
+          E('rarcher',5,6,2,'guard'), E('radept',5,5,2,'guard'), E('rfencer',5,5,4,'guard',{elite: true}),
+        ],
+        bossTalk: [
+          {who: 'willow', text: 'Look around you, Rae. Who\'s beside you? If the answer is nobody, you\'ve already lost.'},
+        ],
+        pre: [
+          {scene: 'republic', place: 'The Republic Camp · The Last Lesson'},
+          {who: 'willow', text: 'My squad is behind the palisade. Every one of them is waiting for someone to come through a gap on their own.'},
+          {who: 'willow', text: 'Tap Danger, and you\'ll see every tile they can reach this turn. Step into it alone and they\'ll all come for you at once.'},
+          {who: 'rae', text: 'So we go through together, or not at all.'},
+          {who: 'willow', text: 'Together, or not at all. And you, Rae Rabbit, are not to be touched. Not once. Let them protect you, for a change.'},
+        ],
+        post: [
+          {who: 'willow', text: 'Not one of them got to you. Not once.'},
+          {who: 'rae', text: 'I barely did anything. They wouldn\'t let me.'},
+          {who: 'willow', text: 'That\'s what it looks like when an army fights beside you. Come and find me tonight. There\'s something I want to tell you.'},
+        ],
+        reward: {res: 600, tokens: 5},
+      },
+    ]},
+
+  // ---------- Flopsy's Day Out: Flopsy Flora leads; Rae doesn't know she's gone. ----------
+  sister: {camp: 'rae', title: 'Flopsy\'s Day Out', about: 'Flopsy Flora sneaks off to pick flowers with a few soldiers. The frogs think they\'ve found an easy target.',
+    quests: [
+      {
+        id: 'FD-1', title: 'Flower Picking', map: 'riverWoods', enemyFaction: 'frog',
+        lead: 'sister', ban: ['rae'], enemyMods: {},
+        teaser: 'Flopsy Flora has a basket, and a look in her eye.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'rout'}, maxDeploy: 5,
+        deploy: [[4,13],[5,13],[3,14],[6,14],[4,14]],
+        brief: 'Flopsy Flora has slipped out of camp with a few soldiers to pick flowers. A frog patrol thinks it\'s found an easy target. Flopsy leads, and must not fall.',
+        prepNote: 'Flopsy Flora leads. Rae isn\'t here: she doesn\'t know Flopsy\'s gone.',
+        enemies: () => [
+          E('lily',4,4,6,'charge',{key: 'sludge', name: 'Sergeant Sludge', look: 'guard', talk: [
+            {who: 'sludge', text: 'Well, well. A little bunny with a basket. Hand it over, little one, and we\'ll only unstitch your friends.'},
+            {who: 'sister', text: 'Nobody calls me little one. Not even my sister. Not any more.'},
+          ]}),
+          E('reed',4,1,6,'guard'), E('bruiser',4,2,5), E('blade',4,9,9), E('bruiser',4,0,10),
+        ],
+        reinforce: () => [{turn: 2, units: [E('lily',4,8,4), E('reed',4,6,5,'guard')]}],
+        pre: [
+          {scene: 'woods', place: 'Past the Stream · Morning'},
+          {who: 'narr', text: 'Rae is in a war council. Willow is with her. Nobody is watching the edge of the camp.'},
+          {who: 'sister', text: 'Psst. You four. Bring your weapons. And a basket.'},
+          {who: 'republic', text: 'Flopsy Flora? Does the Commander know you\'re going out?'},
+          {who: 'sister', text: 'The Commander is very busy. We\'ll be back before lunch. It\'s just flowers!'},
+          {who: 'narr', text: 'It is not just flowers.'},
+        ],
+        post: [
+          {who: 'republic', text: 'They… ran. A whole patrol, and they ran from the Commander\'s little sister.'},
+          {who: 'sister', text: 'I heard that. And I\'ve still not got any flowers. Come on, there are more past the trees.'},
+        ],
+        reward: {res: 400, tokens: 3},
+      },
+      {
+        id: 'FD-2', title: 'Scarier Than She Looks', map: 'forestTrail', enemyFaction: 'frog',
+        lead: 'sister', ban: ['rae'], enemyMods: {},
+        teaser: 'Sergeant Sludge wants a rematch, and he\'s brought friends.',
+        star: {type: 'unhurt', text: 'Flopsy Flora is never hit'},
+        objective: {type: 'boss'}, maxDeploy: 5,
+        deploy: [[4,15],[5,15],[3,14],[6,14],[4,14]],
+        brief: 'Sergeant Sludge is back with more frogs, sure that the first time was a fluke. Show him it wasn\'t. Flopsy leads, and must not fall.',
+        prepNote: 'Flopsy Flora leads. Rae isn\'t here. Keep Flopsy out of reach for the bonus.',
+        enemies: () => [
+          E('lily',5,4,0,'hold',{boss: true, flees: true, key: 'sludge', name: 'Sergeant Sludge', look: 'guard'}),
+          E('lily',4,3,2,'guard'), E('reed',4,6,2,'guard'), E('bruiser',4,4,5), E('lily',4,7,6,'charge',{elite: true}),
+          E('blade',4,2,7), E('reed',5,1,9), E('bruiser',4,8,10),
+        ],
+        bossTalk: [
+          {who: 'sludge', text: 'That was a fluke! A fluke! Nobody\'s scared of a rabbit with a sewing needle!'},
+          {who: 'sister', text: 'You should be. I know exactly where all your seams are.'},
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Forest Trail · Afternoon'},
+          {who: 'republic', text: 'Flopsy Flora, it\'s past lunch. Way past lunch.'},
+          {who: 'sister', text: 'We haven\'t found the meadow yet. Rae always says finish what you start.'},
+          {who: 'narr', text: 'Ahead, on the trail: frogs. More of them than before. And at the front, a very cross sergeant.'},
+          {who: 'sludge', text: 'YOU. Lads, that\'s the one. Don\'t be fooled, she\'s only small.'},
+          {who: 'sister', text: 'Only small? Right. Everyone, stay next to me. Not behind. Next to.'},
+        ],
+        post: [
+          {who: 'sludge', text: 'Fall back! Fall back to the field! She\'s every bit as bad as the other one!'},
+          {who: 'sister', text: 'The other one? …He means Rae. He thinks I\'m as scary as Rae.'},
+          {who: 'republic', text: 'You are, Flopsy Flora. Honestly. You are.'},
+          {who: 'sister', text: 'The field. He said the field. That\'s where the flowers are.'},
+        ],
+        reward: {res: 500, tokens: 3},
+      },
+      {
+        id: 'FD-3', title: 'The Flower Field', map: 'flowerField', enemyFaction: 'frog',
+        lead: 'sister', ban: ['rae'], enemyMods: {},
+        teaser: 'The meadow, at last. But something is wrong with it.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'boss'}, maxDeploy: 5,
+        deploy: [[4,13],[5,13],[3,12],[6,12],[4,12]],
+        brief: 'The frogs tore up the whole meadow to build a barricade. Break through the gaps and take Sergeant Sludge down for good. Flopsy leads, and must not fall.',
+        prepNote: 'Flopsy Flora leads. Rae isn\'t here. The barricade only has two gaps.',
+        enemies: () => [
+          E('toadknight',5,4,1,'hold',{boss: true, key: 'sludge', name: 'Sergeant Sludge', look: 'guard'}),
+          E('reed',5,2,2,'guard'), E('reed',5,7,2,'guard'), E('croaker',4,5,1,'guard'),
+          E('lily',5,3,4,'guard',{elite: true}), E('lily',5,6,4,'guard'), E('bruiser',5,4,3), E('blade',5,1,3),
+        ],
+        reinforce: () => [{turn: 3, units: [E('bruiser',5,0,4), E('blade',5,9,4)]}],
+        bossTalk: [
+          {who: 'sludge', text: 'Nice, isn\'t it? Best wall in the woods. Took us all morning to pull up the flowers.'},
+          {who: 'sister', text: 'All morning. To pull up every flower in the meadow. For a wall.'},
+          {who: 'sister', text: 'I was going to be nice to you, Sergeant. I really was.'},
+        ],
+        pre: [
+          {scene: 'woods', place: 'The Meadow · Evening'},
+          {who: 'narr', text: 'The meadow is there, just as Flopsy said. Only there are no colours left in it.'},
+          {who: 'narr', text: 'Every flower has been torn up by the roots and heaped into a wall. Behind the wall: frogs, and a stockade.'},
+          {who: 'sister', text: '…They pulled them up. All of them. Just to make a wall.'},
+          {who: 'republic', text: 'Flopsy Flora? We could go back. Nobody would blame you.'},
+          {who: 'sister', text: 'No. We\'re not going back. Not until that wall is down and every one of them is gone.'},
+          {who: 'sister', text: 'Next to me. All of you. We do this properly.'},
+        ],
+        post: [
+          {who: 'narr', text: 'The barricade comes down. Under the last of it, crushed flat but still alive, is one small flower.'},
+          {who: 'sister', text: 'There. They didn\'t get all of them.'},
+          {who: 'sister', text: 'Come on. We\'re very late for lunch, and Rae is going to be so cross.'},
+          {who: 'sister', thought: true, text: 'And then I\'m going to sew this onto her coat.'},
+        ],
+        reward: {res: 600, tokens: 5, weapons: [{id: 'patchneedle', to: 'sister'}]},
+      },
+    ]},
+};
+
+// Each set's quests go on its route's side story list, in the order they open.
+for (const [key, set] of Object.entries(SIDE_SETS)){
+  const camp = CAMPAIGNS[set.camp], at = camp.stages.find(s => s.id === SIDE_OPENS[set.camp]);
+  set.quests.forEach((q, k) => { Object.assign(q, {side: true, char: key, rank: k + 1, set, chapter: at.chapter, ci: at.ci, si: k}); camp.sides.push(q); });
+}
 
 // ---------------- 30-save.js ----------------
 // ================= Save state & armies =================
@@ -4222,6 +4467,8 @@ function runBattle(campKey, ch, records, opts = {}){
   const starting = ch.solo ? records.filter(r => r.lord) : records;
   B.reserve = ch.solo ? records.filter(r => !r.lord) : [];
   starting.forEach((r, i) => { const u = battleUnit(r, 'p'); place(u, ...ch.deploy[i]); units.push(u); });
+  // lead: someone else leads this battle (it's lost if they fall), e.g. Flopsy Flora's side stories
+  if (ch.lead) for (const u of units) if (u.team === 'p') u.lord = u.key === ch.lead;
   for (const sp of ch.allies ? ch.allies(SAVE.flags) : []){ const u = enemyUnit(sp, B.pf, 'a'); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   fortOwner = new Map();
@@ -4397,7 +4644,7 @@ async function strike(a, d, f){
   if (d.hp <= 0){
     if (d.boss && !B.bossBy) B.bossBy = a.key;   // who brought the boss down (for bonus stars)
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
-      stamp('FLEES', '#ecc673'); Sfx.play('flee');
+      stamp(B.ch.spar ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
       await wait(500);
     } else if (scene){
@@ -4405,7 +4652,7 @@ async function strike(a, d, f){
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
-    if (d.flees) popup(d, 'Fled!', '#ecc673');
+    if (d.flees) popup(d, B.ch.spar ? 'Yields!' : 'Fled!', '#ecc673');
     await tween(380, t => { d.alpha = 1 - t; }); d.dead = true;
     if (d.team === 'e') B.kills++;
   }
@@ -5066,8 +5313,9 @@ function tokenFor(u, variant){
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
   const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   const ally = u.team === 'a';   // allies stand on a blue coaster
-  g.fillStyle = ally ? 'rgba(40,110,190,.92)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
-  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : F.stitch, T*.5);
+  const spar = u.team === 'e' && u.faction === B?.pf;   // training opponents from your own side stand on grey
+  g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
+  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : spar ? '#e8e4da' : F.stitch, T*.5);
   const icon = artImage(u, 'token');
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
   if (icon){
@@ -5406,8 +5654,18 @@ function nodeHTML(ck, ch, i, st = stageState(ck, i)){
 }
 // ---------- Side Stories ----------
 let hubTab = 'main';
+// Each unique character's set of three (28-data-sides.js): all open once the route's Chapter Two is over,
+// one more with each support rank (C, B, A). The character has to be in the army.
+function sideLock(ck, s){
+  const st = SAVE.camps[ck];
+  if (SAVE.debugUnlock) return null;
+  if (!isCleared(SIDE_OPENS[ck])) return `Opens after ${chapterRef(SIDE_OPENS[ck])}`;
+  if (!st.roster.some(r => r.key === s.char && !r.departed)) return `${CHARACTERS[s.char].name} isn't in the army`;
+  if (supportRank(ck, s.char) < s.rank) return `Opens with Support ${SUPPORT.ranks[s.rank - 1]} with ${speakerName(s.char)}`;
+  return null;
+}
 const sideState = (ck, j) => { const s = CAMPAIGNS[ck].sides[j];
-  return SAVE.camps[ck].cleared.includes(s.id) ? {s: 'done'} : (SAVE.debugUnlock || isCleared(s.unlock)) ? {s: 'next'} : {s: 'locked'}; };
+  return SAVE.camps[ck].cleared.includes(s.id) ? {s: 'done'} : sideLock(ck, s) ? {s: 'locked', why: sideLock(ck, s)} : {s: 'next'}; };
 const sidesNew = ck => CAMPAIGNS[ck].sides.filter((s, j) => sideState(ck, j).s === 'next').length;
 function sideRewardHTML(ck, s){
   const r = s.reward, bits = [`${r.res} ${FACTIONS[CAMPAIGNS[ck].faction].currency}`];
@@ -5417,15 +5675,20 @@ function sideRewardHTML(ck, s){
 }
 function sideNodeHTML(ck, s, j){
   const st = sideState(ck, j);
-  if (st.s === 'locked') return `<div class="node"><div class="pin future">?</div><div class="ncard dim"><h3>${s.title}</h3>
-    ${s.teaser ? `<div class="nmeta">${s.teaser}</div>` : ''}<div class="chips"><span class="chip">Opens after ${chapterRef(s.unlock)}</span></div></div></div>`;
+  if (st.s === 'locked') return `<div class="node"><div class="pin future">${s.rank}</div><div class="ncard dim"><h3>${s.title}</h3>
+    ${s.teaser ? `<div class="nmeta">${s.teaser}</div>` : ''}<div class="chips"><span class="chip">${st.why}</span></div></div></div>`;
   return nodeHTML(ck, s, 's' + j, st);
 }
 function sidesHTML(ck){
+  const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
+  if (!sets.length) return '<div class="hint">No side stories on this route yet.</div>';
   const sides = CAMPAIGNS[ck].sides;
-  if (!sides.length) return '<div class="hint">No side stories on this route yet.</div>';
-  return `<div class="hint">Optional battles that open as the story goes on. Their rewards are extras: the main story never needs them.</div>
-    <div class="track">${sides.map((s, j) => sideNodeHTML(ck, s, j)).join('')}</div>`;
+  return `<div class="hint">Every unique member of the army has three side stories. They open once Chapter Two is over: one with each support rank (C, B and A) you reach at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
+    ${sets.map(([key, set]) => { const done = sidesDone(ck, key), rank = supportRank(ck, key);
+      const sTag = rank >= 4 ? '<span class="chip ok">Support S reached</span>' : done === 3 ? '<span class="chip conv">Support S ready at the Camp</span>' : `<span class="chip">Support S: clear all three</span>`;
+      return `<div class="sset"><div class="por f-${CAMPAIGNS[ck].faction}">${portraitInner({key, look: CHARACTERS[key].look || key}, 'panel')}</div>
+        <div><h3>${set.title}</h3><p class="meta">${set.about}</p><div class="chips"><span class="chip">${done} of 3 cleared</span>${sTag}</div></div></div>
+        <div class="track">${sides.map((s, j) => s.char === key ? sideNodeHTML(ck, s, j) : '').join('')}</div>`; }).join('')}`;
 }
 function renderHub(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
@@ -5524,24 +5787,27 @@ function release(btn){
 }
 
 // ---------- Battle preparation ----------
+// A stage can name its own leader (lead: key) and keep characters out (ban: [keys]).
+const isLead = (ch, r) => ch.lead ? r.key === ch.lead : r.lord;
+const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key);
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
-  const ch = stageAt(ck, i), alive = living(ck);
+  const ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
   // mustDeploy: characters this stage needs (always picked, after the leader)
   const must = r => (ch.mustDeploy || []).includes(r.key);
-  const order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord && must(r)), ...alive.filter(r => !r.lord && !must(r))];
+  const order = [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r) && must(r)), ...alive.filter(r => !isLead(ch, r) && !must(r))];
   if (!prep || prep.ck !== ck || prep.i !== i) prep = {ck, i, picks: new Set(order.slice(0, max).map(r => r.uid))};
   for (const uid of [...prep.picks]) if (!alive.some(r => r.uid === uid)) prep.picks.delete(uid);
   for (const r of alive) if (must(r) && !prep.picks.has(r.uid)){
-    if (prep.picks.size >= max){ const drop = [...prep.picks].reverse().find(uid => { const x = alive.find(a => a.uid === uid); return x && !x.lord && !must(x); }); if (drop) prep.picks.delete(drop); }
+    if (prep.picks.size >= max){ const drop = [...prep.picks].reverse().find(uid => { const x = alive.find(a => a.uid === uid); return x && !isLead(ch, x) && !must(x); }); if (drop) prep.picks.delete(drop); }
     prep.picks.add(r.uid);
   }
   renderPrep();
 }
 function renderPrep(){
-  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), alive = living(ck);
-  const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => r.lord), ...alive.filter(r => !r.lord)];
+  const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
+  const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r))];
   const replaying = SAVE.camps[ck].cleared.includes(ch.id);
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
@@ -5561,7 +5827,7 @@ function renderPrep(){
 function togglePick(uid){
   const ch = stageAt(prep.ck, prep.i), rec = SAVE.camps[prep.ck].roster.find(r => r.uid === uid), max = Math.min(ch.maxDeploy, ch.deploy.length);
   if (!rec) return;
-  if (rec.lord){ toast(`${rec.name} leads every battle.`); return; }
+  if (isLead(ch, rec)){ toast(`${rec.name} leads ${ch.lead ? 'this battle' : 'every battle'}.`); return; }
   if ((ch.mustDeploy || []).includes(rec.key)){ toast(`${rec.name} must come on this one.`); return; }
   if (prep.picks.has(uid)) prep.picks.delete(uid);
   else if (prep.picks.size >= max){ toast(`Only ${max} can deploy here.`); return; }
@@ -5572,7 +5838,7 @@ function togglePick(uid){
 // ---------- Playing a chapter ----------
 async function playChapter(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), st = SAVE.camps[ck];
-  const recs = [...st.roster.filter(r => r.lord), ...st.roster.filter(r => !r.lord && prep.picks.has(r.uid))].filter(r => !r.dead);
+  const recs = [...st.roster.filter(r => isLead(ch, r)), ...st.roster.filter(r => !isLead(ch, r) && canDeploy(ch, r) && prep.picks.has(r.uid))].filter(r => !r.dead);
   const replay = st.cleared.includes(ch.id);   // replays skip the story and its one-time rewards
   if (!replay){
     applyOutfits(ck, ch.chapter.outfits);
@@ -5593,7 +5859,8 @@ async function playChapter(){
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
     const m = attireOf(r)?.mods; if (m) for (const k in m) r.stats[k] -= m[k];   // the attire's changes aren't kept
   }
-  for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }   // their weapon stays in the Armoury
+  // their weapon stays in the Armoury. Training (spar) knocks nobody out for good.
+  if (!ch.spar) for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }
   const departed = [], joined = [];
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
@@ -5629,15 +5896,15 @@ function renderResult(r){
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${r.armed?.length ? `<div><span>New weapons</span><b>${r.armed.join(', ')}</b></div>` : ''}
         ${ch.star ? `<div class="rstar ${r.star === 'ok' ? 'got' : ''}"><span>${r.star === 'ok' ? '★' : '☆'} Bonus: ${starText(ch, r.ck)}</span><b>${r.starTokens ? `Earned! +${r.starTokens} ${GACHA_ARMY[r.ck].currency}` : r.star === 'ok' ? 'Done (already earned)' : hasStar(ch.id) ? 'Missed (already earned)' : 'Missed: replay to try again'}</b></div>` : ''}
-        ${r.lost.length ? `<div><span>Unstitched (stitch them up on the Army screen)</span><b>${r.lost.join(', ')}</b></div>` : ''}
+        ${r.lost.length ? `<div><span>${ch.spar ? 'Knocked out in training (no harm done)' : 'Unstitched (stitch them up on the Army screen)'}</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
-      ${Object.entries(CAMPAIGNS).flatMap(([k, c]) => c.sides.filter(s => s.unlock === ch.id && !r.replay).map(s => `<div class="gatebox"><span>A side story has opened: <b>${s.title}</b>.</span><button class="btn" data-sidego="${k}" type="button">Side Stories</button></div>`)).join('')}
+      ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>Side Stories are open.</b> Each unique member of the army has three, one for each support rank.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;
@@ -6062,7 +6329,11 @@ function openAttirePicker(uid){
 const campOpen = ck => !!SAVE?.debugUnlock || isCleared(SUPPORT.opensAfter[ck]);
 const campSeen = ck => !!SAVE.flags['tut-camp-' + ck];
 const supportState = ck => ((SAVE.supports ||= {})[ck] ||= {});
-const supportRank = (ck, key) => supportState(ck)[key] || 0;   // ranks unlocked: 0 (none) to 3 (A)
+const supportRank = (ck, key) => supportState(ck)[key] || 0;   // ranks unlocked: 0 (none) to 3 (A), 4 (S)
+// Characters with side stories (28-data-sides.js) go on to S once all three are cleared; everyone else stops at A.
+const sideSetOf = (ck, key) => SIDE_SETS[key]?.camp === ck ? SIDE_SETS[key] : null;
+const sidesDone = (ck, key) => (sideSetOf(ck, key)?.quests || []).filter(q => SAVE.camps[ck].cleared.includes(q.id)).length;
+const maxRank = (ck, key) => sideSetOf(ck, key) ? 4 : 3;
 // Unique units who can support the leader: alive, ★★★, not the leader.
 const supportPartners = ck => living(ck).filter(r => !r.lord && r.stars === 3 && CHARACTERS[r.key]);
 function supportInfo(ck, key){
@@ -6093,9 +6364,11 @@ function renderCamp(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction], lord = camp.lord;
   const partners = supportPartners(ck);
   const card = r => {
-    const rank = supportRank(ck, r.key), info = supportInfo(ck, r.key), next = SUPPORT.ranks[rank], cost = next && SUPPORT.cost[next];
-    const tc = trainCost(r), maxed = (r.trained || 0) >= SUPPORT.train.max;
-    const pips = SUPPORT.ranks.map((R, i) => i < rank
+    const rank = supportRank(ck, r.key), info = supportInfo(ck, r.key), next = rank < maxRank(ck, r.key) ? SUPPORT.ranks[rank] : null, cost = next && SUPPORT.cost[next];
+    const tc = trainCost(r), maxed = (r.trained || 0) >= SUPPORT.train.max, done = sidesDone(ck, r.key);
+    const trainBtn = maxed ? '<button class="btn" type="button" disabled>Fully trained</button>'
+        : `<button class="btn${next ? '' : ' primary'}" data-train-unit="${r.key}" type="button" ${st.res < tc ? 'disabled' : ''}>Train · ${tc} ${F.currency}<small>+1 to two stats${r.trained ? ` · trained ×${r.trained}` : ''}</small></button>`;
+    const pips = SUPPORT.ranks.slice(0, maxRank(ck, r.key)).map((R, i) => i < rank
       ? `<button class="spip on" data-support-view="${r.key}" data-rank="${i}" type="button" aria-label="Watch support ${R} again">${R}</button>`
       : `<span class="spip">${R}</span>`).join('');
     return `<div class="scard">
@@ -6104,14 +6377,14 @@ function renderCamp(){
         <p class="meta">${info.about}</p>
         <div class="spips" aria-label="Support rank">${pips}</div></div>
       ${statsGrid(r)}
-      ${next ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost ? 'disabled' : ''}>Support ${next} · ${cost} ${F.currency}<small>${boostText(SUPPORT.boost[next])}</small></button>`
-        : maxed ? '<button class="btn" type="button" disabled>Fully trained</button>'
-        : `<button class="btn primary" data-train-unit="${r.key}" type="button" ${st.res < tc ? 'disabled' : ''}>Train · ${tc} ${F.currency}<small>+1 to two stats${r.trained ? ` · trained ×${r.trained}` : ''}</small></button>`}
+      ${next === 'S' ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost || done < 3 ? 'disabled' : ''}>Support S · ${cost} ${F.currency}<small>${done < 3 ? `Clear all three of ${sideSetOf(ck, r.key).title} (${done}/3)` : boostText(SUPPORT.boost.S)}</small></button>${trainBtn}`
+        : next ? `<button class="btn primary" data-support="${r.key}" type="button" ${st.res < cost ? 'disabled' : ''}>Support ${next} · ${cost} ${F.currency}<small>${boostText(SUPPORT.boost[next])}</small></button>`
+        : trainBtn}
     </div>`;
   };
   $('#camp').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Camp</h1><div class="res">${st.res}<small>${F.currency}</small></div></div>
-    <div class="hint">Spend time with the unique members of the army. Each conversation unlocks a support rank with ${speakerName(lord)}, from C to A, and makes them permanently stronger. After A, they can keep training. Tap a rank you've reached to watch it again.</div>
+    <div class="hint">Spend time with the unique members of the army. Each conversation unlocks a support rank with ${speakerName(lord)}, from C to A, and makes them permanently stronger. Those with side stories go on to a final rank, S, once all three are cleared. After A, they can keep training. Tap a rank you've reached to watch it again.</div>
     ${partners.length ? `<div class="ulist">${partners.map(card).join('')}</div>`
       : `<div class="gatebox"><span>No one to sit with yet. Unique (★★★) members of the army appear here: some join in the story, others through Recruiting.</span></div>`}
   </div>`;
@@ -6120,7 +6393,8 @@ function renderCamp(){
 async function unlockSupport(key){
   const ck = SAVE.current, st = stOf(), rec = st.roster.find(r => r.key === key && !r.dead);
   const rank = supportRank(ck, key), next = SUPPORT.ranks[rank];
-  if (!rec || !next) return;
+  if (!rec || !next || rank >= maxRank(ck, key)) return;
+  if (next === 'S' && sidesDone(ck, key) < 3) return;
   const cost = SUPPORT.cost[next];
   if (st.res < cost){ toast(`Not enough ${FACTIONS[campOf().faction].currency}.`); return; }
   const gains = SUPPORT.boost[next];
@@ -6128,11 +6402,14 @@ async function unlockSupport(key){
   await talk(supportScene(ck, rec, rank));
   Music.want(campTrack()); renderCamp();
   await showGains(rec, gains, `SUPPORT ${next}`, `${rec.name} & ${speakerName(campOf().lord)}`);
+  // a support rank opens that character's next side story (once Chapter Two is over)
+  const q = sideSetOf(ck, key)?.quests[rank];
+  if (q && next !== 'S' && isCleared(SIDE_OPENS[ck])) toast(`A side story has opened: ${q.title}.`);
 }
 // After rank A: +1 to two different stats (+2 HP), chosen by the unit's growth rates. No conversation.
 async function trainPartner(key){
   const ck = SAVE.current, st = stOf(), rec = st.roster.find(r => r.key === key && !r.dead);
-  if (!rec || supportRank(ck, key) < SUPPORT.ranks.length || (rec.trained || 0) >= SUPPORT.train.max) return;
+  if (!rec || supportRank(ck, key) < 3 || (rec.trained || 0) >= SUPPORT.train.max) return;
   const cost = trainCost(rec); if (st.res < cost) return;
   const g = growthOf(rec), pool = Object.keys(STAT_SHORT), gains = {};
   for (let n = 0; n < 2; n++){
@@ -6171,16 +6448,33 @@ function campTutorial(ck){
     {who: 'narr', text: 'To visit, tap Camp.'},
   ]);
 }
+// Side Stories open with the end of each route's Chapter Two.
+const sidesOpen = ck => isCleared(SIDE_OPENS[ck]) && Object.values(SIDE_SETS).some(s => s.camp === ck);
+const sidesSeen = ck => !!SAVE.flags['tut-sides-' + ck];
+function sideTutorial(ck){
+  if (!sidesOpen(ck) || sidesSeen(ck)) return;
+  SAVE.flags['tut-sides-' + ck] = true; saveGame();
+  const lord = CAMPAIGNS[ck].lord;
+  return talk([
+    {who: lord, text: ck === 'rae' ? 'For the first time since the mines, nobody is chasing us. Maybe there\'s time for something other than the war.'
+                                  : 'The column can rest. There are other things a prince ought to see to.'},
+    {who: 'narr', text: 'Side Stories are open. Each unique (★★★) member of the army has three side stories of their own.'},
+    {who: 'narr', text: 'One opens with each support rank you reach with them at the Camp: the first at C, the second at B, the third at A.'},
+    {who: 'narr', text: 'Clear all three to unlock their final conversation at the Camp: Support S.'},
+    {who: 'narr', text: 'Side stories are optional, and their rewards are extras. Find them on the Side Stories tab.'},
+  ]);
+}
 // When a feature opens, its tutorial plays straight away on the campaign screen, one after another.
 let tutorialsRunning = false;
 async function unlockTutorials(ck){
   if (tutorialsRunning || !$('#title').hidden) return;
-  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck))) return;
+  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck)) && !(sidesOpen(ck) && !sidesSeen(ck))) return;
   tutorialsRunning = true;
   await wait(50); $('#hub').scrollTo({top: 0});   // the buttons the tutorial points at are at the top
   try {
     if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
+    if (sidesOpen(ck) && !sidesSeen(ck)){ await sideTutorial(ck); hubTab = 'side'; renderHub(); }
   } finally { tutorialsRunning = false; }
 }
 

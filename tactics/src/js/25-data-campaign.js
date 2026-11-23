@@ -944,49 +944,6 @@ const CAMPAIGNS = {
   },
 };
 
-// ---------- Side Stories ----------
-// Optional battles for each route, listed on their own tab. Each opens once its `unlock` stage (from either
-// story) is cleared, and is set at that point in the story (it uses that chapter's outfits). Their rewards are
-// extras: nothing in the main story needs them. Same fields as a main stage, plus:
-//   unlock   the stage id that opens it
-//   teaser   one line shown while it's still locked
-CAMPAIGNS.rae.sides = [
-  {
-    id: 'RS-1', title: 'Placeholder: The Lost Patrol', unlock: 'R2-1', map: 'riverWoods', enemyFaction: 'frog',
-    teaser: 'Something is moving in the woods by the river.',
-    star: {type: 'noLosses', text: 'No one is unstitched'},
-    objective: {type: 'rout'}, maxDeploy: 6,
-    deploy: [[4,13],[5,13],[3,14],[6,14],[4,14],[5,14],[2,13],[7,13]],
-    brief: 'Placeholder side story. A frog patrol lost in the woods has stumbled onto the trail. Drive it off.',
-    enemies: () => [E('reed',3,2,4,'guard'), E('reed',3,7,4,'guard'), E('lily',3,4,6), E('bruiser',3,6,7), E('blade',3,1,8), E('lily',3,8,9)],
-    pre: [
-      {scene: 'woods', place: 'The Deep Woods · Side Story'},
-      {who: 'narr', text: '(Placeholder) A side story is still to be written here.'},
-      {who: 'rae', text: '(Placeholder) Frogs, off the main trail. Let\'s see what they\'re up to.'},
-    ],
-    post: [{who: 'rae', text: '(Placeholder) That\'s the last of them. Back to the trail.'}],
-    reward: {res: 400, tokens: 3, weapons: [{id: 'longsling', to: 'willow'}]},
-  },
-];
-CAMPAIGNS.frog.sides = [
-  {
-    id: 'FS-1', title: 'Placeholder: Rebels in the Reeds', unlock: 'F2-1', map: 'riverWoods', enemyFaction: 'rae',
-    teaser: 'Reports of rebels hiding along the river.',
-    star: {type: 'noLosses', text: 'No one is unstitched'},
-    objective: {type: 'rout'}, maxDeploy: 6,
-    deploy: [[4,0],[5,0],[3,1],[6,1],[4,1],[5,1],[2,1],[7,1]],
-    brief: 'Placeholder side story. A rebel band is hiding in the reeds by the river. Flush them out.',
-    enemies: () => [E('rfencer',3,3,8), E('rfencer',3,6,8), E('rarcher',3,2,11,'guard'), E('rlancer',3,7,10,'guard'), E('radept',3,4,12,'guard'), E('rfighter',3,5,10)],
-    pre: [
-      {scene: 'woods', place: 'Cousin Fraggle\'s Woods · Side Story'},
-      {who: 'narr', text: '(Placeholder) A side story is still to be written here.'},
-      {who: 'tiggle', text: '(Placeholder) Rebels in the reeds. Biggle, take the left bank.'},
-    ],
-    post: [{who: 'tiggle', text: '(Placeholder) The river\'s clear. Back to the column.'}],
-    reward: {res: 400, tokens: 3, weapons: [{id: 'rapier', to: 'tiggle'}]},
-  },
-];
-
 // Flatten chapters into one ordered list of stages per campaign. A stub chapter becomes one placeholder stage.
 for (const camp of Object.values(CAMPAIGNS)){
   camp.stages = camp.chapters.flatMap((c, ci) => c.stub
@@ -995,11 +952,7 @@ for (const camp of Object.values(CAMPAIGNS)){
        // more: a chapter that's only partly written ends with a placeholder
        ...(c.more ? [{id: c.id + '-more', title: 'To be continued', stub: true, brief: c.more, chapter: c, ci, si: c.stages.length}] : [])]);
 }
-// Side stories take the chapter of the stage that unlocks them (for outfits and labels).
-for (const camp of Object.values(CAMPAIGNS)) (camp.sides ||= []).forEach((s, j) => {
-  const at = Object.values(CAMPAIGNS).flatMap(c => c.stages).find(x => x.id === s.unlock);
-  Object.assign(s, {side: true, sj: j, si: j, chapter: at.chapter, ci: at.ci});
-});
+for (const camp of Object.values(CAMPAIGNS)) camp.sides = [];   // filled by 28-data-sides.js
 
 // Recommended average level for a stage: the enemies' average level (an elite counts a level higher, a boss two),
 // across everyone who will take the field (reinforcements and twists too), less however many levels' worth
