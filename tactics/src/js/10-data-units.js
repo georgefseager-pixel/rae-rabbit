@@ -226,6 +226,7 @@ const ART_CROP = {
   miner:   {panel: ['225% auto', '64% 1%'], talk: ['165% auto', '70% 1%']},   // generic mine rabbit, every fur
   minerold: {panel: ['215% auto', '58% 2%'], talk: ['160% auto', '60% 1%']},  // elderly mine rabbit
   minerbulk: {panel: ['215% auto', '60% 2%'], talk: ['160% auto', '62% 1%']}, // bulky mine rabbit
+  troopelite: {panel: ['205% auto', '50% 3%'], talk: ['150% auto', '50% 2%']},   // elite Republic soldier, every fur
   black:   {panel: ['230% auto', '42% 9%'], talk: ['165% auto', '42% 7%']},   // Fraggle's Black Guard, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform

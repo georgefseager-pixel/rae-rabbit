@@ -81,9 +81,13 @@ function artResolve(ent, kind){
     || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
   if (sp.base === 'troop'){
-    // Republic soldiers: one portrait and map icon, and a battle pose for each weapon (art/troop<weapon>-battle.png)
-    const pose = kind === 'battle' && {axe: 'troopaxe', lance: 'trooplance', bow: 'troopbow', tome: 'troopbook'}[ent.w || CLASSES[cls]?.w];
-    if (pose && ART[pose + fur]?.[kind]) return pose + fur;
+    // Republic soldiers: one portrait and map icon, and a battle pose for each weapon (art/troop<weapon>-battle.png).
+    // ★★ (elite) soldiers wear the plumed helmet: art/troopelite*-*.png (no bow pose: elite archers use the plain one).
+    const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w];
+    if (pose && ART['troop' + e + pose + fur]?.[kind]) return 'troop' + e + pose + fur;
+    if (pose && ART['troop' + pose + fur]?.[kind]) return 'troop' + pose + fur;
+    if (ART['troop' + e + fur]?.[kind]) return 'troop' + e + fur;
   }
   if (sp.base === 'black'){
     // Fraggle's Black Guard: one portrait and map icon, and a battle pose for each weapon (art/black<weapon>-battle.png; swords use black-battle.png).
@@ -197,7 +201,8 @@ async function buildEliteArmour(base){
   }
 }
 async function buildFurVariants(){
-  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', 'troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook']) await buildVariants(base, FURS, async (kind, px, W, H) => {
+  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', 'troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook',
+                     'troopelite', 'troopeliteaxe', 'troopelitelance', 'troopelitebook', 'troopelitestaff']) await buildVariants(base, FURS, async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], l = (Math.max(r, gg, b) + Math.min(r, gg, b))/510;

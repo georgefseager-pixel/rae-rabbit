@@ -463,7 +463,7 @@ const CAMPAIGNS = {
           brief: 'The frogs followed the trail to the Republic camp. Hold the palisade until dawn.',
           allies: () => [
             E('rfighter',4,3,7,'guard',{key: 'patch', name: 'Patch', look: 'patch'}),
-            E('rfencer',3,6,7,'guard',{key: 'ally', name: 'Nettle'}), E('rarcher',3,4,8,'guard',{key: 'ally', name: 'Fern'}),
+            E('rfencer',3,6,7,'guard',{key: 'ally', name: 'Nettle', elite: true}), E('rarcher',3,4,8,'guard',{key: 'ally', name: 'Fern'}),
           ],
           enemies: () => [
             E('prince',4,4,2,'charge',{key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', flees: true, talk: [
@@ -776,7 +776,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('rfighter',4,4,8,'hold',{boss: true, flees: true, key: 'patch', name: 'Patch', look: 'patch'}),
             E('rfencer',3,3,6), E('rfencer',3,6,6), E('rarcher',3,4,9,'guard'), E('radept',3,6,8,'guard'), E('rfighter',3,2,8),
-            E('rlancer',3,7,10,'guard'),
+            E('rlancer',3,7,10,'guard',{elite: true}),
           ],
           bossTalk: [
             {who: "patch", text: "Come on, then, frogs! I've only got the one eye, and it's on you!"},
@@ -814,7 +814,7 @@ const CAMPAIGNS = {
           brief: 'The rescuers\' trail leads straight to the rebel camp. Break through the palisade and drive back their leader.',
           enemies: () => [
             E('captain',5,4,10,'hold',{boss: true, flees: true, key: 'rae', name: 'Rae Rabbit', look: 'rae'}),
-            E('rlancer',3,3,7,'guard'), E('rlancer',3,6,7,'guard'), E('rarcher',3,2,9,'guard'), E('radept',3,7,9,'guard'),
+            E('rlancer',3,3,7,'guard',{elite: true}), E('rlancer',3,6,7,'guard',{elite: true}), E('rarcher',3,2,9,'guard'), E('radept',3,7,9,'guard'),
             E('rfighter',3,4,8), E('rfencer',3,5,12), E('rfencer',3,1,11),
           ],
           bossTalk: [
@@ -851,7 +851,7 @@ const CAMPAIGNS = {
           deploy: [[4,15],[5,15],[3,14],[6,14],[4,14],[5,14],[2,15],[7,15]],
           brief: 'Fraggle Friggle has vanished from his hill, and a Republic rearguard holds it. Clear them off, and find his trail.',
           enemies: () => [
-            E('rfighter',4,4,0,'hold'), E('rlancer',4,3,1,'guard'), E('radept',4,5,1,'guard'), E('rarcher',4,2,2,'guard'),
+            E('rfighter',4,4,0,'hold',{elite: true}), E('rlancer',4,3,1,'guard'), E('radept',4,5,1,'guard',{elite: true}), E('rarcher',4,2,2,'guard'),
             E('rarcher',4,7,2,'guard'), E('rfighter',4,5,3,'guard'), E('rfencer',3,4,5), E('rfencer',3,2,7), E('rlancer',3,8,7),
           ],
           pre: [
