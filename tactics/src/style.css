@@ -669,3 +669,5 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .sset .por{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(236,198,115,.5)}
 .sset h3{font-family:var(--fell);font-weight:400;font-size:19px;margin:0 0 2px;color:var(--cream)}
 .sset .meta{margin:0 0 6px}
+.htabs button:disabled{opacity:.5;cursor:default}
+.htabs button small{font-size:12px}

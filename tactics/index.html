@@ -676,6 +676,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .sset .por{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(236,198,115,.5)}
 .sset h3{font-family:var(--fell);font-weight:400;font-size:19px;margin:0 0 2px;color:var(--cream)}
 .sset .meta{margin:0 0 6px}
+.htabs button:disabled{opacity:.5;cursor:default}
+.htabs button small{font-size:12px}
 
 </style>
 
@@ -3863,8 +3865,9 @@ const SUPPORTS = {
 
 // ---------------- 28-data-sides.js ----------------
 // ================= Side Stories =================
-// Every unique character gets a set of three side stories. All three open once the route's Chapter Two is over
-// (SIDE_OPENS), and then one at a time: the first with Support C at the Camp, the second with B, the third with A.
+// Every unique character gets a set of three side stories. The Side Stories tab opens with the Camp (SIDE_OPENS, the
+// same stage as SUPPORT.opensAfter, and the same tutorial), and then they open one at a time: the first with Support C
+// with that character, the second with B, the third with A.
 // Clearing all three opens Support S (the final conversation, in 27-data-supports.js).
 // A side story is a stage (same fields as 25-data-campaign.js), plus a few that only side stories tend to use:
 //   lead: key     someone else leads (the battle is lost if they fall)
@@ -3872,7 +3875,7 @@ const SUPPORTS = {
 //   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
 //   teaser        one line shown while it's locked
 // Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
-const SIDE_OPENS = {rae: 'R2-4', frog: 'F2-4'};
+const SIDE_OPENS = SUPPORT.opensAfter;
 
 const SIDE_SETS = {
   // ---------- Willow's Lessons: Willow trains Rae on the practice field. Each teaches one thing. ----------
@@ -3888,9 +3891,9 @@ const SIDE_SETS = {
         brief: 'Willow\'s squad holds the rocks on the ridge. Rocks make anyone standing on them hard to hit. Use the cover yourself, and draw them off it.',
         prepNote: 'Training: nobody is unstitched for real. Willow leads the other side, so she can\'t be deployed.',
         enemies: () => [
-          E('scholar',5,3,2,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
-          E('rarcher',4,2,3,'guard'), E('rarcher',4,6,4,'guard'), E('radept',4,3,3,'guard'),
-          E('rfencer',4,4,6,'guard'), E('rlancer',4,5,6,'guard'), E('rfighter',4,1,8,'guard'),
+          E('scholar',4,3,2,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('rarcher',3,2,3,'guard'), E('rarcher',3,6,4,'guard'), E('radept',3,3,3,'guard'),
+          E('rfencer',3,4,6,'guard'), E('rlancer',3,5,6,'guard'), E('rfighter',3,1,8,'guard'),
         ],
         bossTalk: [
           {who: 'willow', text: 'There you are. Now: are you going to stand in the open and let me hit you, or are you going to think?'},
@@ -3920,9 +3923,9 @@ const SIDE_SETS = {
         brief: 'Willow\'s squad crosses the river: axes at the west bridge, spears at the east. Send the right weapon against each.',
         prepNote: 'Training: nobody is unstitched for real. Bring a mix of swords, axes and spears. Willow can\'t be deployed.',
         enemies: () => [
-          E('scholar',5,2,0,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('scholar',4,2,0,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
           E('rfighter',4,2,5), E('rfighter',4,1,6), E('rlancer',4,6,5), E('rlancer',4,5,7),
-          E('rfencer',5,3,2,'guard'), E('rfencer',5,6,2,'guard'), E('radept',4,5,1,'guard'),
+          E('rfencer',4,3,2,'guard'), E('rfencer',4,6,2,'guard'), E('radept',4,5,1,'guard'),
         ],
         bossTalk: [
           {who: 'willow', text: 'A sword against my axes, a spear against my swords? Show me you were listening.'},
@@ -3988,13 +3991,13 @@ const SIDE_SETS = {
         brief: 'Flopsy Flora has slipped out of camp with a few soldiers to pick flowers. A frog patrol thinks it\'s found an easy target. Flopsy leads, and must not fall.',
         prepNote: 'Flopsy Flora leads. Rae isn\'t here: she doesn\'t know Flopsy\'s gone.',
         enemies: () => [
-          E('lily',4,4,6,'charge',{key: 'sludge', name: 'Sergeant Sludge', look: 'guard', talk: [
+          E('lily',3,4,6,'charge',{key: 'sludge', name: 'Sergeant Sludge', look: 'guard', talk: [
             {who: 'sludge', text: 'Well, well. A little bunny with a basket. Hand it over, little one, and we\'ll only unstitch your friends.'},
             {who: 'sister', text: 'Nobody calls me little one. Not even my sister. Not any more.'},
           ]}),
-          E('reed',4,1,6,'guard'), E('bruiser',4,2,5), E('blade',4,9,9), E('bruiser',4,0,10),
+          E('reed',3,1,6,'guard'), E('bruiser',3,2,5), E('blade',3,9,9), E('bruiser',3,0,10),
         ],
-        reinforce: () => [{turn: 2, units: [E('lily',4,8,4), E('reed',4,6,5,'guard')]}],
+        reinforce: () => [{turn: 2, units: [E('lily',3,8,4), E('reed',3,6,5,'guard')]}],
         pre: [
           {scene: 'woods', place: 'Past the Stream · Morning'},
           {who: 'narr', text: 'Rae is in a war council. Willow is with her. Nobody is watching the edge of the camp.'},
@@ -4019,9 +4022,9 @@ const SIDE_SETS = {
         brief: 'Sergeant Sludge is back with more frogs, sure that the first time was a fluke. Show him it wasn\'t. Flopsy leads, and must not fall.',
         prepNote: 'Flopsy Flora leads. Rae isn\'t here. Keep Flopsy out of reach for the bonus.',
         enemies: () => [
-          E('lily',5,4,0,'hold',{boss: true, flees: true, key: 'sludge', name: 'Sergeant Sludge', look: 'guard'}),
+          E('lily',4,4,0,'hold',{boss: true, flees: true, key: 'sludge', name: 'Sergeant Sludge', look: 'guard'}),
           E('lily',4,3,2,'guard'), E('reed',4,6,2,'guard'), E('bruiser',4,4,5), E('lily',4,7,6,'charge',{elite: true}),
-          E('blade',4,2,7), E('reed',5,1,9), E('bruiser',4,8,10),
+          E('blade',4,2,7), E('reed',4,1,9), E('bruiser',4,8,10),
         ],
         bossTalk: [
           {who: 'sludge', text: 'That was a fluke! A fluke! Nobody\'s scared of a rabbit with a sewing needle!'},
@@ -5654,13 +5657,13 @@ function nodeHTML(ck, ch, i, st = stageState(ck, i)){
 }
 // ---------- Side Stories ----------
 let hubTab = 'main';
-// Each unique character's set of three (28-data-sides.js): all open once the route's Chapter Two is over,
-// one more with each support rank (C, B, A). The character has to be in the army.
+// Each unique character's set of three (28-data-sides.js): the tab opens with the Camp, then one side story
+// with each support rank (C, B, A). The character has to be in the army.
 function sideLock(ck, s){
   const st = SAVE.camps[ck];
   if (SAVE.debugUnlock) return null;
-  if (!isCleared(SIDE_OPENS[ck])) return `Opens after ${chapterRef(SIDE_OPENS[ck])}`;
-  if (!st.roster.some(r => r.key === s.char && !r.departed)) return `${CHARACTERS[s.char].name} isn't in the army`;
+  if (!campOpen(ck)) return `Opens with the Camp, after ${chapterRef(SIDE_OPENS[ck])}`;
+  if (!st.roster.some(r => r.key === s.char && !r.departed)) return `${speakerName(s.char)} isn't in the army`;
   if (supportRank(ck, s.char) < s.rank) return `Opens with Support ${SUPPORT.ranks[s.rank - 1]} with ${speakerName(s.char)}`;
   return null;
 }
@@ -5683,7 +5686,7 @@ function sidesHTML(ck){
   const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
   if (!sets.length) return '<div class="hint">No side stories on this route yet.</div>';
   const sides = CAMPAIGNS[ck].sides;
-  return `<div class="hint">Every unique member of the army has three side stories. They open once Chapter Two is over: one with each support rank (C, B and A) you reach at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
+  return `<div class="hint">Every unique member of the army has three side stories. One opens with each support rank (C, B and A) you reach with them at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
     ${sets.map(([key, set]) => { const done = sidesDone(ck, key), rank = supportRank(ck, key);
       const sTag = rank >= 4 ? '<span class="chip ok">Support S reached</span>' : done === 3 ? '<span class="chip conv">Support S ready at the Camp</span>' : `<span class="chip">Support S: clear all three</span>`;
       return `<div class="sset"><div class="por f-${CAMPAIGNS[ck].faction}">${portraitInner({key, look: CHARACTERS[key].look || key}, 'panel')}</div>
@@ -5707,8 +5710,8 @@ function renderHub(){
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
-    <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button">Side Stories${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
-    ${hubTab === 'side' ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
+    <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
+    ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
     <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button></div>
   </div>`;
@@ -5899,7 +5902,7 @@ function renderResult(r){
         ${r.lost.length ? `<div><span>${ch.spar ? 'Knocked out in training (no harm done)' : 'Unstitched (stitch them up on the Army screen)'}</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
-      ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>Side Stories are open.</b> Each unique member of the army has three, one for each support rank.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
+      ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>The Camp and Side Stories are open.</b> Each unique member of the army has supports to unlock, and side stories that open with them.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
@@ -6404,7 +6407,7 @@ async function unlockSupport(key){
   await showGains(rec, gains, `SUPPORT ${next}`, `${rec.name} & ${speakerName(campOf().lord)}`);
   // a support rank opens that character's next side story (once Chapter Two is over)
   const q = sideSetOf(ck, key)?.quests[rank];
-  if (q && next !== 'S' && isCleared(SIDE_OPENS[ck])) toast(`A side story has opened: ${q.title}.`);
+  if (q && next !== 'S') toast(`A side story has opened: ${q.title}.`);
 }
 // After rank A: +1 to two different stats (+2 HP), chosen by the unit's growth rates. No conversation.
 async function trainPartner(key){
@@ -6437,32 +6440,31 @@ function openCamp(){
 // Played over the campaign screen as soon as the Camp opens (see unlockTutorials).
 function campTutorial(ck){
   if (!campOpen(ck) || campSeen(ck)) return;
-  SAVE.flags['tut-camp-' + ck] = true; saveGame();
+  SAVE.flags['tut-camp-' + ck] = true; SAVE.flags['tut-sides-' + ck] = true; saveGame();   // one tutorial for both
   const lord = CAMPAIGNS[ck].lord, F = FACTIONS[CAMPAIGNS[ck].faction];
   return talk([
     {who: lord, text: ck === 'rae' ? 'A night without guards or bells. We should use it to get to know who\'s standing with us.'
                                   : 'Biggle says a prince should know his soldiers. On that, at least, he may be right.'},
     {who: 'narr', text: `The Camp is open. Here, ${speakerName(lord)} can spend time with the unique (★★★) members of the army.`},
-    {who: 'narr', text: 'Each of them has three support conversations, ranked C, B and A. Some become friends. Others have something to teach. Every rank makes them permanently stronger.'},
+    {who: 'narr', text: 'Each of them has support conversations, ranked C, B and A (and, for some, a final rank: S). Some become friends. Others have something to teach. Every rank makes them permanently stronger.'},
     {who: 'narr', text: `Unlocking a rank costs ${F.currency}: ${SUPPORT.cost.C} for C, ${SUPPORT.cost.B} for B, ${SUPPORT.cost.A} for A. Anything you've unlocked can be watched again at any time.`},
     {who: 'narr', text: 'To visit, tap Camp.'},
+    ...sideTutorialLines(ck),
   ]);
 }
-// Side Stories open with the end of each route's Chapter Two.
-const sidesOpen = ck => isCleared(SIDE_OPENS[ck]) && Object.values(SIDE_SETS).some(s => s.camp === ck);
+// Side Stories open with the Camp; the Camp's tutorial explains both.
+const sidesOpen = ck => campOpen(ck) && Object.values(SIDE_SETS).some(s => s.camp === ck);
 const sidesSeen = ck => !!SAVE.flags['tut-sides-' + ck];
+const sideTutorialLines = ck => Object.values(SIDE_SETS).some(s => s.camp === ck) ? [
+  {who: 'narr', text: 'Supports also open Side Stories: three optional battles for each unique member of the army, on the Side Stories tab.'},
+  {who: 'narr', text: 'Their first side story opens at Support C, the second at B, the third at A. Clear all three for a final conversation: Support S.'},
+  {who: 'narr', text: 'Side stories are extras. Their rewards are nice to have, and the main story never needs them.'},
+] : [];
+// Saves that saw the Camp's tutorial before Side Stories existed get just the side story part.
 function sideTutorial(ck){
   if (!sidesOpen(ck) || sidesSeen(ck)) return;
   SAVE.flags['tut-sides-' + ck] = true; saveGame();
-  const lord = CAMPAIGNS[ck].lord;
-  return talk([
-    {who: lord, text: ck === 'rae' ? 'For the first time since the mines, nobody is chasing us. Maybe there\'s time for something other than the war.'
-                                  : 'The column can rest. There are other things a prince ought to see to.'},
-    {who: 'narr', text: 'Side Stories are open. Each unique (★★★) member of the army has three side stories of their own.'},
-    {who: 'narr', text: 'One opens with each support rank you reach with them at the Camp: the first at C, the second at B, the third at A.'},
-    {who: 'narr', text: 'Clear all three to unlock their final conversation at the Camp: Support S.'},
-    {who: 'narr', text: 'Side stories are optional, and their rewards are extras. Find them on the Side Stories tab.'},
-  ]);
+  return talk(sideTutorialLines(ck));
 }
 // When a feature opens, its tutorial plays straight away on the campaign screen, one after another.
 let tutorialsRunning = false;
@@ -6474,7 +6476,7 @@ async function unlockTutorials(ck){
   try {
     if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
-    if (sidesOpen(ck) && !sidesSeen(ck)){ await sideTutorial(ck); hubTab = 'side'; renderHub(); }
+    if (sidesOpen(ck) && !sidesSeen(ck)) await sideTutorial(ck);
   } finally { tutorialsRunning = false; }
 }
 

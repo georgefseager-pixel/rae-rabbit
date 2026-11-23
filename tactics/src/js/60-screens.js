@@ -64,13 +64,13 @@ function nodeHTML(ck, ch, i, st = stageState(ck, i)){
 }
 // ---------- Side Stories ----------
 let hubTab = 'main';
-// Each unique character's set of three (28-data-sides.js): all open once the route's Chapter Two is over,
-// one more with each support rank (C, B, A). The character has to be in the army.
+// Each unique character's set of three (28-data-sides.js): the tab opens with the Camp, then one side story
+// with each support rank (C, B, A). The character has to be in the army.
 function sideLock(ck, s){
   const st = SAVE.camps[ck];
   if (SAVE.debugUnlock) return null;
-  if (!isCleared(SIDE_OPENS[ck])) return `Opens after ${chapterRef(SIDE_OPENS[ck])}`;
-  if (!st.roster.some(r => r.key === s.char && !r.departed)) return `${CHARACTERS[s.char].name} isn't in the army`;
+  if (!campOpen(ck)) return `Opens with the Camp, after ${chapterRef(SIDE_OPENS[ck])}`;
+  if (!st.roster.some(r => r.key === s.char && !r.departed)) return `${speakerName(s.char)} isn't in the army`;
   if (supportRank(ck, s.char) < s.rank) return `Opens with Support ${SUPPORT.ranks[s.rank - 1]} with ${speakerName(s.char)}`;
   return null;
 }
@@ -93,7 +93,7 @@ function sidesHTML(ck){
   const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
   if (!sets.length) return '<div class="hint">No side stories on this route yet.</div>';
   const sides = CAMPAIGNS[ck].sides;
-  return `<div class="hint">Every unique member of the army has three side stories. They open once Chapter Two is over: one with each support rank (C, B and A) you reach at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
+  return `<div class="hint">Every unique member of the army has three side stories. One opens with each support rank (C, B and A) you reach with them at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
     ${sets.map(([key, set]) => { const done = sidesDone(ck, key), rank = supportRank(ck, key);
       const sTag = rank >= 4 ? '<span class="chip ok">Support S reached</span>' : done === 3 ? '<span class="chip conv">Support S ready at the Camp</span>' : `<span class="chip">Support S: clear all three</span>`;
       return `<div class="sset"><div class="por f-${CAMPAIGNS[ck].faction}">${portraitInner({key, look: CHARACTERS[key].look || key}, 'panel')}</div>
@@ -117,8 +117,8 @@ function renderHub(){
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
-    <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button">Side Stories${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
-    ${hubTab === 'side' ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
+    <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
+    ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
     <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button></div>
   </div>`;
@@ -309,7 +309,7 @@ function renderResult(r){
         ${r.lost.length ? `<div><span>${ch.spar ? 'Knocked out in training (no harm done)' : 'Unstitched (stitch them up on the Army screen)'}</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
-      ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>Side Stories are open.</b> Each unique member of the army has three, one for each support rank.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
+      ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>The Camp and Side Stories are open.</b> Each unique member of the army has supports to unlock, and side stories that open with them.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
       ${opened.map(({c, j}) => `<div class="gatebox"><span>The other story can now go on: <b>${chapterRef(c.id)}</b>.</span><button class="btn" data-camp="${other}" type="button">Switch to the ${FACTIONS[CAMPAIGNS[other].faction].name}</button></div>`).join('')}
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {

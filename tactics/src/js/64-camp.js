@@ -77,7 +77,7 @@ async function unlockSupport(key){
   await showGains(rec, gains, `SUPPORT ${next}`, `${rec.name} & ${speakerName(campOf().lord)}`);
   // a support rank opens that character's next side story (once Chapter Two is over)
   const q = sideSetOf(ck, key)?.quests[rank];
-  if (q && next !== 'S' && isCleared(SIDE_OPENS[ck])) toast(`A side story has opened: ${q.title}.`);
+  if (q && next !== 'S') toast(`A side story has opened: ${q.title}.`);
 }
 // After rank A: +1 to two different stats (+2 HP), chosen by the unit's growth rates. No conversation.
 async function trainPartner(key){
@@ -110,32 +110,31 @@ function openCamp(){
 // Played over the campaign screen as soon as the Camp opens (see unlockTutorials).
 function campTutorial(ck){
   if (!campOpen(ck) || campSeen(ck)) return;
-  SAVE.flags['tut-camp-' + ck] = true; saveGame();
+  SAVE.flags['tut-camp-' + ck] = true; SAVE.flags['tut-sides-' + ck] = true; saveGame();   // one tutorial for both
   const lord = CAMPAIGNS[ck].lord, F = FACTIONS[CAMPAIGNS[ck].faction];
   return talk([
     {who: lord, text: ck === 'rae' ? 'A night without guards or bells. We should use it to get to know who\'s standing with us.'
                                   : 'Biggle says a prince should know his soldiers. On that, at least, he may be right.'},
     {who: 'narr', text: `The Camp is open. Here, ${speakerName(lord)} can spend time with the unique (★★★) members of the army.`},
-    {who: 'narr', text: 'Each of them has three support conversations, ranked C, B and A. Some become friends. Others have something to teach. Every rank makes them permanently stronger.'},
+    {who: 'narr', text: 'Each of them has support conversations, ranked C, B and A (and, for some, a final rank: S). Some become friends. Others have something to teach. Every rank makes them permanently stronger.'},
     {who: 'narr', text: `Unlocking a rank costs ${F.currency}: ${SUPPORT.cost.C} for C, ${SUPPORT.cost.B} for B, ${SUPPORT.cost.A} for A. Anything you've unlocked can be watched again at any time.`},
     {who: 'narr', text: 'To visit, tap Camp.'},
+    ...sideTutorialLines(ck),
   ]);
 }
-// Side Stories open with the end of each route's Chapter Two.
-const sidesOpen = ck => isCleared(SIDE_OPENS[ck]) && Object.values(SIDE_SETS).some(s => s.camp === ck);
+// Side Stories open with the Camp; the Camp's tutorial explains both.
+const sidesOpen = ck => campOpen(ck) && Object.values(SIDE_SETS).some(s => s.camp === ck);
 const sidesSeen = ck => !!SAVE.flags['tut-sides-' + ck];
+const sideTutorialLines = ck => Object.values(SIDE_SETS).some(s => s.camp === ck) ? [
+  {who: 'narr', text: 'Supports also open Side Stories: three optional battles for each unique member of the army, on the Side Stories tab.'},
+  {who: 'narr', text: 'Their first side story opens at Support C, the second at B, the third at A. Clear all three for a final conversation: Support S.'},
+  {who: 'narr', text: 'Side stories are extras. Their rewards are nice to have, and the main story never needs them.'},
+] : [];
+// Saves that saw the Camp's tutorial before Side Stories existed get just the side story part.
 function sideTutorial(ck){
   if (!sidesOpen(ck) || sidesSeen(ck)) return;
   SAVE.flags['tut-sides-' + ck] = true; saveGame();
-  const lord = CAMPAIGNS[ck].lord;
-  return talk([
-    {who: lord, text: ck === 'rae' ? 'For the first time since the mines, nobody is chasing us. Maybe there\'s time for something other than the war.'
-                                  : 'The column can rest. There are other things a prince ought to see to.'},
-    {who: 'narr', text: 'Side Stories are open. Each unique (★★★) member of the army has three side stories of their own.'},
-    {who: 'narr', text: 'One opens with each support rank you reach with them at the Camp: the first at C, the second at B, the third at A.'},
-    {who: 'narr', text: 'Clear all three to unlock their final conversation at the Camp: Support S.'},
-    {who: 'narr', text: 'Side stories are optional, and their rewards are extras. Find them on the Side Stories tab.'},
-  ]);
+  return talk(sideTutorialLines(ck));
 }
 // When a feature opens, its tutorial plays straight away on the campaign screen, one after another.
 let tutorialsRunning = false;
@@ -147,6 +146,6 @@ async function unlockTutorials(ck){
   try {
     if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
-    if (sidesOpen(ck) && !sidesSeen(ck)){ await sideTutorial(ck); hubTab = 'side'; renderHub(); }
+    if (sidesOpen(ck) && !sidesSeen(ck)) await sideTutorial(ck);
   } finally { tutorialsRunning = false; }
 }

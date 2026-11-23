@@ -6,6 +6,8 @@ and run
 
     python3 tactics/tools/build.py
 
+See `MECHANICS.md` for every battle mechanic, where each is used, and the recommended-level line.
+
 ## Layout
 
 | Path | What it holds |

@@ -1,6 +1,7 @@
 // ================= Side Stories =================
-// Every unique character gets a set of three side stories. All three open once the route's Chapter Two is over
-// (SIDE_OPENS), and then one at a time: the first with Support C at the Camp, the second with B, the third with A.
+// Every unique character gets a set of three side stories. The Side Stories tab opens with the Camp (SIDE_OPENS, the
+// same stage as SUPPORT.opensAfter, and the same tutorial), and then they open one at a time: the first with Support C
+// with that character, the second with B, the third with A.
 // Clearing all three opens Support S (the final conversation, in 27-data-supports.js).
 // A side story is a stage (same fields as 25-data-campaign.js), plus a few that only side stories tend to use:
 //   lead: key     someone else leads (the battle is lost if they fall)
@@ -8,7 +9,7 @@
 //   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
 //   teaser        one line shown while it's locked
 // Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
-const SIDE_OPENS = {rae: 'R2-4', frog: 'F2-4'};
+const SIDE_OPENS = SUPPORT.opensAfter;
 
 const SIDE_SETS = {
   // ---------- Willow's Lessons: Willow trains Rae on the practice field. Each teaches one thing. ----------
@@ -24,9 +25,9 @@ const SIDE_SETS = {
         brief: 'Willow\'s squad holds the rocks on the ridge. Rocks make anyone standing on them hard to hit. Use the cover yourself, and draw them off it.',
         prepNote: 'Training: nobody is unstitched for real. Willow leads the other side, so she can\'t be deployed.',
         enemies: () => [
-          E('scholar',5,3,2,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
-          E('rarcher',4,2,3,'guard'), E('rarcher',4,6,4,'guard'), E('radept',4,3,3,'guard'),
-          E('rfencer',4,4,6,'guard'), E('rlancer',4,5,6,'guard'), E('rfighter',4,1,8,'guard'),
+          E('scholar',4,3,2,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('rarcher',3,2,3,'guard'), E('rarcher',3,6,4,'guard'), E('radept',3,3,3,'guard'),
+          E('rfencer',3,4,6,'guard'), E('rlancer',3,5,6,'guard'), E('rfighter',3,1,8,'guard'),
         ],
         bossTalk: [
           {who: 'willow', text: 'There you are. Now: are you going to stand in the open and let me hit you, or are you going to think?'},
@@ -56,9 +57,9 @@ const SIDE_SETS = {
         brief: 'Willow\'s squad crosses the river: axes at the west bridge, spears at the east. Send the right weapon against each.',
         prepNote: 'Training: nobody is unstitched for real. Bring a mix of swords, axes and spears. Willow can\'t be deployed.',
         enemies: () => [
-          E('scholar',5,2,0,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
+          E('scholar',4,2,0,'hold',{boss: true, flees: true, key: 'willow', name: 'Willow', look: 'willow'}),
           E('rfighter',4,2,5), E('rfighter',4,1,6), E('rlancer',4,6,5), E('rlancer',4,5,7),
-          E('rfencer',5,3,2,'guard'), E('rfencer',5,6,2,'guard'), E('radept',4,5,1,'guard'),
+          E('rfencer',4,3,2,'guard'), E('rfencer',4,6,2,'guard'), E('radept',4,5,1,'guard'),
         ],
         bossTalk: [
           {who: 'willow', text: 'A sword against my axes, a spear against my swords? Show me you were listening.'},
@@ -124,13 +125,13 @@ const SIDE_SETS = {
         brief: 'Flopsy Flora has slipped out of camp with a few soldiers to pick flowers. A frog patrol thinks it\'s found an easy target. Flopsy leads, and must not fall.',
         prepNote: 'Flopsy Flora leads. Rae isn\'t here: she doesn\'t know Flopsy\'s gone.',
         enemies: () => [
-          E('lily',4,4,6,'charge',{key: 'sludge', name: 'Sergeant Sludge', look: 'guard', talk: [
+          E('lily',3,4,6,'charge',{key: 'sludge', name: 'Sergeant Sludge', look: 'guard', talk: [
             {who: 'sludge', text: 'Well, well. A little bunny with a basket. Hand it over, little one, and we\'ll only unstitch your friends.'},
             {who: 'sister', text: 'Nobody calls me little one. Not even my sister. Not any more.'},
           ]}),
-          E('reed',4,1,6,'guard'), E('bruiser',4,2,5), E('blade',4,9,9), E('bruiser',4,0,10),
+          E('reed',3,1,6,'guard'), E('bruiser',3,2,5), E('blade',3,9,9), E('bruiser',3,0,10),
         ],
-        reinforce: () => [{turn: 2, units: [E('lily',4,8,4), E('reed',4,6,5,'guard')]}],
+        reinforce: () => [{turn: 2, units: [E('lily',3,8,4), E('reed',3,6,5,'guard')]}],
         pre: [
           {scene: 'woods', place: 'Past the Stream · Morning'},
           {who: 'narr', text: 'Rae is in a war council. Willow is with her. Nobody is watching the edge of the camp.'},
@@ -155,9 +156,9 @@ const SIDE_SETS = {
         brief: 'Sergeant Sludge is back with more frogs, sure that the first time was a fluke. Show him it wasn\'t. Flopsy leads, and must not fall.',
         prepNote: 'Flopsy Flora leads. Rae isn\'t here. Keep Flopsy out of reach for the bonus.',
         enemies: () => [
-          E('lily',5,4,0,'hold',{boss: true, flees: true, key: 'sludge', name: 'Sergeant Sludge', look: 'guard'}),
+          E('lily',4,4,0,'hold',{boss: true, flees: true, key: 'sludge', name: 'Sergeant Sludge', look: 'guard'}),
           E('lily',4,3,2,'guard'), E('reed',4,6,2,'guard'), E('bruiser',4,4,5), E('lily',4,7,6,'charge',{elite: true}),
-          E('blade',4,2,7), E('reed',5,1,9), E('bruiser',4,8,10),
+          E('blade',4,2,7), E('reed',4,1,9), E('bruiser',4,8,10),
         ],
         bossTalk: [
           {who: 'sludge', text: 'That was a fluke! A fluke! Nobody\'s scared of a rabbit with a sewing needle!'},
