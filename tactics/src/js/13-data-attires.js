@@ -8,11 +8,15 @@
 //   name / desc
 //   cls     optional: wearing it changes class (and so usually weapon type, range and growths)
 //   mods    optional: stat changes while worn, e.g. {def: 2, spd: -1}
-// Most attires will change stats slightly and the weapon type; the two below (their mine clothes, kept when they
-// change into Republic colours) are look-only.
+// Most attires will change stats slightly and the weapon type; the mine clothes below are look-only.
+// Attires can also come from recruiting: a banner's `attires: [ids]` are featured alongside its characters (26-data-gacha.js).
 const ATTIRES = {
   raeRags:   {char: 'rae',    outfit: 'camp', name: 'Mine Rags', desc: 'The patched rags Rae wore in the mines. She kept them, folded small.'},
   floraRags: {char: 'sister', outfit: 'camp', name: 'Camp Rags', desc: 'Little Sister\'s old camp clothes. Flopsy Flora never threw them away.'},
+  // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
+  // armour, but lighter (less Def), and a horse can't climb rocks.
+  rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3},
+              desc: 'Biggle\'s parade armour, rose-pink and gold, and the royal stables\' finest horse. He insists the colour is "crimson".'},
 };
 const attireOf = rec => rec && ATTIRES[rec.attire];
 // The class a unit fights as: its own, or its attire's.

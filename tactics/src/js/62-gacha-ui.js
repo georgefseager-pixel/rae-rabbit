@@ -3,17 +3,21 @@ const gachaSel = {};   // selected banner per army
 const stars = n => '★'.repeat(n || 1);
 
 // The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
+// A banner's featured attires, as entities that show the attire's art (artResolve) and its class.
+const attireEnt = id => { const a = ATTIRES[id], c = CHARACTERS[a.char]; return {key: a.char, look: c.look || a.char, attire: id, cls: a.cls || c.cls}; };
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
-  const figs = keys.map((k, i) => {
-    const src = artFor(k, 'portrait') || plushPortrait(CHARACTERS[k].look || k);
-    return `<div class="bfig${artFor(k, 'portrait') ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
+  const items = [...keys.map(k => ({ent: k, look: CHARACTERS[k].look || k, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls})),
+                 ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${CHARACTERS[ATTIRES[id].char].name} · attire`}))];
+  const figs = items.map((x, i) => {
+    const art = artFor(x.ent, 'portrait'), src = art || plushPortrait(x.look);
+    return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
   }).join('');
-  const plates = keys.map(k => `<div class="bplate"><span class="bpst">★★★</span><b>${CHARACTERS[k].name}</b><small>${CLASSES[CHARACTERS[k].cls].name}</small></div>`).join('');
+  const plates = items.map(x => `<div class="bplate"><span class="bpst">★★★</span><b>${x.name}</b><small>${x.sub || CLASSES[x.cls].name}</small></div>`).join('');
   const bg = b.bg && ART.bg?.[b.bg];
   return `<div class="bhero"${bg ? ` style="--bgimg:url(${bg})"` : ''}>
       <div class="brays"></div>
-      <div class="bfigs n${keys.length}">${figs}</div>
+      <div class="bfigs n${items.length}">${figs}</div>
       <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
       ${b.featured ? '<div class="brate">Rate up</div>' : ''}
       <div class="bplates">${plates}</div>
@@ -28,6 +32,9 @@ function bannerRoster(ck, b){
   const soldiers = companyOf(ck, b.troops).sort((a, c) => c.stars - a.stars).map(t => ({
     stars: t.stars, name: t.name, cls: t.cls, got: st.roster.some(r => r.gid === t.id),
     ent: {key: 'recruit', look: CLASS_LOOK[t.cls], cls: t.cls, name: t.name, uid: t.id, stars: t.stars, faction: CAMPAIGNS[ck].faction}}));
+  // featured attires count as ★★★ results too
+  for (const id of b.attires || []){ const a = ATTIRES[id];
+    rares.push({stars: 3, name: `${a.name} (${CHARACTERS[a.char].name}'s attire)`, cls: attireEnt(id).cls, ent: attireEnt(id), got: st.roster.some(r => r.key === a.char && r.attires?.includes(id))}); }
   const all = [...rares, ...soldiers];
   return {rares, soldiers, got: all.filter(x => x.got).length, total: all.length};
 }
@@ -54,7 +61,9 @@ function recruitTabHTML(ck){
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = (b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`).join(', ');
+  const poolRares = [...(b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
+                     ...(b.featured || []).filter(k => !(b.pool || army.rares).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
+                     ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${CHARACTERS[ATTIRES[id].char].name} (rate up)`)].join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
       <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>
@@ -66,7 +75,7 @@ function recruitTabHTML(ck){
       ${(() => { const R = bannerRoster(ck, b); return R.got === R.total ? `<div class="bdone"><b>Complete</b><span>Everyone on this banner has joined. Recruiting again gives weapons.</span></div>` : ''; })()}
       <div class="binfo"><p>${b.blurb}</p>
         <div class="chips"><span class="chip bonus">★★★ ${R[3].rate}%</span><span class="chip">★★ ${R[2].rate}%</span><span class="chip">★ ${R[1].rate}%</span>
-        ${b.featured ? `<span class="chip conv">Rate up · ${b.featured.map(k => CHARACTERS[k].name).join(', ')}</span>` : ''}</div>
+        ${b.featured || b.attires ? `<span class="chip conv">Rate up · ${[...(b.featured || []).map(k => CHARACTERS[k].name), ...(b.attires || []).map(id => ATTIRES[id].name)].join(', ')}</span>` : ''}</div>
         <div class="pity"><div class="pbar"><i style="width:${pity/GACHA.pity*100}%"></i></div>
           <span>★★★ guaranteed within <b>${GACHA.pity - pity}</b> more pull${GACHA.pity - pity === 1 ? '' : 's'}</span></div>
       </div>
@@ -84,7 +93,7 @@ function recruitTabHTML(ck){
       </div>
       <p class="meta">Rare pool: ${poolRares}.${b.featured ? ` On this banner, ${Math.round(GACHA.featuredShare*100)}% of rare characters are the featured unit.` : ''}
       Soldiers can be any of: ${[...new Set(companyOf(ck, b.troops).map(t => t.cls))].map(c => CLASSES[c].name).join(', ')}.
-      Recruiting someone you already have gives you a weapon of their rarity instead.
+      Recruiting someone you already have gives you a weapon of their rarity instead.${b.attires ? ' So does an attire that\'s already owned, or whose character isn\'t in the army.' : ''}
       Soldiers come from a fixed company of ${companyOf(ck, b.troops).length}.
       Every ×10 includes at least one ★★, and a ★★★ is guaranteed by pull ${GACHA.pity} on each banner. Weapons go to the Armoury, on the Army screen.</p>
     </details>`;
@@ -97,6 +106,13 @@ function cardHTML(r, i, single){
     <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
       <div class="gface"><div class="gpor gw">${weaponIconSVG(w, single ? 120 : 52)}</div>
         <div class="gtxt"><div class="gstars">${stars(r.stars)}</div><div class="gname">${w.name}</div><div class="gcls">${WTYPE[w.type]}${w.lash ? ' · Whip' : ''}</div><div class="gtag">Weapon</div></div>
+      </div></div></button>`;
+  }
+  if (r.attire){ const ent = attireEnt(r.attireId), art = single ? artFor(ent, 'portrait') : (artFor(ent, 'token') || artFor(ent, 'portrait'));
+    return `<button class="gcard s3" data-card="${i}" type="button" aria-label="Reveal pull ${i + 1}">
+    <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
+      <div class="gface"><div class="gpor"><img alt="" src="${art || plushPortrait(ent.look)}"></div>
+        <div class="gtxt"><div class="gstars">${stars(3)}</div><div class="gname">${r.attire.name}</div><div class="gcls">${r.rec.name}</div><div class="gtag">Attire</div></div>
       </div></div></button>`;
   }
   // ×10 cards show the map icon (it reads better this small); a single big card shows the full portrait
@@ -122,6 +138,14 @@ function spotlight(r){
     sp.innerHTML = `<div class="spin"><div class="sray"></div><div class="sart sw">${weaponIconSVG(w, 160)}</div>
       <div class="sstars">★★★</div><h2>${w.name}</h2><p>${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText({...w, rng: w.rng || typeRange(w.type)})}</p>
       <p class="sdesc">${w.desc}</p><div class="stag">Added to the Armoury</div><div class="meta">Tap to continue</div></div>`;
+    sp.hidden = false; Music.jingle('rare');
+    anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
+    return new Promise(res => { sp.onclick = () => { sp.hidden = true; sp.onclick = null; res(); }; });
+  }
+  if (r.attire){ const a = r.attire, rec = r.rec, art = artFor(attireEnt(r.attireId), 'portrait');
+    sp.innerHTML = `<div class="spin"><div class="sray"></div><div class="sart"><img alt="" src="${art || plushPortrait(rec.look)}"></div>
+      <div class="sstars">★★★</div><h2>${a.name}</h2><p>${rec.name}'s attire · ${attireChanges(rec, a)}</p>
+      <p class="sdesc">${a.desc}</p><div class="stag">New attire: wear it from ${rec.name}'s unit card</div><div class="meta">Tap to continue</div></div>`;
     sp.hidden = false; Music.jingle('rare');
     anim(sp.querySelector('.spin'), [{opacity: 0, transform: 'scale(.85)'}, {opacity: 1, transform: 'none'}], 450);
     return new Promise(res => { sp.onclick = () => { sp.hidden = true; sp.onclick = null; res(); }; });

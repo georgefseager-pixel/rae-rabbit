@@ -15,7 +15,7 @@ const GACHA = {
     3: {name: 'Rare',     rate: 5,  color: '#ecc673'},
   },
   pity: 50,               // a ★★★ is guaranteed by this many pulls on the same banner
-  featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
+  featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit (or attire: a banner's `attires`)
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
   company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
   release: {1: 1, 2: 2, 3: 5},    // pull currency returned for releasing a unit (or a spare weapon) of each rarity
@@ -63,8 +63,8 @@ const GACHA_ARMY = {
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
-      {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], after: 'F2-4', bg: 'woods', troops: 'fraggle',
-       blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard.'},
+      {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], attires: ['rose'], after: 'F2-4', bg: 'woods', troops: 'fraggle',
+       blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard. Biggle\'s Rose Knight attire is featured too.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F1-2', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F1-3', bg: 'woods',

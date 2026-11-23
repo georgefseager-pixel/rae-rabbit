@@ -41,8 +41,15 @@ function weaponResult(ck, stars){ const it = addWeapon(ck, pick(weaponPool(ck, s
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
-    const pool = banner.pool || army.rares;
-    const key = banner.featured && Math.random() < GACHA.featuredShare ? pick(banner.featured) : pick(pool);
+    const pool = banner.pool || army.rares, feat = [...(banner.featured || []), ...(banner.attires || []).map(id => 'attire:' + id)];
+    const key = feat.length && Math.random() < GACHA.featuredShare ? pick(feat) : pick(pool);
+    // a featured attire: for its character, if they're in the army and don't have it yet; otherwise a ★★★ weapon
+    if (key.startsWith('attire:')){
+      const id = key.slice(7), a = ATTIRES[id], rec = st.roster.find(r => r.key === a.char && !r.departed);
+      if (!rec || rec.attires?.includes(id)) return weaponResult(ck, 3);
+      grantAttires(ck, [id]);
+      return {stars, attire: a, attireId: id, rec, kind: 'attire'};
+    }
     const have = st.roster.find(r => r.key === key && !r.dead);
     if (have) return weaponResult(ck, 3);   // already with you: a ★★★ weapon instead
     const fallen = st.roster.find(r => r.key === key && r.dead && !r.departed);

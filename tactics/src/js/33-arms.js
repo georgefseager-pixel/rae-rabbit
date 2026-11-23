@@ -6,7 +6,7 @@ function campOfRec(rec){ for (const [k, c] of Object.entries(SAVE?.camps || {}))
 // The class weapon. Older saves may have reinforced it (wtier), which still counts.
 function basicWeapon(rec){
   const c = CLASSES[clsOf(rec)], t = WEAPON_TIERS[rec.wtier || 0];
-  return {name: t.prefix + (rec.wname || c.wname), type: c.w, stars: 0, mt: t.bonus, hit: 0, crit: 0, rng: c.rng, lash: !!c.lash, basic: true,
+  return {name: t.prefix + (attireOf(rec)?.cls ? c.wname : (rec.wname || c.wname)), type: c.w, stars: 0, mt: t.bonus, hit: 0, crit: 0, rng: c.rng, lash: !!c.lash, basic: true,
           desc: 'Standard for the class.'};
 }
 function weaponOf(rec){

@@ -50,6 +50,30 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | riverWoods | forest, rocks, river | R2-1, F2-1, FD-1 |
 | flowerField | barricade `X` with two gaps, earth `M`, stockade fort | FD-3 |
 
+## Movement types (a class's `mt`)
+
+| Type | Forest `F` | Rocks `M` | Classes |
+|---|---|---|---|
+| foot | 2 | 3 | most |
+| armor | 2 | can't enter | Lily Knight, Armoured Guard |
+| bog | 2 | 2 | Club Guard, Marsh Lord (frogs at home in the marsh) |
+| mounted | 3 | can't enter | Rose Knight (Biggle's attire) |
+
+Mounted units move far on open ground (Rose Knight: Mov 7) but are slowed by forest and blocked by rocks: good on
+open maps and bridges (ford, riverWoods), awkward on rocky ones (ridge, thornHill, ravine).
+
+## Attires
+
+An attire can change a character's class (and so weapon, movement and growths) and stats while worn
+(`13-data-attires.js`). Story scenes always show the story outfit. Attires come from the story (dialogue `{attire}`)
+or from recruiting: a banner's `attires: [ids]` are featured ★★★ results alongside its characters; a duplicate, or
+one whose character isn't in the army, becomes a ★★★ weapon instead.
+
+| Attire | Character | Change | From |
+|---|---|---|---|
+| Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
+| Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
+
 ## Unit behaviour (spawn `ai`)
 
 | AI | Behaviour | Good for |
