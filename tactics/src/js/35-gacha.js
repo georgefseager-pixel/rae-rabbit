@@ -99,6 +99,6 @@ function releaseUnit(ck, uid){
   if (!rec || rec.lord || !isGachaUnit(rec)) return 0;
   const back = rec.dead ? 0 : GACHA.release[rec.stars || 1];
   rec.arm = null;   // their weapon stays in the Armoury
-  st.roster.splice(i, 1); gachaState(ck).tokens += back; saveGame();
+  st.roster.splice(i, 1); st.res += back; saveGame();   // money, not pull currency
   return back;
 }

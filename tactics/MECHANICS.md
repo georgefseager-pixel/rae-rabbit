@@ -158,6 +158,12 @@ experience rules) run roughly a level above it by late Chapter Two.
 | Support S | after all three of that character's side stories |
 | Training | after Support A |
 
+## Economy
+
+Pull currency (Whispers / Writs) comes only from clearing stages, bonus stars and side stories, or trading 400 money
+for one. Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), never pull currency: 100 pulls
+released in full return about 2,900 money, about 7 pulls' worth when traded, so there is no loop.
+
 ## Side stories written so far
 
 Each set steps recommended Lv 3 → 4 → 5. Rae: Willow's Lessons (WL), Flopsy's Day Out (FD), Heads I Go (BR, Brigand),

@@ -45,7 +45,7 @@ function releaseWeapon(ck, itemUid){
   if (!w || w.owner) return 0;
   for (const r of SAVE.camps[ck].roster) if (r.arm === itemUid) r.arm = null;
   list.splice(i, 1);
-  const back = GACHA.release[w.stars] || 1; gachaState(ck).tokens += back; return back;
+  const back = GACHA.release[w.stars] || GACHA.release[1]; SAVE.camps[ck].res += back; return back;   // money, not pull currency
 }
 // Story weapons from a stage reward: [{id, to: character key}] — added once, and handed to that character.
 function grantStoryWeapons(ck, list){

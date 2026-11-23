@@ -30,7 +30,7 @@ function armouryTabHTML(ck){
       return weaponRowHTML(w, `<div class="wside">
         ${holders.length ? `<span class="whold">${holders.map(h => h.name).join(', ')}</span>` : ''}
         ${spare ? `<span class="whold free">${spare} spare</span>` : ''}
-        ${!w.owner && spare ? `<button class="btn" data-arm-release="${id}" type="button">Release one · +${GACHA.release[w.stars]}</button>` : ''}</div>`, items.length);
+        ${!w.owner && spare ? `<button class="btn" data-arm-release="${id}" type="button">Release one · +${GACHA.release[w.stars]} ${FACTIONS[CAMPAIGNS[ck].faction].currency}</button>` : ''}</div>`, items.length);
     }).join('')}</div>`;
 }
 

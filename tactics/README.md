@@ -63,7 +63,7 @@ Duplicate rares raise Bond (small stat boosts). Common and Uncommon soldiers com
 fixed company per army (two of each generic class at ★, one at ★★, so 15 named soldiers);
 a soldier you already have gains a weaker Bond (★ up to 3, ★★ up to 4) and, once maxed,
 refunds currency. There's no roster cap as such: it just can't hold more soldiers than the
-banners can give. Recruits can be released for currency.
+banners can give. Recruits and spare weapons can be released for a little money (Thread / Crowns), never for pull currency.
 
 ## Adding art
 

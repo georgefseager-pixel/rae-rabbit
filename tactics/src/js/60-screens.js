@@ -165,7 +165,7 @@ function recCard(rec, actions = '', extraClass = ''){
 // Release every soldier of a rarity at once: ★ or ★★ recruits who aren't favourites (♥). Unique characters never.
 const bulkReleasable = (ck, stars) => SAVE.camps[ck].roster.filter(r => !r.dead && !r.lord && !r.fav && r.key === 'recruit' && (r.stars || 1) === stars);
 function bulkReleaseHTML(ck){
-  const cur = GACHA_ARMY[ck].currency;
+  const cur = FACTIONS[CAMPAIGNS[ck].faction].currency;
   return `<div class="sec">Release in bulk</div><div class="hint">Releases every soldier of that rarity who isn't a favourite (♥). Their weapons stay in the Armoury.</div>
     <div class="bulkrel">${[1, 2].map(n => { const list = bulkReleasable(ck, n);
       return `<button class="btn" data-bulk-release="${n}" type="button" ${list.length ? '' : 'disabled'}>Release all ${'★'.repeat(n)} · ${list.length} unit${list.length === 1 ? '' : 's'}<small>${list.length ? `+${list.length*GACHA.release[n]} ${cur}` : 'none to release'}</small></button>`; }).join('')}</div>`;
@@ -174,15 +174,15 @@ function bulkRelease(btn, stars){
   const ck = SAVE.current, list = bulkReleasable(ck, stars);
   if (!list.length || !armed(btn, `Tap again to release ${list.length}`)) return;
   let back = 0; for (const r of list) back += releaseUnit(ck, r.uid);
-  toast(`${list.length} ${'★'.repeat(stars)} soldier${list.length === 1 ? '' : 's'} released. +${back} ${GACHA_ARMY[ck].currency}.`); rerenderKeepScroll();
+  toast(`${list.length} ${'★'.repeat(stars)} soldier${list.length === 1 ? '' : 's'} released. +${back} ${FACTIONS[CAMPAIGNS[ck].faction].currency}.`); rerenderKeepScroll();
 }
 function renderArmy(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
   let body = '';
   if (armyTab === 'roster'){
     const alive = st.roster.filter(r => !r.dead), fallen = st.roster.filter(r => r.dead);
-    body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Units who fall in a battle you win are unstitched, but can be stitched back up below. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
-      recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r, r.departed
+    body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Units who fall in a battle you win are unstitched, but can be stitched back up below. Recruits can be released for a little ${F.currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
+      recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]} ${F.currency}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r, r.departed
       ? `<div class="uacts"><button class="btn" type="button" disabled>${departureLabel(r)}</button></div>`
       : `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${st.res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${F.currency}</button></div>`)).join('')}</div>` : ''}
       ${bulkReleaseHTML(ck)}`;
@@ -208,7 +208,7 @@ function release(btn){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === btn.dataset.release);
   if (!rec || !armed(btn, 'Tap again to release')) return;
   const back = releaseUnit(ck, rec.uid);
-  toast(`${rec.name} leaves the army. +${back} ${GACHA_ARMY[ck].currency}.`); renderArmy();
+  toast(`${rec.name} leaves the army. +${back} ${FACTIONS[CAMPAIGNS[ck].faction].currency}.`); renderArmy();
 }
 
 // ---------- Battle preparation ----------
@@ -366,7 +366,7 @@ document.addEventListener('click', e => {
   }
   else if (d.armPick) openWeaponPicker(d.armPick);
   else if (d.attirePick) openAttirePicker(d.attirePick);
-  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseSpare(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${GACHA_ARMY[SAVE.current].currency}.`); renderArmy(); }
+  else if (d.armRelease){ if (!armed(t, 'Tap again to release')) return; const back = releaseSpare(SAVE.current, d.armRelease); saveGame(); toast(`Released. +${back} ${FACTIONS[campOf().faction].currency}.`); renderArmy(); }
   else if ('campOpen' in d) openCamp();
   else if (d.support) unlockSupport(d.support);
   else if (d.trainUnit) trainPartner(d.trainUnit);

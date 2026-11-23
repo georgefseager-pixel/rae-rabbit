@@ -19,7 +19,9 @@ const GACHA = {
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit (or attire: a banner's `attires`)
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
   company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
-  release: {1: 1, 2: 2, 3: 5},    // pull currency returned for releasing a unit (or a spare weapon) of each rarity
+  // money (Thread / Crowns, never pull currency) for releasing a unit or a spare weapon of each rarity. Kept far below
+  // `trade` (400 money for one pull): on average a pull's results release for under a tenth of that, so there's no loop.
+  release: {1: 15, 2: 40, 3: 100},
   // Pull currency is meant to be scarce: roughly one ×10 per chapter, plus what bonus stars earn.
   // (Chapter One: 3 stages × 2, its finale 10, and up to 4 stars × 5 = 16 to 36 when recruiting opens.)
   startTokens: 0,
