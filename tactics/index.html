@@ -679,6 +679,10 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .htabs button:disabled{opacity:.5;cursor:default}
 .htabs button small{font-size:12px}
 
+/* Army: release in bulk */
+.bulkrel{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:8px 0 24px}
+.bulkrel .btn small{display:block;font-size:11px;opacity:.8}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -5773,6 +5777,20 @@ function recCard(rec, actions = '', extraClass = ''){
       <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
     ${statsGrid(rec)}${actions}</div>`;
 }
+// Release every soldier of a rarity at once: ★ or ★★ recruits who aren't favourites (♥). Unique characters never.
+const bulkReleasable = (ck, stars) => SAVE.camps[ck].roster.filter(r => !r.dead && !r.lord && !r.fav && r.key === 'recruit' && (r.stars || 1) === stars);
+function bulkReleaseHTML(ck){
+  const cur = GACHA_ARMY[ck].currency;
+  return `<div class="sec">Release in bulk</div><div class="hint">Releases every soldier of that rarity who isn't a favourite (♥). Their weapons stay in the Armoury.</div>
+    <div class="bulkrel">${[1, 2].map(n => { const list = bulkReleasable(ck, n);
+      return `<button class="btn" data-bulk-release="${n}" type="button" ${list.length ? '' : 'disabled'}>Release all ${'★'.repeat(n)} · ${list.length} unit${list.length === 1 ? '' : 's'}<small>${list.length ? `+${list.length*GACHA.release[n]} ${cur}` : 'none to release'}</small></button>`; }).join('')}</div>`;
+}
+function bulkRelease(btn, stars){
+  const ck = SAVE.current, list = bulkReleasable(ck, stars);
+  if (!list.length || !armed(btn, `Tap again to release ${list.length}`)) return;
+  let back = 0; for (const r of list) back += releaseUnit(ck, r.uid);
+  toast(`${list.length} ${'★'.repeat(stars)} soldier${list.length === 1 ? '' : 's'} released. +${back} ${GACHA_ARMY[ck].currency}.`); rerenderKeepScroll();
+}
 function renderArmy(){
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
   let body = '';
@@ -5781,7 +5799,8 @@ function renderArmy(){
     body = `<div class="hint">Units grow stronger by fighting. Unique (★★★) units also grow through their supports at the Camp. Units who fall in a battle you win are unstitched, but can be stitched back up below. Recruits can be released for ${GACHA_ARMY[ck].currency}.</div>${sortBarHTML()}<div class="ulist">${sortRecs(alive).map(r =>
       recCard(r, isGachaUnit(r) ? `<div class="uacts"><button class="btn" data-release="${r.uid}" type="button">Release · +${GACHA.release[r.stars || 1]}</button></div>` : '')).join('')}</div>${fallen.length ? `<div class="sec">Unstitched</div><div class="ulist">${fallen.map(r => recCard(r, r.departed
       ? `<div class="uacts"><button class="btn" type="button" disabled>${departureLabel(r)}</button></div>`
-      : `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${st.res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${F.currency}</button></div>`)).join('')}</div>` : ''}`;
+      : `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${st.res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${F.currency}</button></div>`)).join('')}</div>` : ''}
+      ${bulkReleaseHTML(ck)}`;
   } else if (armyTab === 'arms') body = armouryTabHTML(ck);
   else body = recruitTabHTML(ck);
   $('#army').innerHTML = `<div class="sin f-${camp.faction}">
@@ -5969,6 +5988,7 @@ document.addEventListener('click', e => {
   else if (d.stitch) stitchUp(d.stitch);
   else if (d.about) showIntro(d.about);
   else if (d.release) release(t);
+  else if (d.bulkRelease) bulkRelease(t, +d.bulkRelease);
   else if (d.banner){ gachaSel[SAVE.current] = d.banner; renderArmy(); }
   else if (d.pull) runPull(SAVE.current, +d.pull);
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }

@@ -671,3 +671,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .sset .meta{margin:0 0 6px}
 .htabs button:disabled{opacity:.5;cursor:default}
 .htabs button small{font-size:12px}
+
+/* Army: release in bulk */
+.bulkrel{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:8px 0 24px}
+.bulkrel .btn small{display:block;font-size:11px;opacity:.8}
