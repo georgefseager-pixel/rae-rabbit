@@ -5916,7 +5916,7 @@ document.addEventListener('click', e => {
   const t = e.target.closest('button, .ucard.pick');
   if (!t || !t.closest('.screen')) return;
   const d = t.dataset;
-  if (d.camp){ SAVE.current = d.camp; saveGame(); renderHub(); }
+  if (d.camp){ if (d.camp !== SAVE.current) hubTab = 'main'; SAVE.current = d.camp; saveGame(); renderHub(); }
   else if (d.go === 'hub') renderHub();
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
   else if (d.go === 'prep') renderPrep();
