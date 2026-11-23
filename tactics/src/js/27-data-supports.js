@@ -452,7 +452,7 @@ const SUPPORTS = {
         sN("Rhubarb sits by the water butt, counting buckets out of habit."),
         sL('tiggle', "Hawthorn. You knew his name all along. You never once said it."),
         sL('rhubarb', "Names are dangerous, love. That's the whole lesson of the mines. Say a name often enough and folk start wanting one."),
-        sL('rhubarb', "So I gave them a monster instead. Same story every morning, for years. Then one day a little rabbit with a stolen sword walked out of my seam, and the story came true backwards."),
+        sL('rhubarb', "So I gave them Rae instead. The old monster, every morning, for years. Then one day a little rabbit with a stolen sword walked out of my seam wearing the monster's name, and the story came true backwards."),
         sL('tiggle', "Rae isn't a monster."),
         sL('rhubarb', "No. Neither was he. That's what made the story necessary."),
         sL('rhubarb', "The grey one who came over that hill too late. I've wondered about her. Whether she ever stopped running."),
