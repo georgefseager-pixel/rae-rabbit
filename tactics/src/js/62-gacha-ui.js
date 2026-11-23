@@ -27,7 +27,7 @@ function bannerArt(ck, b){
 // each marked by whether they've ever joined this army (fallen ones still count).
 function bannerRoster(ck, b){
   const st = SAVE.camps[ck], army = GACHA_ARMY[ck];
-  const rares = [...new Set([...(b.featured || []), ...(b.pool || army.rares)])].map(k => ({
+  const rares = [...new Set([...(b.featured || []), ...bannerPool(b)])].map(k => ({
     stars: 3, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls, ent: k, got: st.roster.some(r => r.key === k)}));
   const soldiers = companyOf(ck, b.troops).sort((a, c) => c.stars - a.stars).map(t => ({
     stars: t.stars, name: t.name, cls: t.cls, got: st.roster.some(r => r.gid === t.id),
@@ -61,8 +61,8 @@ function recruitTabHTML(ck){
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = [...(b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
-                     ...(b.featured || []).filter(k => !(b.pool || army.rares).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
+  const poolRares = [...bannerPool(b).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
+                     ...(b.featured || []).filter(k => !bannerPool(b).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
                      ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${CHARACTERS[ATTIRES[id].char].name} (rate up)`)].join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>

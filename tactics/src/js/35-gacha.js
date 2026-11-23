@@ -7,6 +7,8 @@ function gachaState(ck){
 // Recruiting as a whole opens after each army's Chapter One (opensAfter); a banner can also wait for a later stage.
 for (const [ck, a] of Object.entries(GACHA_ARMY)) for (const b of a.banners) b.army = ck;
 const recruitOpen = ck => !!SAVE?.debugUnlock || isCleared(GACHA_ARMY[ck].opensAfter);
+// A banner's ★★★ characters: its own `pool`, else its featured characters. Never another banner's.
+const bannerPool = b => b.pool || b.featured || GACHA_ARMY[b.army].rares;
 const bannerOpen = b => recruitOpen(b.army) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
 const findBanner = (ck, id) => GACHA_ARMY[ck].banners.find(b => b.id === id);
 const isGachaUnit = rec => rec.key === 'recruit' || CHARACTERS[rec.key]?.stars === 3;
@@ -41,7 +43,7 @@ function weaponResult(ck, stars){ const it = addWeapon(ck, pick(weaponPool(ck, s
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
-    const pool = banner.pool || army.rares, feat = [...(banner.featured || []), ...(banner.attires || []).map(id => 'attire:' + id)];
+    const pool = bannerPool(banner), feat = [...(banner.featured || []), ...(banner.attires || []).map(id => 'attire:' + id)];
     const key = feat.length && Math.random() < GACHA.featuredShare ? pick(feat) : pick(pool);
     // a featured attire: for its character, if they're in the army and don't have it yet; otherwise a ★★★ weapon
     if (key.startsWith('attire:')){

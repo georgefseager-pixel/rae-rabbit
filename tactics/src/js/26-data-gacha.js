@@ -3,8 +3,8 @@
 // only the first (standard) banner is open; every other banner waits for R2-4 / F2-4 (`after`).
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
-//   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
-//         its own ★★★ characters; otherwise it draws from the army's `rares`.
+//   ★★★   Rare: a unique character (see CHARACTERS with stars:3). Each banner only gives its own: its `pool`,
+//         or, if it has none, its `featured` characters (and featured `attires`). `rares` lists the army's rare characters.
 // Pulling a recruit you already have gives a weapon of that rarity instead (see 12-data-weapons.js).
 // Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
 // each rarity, named from RECRUIT_NAMES. A soldier you already have becomes a weapon instead,

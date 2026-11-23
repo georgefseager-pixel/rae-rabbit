@@ -3378,8 +3378,8 @@ function recommendedLevel(sg){
 // only the first (standard) banner is open; every other banner waits for R2-4 / F2-4 (`after`).
 //   ★     Common: a generic soldier of one of the army's classes
 //   ★★    Uncommon: a generic soldier with better stats and a reinforced weapon
-//   ★★★   Rare: a unique character (see CHARACTERS with stars:3). A banner can set `pool` to choose
-//         its own ★★★ characters; otherwise it draws from the army's `rares`.
+//   ★★★   Rare: a unique character (see CHARACTERS with stars:3). Each banner only gives its own: its `pool`,
+//         or, if it has none, its `featured` characters (and featured `attires`). `rares` lists the army's rare characters.
 // Pulling a recruit you already have gives a weapon of that rarity instead (see 12-data-weapons.js).
 // Soldiers (★ and ★★) come from a fixed company per army: `company` copies of each generic class at
 // each rarity, named from RECRUIT_NAMES. A soldier you already have becomes a weapon instead,
@@ -5257,6 +5257,8 @@ function gachaState(ck){
 // Recruiting as a whole opens after each army's Chapter One (opensAfter); a banner can also wait for a later stage.
 for (const [ck, a] of Object.entries(GACHA_ARMY)) for (const b of a.banners) b.army = ck;
 const recruitOpen = ck => !!SAVE?.debugUnlock || isCleared(GACHA_ARMY[ck].opensAfter);
+// A banner's ★★★ characters: its own `pool`, else its featured characters. Never another banner's.
+const bannerPool = b => b.pool || b.featured || GACHA_ARMY[b.army].rares;
 const bannerOpen = b => recruitOpen(b.army) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
 const findBanner = (ck, id) => GACHA_ARMY[ck].banners.find(b => b.id === id);
 const isGachaUnit = rec => rec.key === 'recruit' || CHARACTERS[rec.key]?.stars === 3;
@@ -5291,7 +5293,7 @@ function weaponResult(ck, stars){ const it = addWeapon(ck, pick(weaponPool(ck, s
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
-    const pool = banner.pool || army.rares, feat = [...(banner.featured || []), ...(banner.attires || []).map(id => 'attire:' + id)];
+    const pool = bannerPool(banner), feat = [...(banner.featured || []), ...(banner.attires || []).map(id => 'attire:' + id)];
     const key = feat.length && Math.random() < GACHA.featuredShare ? pick(feat) : pick(pool);
     // a featured attire: for its character, if they're in the army and don't have it yet; otherwise a ★★★ weapon
     if (key.startsWith('attire:')){
@@ -6988,7 +6990,7 @@ function bannerArt(ck, b){
 // each marked by whether they've ever joined this army (fallen ones still count).
 function bannerRoster(ck, b){
   const st = SAVE.camps[ck], army = GACHA_ARMY[ck];
-  const rares = [...new Set([...(b.featured || []), ...(b.pool || army.rares)])].map(k => ({
+  const rares = [...new Set([...(b.featured || []), ...bannerPool(b)])].map(k => ({
     stars: 3, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls, ent: k, got: st.roster.some(r => r.key === k)}));
   const soldiers = companyOf(ck, b.troops).sort((a, c) => c.stars - a.stars).map(t => ({
     stars: t.stars, name: t.name, cls: t.cls, got: st.roster.some(r => r.gid === t.id),
@@ -7022,8 +7024,8 @@ function recruitTabHTML(ck){
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
   const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
-  const poolRares = [...(b.pool || army.rares).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
-                     ...(b.featured || []).filter(k => !(b.pool || army.rares).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
+  const poolRares = [...bannerPool(b).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
+                     ...(b.featured || []).filter(k => !bannerPool(b).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
                      ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${CHARACTERS[ATTIRES[id].char].name} (rate up)`)].join(', ');
   return `
     <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
