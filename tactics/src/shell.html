@@ -1,4 +1,37 @@
 <title>Toy Wars</title>
+<!-- Loading screen: first in the page, so it shows while the rest (mostly the embedded art) downloads -->
+<style>
+#loader{position:fixed;inset:0;z-index:9999;background:#120c08;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .6s}
+#loader.done{opacity:0;pointer-events:none}
+#loader .lbg{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(22px) brightness(.45)}
+#loader img{position:relative;max-width:100%;max-height:100%;object-fit:contain;animation:ldzoom 14s ease-out forwards}
+@keyframes ldzoom{from{transform:scale(1.04)}to{transform:scale(1)}}
+#loader .lfoot{position:absolute;left:0;right:0;bottom:0;padding:18px 20px calc(20px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,rgba(10,6,4,.88) 45%)}
+#loader .ltitle{font:400 30px 'Saira Stencil One',Impact,sans-serif;letter-spacing:.06em;color:#f3e7cb;text-align:center;text-shadow:0 3px 0 rgba(0,0,0,.6),0 0 18px rgba(0,0,0,.8);margin-bottom:10px}
+#loader .ltrack{position:relative;height:14px;border-radius:8px;background:rgba(0,0,0,.55);box-shadow:inset 0 0 0 1.5px rgba(236,198,115,.55);overflow:hidden;max-width:560px;margin:0 auto}
+#loader .lfill{position:absolute;left:0;top:0;bottom:0;width:2%;border-radius:8px;transition:width .35s ease-out;
+  background:linear-gradient(90deg,#8f231e,#c9372f 40%,#ecc673);box-shadow:0 0 12px rgba(236,198,115,.6)}
+#loader .lfill::after{content:"";position:absolute;inset:3px 6px;border-top:1.5px dashed rgba(255,240,210,.7)}
+#loader .lnote{font:italic 15px 'IM Fell English',Georgia,serif;color:#e8d8b4;text-align:center;margin-top:8px}
+@media (prefers-reduced-motion: reduce){ #loader img{animation:none} #loader .lfill{transition:none} }
+</style>
+<div id="loader" role="progressbar" aria-label="Loading Toy Wars" aria-valuemin="0" aria-valuemax="100" aria-valuenow="2">
+  <div class="lbg" style="background-image:url(/*@LOADIMG*/)"></div><img alt="" src="/*@LOADIMG*/">
+  <div class="lfoot"><div class="ltitle">TOY WARS</div><div class="ltrack"><div class="lfill"></div></div><div class="lnote">Stitching the armies together…</div></div>
+</div>
+<script>
+// The bar: creeps up while the page downloads and is read (0–60%), then the game reports real progress (window.__load).
+(() => {
+  const el = document.getElementById('loader'), fill = el.querySelector('.lfill'), note = el.querySelector('.lnote');
+  let p = 2, real = false;
+  const set = v => { p = Math.max(p, Math.min(100, v)); fill.style.width = p + '%'; el.setAttribute('aria-valuenow', Math.round(p)); };
+  setTimeout(() => window.__load(100), 30000);   // never left covering the game, whatever happens
+  const creep = setInterval(() => { if (!real) set(p + (60 - p)*.04); }, 120);
+  window.__load = (v, text) => { real = true; set(v); if (text) note.textContent = text;
+    if (v >= 100){ clearInterval(creep); setTimeout(() => { el.classList.add('done'); setTimeout(() => el.remove(), 700); }, 250); } };
+})();
+</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

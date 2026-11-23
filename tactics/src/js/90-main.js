@@ -1,6 +1,9 @@
 // ================= Boot =================
 validateMaps();
 function boot(data){
+  window.__load?.(62, 'Mustering the armies…');
+  // the title screen needs none of the recoloured soldier art: let the rest finish behind it
+  setTimeout(() => window.__load?.(100), 2500);
   SAVE = migrateSave((data && data.save) || Store.load());
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
   $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');

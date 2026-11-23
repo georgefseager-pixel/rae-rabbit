@@ -40,6 +40,7 @@ def embed(f, key, kind):
     return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
 
 for f in sorted([*(ROOT / "art").glob("*.png"), *(ROOT / "art").glob("*.jpg")]):
+    if f.name == "loading.jpg": continue   # the loading screen: inlined at the top of the page instead (/*@LOADIMG*/)
     m = re.fullmatch(r"([a-z0-9]+)-([a-z]+)\.(png|jpg)", f.name)
     if not m:
         print("skipping art file with unexpected name:", f.name)
@@ -48,6 +49,8 @@ for f in sorted([*(ROOT / "art").glob("*.png"), *(ROOT / "art").glob("*.jpg")]):
 
 js = "\n".join(f"// ---------------- {p.name} ----------------\n{p.read_text()}" for p in sorted((SRC / "js").glob("*.js")))
 html = (SRC / "shell.html").read_text()
+load_img = "data:image/jpeg;base64," + base64.b64encode((ROOT / "art" / "loading.jpg").read_bytes()).decode()
+html = html.replace("/*@LOADIMG*/", load_img)
 for marker, value in [
     ("/*@CSS*/", (SRC / "style.css").read_text()),
     ("<!--@ART-->", "<script>window.GAME_ART=" + json.dumps(art) + ";</script>"),

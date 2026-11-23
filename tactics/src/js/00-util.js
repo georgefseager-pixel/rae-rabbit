@@ -153,6 +153,7 @@ async function maskAlpha(url, W, H){
   return out;
 }
 async function buildVariants(base, palette, weightOf){
+  loadReport(65 + 34*Math.min(1, ++variantsDone/VARIANT_SETS));
   if (!ART[base]) return;
   for (const kind of Object.keys(ART[base])){
     try {
@@ -180,6 +181,7 @@ async function buildVariants(base, palette, weightOf){
   }
 }
 async function buildEliteArmour(base){
+  loadReport(65 + 34*Math.min(1, ++variantsDone/VARIANT_SETS));
   if (!ART[base]) return;
   ART[base + 'elite'] = {};
   for (const kind of Object.keys(ART[base])){
@@ -200,7 +202,11 @@ async function buildEliteArmour(base){
     } catch (e){ console.warn('elite armour failed for', base, kind, e); }
   }
 }
+const loadReport = (v, text) => window.__load?.(v, text);   // the loading screen's bar (shell.html)
+let variantsDone = 0;
+const VARIANT_SETS = 9 + 5 + 2 + 14;   // the buildVariants / buildEliteArmour calls below, for the loading bar
 async function buildFurVariants(){
+  loadReport(65, 'Dyeing the soldiers\u2019 coats…');
   for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', 'troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook',
                      'troopelite', 'troopeliteaxe', 'troopelitelance', 'troopelitebook', 'troopelitestaff']) await buildVariants(base, FURS, async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
@@ -225,7 +231,7 @@ async function buildFurVariants(){
     }
     return w;
   });
-  furReady = true;
+  furReady = true; loadReport(100);
 }
 
 function toast(msg){
