@@ -643,6 +643,24 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .uattire{display:block;background:none;border:0;padding:2px 0;margin:0;font:inherit;font-family:var(--fell);font-size:13px;color:#a9c8f0;cursor:pointer;text-align:left}
 .arow .por{width:56px;height:56px;flex:none}
 
+/* Banner roster: everyone a banner can give, and who has joined */
+.broster{margin-bottom:10px}
+.bch{font-family:var(--fell);font-weight:400;font-size:15px;color:var(--brass-hi);margin:12px 0 6px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.bcell{position:relative;background:rgba(0,0,0,.3);border-radius:8px;padding:6px 4px 7px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.bcell.s3{border-color:rgba(236,198,115,.35)}
+.bcimg{height:62px;display:flex;align-items:flex-end;justify-content:center}
+.bcimg img{max-height:62px;max-width:100%;object-fit:contain}
+.bcell:not(.got) .bcimg img{filter:grayscale(1) brightness(.45)}
+.bcname{font-size:13px;line-height:1.15;margin-top:4px;color:var(--cream)}
+.bccls{font-size:11px;opacity:.7}
+.bctag{font-size:11px;margin-top:3px;opacity:.55}
+.bcell.got .bctag{color:#9fd98a;opacity:1}
+.bdone{position:absolute;left:0;right:0;top:38%;z-index:4;transform:rotate(-6deg);background:rgba(20,14,8,.82);border-top:2px dashed var(--brass-hi);border-bottom:2px dashed var(--brass-hi);
+  padding:8px 12px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.bdone b{display:block;font-family:var(--stencil);font-weight:400;letter-spacing:.14em;font-size:24px;color:var(--brass-hi)}
+.bdone span{font-size:13px;color:var(--cream)}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -5595,6 +5613,29 @@ function bannerArt(ck, b){
       <div class="bplates">${plates}</div>
     </div>`;
 }
+// Everyone a banner can give: its ★★★ characters (featured and pool) and its company of soldiers,
+// each marked by whether they've ever joined this army (fallen ones still count).
+function bannerRoster(ck, b){
+  const st = SAVE.camps[ck], army = GACHA_ARMY[ck];
+  const rares = [...new Set([...(b.featured || []), ...(b.pool || army.rares)])].map(k => ({
+    stars: 3, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls, ent: k, got: st.roster.some(r => r.key === k)}));
+  const soldiers = companyOf(ck, b.troops).sort((a, c) => c.stars - a.stars).map(t => ({
+    stars: t.stars, name: t.name, cls: t.cls, got: st.roster.some(r => r.gid === t.id),
+    ent: {key: 'recruit', look: CLASS_LOOK[t.cls], cls: t.cls, name: t.name, uid: t.id, stars: t.stars, faction: CAMPAIGNS[ck].faction}}));
+  const all = [...rares, ...soldiers];
+  return {rares, soldiers, got: all.filter(x => x.got).length, total: all.length};
+}
+function bannerRosterHTML(ck, b){
+  const R = bannerRoster(ck, b);
+  const cell = x => { const src = artFor(x.ent, 'token') || artFor(x.ent, 'portrait');
+    const look = typeof x.ent === 'string' ? (CHARACTERS[x.ent].look || x.ent) : x.ent.look;
+    return `<div class="bcell s${x.stars}${x.got ? ' got' : ''}"><div class="bcimg"><img alt="" src="${src || plushPortrait(look)}"></div>
+      <div class="bcname">${x.name}</div><div class="bccls">${stars(x.stars)} ${CLASSES[x.cls].name}</div>
+      <div class="bctag">${x.got ? '✓ Recruited' : 'Not yet'}</div></div>`; };
+  return `<details class="rates broster"><summary>Who can answer · ${R.got} of ${R.total} recruited</summary>
+    <h3 class="bch">★★★ Characters</h3><div class="bgrid">${R.rares.map(cell).join('')}</div>
+    <h3 class="bch">Soldiers</h3><div class="bgrid">${R.soldiers.map(cell).join('')}</div></details>`;
+}
 function recruitTabHTML(ck){
   const army = GACHA_ARMY[ck], g = gachaState(ck), st = SAVE.camps[ck], F = FACTIONS[CAMPAIGNS[ck].faction];
   const banners = army.banners;
@@ -5616,6 +5657,7 @@ function recruitTabHTML(ck){
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
     <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
       ${bannerArt(ck, b)}
+      ${(() => { const R = bannerRoster(ck, b); return R.got === R.total ? `<div class="bdone"><b>Complete</b><span>Everyone on this banner has joined. Recruiting again gives weapons.</span></div>` : ''; })()}
       <div class="binfo"><p>${b.blurb}</p>
         <div class="chips"><span class="chip bonus">★★★ ${R[3].rate}%</span><span class="chip">★★ ${R[2].rate}%</span><span class="chip">★ ${R[1].rate}%</span>
         ${b.featured ? `<span class="chip conv">Rate up · ${b.featured.map(k => CHARACTERS[k].name).join(', ')}</span>` : ''}</div>
@@ -5627,6 +5669,7 @@ function recruitTabHTML(ck){
       <button class="btn" data-pull="1" type="button" ${g.tokens < 1 ? 'disabled' : ''}>Recruit ×1 · 1 ${army.one}</button>
       <button class="btn primary" data-pull="10" type="button" ${g.tokens < 10 ? 'disabled' : ''}>Recruit ×10 · 10 ${army.currency}</button>
     </div>
+    ${bannerRosterHTML(ck, b)}
     <details class="rates"><summary>Rates and pool</summary>
       <div class="rlist">
         <div><span>★★★ Rare: unique characters</span><b>${R[3].rate}%</b></div>

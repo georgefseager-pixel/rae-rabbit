@@ -635,3 +635,21 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .wrow.cmp-better{box-shadow:inset 4px 0 0 #7ed27a}.wrow.cmp-worse{box-shadow:inset 4px 0 0 #ef6f5e}.wrow.cmp-mixed{box-shadow:inset 4px 0 0 #ecc94f}
 .uattire{display:block;background:none;border:0;padding:2px 0;margin:0;font:inherit;font-family:var(--fell);font-size:13px;color:#a9c8f0;cursor:pointer;text-align:left}
 .arow .por{width:56px;height:56px;flex:none}
+
+/* Banner roster: everyone a banner can give, and who has joined */
+.broster{margin-bottom:10px}
+.bch{font-family:var(--fell);font-weight:400;font-size:15px;color:var(--brass-hi);margin:12px 0 6px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.bcell{position:relative;background:rgba(0,0,0,.3);border-radius:8px;padding:6px 4px 7px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.bcell.s3{border-color:rgba(236,198,115,.35)}
+.bcimg{height:62px;display:flex;align-items:flex-end;justify-content:center}
+.bcimg img{max-height:62px;max-width:100%;object-fit:contain}
+.bcell:not(.got) .bcimg img{filter:grayscale(1) brightness(.45)}
+.bcname{font-size:13px;line-height:1.15;margin-top:4px;color:var(--cream)}
+.bccls{font-size:11px;opacity:.7}
+.bctag{font-size:11px;margin-top:3px;opacity:.55}
+.bcell.got .bctag{color:#9fd98a;opacity:1}
+.bdone{position:absolute;left:0;right:0;top:38%;z-index:4;transform:rotate(-6deg);background:rgba(20,14,8,.82);border-top:2px dashed var(--brass-hi);border-bottom:2px dashed var(--brass-hi);
+  padding:8px 12px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.bdone b{display:block;font-family:var(--stencil);font-weight:400;letter-spacing:.14em;font-size:24px;color:var(--brass-hi)}
+.bdone span{font-size:13px;color:var(--cream)}
