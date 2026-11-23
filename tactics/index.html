@@ -682,6 +682,17 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 /* Army: release in bulk */
 .bulkrel{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:8px 0 24px}
 .bulkrel .btn small{display:block;font-size:11px;opacity:.8}
+/* Daily log-in */
+.login .lgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.lday{position:relative;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.lday b{font-family:var(--fell);font-weight:400;font-size:14px;color:var(--cream)}
+.lday span{font-size:22px}
+.lday small{font-size:11px;color:var(--muted)}
+.lday.big{grid-column:span 2;border-color:rgba(236,198,115,.5)}
+.lday.today{box-shadow:inset 0 0 0 2px var(--brass-hi);background:rgba(236,198,115,.12)}
+.lday.got{opacity:.55}
+.lday i{position:absolute;top:4px;right:8px;font-style:normal;color:#9fd98a;font-weight:700}
+.lgot{color:var(--brass-hi);text-align:center}
 
 </style>
 
@@ -1862,6 +1873,9 @@ function weaponIconSVG(w, size = 28){
 const ATTIRES = {
   raeRags:   {char: 'rae',    outfit: 'camp', name: 'Mine Rags', desc: 'The patched rags Rae wore in the mines. She kept them, folded small.'},
   floraRags: {char: 'sister', outfit: 'camp', name: 'Camp Rags', desc: 'Little Sister\'s old camp clothes. Flopsy Flora never threw them away.'},
+  // Daily log-in, day 7 (66-login.js). Placeholders: no art yet, so they show the story outfit.
+  raeWeek:   {char: 'rae',    outfit: 'week', name: 'Week Seven Coat', desc: 'Placeholder costume, a reward for logging in seven days. Its art is still to come.'},
+  tiggleWeek:{char: 'tiggle', outfit: 'week', name: 'Week Seven Cloak', desc: 'Placeholder costume, a reward for logging in seven days. Its art is still to come.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3},
@@ -6680,6 +6694,7 @@ function renderHub(){
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
+  checkDailyLogin();     // then the daily log-in reward, once a day (66-login.js)
 }
 
 // ---------- Army ----------
@@ -7482,6 +7497,65 @@ async function unlockTutorials(ck){
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
     if (sidesOpen(ck) && !sidesSeen(ck)) await sideTutorial(ck);
   } finally { tutorialsRunning = false; }
+}
+
+// ---------------- 66-login.js ----------------
+// ================= Daily log-in =================
+// A seven-day calendar. The first time the campaign screen opens on a new (local) calendar day, the next day's
+// reward is offered. Missing a day doesn't reset the week; it just waits. Each reward goes to BOTH stories' recruiting
+// currency (Whispers and Writs). Day 7 gives each story's leader a costume; once owned, later day 7s give currency.
+// State: SAVE.login = {claimed: days claimed in all, last: 'YYYY-MM-DD' of the last claim}.
+const LOGIN = {
+  days: [{tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3},
+         {tokens: 5, attires: {rae: 'raeWeek', frog: 'tiggleWeek'}, instead: 10}],   // day 7: costume (+5), or 10 once owned
+};
+const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const loginState = () => (SAVE.login ||= {claimed: 0, last: ''});
+const loginPending = () => !!SAVE && loginState().last !== todayKey();
+const loginDay = () => loginState().claimed % 7;   // 0–6: the day that would be claimed next
+const ownsWeekCostumes = day => Object.entries(day.attires || {}).every(([ck, id]) => SAVE.camps[ck].roster.some(r => r.key === ATTIRES[id].char && r.attires?.includes(id)));
+
+function loginRewardText(day, i){
+  if (day.attires && !ownsWeekCostumes(day)) return `${day.tokens} each + a costume`;
+  return `${day.attires ? day.instead : day.tokens} each`;
+}
+function claimLogin(){
+  if (!loginPending()) return null;
+  const i = loginDay(), day = LOGIN.days[i], got = [];
+  const costume = day.attires && !ownsWeekCostumes(day), label = loginRewardText(day, i);
+  const n = day.attires && !costume ? day.instead : day.tokens;
+  for (const ck of Object.keys(CAMPAIGNS)){ gachaState(ck).tokens += n; got.push(`+${n} ${GACHA_ARMY[ck].currency}`); }
+  if (costume) for (const [ck, id] of Object.entries(day.attires)) got.push(...grantAttires(ck, [id]));
+  const st = loginState(); st.claimed++; st.last = todayKey(); saveGame();
+  return {i, got, label};
+}
+function loginHTML(claimedNow){
+  const done = loginDay(), shown = claimedNow ? (loginState().claimed % 7 || 7) : done;   // days ticked off this week
+  const cells = LOGIN.days.map((d, i) => {
+    const got = i < shown, today = !claimedNow && i === done;
+    return `<div class="lday${got ? ' got' : ''}${today ? ' today' : ''}${d.attires ? ' big' : ''}"><b>Day ${i + 1}</b>
+      <span>${d.attires && (!ownsWeekCostumes(d) || (claimedNow && i === claimedNow.i && /costume/.test(claimedNow.label))) ? '👘' : '✉'}</span><small>${claimedNow && i === claimedNow.i ? claimedNow.label : loginRewardText(d, i)}</small>${got ? '<i>✓</i>' : ''}</div>`;
+  }).join('');
+  return `<div class="card wsheet login"><h1>Daily Log-in</h1>
+    <h2>Come back each day for ${GACHA_ARMY.rae.currency} and ${GACHA_ARMY.frog.currency}. Day 7 brings a costume for Rae Rabbit and Tiggle Taggle.</h2>
+    <div class="lgrid">${cells}</div>
+    ${claimedNow ? `<p class="meta lgot">${claimedNow.got.join(' · ')}</p><button class="btn primary" data-login-close type="button">Done</button>`
+      : `<button class="btn primary" data-login-claim type="button">Claim Day ${done + 1}</button>`}</div>`;
+}
+let loginShowing = false;
+async function checkDailyLogin(force){
+  if (loginShowing || !loginPending() || (!force && location.hash === '#debug')) return;   // tests open it on purpose
+  loginShowing = true;
+  // wait for tutorials and story scenes on the campaign screen to finish
+  for (let k = 0; k < 600 && (tutorialsRunning || !$('#talk').hidden || $('#hub').hidden); k++) await wait(300);
+  if ($('#hub').hidden){ loginShowing = false; return; }
+  let ov = $('#armsheet');
+  if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
+  ov.innerHTML = loginHTML(null); ov.hidden = false;
+  ov.onclick = e => {
+    if (e.target.closest('[data-login-claim]')){ const r = claimLogin(); Sfx.play('coin'); ov.innerHTML = loginHTML(r); return; }
+    if (e.target.closest('[data-login-close]')){ ov.hidden = true; ov.onclick = null; loginShowing = false; renderHub(); }
+  };
 }
 
 // ---------------- 90-main.js ----------------

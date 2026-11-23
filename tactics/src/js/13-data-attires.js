@@ -13,6 +13,9 @@
 const ATTIRES = {
   raeRags:   {char: 'rae',    outfit: 'camp', name: 'Mine Rags', desc: 'The patched rags Rae wore in the mines. She kept them, folded small.'},
   floraRags: {char: 'sister', outfit: 'camp', name: 'Camp Rags', desc: 'Little Sister\'s old camp clothes. Flopsy Flora never threw them away.'},
+  // Daily log-in, day 7 (66-login.js). Placeholders: no art yet, so they show the story outfit.
+  raeWeek:   {char: 'rae',    outfit: 'week', name: 'Week Seven Coat', desc: 'Placeholder costume, a reward for logging in seven days. Its art is still to come.'},
+  tiggleWeek:{char: 'tiggle', outfit: 'week', name: 'Week Seven Cloak', desc: 'Placeholder costume, a reward for logging in seven days. Its art is still to come.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3},

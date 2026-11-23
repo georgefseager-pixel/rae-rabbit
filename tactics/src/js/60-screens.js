@@ -124,6 +124,7 @@ function renderHub(){
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
+  checkDailyLogin();     // then the daily log-in reward, once a day (66-login.js)
 }
 
 // ---------- Army ----------
