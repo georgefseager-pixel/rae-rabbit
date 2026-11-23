@@ -3292,7 +3292,7 @@ const GACHA = {
   pity: 50,               // a ★★★ is guaranteed by this many pulls on the same banner
   featuredShare: .5,      // on a featured banner, this share of ★★★ results is the featured unit
   tenPullFloor: 2,        // every ×10 contains at least one unit of this rarity or better
-  company: {1: 1, 2: 1},                                // soldiers per generic class at each rarity (as many ★ as ★★ on every banner)
+  company: {1: 2, 2: 1},                                // soldiers per generic class at each rarity
   release: {1: 1, 2: 2, 3: 5},    // pull currency returned for releasing a unit (or a spare weapon) of each rarity
   // Pull currency is meant to be scarce: roughly one ×10 per chapter, plus what bonus stars earn.
   // (Chapter One: 3 stages × 2, its finale 10, and up to 4 stars × 5 = 16 to 36 when recruiting opens.)
@@ -3312,8 +3312,8 @@ const GACHA_ARMY = {
     // Other companies a banner can draw its soldiers from (troops: '<name>'). Republic soldiers choose their names.
     // (★★ Republic veterans wear the plumed helmet)
     troops: {republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
-      // the ★ soldiers take the first five names, the ★★ veterans the next five
-      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Comfrey', 'Mallow', 'Teasel', 'Vetch', 'Woad']}},
+      names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy', 'Yarrow', 'Burdock',
+              'Comfrey', 'Mallow', 'Teasel', 'Vetch', 'Woad']}},
     banners: [
       {id: 'rae-std', name: 'Word in the Tunnels', kind: 'standard', bg: 'mine', pool: ['brigand', 'condemned'],
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
@@ -3332,7 +3332,8 @@ const GACHA_ARMY = {
     rares: ['duckweed', 'glimmer', 'bogsworth'],
     // Fraggle Friggle's Black Guard: the ★ and ★★ soldiers on Fraggle Jr.'s banner (★★ wear the closed helm)
     troops: {fraggle: {stars: [1, 2], generic: ['gblade', 'gaxe', 'gpike', 'gscribe', 'gchaplain'],
-      names: ['Thornback', 'Gloam', 'Blackwater', 'Nettlejaw', 'Sedge', 'Blackthorn', 'Wormwood', 'Grimsby', 'Tarn', 'Hollin']}},
+      names: ['Thornback', 'Gloam', 'Blackwater', 'Nettlejaw', 'Sedge', 'Murkmire', 'Briarwick', 'Fen', 'Rook', 'Sloe',
+              'Blackthorn', 'Wormwood', 'Grimsby', 'Tarn', 'Hollin']}},
     banners: [
       {id: 'frog-mine', name: 'What\'s Yours is MINE', kind: 'featured', pool: ['rhubarb', 'executioner'], bg: 'mine',
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
