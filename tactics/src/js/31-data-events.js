@@ -21,7 +21,7 @@ const EVENTS = {
       ],
       frog: [
         {who: 'narr', text: 'Snow has fallen on the felt forest. It\'s the festive season, for the whole of December!'},
-        {who: 'scout', text: 'Your Highness! The rabbits are after the festival presents! The ones for the frog children at the capital!'},
+        {who: 'elfscout', text: 'Your Highness! The rabbits are after the festival presents! The ones for the frog children at the capital!'},
         {who: 'narr', text: 'A seasonal side story is open on the Side Stories tab: Froggy Festivities. It can be played once a day, all December.'},
         {who: 'narr', text: 'Every courier you get safely through is a Frog Gift. Spend them on the festive recruiting banner, before the season ends.'},
       ],
@@ -48,7 +48,7 @@ CAMPAIGNS.rae.sides.push({
   ],
   pre: [
     {card: 'Seasonal Side Story', sub: 'How Rae Stole Christmas'},
-    {scene: 'woods', place: 'The Snowy Woods · December'},
+    {scene: 'snow', place: 'The Snowy Woods · December'},
     {who: 'narr', text: 'Every year, on the shortest day, frog couriers carry sacks of presents through the woods to the capital.'},
     {who: 'sister', text: 'Presents. For FROGS. Every single year. Do you know what rabbits get every year, Rae?'},
     {who: 'rae', text: '…Extra digging?'},
@@ -85,9 +85,9 @@ CAMPAIGNS.frog.sides.push({
   ],
   pre: [
     {card: 'Seasonal Side Story', sub: 'Froggy Festivities'},
-    {scene: 'woods', place: 'The Snowy Woods · December'},
+    {scene: 'snow', place: 'The Snowy Woods · December'},
     {who: 'narr', text: 'Every year, on the shortest day, couriers carry presents through the woods to the frog children of the capital.'},
-    {who: 'scout', text: 'Your Highness! Terrible news! Rabbits in the woods! They\'re stealing the PRESENTS!'},
+    {who: 'elfscout', text: 'Your Highness! Terrible news! Rabbits in the woods! They\'re stealing the PRESENTS!'},
     {who: 'tiggle', text: 'The presents? Who steals presents?'},
     {who: 'biggle', text: 'Rabbits, apparently. In their infinite wickedness.'},
     {who: 'tiggle', text: 'Biggle, are you wearing a paper crown?'},
@@ -97,7 +97,7 @@ CAMPAIGNS.frog.sides.push({
   ],
   post: [
     {who: 'tiggle', text: 'We got them through! Well. Most of them.'},
-    {who: 'scout', text: 'One of the rabbits took a whole sack, Highness. She was wearing a scarf. She said it was a "stealing scarf".'},
+    {who: 'elfscout', text: 'One of the rabbits took a whole sack, Highness. She was wearing a scarf. She said it was a "stealing scarf".'},
     {who: 'biggle', text: 'Disgraceful. …Has anyone seen my crown?'},
   ],
   reward: {res: 200, tokens: 0},
@@ -111,11 +111,11 @@ const eventMaxGifts = s => [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? 
 
 // ---------- December banners (paid with Gifts) ----------
 GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
-  pool: ['brigand', 'condemned', 'froggle', 'patch'], attires: ['raeFestive'], bg: 'woods',
+  pool: ['brigand', 'condemned', 'froggle', 'patch'], attires: ['raeFestive'], bg: 'snow',
   tease: 'A parcel in brown paper, tied with string. It\'s been shaken. Something rattles.',
   blurb: 'Placeholder festive banner, December only. Paid for with Rabbit Gifts from How Rae Stole Christmas. Featuring a festive costume for Rae.'});
 GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
-  pool: ['chriggle'], attires: ['gingerbiggle'], bg: 'woods', troops: 'elves',
+  pool: ['chriggle'], attires: ['gingerbiggle'], bg: 'snow', troops: 'elves',
   tease: 'A box wrapped in green paper and gold ribbon, stamped with the royal seal. It smells faintly of pondweed.',
   blurb: 'December only, paid for with Frog Gifts from Froggy Festivities. Chriggle Chraggle, the first Gift-Bringer and Friggle Fraggle\'s legendary ancestor, has come down from wherever he spends the rest of the year. He has a list. Featuring Gingerbiggle: Biggle in gingerbread, as he appeared in a nightmare after eating an entire gingerbread house. The ★ soldiers who answer are frog scouts in elf green; the ★★ have been promoted to Santa red.'});
 GACHA_ARMY.frog.troops.elves = {stars: [1, 2], generic: ['xblade', 'xaxe', 'xpike', 'xbow', 'xscribe'],

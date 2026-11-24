@@ -306,6 +306,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .splace{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));left:max(16px, env(safe-area-inset-left, 0px));font-family:var(--fell);font-size:13px;letter-spacing:.2em;
   text-transform:uppercase;color:#e8d8b4;text-shadow:0 2px 6px rgba(0,0,0,.8);display:none;max-width:calc(100% - 110px)}
 #talk.scene .splace{display:block}
+#sbg[data-painted] + .splace{width:fit-content;background:rgba(16,12,10,.55);padding:5px 10px;border-radius:6px;margin:-5px -10px;backdrop-filter:blur(2px)}   /* readable over bright paintings (snow) */
 .actor{position:absolute;bottom:150px;height:min(58vh, 520px);width:62%;display:none;align-items:flex-end;pointer-events:none;transition:filter .25s, opacity .25s, transform .25s}
 #talk.scene .actor.on{display:flex}
 .actor.L{left:-1%;justify-content:flex-start}.actor.R{right:-1%;justify-content:flex-end}

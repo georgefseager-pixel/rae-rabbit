@@ -199,6 +199,7 @@ const SPEAKERS = Object.assign({
   executioner: {name:'The Executioner', faction:'frog', look:'headsman'},
   king:        {name:'King Friggle Fraggle', faction:'frog', look:'king'},
   scout:       {name:'Frog Scout', faction:'frog', look:'scout'},
+  elfscout:    {name:'Frog Scout', faction:'frog', look:'courier'},   // December: a scout in elf green (art/elf-*.png)
   thin:        {name:'Thin Rabbit', faction:'rae', look:'thin', fur:'cream'},
   // Chapter Two (placeholder art)
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)

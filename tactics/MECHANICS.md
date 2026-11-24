@@ -215,7 +215,8 @@ the clock on a day, so the daily log-in and the once-a-day event stories come ro
 Art: the couriers and the Friggliarchy festive banner's soldiers are frog scouts in elf green (`art/elf*-*.png`, a
 battle pose per weapon; skins recoloured from `elf*skin` masks). The banner's ★ soldiers (`troops: 'elves'`: Elf Guard,
 Holly Axe, Pennant Elf, Elf Archer, Carol Scribe) wear the green; its ★★ wear Santa red, built at load from the
-`elf*armour` masks. Still to come: the snowy-woods scene and the festive costumes (`raeFestive` on the Raepublic
+`elf*armour` masks. The story scenes and both festive banners use the snowy-woods backdrop (`art/bg-snow.jpg`, scene `snow`), and the
+Frog Scout who speaks in them is an elf scout (`elfscout`). Still to come: the festive costumes (`raeFestive` on the Raepublic
 banner; `tiggleFestive` is defined but on no banner for now, since Chriggle Chraggle is the Friggliarchy banner's only ★★★).
 
 ## Economy
