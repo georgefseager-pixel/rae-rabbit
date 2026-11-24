@@ -832,6 +832,22 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .gtease.festive .seal{position:relative;z-index:1;background:radial-gradient(circle at 35% 30%,#3c9a50,#1f5c30 70%)}
 .rgift{background:rgba(201,55,47,.25)!important}
 
+/* ---------- Energy (67-energy.js) ---------- */
+.energy{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:#e8d8b4}
+.energy .epips{display:inline-flex;gap:3px}
+.energy .epips i{width:11px;height:15px;border-radius:3px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  clip-path:polygon(45% 0,100% 0,62% 42%,95% 42%,25% 100%,42% 55%,8% 55%);}
+.energy .epips i.on{background:linear-gradient(180deg,#ffe27a,#f2b632);border-color:#ffd25a;filter:drop-shadow(0 0 3px rgba(255,200,60,.6))}
+.energy .etime{opacity:.85;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.energy.empty .etime{color:#ffb3a6;opacity:1;font-weight:700}
+.energy.big .epips i{width:15px;height:20px}
+.prepenergy{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:2px 16px 6px}
+.prepenergy .energy{margin-top:0}
+.prepenergy small{opacity:.7;font-size:11.5px}
+.renergy{display:flex;flex-direction:column;gap:8px;margin:8px 16px 14px;padding:12px 14px;border-radius:10px;background:rgba(0,0,0,.25);border:1px dashed rgba(255,255,255,.2);font-size:14px}
+.renergy .energy{margin-top:0}
+.btn.noenergy{filter:grayscale(.85) brightness(.75)}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -7339,6 +7355,7 @@ function renderHub(){
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
       <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
+        ${energyHTML()}
         <div class="hbtns"><button class="btn" data-go="army" type="button">Army &amp; Armoury</button>
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
@@ -7347,7 +7364,7 @@ function renderHub(){
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
-    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-energydbg type="button">${energyNow().n ? 'Debug: Empty Energy' : 'Debug: Refill Energy'}</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
@@ -7467,6 +7484,7 @@ function renderPrep(){
   const replaying = SAVE.camps[ck].cleared.includes(ch.id) && !ch.event;
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
+    <div class="prepenergy">${energyHTML()}<small>Losing or retreating costs 1 energy. Winning costs none.</small></div>
     <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
       <div class="chips">${recChip(ck, ch, prep.picks.size ? [...prep.picks].map(u => alive.find(r => r.uid === u)?.lv || 0).reduce((a, b) => a + b, 0)/prep.picks.size : 0)}<span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span></div>
       ${ch.side ? sideRewardHTML(ck, ch) : ''}
@@ -7476,7 +7494,7 @@ function renderPrep(){
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     ${sortBarHTML()}
     <div class="ulist">${sortRecs(order).map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
-    <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">Begin Battle</button></div>
+    <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">${beginLabel()}</button></div>
   </div>`;
   showScreen('prep');
 }
@@ -7510,7 +7528,8 @@ async function playChapter(){
     (SAVE.eventBest ||= {})[ch.id] = Math.max(SAVE.eventBest[ch.id] || 0, gifts); }
   if (!res.win){
     B = null;
-    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i});
+    const energyLeft = spendEnergy();   // losing or retreating costs 1 energy (winning costs none)
+    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i, energyLeft});
     return;
   }
   // Commit the battle to the permanent army.
@@ -7568,6 +7587,7 @@ function renderResult(r){
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
       <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <div class="renergy"><span><b>−1 energy.</b> ${r.energyLeft ? `${r.energyLeft} left.` : 'You\'re out: battles wait until some comes back.'} One comes back every hour.</span>${energyHTML('big')}</div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;
@@ -7617,10 +7637,11 @@ document.addEventListener('click', e => {
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if ('newday' in d) debugNewDay();
+  else if ('energydbg' in d){ const e = energyNow(); if (e.n){ e.n = 0; e.t = nowMs(); } else { e.n = ENERGY.max; } saveGame(); toast(e.n ? 'Debug: energy refilled.' : 'Debug: energy emptied.'); renderHub(); }
   else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache?.clear?.(); }); }
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
-  else if ('begin' in d) playChapter();
+  else if ('begin' in d){ if (energyGate()) playChapter(); }
   else if ('retry' in d) openPrep(prep.ck, prep.i);
   else if (d.fav){ const rec = stOf().roster.find(r => r.uid === d.fav); if (rec){ rec.fav = !rec.fav; saveGame(); rerenderKeepScroll(); } }
   else if (d.sort){ rosterSort = d.sort; try { localStorage.setItem('raepublic-sort', d.sort); } catch (e){} rerenderKeepScroll(); }
@@ -8289,6 +8310,53 @@ async function checkDailyLogin(force){
 // Debug: pretend today is a new day (the log-in becomes claimable again).
 // (the game's calendar moves on a day: the log-in and once-a-day event stories come round again)
 function debugNewDay(){ SAVE.debugDays = (SAVE.debugDays || 0) + 1; saveGame(); toast('Debug: a new day.'); renderHub(); checkDailyLogin(true); }
+
+// ---------------- 67-energy.js ----------------
+// ================= Energy =================
+// One pool for the whole game (both routes): 6 at most. Losing or retreating from a battle costs 1 (winning costs
+// nothing); 1 comes back every hour, counted from timestamps, so it refills while the game is closed. At 0, battles
+// can't begin until one comes back (the Prepare screen still opens). The clock is the game's (gameDate), so
+// "Debug: New Day" refills it too.
+//   SAVE.energy = {n, t}: n now, t = when the next point started refilling (only meaningful below the max)
+const ENERGY = {max: 6, regenMs: 3600e3};
+const nowMs = () => gameDate().getTime();
+function energyNow(){
+  const e = SAVE.energy ||= {n: ENERGY.max, t: nowMs()}, now = nowMs();
+  if (e.n >= ENERGY.max){ e.n = ENERGY.max; e.t = now; return e; }
+  const got = Math.floor((now - e.t)/ENERGY.regenMs);
+  if (got > 0){ e.n = Math.min(ENERGY.max, e.n + got); e.t = e.n >= ENERGY.max ? now : e.t + got*ENERGY.regenMs; }
+  return e;
+}
+// ms until the next point (0 when full)
+const energyWait = () => { const e = energyNow(); return e.n >= ENERGY.max ? 0 : Math.max(0, e.t + ENERGY.regenMs - nowMs()); };
+const fmtWait = ms => { const s = Math.ceil(ms/1000), m = Math.floor(s/60); return `${m}:${String(s % 60).padStart(2, '0')}`; };
+function spendEnergy(){
+  const e = energyNow(); if (e.n >= ENERGY.max) e.t = nowMs();
+  e.n = Math.max(0, e.n - 1); saveGame(); return e.n;
+}
+// Can a battle begin? If not, says why.
+function energyGate(){
+  if (energyNow().n > 0) return true;
+  toast(`Out of energy. The next point comes back in ${fmtWait(energyWait())}.`);
+  return false;
+}
+// The meter: six pips and, below the max, a countdown to the next one (kept live by the ticker below)
+function energyHTML(cls = ''){
+  const e = energyNow();
+  return `<span class="energy ${cls}${e.n ? '' : ' empty'}" aria-label="Energy ${e.n} of ${ENERGY.max}"><span class="epips">${Array.from({length: ENERGY.max}, (_, i) => `<i class="${i < e.n ? 'on' : ''}"></i>`).join('')}</span>`
+    + `<span class="etime" data-energy-time>${e.n < ENERGY.max ? `+1 in ${fmtWait(energyWait())}` : 'Full'}</span></span>`;
+}
+// the Prepare screen's button, while there's no energy
+const beginLabel = () => energyNow().n ? 'Begin Battle' : `No energy · ${fmtWait(energyWait())}`;
+setInterval(() => {
+  const bb = document.querySelector('[data-begin]');
+  if (bb && typeof SAVE !== 'undefined' && SAVE?.camps){ bb.textContent = beginLabel(); bb.classList.toggle('noenergy', !energyNow().n); }
+  if (typeof SAVE === 'undefined' || !SAVE?.camps) return;
+  const els = document.querySelectorAll('.energy'); if (!els.length) return;
+  const before = SAVE.energy?.n, e = energyNow();
+  if (e.n !== before){ saveGame(); for (const el of els) el.outerHTML = energyHTML(el.classList.contains('big') ? 'big' : ''); return; }
+  for (const t of document.querySelectorAll('[data-energy-time]')) t.textContent = e.n < ENERGY.max ? `+1 in ${fmtWait(energyWait())}` : 'Full';
+}, 1000);
 
 // ---------------- 90-main.js ----------------
 // ================= Boot =================

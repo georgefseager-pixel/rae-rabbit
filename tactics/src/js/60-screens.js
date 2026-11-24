@@ -126,6 +126,7 @@ function renderHub(){
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
       <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
+        ${energyHTML()}
         <div class="hbtns"><button class="btn" data-go="army" type="button">Army &amp; Armoury</button>
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
@@ -134,7 +135,7 @@ function renderHub(){
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
-    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-energydbg type="button">${energyNow().n ? 'Debug: Empty Energy' : 'Debug: Refill Energy'}</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
@@ -254,6 +255,7 @@ function renderPrep(){
   const replaying = SAVE.camps[ck].cleared.includes(ch.id) && !ch.event;
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
+    <div class="prepenergy">${energyHTML()}<small>Losing or retreating costs 1 energy. Winning costs none.</small></div>
     <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
       <div class="chips">${recChip(ck, ch, prep.picks.size ? [...prep.picks].map(u => alive.find(r => r.uid === u)?.lv || 0).reduce((a, b) => a + b, 0)/prep.picks.size : 0)}<span class="chip">${objectiveLabel(ch.objective)}</span><span class="chip">vs ${FACTIONS[ch.enemyFaction].name}</span></div>
       ${ch.side ? sideRewardHTML(ck, ch) : ''}
@@ -263,7 +265,7 @@ function renderPrep(){
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     ${sortBarHTML()}
     <div class="ulist">${sortRecs(order).map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
-    <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">Begin Battle</button></div>
+    <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">${beginLabel()}</button></div>
   </div>`;
   showScreen('prep');
 }
@@ -297,7 +299,8 @@ async function playChapter(){
     (SAVE.eventBest ||= {})[ch.id] = Math.max(SAVE.eventBest[ch.id] || 0, gifts); }
   if (!res.win){
     B = null;
-    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i});
+    const energyLeft = spendEnergy();   // losing or retreating costs 1 energy (winning costs none)
+    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i, energyLeft});
     return;
   }
   // Commit the battle to the permanent army.
@@ -355,6 +358,7 @@ function renderResult(r){
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
       <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <div class="renergy"><span><b>−1 energy.</b> ${r.energyLeft ? `${r.energyLeft} left.` : 'You\'re out: battles wait until some comes back.'} One comes back every hour.</span>${energyHTML('big')}</div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
   $('#result').innerHTML = `<div class="sin f-${camp.faction}">${html}</div>`;
@@ -404,10 +408,11 @@ document.addEventListener('click', e => {
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if ('newday' in d) debugNewDay();
+  else if ('energydbg' in d){ const e = energyNow(); if (e.n){ e.n = 0; e.t = nowMs(); } else { e.n = ENERGY.max; } saveGame(); toast(e.n ? 'Debug: energy refilled.' : 'Debug: energy emptied.'); renderHub(); }
   else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache?.clear?.(); }); }
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
-  else if ('begin' in d) playChapter();
+  else if ('begin' in d){ if (energyGate()) playChapter(); }
   else if ('retry' in d) openPrep(prep.ck, prep.i);
   else if (d.fav){ const rec = stOf().roster.find(r => r.uid === d.fav); if (rec){ rec.fav = !rec.fav; saveGame(); rerenderKeepScroll(); } }
   else if (d.sort){ rosterSort = d.sort; try { localStorage.setItem('raepublic-sort', d.sort); } catch (e){} rerenderKeepScroll(); }

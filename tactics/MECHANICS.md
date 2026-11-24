@@ -229,6 +229,14 @@ Holly Axe, Pennant Elf, Elf Archer, Carol Scribe) wear the green; its ★★ wea
 Frog Scout who speaks in them is an elf scout (`elfscout`). There are no festive costumes for Rae or Tiggle (the placeholders were dropped; old saves lose them); the festive
 attires are Flopsy's Hoppy Xmas and Biggle's Gingerbiggle.
 
+## Energy (`67-energy.js`)
+
+Six energy, shared by both routes. Losing or retreating from any battle (story, side story, seasonal, training)
+costs 1; winning costs nothing. One comes back per hour, from timestamps, so it refills while the game is closed. At 0,
+the Prepare screen still opens but "Begin Battle" waits (it shows the countdown). The meter is on the campaign
+screen, the Prepare screen and the defeat screen. Uses the game clock, so "Debug: New Day" refills it;
+"Debug: Empty Energy" / "Debug: Refill Energy" sets it directly.
+
 ## Economy
 
 Pull currency (Whispers / Writs) comes from clearing stages (1 each, chapter finales 6), bonus stars (3), side stories
