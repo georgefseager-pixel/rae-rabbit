@@ -246,6 +246,7 @@ function drawUnit(u, now){
   ctx.fillStyle = '#120c0a'; ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
   const ratio = clamp(u.shp/u.mhp, 0, 1);
   ctx.fillStyle = ratio > .5 ? '#6fbf6a' : ratio > .25 ? '#e0b44c' : '#e0533d'; ctx.fillRect(bx, by, bw*ratio, bh);
+  if (u.naughty){ ctx.font = `${Math.round(T*.3)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📜', X + T*.12, Y + T*.1); }   // on Chriggle Chraggle's Naughty List
   ctx.restore();
 }
 function fillKeys(keys, fill, stroke){

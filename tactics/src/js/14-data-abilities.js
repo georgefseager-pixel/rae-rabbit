@@ -16,10 +16,11 @@ const ABILITIES = {
   lancecharge: {name: 'Lance Charge',      icon: '🐎', text: 'On horseback: +3 damage if Biggle moved at least 3 squares before attacking this turn.'},
   digging:     {name: 'Keep Them Digging', icon: '⛏️', text: 'An enemy Rhubarb hits can only move 1 square on its next turn.'},
   onestroke:   {name: 'One Stroke',        icon: '🪓', text: '+25 Crit against enemies below half HP.'},
+  naughty:     {name: 'Naughty List',      icon: '📜', text: 'Any enemy Chriggle Chraggle hits goes on the Naughty List: for the rest of the battle, everyone deals it +2 damage.'},
   nobody:      {name: 'Nobody Comes',      icon: '🌑', text: 'With no ally within 2 squares, Fraggle Jr. gets +3 Atk and +3 Spd.'},
 };
 const CHARACTER_ABILITY = {rae: 'nextto', sister: 'seams', willow: 'lesson', brigand: 'fingers', condemned: 'walkedaway', froggle: 'drawback',
-  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody'};
+  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty'};
 // The ability of a unit or record: its attire's (if the attire brings one), else its character's.
 const abilityOf = u => u && (ATTIRES[u.attire]?.ability || CHARACTER_ABILITY[u.key]) || null;
 const hasAb = (u, id) => abilityOf(u) === id;

@@ -49,6 +49,7 @@ const CLASSES = {
   gscribe:   {name: 'Black Scribe',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Thorns',    base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   gchaplain: {name: 'Black Chaplain', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Thorn Sceptre',     base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   courier:   {name: 'Gift Courier',   w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Candy Cane',        base: {mhp:17,atk:5, def:3, spd:9,skl:5,mov:4}, g: {mhp:40,atk:20,def:20,spd:30,skl:20}},   // December event: carries presents, runs for the road
+  giftgiver: {name: 'Gift-Bringer',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Naughty List',  base: {mhp:20,atk:11,def:4, spd:6,skl:9,mov:5}, g: {mhp:60,atk:50,def:25,spd:35,skl:55}},   // Chriggle Chraggle (December banner)
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -103,6 +104,7 @@ const LOOKS = {
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   courier:   {sp:'frog', art:'none', skin:'#7fae4a', light:'#a3cc6e', dark:'#3f5e22', belly:'#e4f0b8', gear:'bandana', band:'#c0392b'},   // placeholder until the courier art arrives
+  chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
   froggle:   {sp:'frog', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
   fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
   patch:     {sp:'bun', ears:'up', fur:'#d8742a', light:'#ee9a52', dark:'#8a4214', scarf:'#2c3559', gear:'eyepatch'},
@@ -118,7 +120,7 @@ const LOOKS = {
 const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', courier:'courier',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', courier:'courier', giftgiver:'chriggle',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
 };
 
@@ -174,6 +176,9 @@ const CHARACTERS = {
   fragglejr:   {name:'Fraggle Jr.', faction:'frog', look:'fraggle', artFrom:'fraggle', cls:'marshlord', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
                 retort:'Father shouted too. It didn\'t help him.',
                 intro:{title:'Son of the Black Frog', text:'Fraggle Friggle\'s only son. He came to the war camp with a letter from the crown, his father\'s coat, and very little to say. He watches everything. He has never once asked how his father died.'}},
+  chriggle:    {name:'Chriggle Chraggle', faction:'frog', look:'chriggle', cls:'giftgiver', lv:3, stars:3, stats:{mhp:25,atk:13,def:5,spd:6,skl:10,mov:5},   // December banner only
+                retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
+                intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -260,6 +265,7 @@ const ART_CROP = {
   patch:    {panel: ['170% auto', '55% 9%'], talk: ['135% auto', '55% 8%']},
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
+  chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},

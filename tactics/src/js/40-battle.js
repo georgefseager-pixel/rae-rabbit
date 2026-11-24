@@ -152,7 +152,7 @@ const effSpd = (u, pos) => u.spd + (solo(u, pos) ? 3 : 0);
 function calc(a, d, ap, dp){
   if (a.w === 'staff') return {can: false, dmg: 0, hit: 0, crit: 0, dbl: false, tri: 0};
   const t = ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);
-  let atk = a.atk + (solo(a, ap) ? 3 : 0), def = d.def + t.def + (d.seams || 0), hitB = 0, critB = 0;
+  let atk = a.atk + (solo(a, ap) ? 3 : 0) + (d.naughty ? 2 : 0), def = d.def + t.def + (d.seams || 0), hitB = 0, critB = 0;
   if (besideRae(a, ap)) atk += 1;
   if (besideRae(d, dp)) def += 1;
   if (hasAb(a, 'lancecharge') && (a.movedDist || 0) >= 3) atk += 3;
@@ -254,6 +254,7 @@ async function strike(a, d, f){
     const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
     if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
+    if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');
     Sfx.play(crit ? 'crit' : dmg === 0 ? 'nodamage' : 'hit');
@@ -402,7 +403,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}</div>` : (u.seams || u.hobbled) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }

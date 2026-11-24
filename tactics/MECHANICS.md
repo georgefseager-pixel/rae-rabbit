@@ -97,6 +97,7 @@ and The Lesson, which only help the player.
 | Rhubarb | Keep Them Digging | an enemy she hits moves only 1 square next turn | |
 | The Executioner | One Stroke | +25 Crit vs enemies below half HP | |
 | Fraggle Jr. | Nobody Comes | no ally within 2: +3 Atk, +3 Spd | flanks |
+| Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
 ## Unit behaviour (spawn `ai`)
 
@@ -203,13 +204,14 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 
 | Event | When | Raepublic | Friggliarchy | Currency |
 |---|---|---|---|---|
-| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" | Rabbit Gifts / Frog Gifts |
+| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer) | Rabbit Gifts / Frog Gifts |
 
 Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
 
 Placeholder art still to come: the courier (frog scout) look (`LOOKS.courier`, `art: 'none'`), the snowy-woods scene,
-and the festive costumes (`raeFestive`, `tiggleFestive` in `13-data-attires.js`).
+and the festive costumes (`raeFestive` on the Raepublic banner; `tiggleFestive` is defined but on no banner for now, since
+Chriggle Chraggle is the Friggliarchy banner's only ★★★).
 
 ## Economy
 

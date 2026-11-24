@@ -115,9 +115,9 @@ GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', 
   tease: 'A parcel in brown paper, tied with string. It\'s been shaken. Something rattles.',
   blurb: 'Placeholder festive banner, December only. Paid for with Rabbit Gifts from How Rae Stole Christmas. Featuring a festive costume for Rae.'});
 GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
-  pool: ['rhubarb', 'executioner', 'fragglejr'], attires: ['tiggleFestive'], bg: 'woods',
+  pool: ['chriggle'], bg: 'woods',
   tease: 'A box wrapped in green paper and gold ribbon, stamped with the royal seal. It smells faintly of pondweed.',
-  blurb: 'Placeholder festive banner, December only. Paid for with Frog Gifts from Froggy Festivities. Featuring a festive costume for Tiggle.'});
+  blurb: 'December only, paid for with Frog Gifts from Froggy Festivities. Chriggle Chraggle, the first Gift-Bringer and Friggle Fraggle\'s legendary ancestor, has come down from wherever he spends the rest of the year. He has a list.'});
 // what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}
 function bannerCur(ck, b){
   if (b?.currency === 'gifts'){ const c = EVENTS[b.event].currency[ck]; return {key: 'gifts', name: c.name, one: c.one, seal: '🎁', tease: b.tease}; }

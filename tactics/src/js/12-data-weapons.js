@@ -69,6 +69,7 @@ const WEAPONS = {
                  desc: 'He hasn\'t used it on a block since the day the prince didn\'t sign.'},
   provencleaver:{name: 'Proven Cleaver',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'fragglejr',
                  desc: 'His father\'s own, left in the mud by the river. Fraggle Friggle never asked for it back.'},
+  // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.
 };
 
 // Weapon icons: drawn upright in a 64×64 box (blades and needles then tilted to a diagonal), with steel,
