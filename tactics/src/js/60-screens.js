@@ -135,7 +135,7 @@ function renderHub(){
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
-    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-energydbg type="button">${energyNow().n ? 'Debug: Empty Energy' : 'Debug: Refill Energy'}</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-recruitall type="button">Debug: Recruit Everyone</button><button class="btn" data-energydbg type="button">${energyNow().n ? 'Debug: Empty Energy' : 'Debug: Refill Energy'}</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
@@ -408,6 +408,7 @@ document.addEventListener('click', e => {
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if ('newday' in d) debugNewDay();
+  else if ('recruitall' in d){ const n = Object.keys(SAVE.camps).reduce((a, ck) => a + debugRecruitAll(ck), 0); if (n && typeof buildFestiveTroops === 'function' && festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.()); saveGame(); toast(n ? `Debug: ${n} recruits joined across both armies, with every banner attire.` : 'Debug: everyone recruitable is already here.'); renderHub(); }
   else if ('energydbg' in d){ const e = energyNow(); if (e.n){ e.n = 0; e.t = nowMs(); } else { e.n = ENERGY.max; } saveGame(); toast(e.n ? 'Debug: energy refilled.' : 'Debug: energy emptied.'); renderHub(); }
   else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache?.clear?.(); }); }
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }

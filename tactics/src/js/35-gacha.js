@@ -40,6 +40,19 @@ function asCompanySoldier(rec, tpl){
 // Weapons this army can get from recruiting, at a rarity.
 const weaponPool = (ck, stars) => Object.keys(WEAPONS).filter(id => WEAPONS[id].army === ck && WEAPONS[id].stars === stars);
 function weaponResult(ck, stars){ const it = addWeapon(ck, pick(weaponPool(ck, stars))); return {stars, weapon: WEAPONS[it.id], kind: 'new'}; }
+// Debug: everyone recruiting can give this army, as if pulled: every ★★★ from every banner (seasonal ones too), every
+// company soldier (the standard company and every banner's troops), and every banner attire whose character is here.
+// Units already in the army (or fallen) are left as they are. Returns how many joined.
+function debugRecruitAll(ck){
+  const st = SAVE.camps[ck], army = GACHA_ARMY[ck]; let n = 0;
+  const banners = army.banners.map(b => ({...b, army: ck}));
+  for (const key of new Set([...army.rares, ...banners.flatMap(b => [...bannerPool(b), ...(b.featured || [])])]))
+    if (CHARACTERS[key] && !st.roster.some(r => r.key === key)){ const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3; st.roster.push(rec); n++; }
+  for (const set of [null, ...new Set(banners.map(b => b.troops).filter(Boolean))])
+    for (const tpl of companyOf(ck, set)) if (!st.roster.some(r => r.gid === tpl.id)){ st.roster.push(asCompanySoldier(makeRecruit(ck, tpl.cls), tpl)); n++; }
+  grantAttires(ck, banners.flatMap(b => b.attires || []));
+  return n;
+}
 function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
