@@ -35,6 +35,7 @@ const CLASSES = {
   prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Blade',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
   roseknight:{name: 'Rose Knight',    w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Rose Lance',        base: {mhp:24,atk:12,def:8, spd:7,skl:7,mov:7}, g: {mhp:70,atk:45,def:35,spd:40,skl:40}},   // Biggle's Rose Knight attire: on horseback
   gingerknight:{name: 'Gingerbread Knight', w: 'sword', rng: [1,1], mt: 'foot', wname: 'Candy Cane Rapier', base: {mhp:24,atk:12,def:7, spd:8,skl:9,mov:5}, g: {mhp:70,atk:45,def:30,spd:45,skl:45}},   // Biggle's Gingerbiggle attire (December)
+  runaway:   {name: 'Runaway Scout',  w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Ribboned Spear',    base: {mhp:20,atk:11,def:5, spd:8,skl:7,mov:5}, g: {mhp:65,atk:45,def:30,spd:50,skl:45}},   // Ilc (Raepublic December banner)
   lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
   lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
   bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
@@ -112,6 +113,7 @@ const LOOKS = {
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
+  ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
   froggle:   {sp:'frog', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
   fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
@@ -128,7 +130,7 @@ const LOOKS = {
 const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
 };
 
@@ -153,6 +155,9 @@ const CHARACTERS = {
   patch:    {name:'Patch', faction:'rae', look:'patch', cls:'rfighter', wname:'Corporal\'s Axe', lv:4, stars:3, stats:{mhp:27,atk:13,def:7,spd:6,skl:6,mov:5},   // one-eyed Republic corporal; second Raepublic banner
              retort:'Only the one eye left, frog, and it\'s on you!',
              intro:{title:'Corporal, East Company', text:'He has marched at the front of the Republic\'s columns longer than anyone, and been caught by the frogs more times than he will admit. One of those times cost him an eye. He laughs about it. He laughs about most things.'}},
+  ilc:      {name:'Ilc the Scout', faction:'rae', look:'ilc', cls:'runaway', lv:3, stars:3, stats:{mhp:23,atk:12,def:6,spd:9,skl:8,mov:5},   // December banner only: a frog scout who defected
+             retort:'Sorry! Sorry. I\'m on the other side now. Merry festival, though!',
+             intro:{title:'The Runaway Scout', text:'A young frog scout who spent every December carrying presents past the mine camps to frog children, and never once to a rabbit. This year he walked his sack straight through the Raepublic\'s gate instead. He has not been back.'}},
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:19,atk:12,def:2,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
@@ -275,6 +280,7 @@ const ART_CROP = {
   patch:    {panel: ['170% auto', '55% 9%'], talk: ['135% auto', '55% 8%']},
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
+  ilc:      {panel: ['175% auto', '46% 10%'], talk: ['135% auto', '46% 8%']},
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},

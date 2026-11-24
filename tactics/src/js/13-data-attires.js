@@ -17,9 +17,6 @@ const ATTIRES = {
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
-  // December festive banners (31-data-events.js). Placeholders: no art yet, so they show the story outfit.
-  raeFestive:    {char: 'rae',    outfit: 'festive', name: 'Festive Jumper (placeholder)', desc: 'A knitted jumper with a reindeer on it. The reindeer looks slightly worried.'},
-  tiggleFestive: {char: 'tiggle', outfit: 'festive', name: 'Festive Cloak (placeholder)', desc: 'Green velvet, gold bells, and a hood with a bobble. Biggle says it is undignified. Biggle is jealous.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker

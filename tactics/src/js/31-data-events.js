@@ -111,9 +111,9 @@ const eventMaxGifts = s => [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? 
 
 // ---------- December banners (paid with Gifts) ----------
 GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
-  pool: ['brigand', 'condemned', 'froggle', 'patch'], attires: ['raeFestive'], bg: 'snow',
+  pool: ['ilc'], bg: 'snow',
   tease: 'A parcel in brown paper, tied with string. It\'s been shaken. Something rattles.',
-  blurb: 'Placeholder festive banner, December only. Paid for with Rabbit Gifts from How Rae Stole Christmas. Featuring a festive costume for Rae.'});
+  blurb: 'December only, paid for with Rabbit Gifts from How Rae Stole Christmas. Ilc the Scout, a young frog courier who got tired of walking past the mine camps with a sack full of presents, has defected to deliver them to rabbits instead.'});
 GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
   pool: ['chriggle'], attires: ['gingerbiggle'], bg: 'snow', troops: 'elves',
   tease: 'A box wrapped in green paper and gold ribbon, stamped with the royal seal. It smells faintly of pondweed.',

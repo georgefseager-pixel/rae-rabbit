@@ -101,6 +101,7 @@ function finishBattle(win, retreated = false, reason = ''){
 // ---------- Movement & ranges ----------
 function reach(u){
   const holders = foes(u).filter(o => !o.dead && hasAb(o, 'holdline'));
+  const guided = alliesNear(u, u, 2).some(o => hasAb(o, 'guiding')) ? 1 : 0;   // Guiding Nose: +1 Mov near Ilc
   const map = new Map([[K(u.x, u.y), {d: 0, prev: -1}]]), open = [K(u.x, u.y)];
   while (open.length){
     open.sort((a, b) => map.get(a).d - map.get(b).d);
@@ -112,7 +113,7 @@ function reach(u){
       if (!inBounds(nx, ny)) continue;
       const c = moveCost(u, nx, ny); if (c >= 99) continue;
       const o = unitAt(nx, ny); if (o && sideOfTeam(o) !== sideOfTeam(u)) continue;
-      const nd = cd + c; if (nd > (u.hobbled ? 1 : u.mov)) continue;
+      const nd = cd + c; if (nd > (u.hobbled ? 1 : u.mov + guided)) continue;
       const nk = K(nx, ny), prev = map.get(nk);
       if (!prev || nd < prev.d){ map.set(nk, {d: nd, prev: cur}); open.push(nk); }
     }
