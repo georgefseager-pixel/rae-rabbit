@@ -41,7 +41,8 @@ function battleUnit(rec, teamId){
     moved: false, dead: false, x: 0, y: 0, px: 0, py: 0, ox: 0, oy: 0, flash: 0, alpha: 1, shp: s.mhp};
 }
 function enemyUnit(sp, faction, teamId = 'e'){
-  faction = sp.faction || faction;   // a spawn can belong to another side (e.g. rabbit bandits among frog soldiers)
+  // a spawn can belong to another side (e.g. rabbit bandits among frog soldiers); monkeys are Monkeyland's, whoever they fight for
+  faction = sp.faction || (LOOKS[sp.look || CLASS_LOOK[sp.cls]]?.sp === 'monkey' ? 'monkey' : faction);
   const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls,
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
