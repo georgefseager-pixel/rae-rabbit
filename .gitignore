@@ -1,2 +1,5 @@
 # Tool settings for the preview server, not part of the game
 .claude/
+
+# build cache of encoded art (tools/build.py)
+tactics/tools/.artcache/
