@@ -972,6 +972,7 @@ function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] 
 // (art/grunt-*.png, skin colours in SKINS).
 function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
 const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS},
+                     troopxm: {base: 'troopxm', palette: () => FURS},   // December: Republic soldiers in festive colours (built from troop* at load)
                      black: {base: 'black', palette: () => SKINS},   // Fraggle's Black Guard (art/black-*.png)
                      elf: {base: 'elf', palette: () => SKINS}};       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
@@ -1005,14 +1006,15 @@ function artResolve(ent, kind){
   const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls)
     || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
-  if (sp.base === 'troop'){
+  if (sp.base === 'troop' || sp.base === 'troopxm'){
+    const T = sp.base;   // 'troopxm': the same art in festive green and red
     // Republic soldiers: one portrait and map icon, and a battle pose for each weapon (art/troop<weapon>-battle.png).
     // ★★ (elite) soldiers wear the plumed helmet: art/troopelite*-*.png (no bow pose: elite archers use the plain one).
     const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w];
-    if (pose && ART['troop' + e + pose + fur]?.[kind]) return 'troop' + e + pose + fur;
-    if (pose && ART['troop' + pose + fur]?.[kind]) return 'troop' + pose + fur;
-    if (ART['troop' + e + fur]?.[kind]) return 'troop' + e + fur;
+    if (pose && ART[T + e + pose + fur]?.[kind]) return T + e + pose + fur;
+    if (pose && ART[T + pose + fur]?.[kind]) return T + pose + fur;
+    if (ART[T + e + fur]?.[kind]) return T + e + fur;
   }
   if (sp.base === 'black'){
     // Fraggle's Black Guard: one portrait and map icon, and a battle pose for each weapon (art/black<weapon>-battle.png; swords use black-battle.png).
@@ -1135,13 +1137,43 @@ async function buildEliteArmour(base, tone = l => l*.95, sat = s => s*1.25 + .08
     } catch (e){ console.warn('elite armour failed for', base, kind, e); }
   }
 }
+// December: the Republic's uniform in festive colours. Within the soldier's keep mask (cloth, armour, leather), the navy
+// cloth turns holly green and the maroon turns a brighter Christmas red; armour, leather and fur stay as drawn.
+// Results are new bases ('troopxm…'), which then get every fur colour like the originals.
+async function buildFestiveCloth(base){
+  loadReport(65 + 34*Math.min(1, ++variantsDone/VARIANT_SETS));
+  const out = base.replace('troop', 'troopxm');
+  if (!ART[base]) return out;
+  ART[out] = {};
+  for (const kind of Object.keys(ART[base])){
+    try {
+      const img = await loadImg(ART[base][kind]), W = img.naturalWidth, H = img.naturalHeight;
+      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      const data = g.getImageData(0, 0, W, H), px = data.data, m = await maskAlpha(ART[base + 'mask']?.[kind], W, H);
+      for (let i = 0; i < W*H; i++){
+        if (m[i] <= 0) continue;
+        const [h, s, l] = rgbToHsl(px[i*4]/255, px[i*4 + 1]/255, px[i*4 + 2]/255);
+        let to = null;
+        if (h >= 225 && h <= 325 && s > .06) to = hslToRgb(138, clamp(Math.max(s*1.3, .34), 0, 1), clamp(l*1.12 + .02, 0, .7));   // navy → holly green
+        else if ((h >= 338 || h <= 9) && s > .3 && l < .5) to = hslToRgb(356, clamp(s*1.3 + .12, 0, 1), clamp(l*1.15 + .03, 0, .62));   // maroon → Christmas red
+        if (!to) continue;
+        const w = m[i];
+        px[i*4] += (to[0]*255 - px[i*4])*w; px[i*4 + 1] += (to[1]*255 - px[i*4 + 1])*w; px[i*4 + 2] += (to[2]*255 - px[i*4 + 2])*w;
+      }
+      g.putImageData(data, 0, 0);
+      const blob = await new Promise(res => c.toBlob(res, 'image/png'));
+      ART[out][kind] = blob ? URL.createObjectURL(blob) : c.toDataURL();
+    } catch (e){ console.warn('festive cloth failed for', base, kind, e); }
+  }
+  ART[out + 'mask'] = ART[base + 'mask'];   // the fur recolour keeps the same parts
+  return out;
+}
 const loadReport = (v, text) => window.__load?.(v, text);   // the loading screen's bar (shell.html)
 let variantsDone = 0;
-const VARIANT_SETS = 9 + 5 + 2 + 14 + 5 + 10;   // the buildVariants / buildEliteArmour calls below, for the loading bar
-async function buildFurVariants(){
-  loadReport(65, 'Dyeing the soldiers\u2019 coats…');
-  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', 'troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook',
-                     'troopelite', 'troopeliteaxe', 'troopelitelance', 'troopelitebook', 'troopelitestaff']) await buildVariants(base, FURS, async (kind, px, W, H) => {
+const VARIANT_SETS = 9 + 5 + 2 + 14 + 5 + 10 + 18;   // the buildVariants / buildEliteArmour calls below, for the loading bar
+// mine rabbits and Republic soldiers: the warm fur, outside the keep mask
+const furWeight = (base) => async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
       const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], l = (Math.max(r, gg, b) + Math.min(r, gg, b))/510;
@@ -1149,24 +1181,44 @@ async function buildFurVariants(){
       w[i] = clamp((r - gg - 6)/12, 0, 1)*clamp((l - .12)/.1, 0, 1)*(1 - keep[i]);
     }
     return w;
-  });
+  };
+// frogs: the skin, from art/<base>skin-<kind>.png (★★ grunts reuse the plain grunt masks)
+const skinWeight = (base) => async (kind, px, W, H) => {
+  // the elite grunts reuse the plain grunt masks; the elite Black Guard have masks of their own
+  const skin = await maskAlpha(ART[(ART[base + 'skin'] ? base : base.replace('elite', '')) + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
+  for (let i = 0; i < w.length; i++){
+    const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
+    // colourless pixels (eye highlights) and near-black ink keep their colour
+    w[i] = skin[i]*clamp((mx - mn - 18)/20, 0, 1)*clamp(((mx + mn)/510 - .14)/.08, 0, 1);
+  }
+  return w;
+};
+const TROOP_BASES = ['troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook', 'troopelite', 'troopeliteaxe', 'troopelitelance', 'troopelitebook', 'troopelitestaff'];
+// December soldiers (troopxm*, and the frog elf scouts elf*) are only dyed when they can be seen: in December, or once you have recruited some.
+// Turning on Debug: December dyes them then.
+const festiveNeeded = () => (typeof eventActive === 'function' && eventActive('december')) || Object.values(SAVE?.camps || {}).some(c => (c.roster || []).some(r => ['soldierxm', 'courier'].includes(CLASS_LOOK[r.cls])));
+let festiveBuilt = null;
+function buildFestiveTroops(){
+  return festiveBuilt ||= (async () => {
+    const out = [];
+    for (const base of TROOP_BASES) out.push(await buildFestiveCloth(base));
+    for (const base of out) await buildVariants(base, FURS, furWeight(base));
+    // the frog scouts in elf green; ★★ hat and coat turned Santa red (lifted a little: the green felt is dark)
+    const elves = ['elf', 'elfaxe', 'elflance', 'elfbow', 'elfbook'];
+    for (const base of elves) await buildEliteArmour(base, l => clamp(l*1.35 + .07, 0, .6), s => s*1.7 + .25);
+    for (const base of elves.flatMap(b => [b, b + 'elite'])) await buildVariants(base, SKINS, skinWeight(base));
+  })();
+}
+async function buildFurVariants(){
+  loadReport(65, 'Dyeing the soldiers\u2019 coats…');
+  const troops = TROOP_BASES;
+  for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', ...troops]) await buildVariants(base, FURS, furWeight(base));
+  if (festiveNeeded()) await buildFestiveTroops();
   // Elite (★★) frog art: the green armour, cloak, plume and banner turned red, before the skin colours.
   for (const base of ['grunt', 'gruntbow']) await buildEliteArmour(base);
-  // ★★ festive frogs: the elf-green hat and coat turned Santa red (lifted a little: the green felt is dark)
-  const elves = ['elf', 'elfaxe', 'elflance', 'elfbow', 'elfbook'];
-  for (const base of elves) await buildEliteArmour(base, l => clamp(l*1.35 + .07, 0, .6), s => s*1.7 + .25);
   // Fraggle's Black Guard (black*) recolour the same way, from art/black*skin-<kind>.png.
   const black = ['', 'axe', 'lance', 'book', 'staff'].flatMap(p => ['black' + p, 'blackelite' + p]);
-  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', ...black, ...elves.flatMap(b => [b, b + 'elite'])]) await buildVariants(base, SKINS, async (kind, px, W, H) => {
-    // the elite grunts reuse the plain grunt masks; the elite Black Guard have masks of their own
-    const skin = await maskAlpha(ART[(ART[base + 'skin'] ? base : base.replace('elite', '')) + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
-    for (let i = 0; i < w.length; i++){
-      const r = px[i*4], gg = px[i*4 + 1], b = px[i*4 + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
-      // colourless pixels (eye highlights) and near-black ink keep their colour
-      w[i] = skin[i]*clamp((mx - mn - 18)/20, 0, 1)*clamp(((mx + mn)/510 - .14)/.08, 0, 1);
-    }
-    return w;
-  });
+  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', ...black]) await buildVariants(base, SKINS, skinWeight(base));
   furReady = true; loadReport(100);
 }
 
@@ -1609,6 +1661,12 @@ const CLASSES = {
   rarcher:   {name: 'Bowrabbit',      w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Republic Bow',      base: {mhp:18,atk:10,def:4, spd:6,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:40,skl:55}},
   radept:    {name: 'Adept',          w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Republic Primer',   base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   pebbler:   {name: 'Slinger',        w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Pebble Sling',      base: {mhp:17,atk:9, def:3, spd:6,skl:7,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  // The Raepublic festive banner's soldiers (December): Republic troops in green and red, with festive kit
+  xfencer:   {name: 'Knitter',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Knitting Needle',   base: {mhp:19,atk:10,def:5, spd:8,skl:8,mov:5}, g: {mhp:65,atk:40,def:30,spd:55,skl:50}},
+  xfighter:  {name: 'Log Splitter',   w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Yule Hatchet',      base: {mhp:23,atk:12,def:5, spd:5,skl:4,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:35}},
+  xlancer:   {name: 'Pole Bearer',    w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Tinsel Pike',       base: {mhp:21,atk:10,def:7, spd:5,skl:6,mov:5}, g: {mhp:75,atk:40,def:45,spd:30,skl:40}},
+  xarcher:   {name: 'Snowballer',     w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Snowball Bow',      base: {mhp:18,atk:10,def:4, spd:6,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:40,skl:55}},
+  xadept:    {name: 'Caroller',       w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Carol Sheet',       base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
@@ -1663,6 +1721,7 @@ const WEAPON_TIERS = [
 // Used for tokens everywhere, and for portraits until real art exists in art/.
 const LOOKS = {
   // art: 'troop' draws them with the Republic soldier art (recoloured to their fur) instead of the mine-rabbit art
+  soldierxm: {sp:'bun', art:'troopxm', ears:'lop', fur:'#c8a27a', light:'#e2c4a0', dark:'#8a6a4a', scarf:'#2e7a3c', gear:'none'},   // December: festive colours
   soldier:   {sp:'bun', art:'troop', ears:'lop', fur:'#c8a27a', light:'#e2c4a0', dark:'#8a6a4a', scarf:'#2c3559', gear:'none'},
   // art: 'black' draws them with Fraggle's Black Guard art (recoloured to their skin)
   // art: 'elf' draws them as the December frog scouts in elf green (recoloured to their skin; ★★ in Santa red)
@@ -1711,6 +1770,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
+  xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
@@ -5661,9 +5721,11 @@ const eventMaxGifts = s => [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? 
 
 // ---------- December banners (paid with Gifts) ----------
 GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
-  pool: ['ilc'], attires: ['floraXmas'], bg: 'snow',
+  pool: ['ilc'], attires: ['floraXmas'], bg: 'snow', troops: 'festive',
   tease: 'A parcel in brown paper, tied with string. It\'s been shaken. Something rattles.',
-  blurb: 'December only, paid for with Rabbit Gifts from How Rae Stole Christmas. Ilc the Scout, a young frog courier who got tired of walking past the mine camps with a sack full of presents, has defected to deliver them to rabbits instead. Featuring Hoppy Xmas: Flopsy Flora in a jumper she knitted herself.'});
+  blurb: 'December only, paid for with Rabbit Gifts from How Rae Stole Christmas. Ilc the Scout, a young frog courier who got tired of walking past the mine camps with a sack full of presents, has defected to deliver them to rabbits instead. Featuring Hoppy Xmas: Flopsy Flora in a jumper she knitted herself. The ★ and ★★ who answer are Republic soldiers in their festive colours.'});
+GACHA_ARMY.rae.troops.festive = {stars: [1, 2], generic: ['xfencer', 'xfighter', 'xlancer', 'xarcher', 'xadept'],
+  names: ['Mitten', 'Bramblejam', 'Sloe', 'Crumble', 'Ginger', 'Pip', 'Clementine', 'Toffee', 'Hob', 'Quince', 'Chestnut', 'Marzipan', 'Snowberry', 'Gingersnap', 'Plum']};
 GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
   pool: ['chriggle'], attires: ['gingerbiggle'], bg: 'snow', troops: 'elves',
   tease: 'A box wrapped in green paper and gold ribbon, stamped with the royal seal. It smells faintly of pondweed.',
@@ -7587,7 +7649,7 @@ document.addEventListener('click', e => {
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if ('newday' in d) debugNewDay();
-  else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); }
+  else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache?.clear?.(); }); }
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
   else if ('begin' in d) playChapter();

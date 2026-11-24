@@ -26,6 +26,12 @@ const CLASSES = {
   rarcher:   {name: 'Bowrabbit',      w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Republic Bow',      base: {mhp:18,atk:10,def:4, spd:6,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:40,skl:55}},
   radept:    {name: 'Adept',          w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Republic Primer',   base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   pebbler:   {name: 'Slinger',        w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Pebble Sling',      base: {mhp:17,atk:9, def:3, spd:6,skl:7,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  // The Raepublic festive banner's soldiers (December): Republic troops in green and red, with festive kit
+  xfencer:   {name: 'Knitter',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Knitting Needle',   base: {mhp:19,atk:10,def:5, spd:8,skl:8,mov:5}, g: {mhp:65,atk:40,def:30,spd:55,skl:50}},
+  xfighter:  {name: 'Log Splitter',   w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Yule Hatchet',      base: {mhp:23,atk:12,def:5, spd:5,skl:4,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:35}},
+  xlancer:   {name: 'Pole Bearer',    w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Tinsel Pike',       base: {mhp:21,atk:10,def:7, spd:5,skl:6,mov:5}, g: {mhp:75,atk:40,def:45,spd:30,skl:40}},
+  xarcher:   {name: 'Snowballer',     w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Snowball Bow',      base: {mhp:18,atk:10,def:4, spd:6,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:40,skl:55}},
+  xadept:    {name: 'Caroller',       w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Carol Sheet',       base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   runner:    {name: 'Runner',         w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Sharpened Shears',  base: {mhp:18,atk:9, def:3, spd:9,skl:7,mov:6}, g: {mhp:60,atk:40,def:20,spd:60,skl:50}},
   patcher:   {name: 'Patcher',        w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Darning Needle',    base: {mhp:16,atk:4, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:50,skl:40}},
   quarter:   {name: 'Archer',         w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Longbow',           base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:45,skl:55}},
@@ -80,6 +86,7 @@ const WEAPON_TIERS = [
 // Used for tokens everywhere, and for portraits until real art exists in art/.
 const LOOKS = {
   // art: 'troop' draws them with the Republic soldier art (recoloured to their fur) instead of the mine-rabbit art
+  soldierxm: {sp:'bun', art:'troopxm', ears:'lop', fur:'#c8a27a', light:'#e2c4a0', dark:'#8a6a4a', scarf:'#2e7a3c', gear:'none'},   // December: festive colours
   soldier:   {sp:'bun', art:'troop', ears:'lop', fur:'#c8a27a', light:'#e2c4a0', dark:'#8a6a4a', scarf:'#2c3559', gear:'none'},
   // art: 'black' draws them with Fraggle's Black Guard art (recoloured to their skin)
   // art: 'elf' draws them as the December frog scouts in elf green (recoloured to their skin; ★★ in Santa red)
@@ -128,6 +135,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
+  xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',

@@ -215,6 +215,12 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
 
+The Raepublic festive banner's soldiers (`troops: 'festive'`: Knitter, Log Splitter, Pole Bearer, Snowballer, Caroller)
+are the Republic troop art re-dyed at load (`buildFestiveCloth` in `00-util.js`: navy cloth → holly green, maroon →
+Christmas red; ★★ keep the plumed helmet). Trial look: may be replaced by their own art.
+Festive art (these and the frog elves) is only dyed when needed: in December (or Debug: December), or once the army
+has such soldiers. That keeps the rest of the year's loading screen shorter.
+
 Art: the couriers and the Friggliarchy festive banner's soldiers are frog scouts in elf green (`art/elf*-*.png`, a
 battle pose per weapon; skins recoloured from `elf*skin` masks). The banner's ★ soldiers (`troops: 'elves'`: Elf Guard,
 Holly Axe, Pennant Elf, Elf Archer, Carol Scribe) wear the green; its ★★ wear Santa red, built at load from the

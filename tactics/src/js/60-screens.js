@@ -404,7 +404,7 @@ document.addEventListener('click', e => {
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if ('newday' in d) debugNewDay();
-  else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); }
+  else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache?.clear?.(); }); }
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
   else if ('begin' in d) playChapter();
