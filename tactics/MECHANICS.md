@@ -203,8 +203,7 @@ F3-3 needs R3-3, F3-4 needs R3-4, R3-5 needs F3-4, F3-5 needs R3-5, R3-6 needs F
 R3-5 (a mid-battle `join` that must survive; R3-6 `mustDeploy`s him); Aurora joins the Friggliarchy after F3-6.
 Abilities: Aurora, Bend, Not Break (once a battle, survive a killing blow on 1 HP); Speshul, We Can Fight! (+2 damage,
 +10 Hit against higher-level enemies). Placeholder art: monkeys are felt plush (`LOOKS.monkey/aurora/speshul/tamarind`);
-scenes `monkeyland`, `castlegate` and `castle` borrow ridge, yard and court until their paintings arrive
-(`SCENE_FALLBACK` in `50-dialogue.js`). Your own units always stand on your side's coaster, whatever their faction.
+scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg-*.jpg`). Your own units always stand on your side's coaster, whatever their faction.
 
 ## Progression and unlocks
 

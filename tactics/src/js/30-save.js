@@ -21,6 +21,8 @@ function migrateSave(s){
   }
   // attires that were dropped (the festive placeholders) leave the wardrobe
   for (const c of Object.values(s.camps)) for (const r of c.roster || []){ if (r.attires) r.attires = r.attires.filter(id => ATTIRES[id]); if (r.attire && !ATTIRES[r.attire]) r.attire = null; }
+  // the festive soldier Pip was renamed Cranberry (the name is saved for a future character)
+  for (const r of s.camps.rae?.roster || []) if (r.gid?.startsWith('rae-festive-') && r.name === 'Pip') r.name = 'Cranberry';
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
   if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying

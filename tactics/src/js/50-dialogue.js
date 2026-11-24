@@ -34,8 +34,8 @@ const NIGHT_LIT = ['quarters', 'ridge'];
 // Where to anchor a backdrop when a tall phone screen crops its sides (default: centre).
 const BG_POS = {ridge: '70% 30%'};
 // Scenes whose painting hasn't arrived yet borrow another's (drop art/bg-<scene>.jpg in and it's used instead):
-// Chapter Three's Monkeyland meadows, the castle gate and the castle's great hall.
-const SCENE_FALLBACK = {monkeyland: 'ridge', castlegate: 'yard', castle: 'court'};
+// (Chapter Three's monkeyland, castlegate and castle used this until their paintings arrived.)
+const SCENE_FALLBACK = {};
 // Diagrams a line can show with show:'name'.
 const DIAGRAMS = {
   // the weapon triangle, plus tomes over bows: each arrow points at what it beats

@@ -39,7 +39,7 @@
 // Scene lines
 //   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
 //   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods, court, ridge, republic, warcamp, snow,
-//                                              monkeyland, castlegate, castle: the last three borrow other paintings until theirs arrive)
+//                                              monkeyland, castlegate, castle)
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
@@ -787,7 +787,7 @@ const CAMPAIGNS = {
           deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
           brief: 'Monkeys loyal to the Governess block the bridges out of Monkeyland. Break through, and defeat Captain Tamarind. The monkeys who chose you fight beside you.',
           prepNote: 'Speshul must come. The monkeys who changed sides fight beside you, on their own (blue coasters).',
-          allies: () => [E('mkguard',5,3,11,'charge',{key: 'ally', name: 'Guard Pippin'}), E('mkacro',5,6,11,'charge',{key: 'ally', name: 'Acrobat Kiwi'}),
+          allies: () => [E('mkguard',5,3,11,'charge',{key: 'ally', name: 'Guard Banyan'}), E('mkacro',5,6,11,'charge',{key: 'ally', name: 'Acrobat Kiwi'}),
                          E('mkthrow',5,1,12,'charge',{key: 'ally', name: 'Thrower Sorrel'}), E('mkbrute',5,8,12,'charge',{key: 'ally', name: 'Thumper Mango'})],
           enemies: () => [
             E('mkguard',8,4,2,'hold',{boss: true, elite: true, key: 'tamarind', name: 'Captain Tamarind', look: 'tamarind'}),
