@@ -238,6 +238,8 @@ const FURS = {
   tan: null, grey: [0, .12, .05], cream: [4, .55, .38], white: [0, .1, .6],
   chocolate: [-4, .85, -.38], sooty: [0, .15, -.6], ginger: [-6, 1.45, -.02], sandy: [10, .75, .16],
 };
+// December: festive fur for the Raepublic festive banner's soldiers (same format; keys become art like 'troopaxexberry').
+const FESTIVE_FURS = {xberry: [-30, 1.1, -.3], xholly: [105, .5, -.4], xgilt: [12, 1.45, .04], xpepper: [-38, .95, .3]};
 
 // Generic rabbits of these classes use the bulkier mine-rabbit portrait (art/minerbulk-portrait.png).
 const BULKY_CLASSES = ['digger', 'hauler'];

@@ -216,8 +216,9 @@ Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
 
 The Raepublic festive banner's soldiers (`troops: 'festive'`: Knitter, Log Splitter, Pole Bearer, Snowballer, Caroller)
-are the Republic troop art re-dyed at load (`buildFestiveCloth` in `00-util.js`: navy cloth → holly green, maroon →
-Christmas red; ★★ keep the plumed helmet). Trial look: may be replaced by their own art.
+are the Republic troop art in the usual uniform, with festive fur instead of the natural colours (`FESTIVE_FURS` in
+`10-data-units.js`: berry red, holly green, gold, peppermint pink; ★★ keep the plumed helmet). Trial look: may be
+replaced by their own art.
 Festive art (these and the frog elves) is only dyed when needed: in December (or Debug: December), or once the army
 has such soldiers. That keeps the rest of the year's loading screen shorter.
 

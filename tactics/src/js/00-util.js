@@ -48,7 +48,7 @@ function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] 
 // (art/grunt-*.png, skin colours in SKINS).
 function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
 const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS},
-                     troopxm: {base: 'troopxm', palette: () => FURS},   // December: Republic soldiers in festive colours (built from troop* at load)
+                     troopxm: {base: 'troop', palette: () => FESTIVE_FURS},   // December: Republic soldiers with festive fur
                      black: {base: 'black', palette: () => SKINS},   // Fraggle's Black Guard (art/black-*.png)
                      elf: {base: 'elf', palette: () => SKINS}};       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
@@ -82,8 +82,8 @@ function artResolve(ent, kind){
   const elderly = !standard && (CHARACTERS[ent.key]?.elderly || SPEAKERS[ent.key]?.elderly || ELDERLY_CLASSES.includes(cls)
     || (generic && !BULKY_CLASSES.includes(cls) && strHash((ent.uid || ent.name) + '|age') % 3 === 0));
   if (sp.base === 'miner' && elderly && ART['minerold' + fur]?.[kind]) return 'minerold' + fur;
-  if (sp.base === 'troop' || sp.base === 'troopxm'){
-    const T = sp.base;   // 'troopxm': the same art in festive green and red
+  if (sp.base === 'troop'){
+    const T = 'troop';
     // Republic soldiers: one portrait and map icon, and a battle pose for each weapon (art/troop<weapon>-battle.png).
     // ★★ (elite) soldiers wear the plumed helmet: art/troopelite*-*.png (no bow pose: elite archers use the plain one).
     const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
@@ -213,41 +213,9 @@ async function buildEliteArmour(base, tone = l => l*.95, sat = s => s*1.25 + .08
     } catch (e){ console.warn('elite armour failed for', base, kind, e); }
   }
 }
-// December: the Republic's uniform in festive colours. Within the soldier's keep mask (cloth, armour, leather), the navy
-// cloth turns holly green and the maroon turns a brighter Christmas red; armour, leather and fur stay as drawn.
-// Results are new bases ('troopxm…'), which then get every fur colour like the originals.
-async function buildFestiveCloth(base){
-  loadReport(65 + 34*Math.min(1, ++variantsDone/VARIANT_SETS));
-  const out = base.replace('troop', 'troopxm');
-  if (!ART[base]) return out;
-  ART[out] = {};
-  for (const kind of Object.keys(ART[base])){
-    try {
-      const img = await loadImg(ART[base][kind]), W = img.naturalWidth, H = img.naturalHeight;
-      const c = document.createElement('canvas'); c.width = W; c.height = H;
-      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
-      const data = g.getImageData(0, 0, W, H), px = data.data, m = await maskAlpha(ART[base + 'mask']?.[kind], W, H);
-      for (let i = 0; i < W*H; i++){
-        if (m[i] <= 0) continue;
-        const [h, s, l] = rgbToHsl(px[i*4]/255, px[i*4 + 1]/255, px[i*4 + 2]/255);
-        let to = null;
-        if (h >= 225 && h <= 325 && s > .06) to = hslToRgb(138, clamp(Math.max(s*1.3, .34), 0, 1), clamp(l*1.12 + .02, 0, .7));   // navy → holly green
-        else if ((h >= 338 || h <= 9) && s > .3 && l < .5) to = hslToRgb(356, clamp(s*1.3 + .12, 0, 1), clamp(l*1.15 + .03, 0, .62));   // maroon → Christmas red
-        if (!to) continue;
-        const w = m[i];
-        px[i*4] += (to[0]*255 - px[i*4])*w; px[i*4 + 1] += (to[1]*255 - px[i*4 + 1])*w; px[i*4 + 2] += (to[2]*255 - px[i*4 + 2])*w;
-      }
-      g.putImageData(data, 0, 0);
-      const blob = await new Promise(res => c.toBlob(res, 'image/png'));
-      ART[out][kind] = blob ? URL.createObjectURL(blob) : c.toDataURL();
-    } catch (e){ console.warn('festive cloth failed for', base, kind, e); }
-  }
-  ART[out + 'mask'] = ART[base + 'mask'];   // the fur recolour keeps the same parts
-  return out;
-}
 const loadReport = (v, text) => window.__load?.(v, text);   // the loading screen's bar (shell.html)
 let variantsDone = 0;
-const VARIANT_SETS = 9 + 5 + 2 + 14 + 5 + 10 + 18;   // the buildVariants / buildEliteArmour calls below, for the loading bar
+const VARIANT_SETS = 9 + 5 + 2 + 14;   // the buildVariants / buildEliteArmour calls below, for the loading bar
 // mine rabbits and Republic soldiers: the warm fur, outside the keep mask
 const furWeight = (base) => async (kind, px, W, H) => {
     const keep = await maskAlpha(ART[base + 'mask']?.[kind], W, H), w = new Float32Array(W*H);
@@ -270,15 +238,13 @@ const skinWeight = (base) => async (kind, px, W, H) => {
   return w;
 };
 const TROOP_BASES = ['troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook', 'troopelite', 'troopeliteaxe', 'troopelitelance', 'troopelitebook', 'troopelitestaff'];
-// December soldiers (troopxm*, and the frog elf scouts elf*) are only dyed when they can be seen: in December, or once you have recruited some.
+// December soldiers (festive-furred Republic troops, and the frog elf scouts elf*) are only dyed when they can be seen: in December, or once you have recruited some.
 // Turning on Debug: December dyes them then.
 const festiveNeeded = () => (typeof eventActive === 'function' && eventActive('december')) || Object.values(SAVE?.camps || {}).some(c => (c.roster || []).some(r => ['soldierxm', 'courier'].includes(CLASS_LOOK[r.cls])));
 let festiveBuilt = null;
 function buildFestiveTroops(){
   return festiveBuilt ||= (async () => {
-    const out = [];
-    for (const base of TROOP_BASES) out.push(await buildFestiveCloth(base));
-    for (const base of out) await buildVariants(base, FURS, furWeight(base));
+    for (const base of TROOP_BASES) await buildVariants(base, FESTIVE_FURS, furWeight(base));   // Republic soldiers with festive fur
     // the frog scouts in elf green; ★★ hat and coat turned Santa red (lifted a little: the green felt is dark)
     const elves = ['elf', 'elfaxe', 'elflance', 'elfbow', 'elfbook'];
     for (const base of elves) await buildEliteArmour(base, l => clamp(l*1.35 + .07, 0, .6), s => s*1.7 + .25);
