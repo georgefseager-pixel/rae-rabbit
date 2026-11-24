@@ -5,6 +5,7 @@
 // (search for the ability id); this file is the list and the wording.
 const ABILITIES = {
   nextto:      {name: 'Next to Me',        icon: '🤝', text: 'Rae and any ally standing next to her each deal +1 damage and take 1 less.'},
+  present:     {name: 'Stocking Filler',   icon: '🎁', text: 'Whoever Flopsy mends gets a present: +3 damage in their next fight, attacking or defending.'},
   seams:       {name: 'Mended Seams',      icon: '🧵', text: 'Anyone Flopsy Flora mends also gets +2 Def until her next turn.'},
   lesson:      {name: 'The Lesson',        icon: '📖', text: 'Allies within 2 squares of Willow earn 20% more experience.'},
   fingers:     {name: 'Light Fingers',     icon: '🪙', text: 'Each enemy Brigand defeats drops 25 extra spoils, paid when the battle is won.'},

@@ -153,7 +153,7 @@ const effSpd = (u, pos) => u.spd + (solo(u, pos) ? 3 : 0);
 function calc(a, d, ap, dp){
   if (a.w === 'staff') return {can: false, dmg: 0, hit: 0, crit: 0, dbl: false, tri: 0};
   const t = ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);
-  let atk = a.atk + (solo(a, ap) ? 3 : 0) + (d.naughty ? 2 : 0), def = d.def + t.def + (d.seams || 0), hitB = 0, critB = 0;
+  let atk = a.atk + (solo(a, ap) ? 3 : 0) + (d.naughty ? 2 : 0) + (a.present ? 3 : 0), def = d.def + t.def + (d.seams || 0), hitB = 0, critB = 0;
   if (besideRae(a, ap)) atk += 1;
   if (besideRae(d, dp)) def += 1;
   if (hasAb(a, 'lancecharge') && (a.movedDist || 0) >= 3) atk += 3;
@@ -312,6 +312,7 @@ async function doCombat(a, d){
   for (const [x, y, f] of seq){ if (a.dead || d.dead) break; await strike(x, y, f); }
   await closeDuel();
   speed = 1;
+  a.present = false; d.present = false;   // Stocking Filler: the present is used up in one fight
   const p = a.team === 'p' ? a : d.team === 'p' ? d : null, e = p === a ? d : a;   // allies don't gain experience
   if (p && !p.dead && e.dead && hasAb(p, 'fingers')){ B.bonusRes = (B.bonusRes || 0) + 25; popup(p, '🪙 +25', '#ecc673'); }
   if (p && !p.dead){
@@ -325,7 +326,8 @@ async function doCombat(a, d){
 async function doHeal(h, t){
   const amt = Math.min(healAmt(h), t.mhp - t.hp), from = t.hp;
   t.hp += amt; popup(t, `+${amt}`, '#9ff0b0'); Sfx.play('heal');
-  if (hasAb(h, 'seams')){ t.seams = 2; t.seamsBy = h.id; }   // Mended Seams: +2 Def until the mender's next turn
+  if (hasAb(h, 'seams')){ t.seams = 2; t.seamsBy = h.id; }
+  if (hasAb(h, 'present')){ t.present = true; popup(t, '🎁 A present!', '#ffb3c6'); }   // Stocking Filler: +3 damage in their next fight   // Mended Seams: +2 Def until the mender's next turn
   await tween(420, k => { t.shp = from + amt*k; t.flash = (1 - k)*.6; });
   await wait(200);
   if (h.team === 'p') await giveExp(h, 12);
@@ -406,7 +408,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.present) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }

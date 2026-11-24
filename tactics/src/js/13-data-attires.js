@@ -17,6 +17,10 @@ const ATTIRES = {
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
+  // December festive banner (31-data-events.js): Flopsy in a very large jumper. Same class and needle; a little
+  // cosier (Def) and a little slower (Spd), and her mending comes with presents.
+  floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',
+              desc: 'Knitted by Flopsy herself, over three weeks, mostly in secret. The spelling is deliberate. She will tell you so.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker

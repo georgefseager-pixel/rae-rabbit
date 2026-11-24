@@ -75,6 +75,7 @@ waits in the Armoury (the class's basic weapon is used) and comes back when the 
 |---|---|---|---|
 | Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
 | Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
+| Hoppy Xmas | Flopsy Flora | same class and needle: +2 Def, −1 Spd | A Sack Full of Rabbits (December) |
 | Gingerbiggle | Biggle | Lily Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
 
 ## Unique abilities (`14-data-abilities.js`)
@@ -88,6 +89,7 @@ and The Lesson, which only help the player.
 |---|---|---|---|
 | Rae | Next to Me | she and an adjacent ally: +1 damage dealt, −1 taken | formations |
 | Flopsy Flora | Mended Seams | whoever she mends: +2 Def until her next turn | |
+| Flopsy Flora (Hoppy Xmas) | Stocking Filler | whoever she mends gets +3 damage in their next fight (attacking or defending) | |
 | Willow | The Lesson | allies within 2 earn +20% EXP | |
 | Brigand | Light Fingers | +25 spoils per enemy he defeats | |
 | The Condemned | Walked Away | below half HP he strikes first when attacked (Vantage) | |
@@ -208,7 +210,7 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 
 | Event | When | Raepublic | Friggliarchy | Currency |
 |---|---|---|---|---|
-| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" (★★★ Ilc the Scout, a frog defector with a spear) | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer; attire Gingerbiggle) | Rabbit Gifts / Frog Gifts |
+| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" (★★★ Ilc the Scout, a frog defector with a spear; attire Hoppy Xmas for Flopsy) | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer; attire Gingerbiggle) | Rabbit Gifts / Frog Gifts |
 
 Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
@@ -217,7 +219,8 @@ Art: the couriers and the Friggliarchy festive banner's soldiers are frog scouts
 battle pose per weapon; skins recoloured from `elf*skin` masks). The banner's ★ soldiers (`troops: 'elves'`: Elf Guard,
 Holly Axe, Pennant Elf, Elf Archer, Carol Scribe) wear the green; its ★★ wear Santa red, built at load from the
 `elf*armour` masks. The story scenes and both festive banners use the snowy-woods backdrop (`art/bg-snow.jpg`, scene `snow`), and the
-Frog Scout who speaks in them is an elf scout (`elfscout`). There are no festive costumes for Rae or Tiggle (the placeholders were dropped; old saves lose them).
+Frog Scout who speaks in them is an elf scout (`elfscout`). There are no festive costumes for Rae or Tiggle (the placeholders were dropped; old saves lose them); the festive
+attires are Flopsy's Hoppy Xmas and Biggle's Gingerbiggle.
 
 ## Economy
 
