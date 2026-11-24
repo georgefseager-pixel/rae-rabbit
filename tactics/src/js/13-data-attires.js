@@ -8,6 +8,7 @@
 //   name / desc
 //   cls     optional: wearing it changes class (and so usually weapon type, range and growths)
 //   mods    optional: stat changes while worn, e.g. {def: 2, spd: -1}
+//   ability optional: an attire that changes class or stats brings its own ability (14-data-abilities.js)
 // Most attires will change stats slightly and the weapon type; the mine clothes below are look-only.
 // Attires can also come from recruiting: a banner's `attires: [ids]` are featured alongside its characters (26-data-gacha.js).
 const ATTIRES = {
@@ -18,7 +19,7 @@ const ATTIRES = {
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
-  rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3},
+  rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3}, ability: 'lancecharge',
               desc: 'Biggle\'s parade armour, rose-pink and gold, and the royal stables\' finest horse. He insists the colour is "crimson".'},
 };
 const attireOf = rec => rec && ATTIRES[rec.attire];

@@ -74,6 +74,29 @@ one whose character isn't in the army, becomes a ★★★ weapon instead.
 | Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
 | Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
 
+## Unique abilities (`14-data-abilities.js`)
+
+One small, always-on ability per unique character (placeholders have none), shown as an icon on unit cards and in the
+battle panel; tap it to read it. An attire that changes class or stats brings its own (`ATTIRES[id].ability`). They
+work for any unit with that character's key, enemies included (e.g. the Executioner as a boss), except Light Fingers
+and The Lesson, which only help the player.
+
+| Character | Ability | Rule | Stage ideas |
+|---|---|---|---|
+| Rae | Next to Me | she and an adjacent ally: +1 damage dealt, −1 taken | formations |
+| Flopsy Flora | Mended Seams | whoever she mends: +2 Def until her next turn | |
+| Willow | The Lesson | allies within 2 earn +20% EXP | |
+| Brigand | Light Fingers | +25 spoils per enemy he defeats | |
+| The Condemned | Walked Away | below half HP he strikes first when attacked (Vantage) | |
+| Froggle | Draw Back | action: she steps back 1, an adjacent ally takes her square | rescues, escorts |
+| Patch | Bait, By Choice | enemies that can reach him target him; −2 damage from the first hit each enemy turn | |
+| Tiggle | They Listen | allies within 2: +10 Hit | |
+| Biggle | Hold the Line | enemies stop when they reach a square next to him | choke points, bridges |
+| Biggle (Rose Knight) | Lance Charge | +3 damage after moving 3+ squares that turn | open maps |
+| Rhubarb | Keep Them Digging | an enemy she hits moves only 1 square next turn | |
+| The Executioner | One Stroke | +25 Crit vs enemies below half HP | |
+| Fraggle Jr. | Nobody Comes | no ally within 2: +3 Atk, +3 Spd | flanks |
+
 ## Unit behaviour (spawn `ai`)
 
 | AI | Behaviour | Good for |

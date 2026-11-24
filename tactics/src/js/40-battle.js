@@ -100,16 +100,19 @@ function finishBattle(win, retreated = false, reason = ''){
 
 // ---------- Movement & ranges ----------
 function reach(u){
+  const holders = foes(u).filter(o => !o.dead && hasAb(o, 'holdline'));
   const map = new Map([[K(u.x, u.y), {d: 0, prev: -1}]]), open = [K(u.x, u.y)];
   while (open.length){
     open.sort((a, b) => map.get(a).d - map.get(b).d);
     const cur = open.shift(), cd = map.get(cur).d, cx = KX(cur), cy = KY(cur);
+    // Hold the Line: a square next to Biggle (for his enemies) is as far as they go
+    if (cd > 0 && holders.some(h => Math.abs(h.x - cx) + Math.abs(h.y - cy) === 1)) continue;
     for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
       const nx = cx + dx, ny = cy + dy;
       if (!inBounds(nx, ny)) continue;
       const c = moveCost(u, nx, ny); if (c >= 99) continue;
       const o = unitAt(nx, ny); if (o && sideOfTeam(o) !== sideOfTeam(u)) continue;
-      const nd = cd + c; if (nd > u.mov) continue;
+      const nd = cd + c; if (nd > (u.hobbled ? 1 : u.mov)) continue;
       const nk = K(nx, ny), prev = map.get(nk);
       if (!prev || nd < prev.d){ map.set(nk, {d: nd, prev: cur}); open.push(nk); }
     }
@@ -140,22 +143,38 @@ function updateDanger(){
 }
 
 // ---------- Combat math ----------
+// ---------- Unique abilities in combat (14-data-abilities.js) ----------
+const alliesNear = (u, pos, r) => friends(u).filter(o => o !== u && !o.dead && man(o, pos) <= r);
+// Next to Me: a unit standing next to an ally, where one of them is Rae
+const besideRae = (u, pos) => alliesNear(u, pos, 1).some(o => hasAb(o, 'nextto') || hasAb(u, 'nextto'));
+const solo = (u, pos) => hasAb(u, 'nobody') && !alliesNear(u, pos, 2).length;   // Nobody Comes
+const effSpd = (u, pos) => u.spd + (solo(u, pos) ? 3 : 0);
 function calc(a, d, ap, dp){
   if (a.w === 'staff') return {can: false, dmg: 0, hit: 0, crit: 0, dbl: false, tri: 0};
   const t = ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);
+  let atk = a.atk + (solo(a, ap) ? 3 : 0), def = d.def + t.def + (d.seams || 0), hitB = 0, critB = 0;
+  if (besideRae(a, ap)) atk += 1;
+  if (besideRae(d, dp)) def += 1;
+  if (hasAb(a, 'lancecharge') && (a.movedDist || 0) >= 3) atk += 3;
+  if (hasAb(d, 'bait') && phase === 'e' && sideOfTeam(d) === 'p' && !d.baitUsed) def += 2;
+  if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
+  if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
-    dmg: Math.max(0, a.atk + tri - (d.def + t.def)),
-    hit: clamp(75 + a.skl*2 + (a.whit || 0) + tri*15 - (d.spd*2 + t.avo), 0, 100),
-    crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) - Math.floor(d.skl/4), 0, 100),
-    dbl: a.spd - d.spd >= 4, tri,
+    dmg: Math.max(0, atk + tri - def),
+    hit: clamp(75 + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
+    crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) + critB - Math.floor(d.skl/4), 0, 100),
+    dbl: effSpd(a, ap) - effSpd(d, dp) >= 4, tri,
   };
 }
+// a small popup the first time an ability changes something, so players see it working
+function abilityPop(u, id){ const A = ABILITIES[id]; if (A) popup(u, `${A.icon} ${A.name}`, '#ecc673'); }
 
 // ---------- Map animation ----------
 let popups = [], shots = [], banner = null, shake = 0;
 function popup(u, text, color){ popups.push({x: u.x + .5, y: u.y + .3, text, color, t0: performance.now(), dur: 950}); }
 async function moveAlong(u, path){
+  u.movedDist = (u.movedDist || 0) + Math.max(0, path.length - 1);
   for (let i = 1; i < path.length; i++){
     const fx = KX(path[i-1]), fy = KY(path[i-1]), tx = KX(path[i]), ty = KY(path[i]);
     Sfx.play('step');
@@ -233,6 +252,8 @@ async function strike(a, d, f){
   if (roll < f.hit){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
+    if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
+    if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');
     Sfx.play(crit ? 'crit' : dmg === 0 ? 'nodamage' : 'hit');
@@ -278,6 +299,8 @@ async function doCombat(a, d){
   }
   const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
   if (D.can) seq.push([d, a, D]);
+  // Walked Away: below half HP, the defender strikes first
+  if (D.can && hasAb(d, 'walkedaway') && d.hp < d.mhp/2){ seq.reverse(); abilityPop(d, 'walkedaway'); }
   if (A.dbl) seq.push([a, d, A]); else if (D.can && D.dbl) seq.push([d, a, D]);
   const hp0 = {a: a.hp, d: d.hp};
   speed = 1;
@@ -286,6 +309,7 @@ async function doCombat(a, d){
   await closeDuel();
   speed = 1;
   const p = a.team === 'p' ? a : d.team === 'p' ? d : null, e = p === a ? d : a;   // allies don't gain experience
+  if (p && !p.dead && e.dead && hasAb(p, 'fingers')){ B.bonusRes = (B.bonusRes || 0) + 25; popup(p, '🪙 +25', '#ecc673'); }
   if (p && !p.dead){
     const dealt = (p === a ? hp0.d - d.hp : hp0.a - a.hp) > 0;
     const xp = e.dead ? Math.max(10, 30 + (e.lv - p.lv)*3 + (e.boss ? 40 : 0)) : dealt ? Math.max(1, 10 + (e.lv - p.lv)) : 1;
@@ -297,11 +321,14 @@ async function doCombat(a, d){
 async function doHeal(h, t){
   const amt = Math.min(healAmt(h), t.mhp - t.hp), from = t.hp;
   t.hp += amt; popup(t, `+${amt}`, '#9ff0b0'); Sfx.play('heal');
+  if (hasAb(h, 'seams')){ t.seams = 2; t.seamsBy = h.id; }   // Mended Seams: +2 Def until the mender's next turn
   await tween(420, k => { t.shp = from + amt*k; t.flash = (1 - k)*.6; });
   await wait(200);
   if (h.team === 'p') await giveExp(h, 12);
 }
 async function giveExp(u, xp){
+  // The Lesson: +20% near Willow
+  if (u.team === 'p' && alliesNear(u, u, 2).some(o => hasAb(o, 'lesson'))) xp = Math.round(xp*1.2);
   popup(u, `+${xp} EXP`, '#ecc673'); Sfx.play('exp');
   u.exp += xp;
   await wait(450);
@@ -338,6 +365,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)} <b>${ABILITIES[abilityOf(u)].name}</b>${u.seams ? ' · <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' · <i>Slowed</i>' : ''}</div>` : (u.seams || u.hobbled) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -354,6 +382,7 @@ function panelActions(u){
   setPanel(unitHTML(u) + `<div class="acts">
     ${atk ? '<button class="btn primary" data-act="attack" type="button">Attack</button>' : ''}
     ${heal ? '<button class="btn primary" data-act="heal" type="button">Mend</button>' : ''}
+    ${drawTargets(u).length ? '<button class="btn wide" data-act="draw" type="button">↩ Draw Back</button>' : ''}
     <button class="btn" data-act="wait" type="button">Wait</button>
     <button class="btn" data-act="cancel" type="button">Undo</button></div>`);
 }
@@ -390,6 +419,10 @@ function refreshTop(){
 // ---------- Player flow ----------
 const enemiesInRange = u => foes(u).filter(o => { const d = man(u, o); return d >= u.rng[0] && d <= u.rng[1]; });
 const healTargets = u => friends(u).filter(o => o !== u && man(u, o) === 1 && o.hp < o.mhp);
+// Draw Back (Froggle): an adjacent ally, where the square behind her (away from them) is free for her to step into
+const backSquare = (u, o) => ({x: u.x + (u.x - o.x), y: u.y + (u.y - o.y)});
+const drawTargets = u => !hasAb(u, 'drawback') ? [] : friends(u).filter(o => { if (o === u || man(u, o) !== 1) return false;
+  const b = backSquare(u, o); return inBounds(b.x, b.y) && moveCost(u, b.x, b.y) < 99 && !unitAt(b.x, b.y); });
 function clearSel(){ sel = null; orig = null; reachMap = null; moveKeys = new Set(); atkKeys = new Set(); healKeys = new Set(); targets = []; fc = null; tmode = null; }
 
 function select(u){
@@ -406,11 +439,21 @@ function openActions(){
 }
 function startTargeting(kind){
   mode = 'target'; tmode = kind;
-  targets = kind === 'attack' ? enemiesInRange(sel) : healTargets(sel);
+  targets = kind === 'attack' ? enemiesInRange(sel) : kind === 'draw' ? drawTargets(sel) : healTargets(sel);
   if (targets.length === 1) chooseTarget(targets[0]);
   else setPanel(`<div class="hint">Tap a highlighted ${kind === 'attack' ? 'enemy' : 'ally'}.</div><div class="acts"><button class="btn" data-act="back" type="button">Back</button></div>`);
 }
-function chooseTarget(t){ fc = t; tmode === 'attack' ? panelForecast(sel, t) : panelHeal(sel, t); }
+function chooseTarget(t){ fc = t; tmode === 'attack' ? panelForecast(sel, t) : tmode === 'draw' ? panelDraw(sel, t) : panelHeal(sel, t); }
+function panelDraw(u, t){
+  setPanel(unitHTML(t) + `<div class="hint">${ABILITIES.drawback.icon} <b>Draw Back:</b> ${u.name} steps back, and ${t.name} takes her place, out of the front line.</div>
+    <div class="acts"><button class="btn primary" data-act="confirm" type="button">Draw Back</button>
+    <button class="btn" data-act="back" type="button">Back</button></div>`);
+}
+async function doDrawBack(u, t){
+  const b = backSquare(u, t), from = {x: u.x, y: u.y};
+  await moveAlong(u, [K(u.x, u.y), K(b.x, b.y)]); await moveAlong(t, [K(t.x, t.y), K(from.x, from.y)]);
+  abilityPop(u, 'drawback'); Sfx.play('select'); await wait(300);
+}
 async function afterAction(){
   mode = 'idle'; updateDanger();
   if (checkEnd()) return;
@@ -448,6 +491,7 @@ async function onTap(x, y){
   if (mode === 'action'){
     if (u && sel.w !== 'staff' && enemiesInRange(sel).includes(u)){ startTargeting('attack'); chooseTarget(u); }
     else if (u && sel.w === 'staff' && healTargets(sel).includes(u)){ startTargeting('heal'); chooseTarget(u); }
+    else if (u && drawTargets(sel).includes(u)){ startTargeting('draw'); chooseTarget(u); }
     return;
   }
   if (mode === 'target' && u && targets.includes(u)){ if (fc === u) act('confirm'); else chooseTarget(u); }
@@ -457,14 +501,15 @@ async function act(a){
   if (busy) return;
   if (a === 'attack') startTargeting('attack');
   else if (a === 'heal') startTargeting('heal');
+  else if (a === 'draw') startTargeting('draw');
   else if (a === 'wait') finishUnit(sel);
-  else if (a === 'cancel'){ const u = sel; place(u, orig.x, orig.y); select(u); }
+  else if (a === 'cancel'){ const u = sel; place(u, orig.x, orig.y); u.movedDist = 0; select(u); }
   else if (a === 'back') openActions();
   else if (a === 'confirm' && fc){
     busy = true; refreshTop();
     const u = sel, t = fc, kind = tmode; mode = 'busy'; targets = []; atkKeys = new Set(); healKeys = new Set();
-    setPanel(`<div class="hint"><em>${kind === 'attack' ? `${u.name} strikes at ${t.name}…` : `${u.name} mends ${t.name}…`}</em></div>`);
-    if (kind === 'attack') await doCombat(u, t); else await doHeal(u, t);
+    setPanel(`<div class="hint"><em>${kind === 'attack' ? `${u.name} strikes at ${t.name}…` : kind === 'draw' ? `${u.name} draws ${t.name} back…` : `${u.name} mends ${t.name}…`}</em></div>`);
+    if (kind === 'attack') await doCombat(u, t); else if (kind === 'draw') await doDrawBack(u, t); else await doHeal(u, t);
     busy = false;
     if (u.dead){ clearSel(); await afterAction(); return; }
     finishUnit(u);
@@ -487,6 +532,8 @@ async function startPlayerPhase(){
   if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
+  for (const u of units){ u.movedDist = 0; if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) === 'p')) u.seams = 0; }
+  for (const u of units) if (sideOfTeam(u) !== 'p') u.hobbled = false;   // enemies' slowed turn is over
   refreshTop(); panelIdle();
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
   await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
@@ -550,6 +597,8 @@ async function spawnReinforcements(){
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
+  for (const u of units){ u.movedDist = 0; u.baitUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false;
+    if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) !== 'p')) u.seams = 0; }
   if (team('a').length){   // allied phase: they fight on their own
     Sfx.play('phase', 'p');
     await showBanner(B.ch.allyLine || 'ALLIES ADVANCE', `Turn ${ROMAN(turn)}`, B.pf);
@@ -630,6 +679,7 @@ async function aiAct(e){
       if (A.dmg*hits >= p.hp) score += 40*A.hit/100;
       if (D.can) score -= D.dmg*D.hit/100*(D.dbl ? 2 : 1)*.4;
       score += ter(pos.x, pos.y).def*1.5 + (p.lord ? 2 : 0) + (p.vip ? 3 : 0) - map.get(dk).d*.05;
+      if (hasAb(p, 'bait')) score += 1000;   // Bait, By Choice: anyone who can reach Patch goes for him
       if (!best || score > best.score) best = {score, dk, p};
     }
   }

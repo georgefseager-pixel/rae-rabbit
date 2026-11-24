@@ -156,7 +156,7 @@ function recCard(rec, actions = '', extraClass = ''){
   return `<div class="ucard ${extraClass}${rec.dead ? ' dead' : ''}" data-uid="${rec.uid}">
     ${rec.dead ? '' : `<button class="ufav${rec.fav ? ' on' : ''}" data-fav="${rec.uid}" type="button" aria-pressed="${!!rec.fav}" aria-label="${rec.fav ? 'Remove from favourites' : 'Add to favourites'}">${rec.fav ? '♥' : '♡'}</button>`}
     <div class="por f-${rec.faction}">${portraitInner(rec, 'panel')}</div>
-    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}</div>
+    <div class="uinfo"><div class="uhead"><span class="nm">${rec.name}</span><span class="cl">${c.name} · Lv ${rec.lv}</span>${rec.stars ? `<span class="ustars s${rec.stars}">${'★'.repeat(rec.stars)}</span>` : ''}${abilityIcon(rec)}</div>
       ${rec.attires?.length && !rec.dead ? `<button class="uattire" data-attire-pick="${rec.uid}" type="button">Attire: ${attireOf(rec)?.name || 'Story outfit'} ›</button>` : ''}
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ` · <span class="tick">${rec.departed ? departureLabel(rec) : 'Unstitched'}</span>` : ''}</div>
@@ -273,7 +273,7 @@ async function playChapter(){
     if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   }
   const res = await runBattle(ck, ch, recs, {replay});
-  const kills = B.kills;
+  const kills = B.kills, lightFingers = B.bonusRes || 0;   // Brigand's Light Fingers
   if (!res.win){
     B = null;
     renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i});
@@ -292,7 +292,7 @@ async function playChapter(){
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
   if (starNew) SAVE.stars[ch.id] = true;
-  const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*15, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
+  const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*15 + lightFingers, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
   if (!replay){
     for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; r.fallsIn = ch.fallsIn?.[key]; departed.push(r.name || CHARACTERS[key].name); }
