@@ -23,19 +23,23 @@ const CHARACTER_ABILITY = {rae: 'nextto', sister: 'seams', willow: 'lesson', bri
 // The ability of a unit or record: its attire's (if the attire brings one), else its character's.
 const abilityOf = u => u && (ATTIRES[u.attire]?.ability || CHARACTER_ABILITY[u.key]) || null;
 const hasAb = (u, id) => abilityOf(u) === id;
-const abilityIcon = (u, attr = '') => { const id = abilityOf(u); if (!id) return '';
-  const A = ABILITIES[id]; return `<button class="uabil" data-ability="${id}" type="button" aria-label="Ability: ${A.name}" title="${A.name}" ${attr}>${A.icon}</button>`; };
+// The ability as a button: the character's map icon, the ability's name, and an ⓘ. Tap it to read the ability.
+const abilityArt = u => artFor(u, 'token') || artFor(u, 'portrait') || plushPortrait(u.look);
+const abilityIcon = u => { const id = abilityOf(u); if (!id) return '';
+  const A = ABILITIES[id];
+  return `<button class="uabil" data-ability="${id}" data-who="${u.uid || u.key}" type="button" aria-label="Ability: ${A.name}. Tap to read it.">
+    <span class="abimg"><img alt="" src="${abilityArt(u)}"></span><span class="abtxt"><small>Ability</small><b>${A.name}</b></span><span class="abinfo">ⓘ</span></button>`; };
 
 // Tapping an ability icon anywhere (unit cards, the battle panel) explains it.
-function openAbility(id){
+function openAbility(id, art){
   const A = ABILITIES[id]; if (!A) return;
   let ov = $('#abilsheet');
   if (!ov){ ov = document.createElement('div'); ov.id = 'abilsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
   const who = Object.entries(CHARACTER_ABILITY).find(([, a]) => a === id)?.[0] || Object.values(ATTIRES).find(a => a.ability === id)?.char;
   const via = Object.values(ATTIRES).find(a => a.ability === id);
-  ov.innerHTML = `<div class="card abilcard"><div class="abig">${A.icon}</div><div class="akick">Unique ability${who ? ` · ${speakerName(who)}${via ? ` (${via.name})` : ''}` : ''}</div>
+  ov.innerHTML = `<div class="card abilcard"><div class="abig">${art ? `<img alt="" src="${art}">` : A.icon}</div><div class="akick">Unique ability${who ? ` · ${speakerName(who)}${via ? ` (${via.name})` : ''}` : ''}</div>
     <h2>${A.name}</h2><p>${A.text}</p><button class="btn primary" data-abil-close type="button">Got it</button></div>`;
   ov.hidden = false;
   ov.onclick = e => { if (e.target === ov || e.target.closest('[data-abil-close]')){ ov.hidden = true; ov.onclick = null; } };
 }
-document.addEventListener('click', e => { const b = e.target.closest('[data-ability]'); if (!b) return; e.stopPropagation(); e.preventDefault(); openAbility(b.dataset.ability); }, true);
+document.addEventListener('click', e => { const b = e.target.closest('[data-ability]'); if (!b) return; e.stopPropagation(); e.preventDefault(); openAbility(b.dataset.ability, b.querySelector('img')?.src); }, true);
