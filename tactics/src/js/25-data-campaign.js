@@ -795,7 +795,7 @@ const CAMPAIGNS = {
             E('mkacro',7,2,8), E('mkacro',7,7,8), E('mkbrute',7,4,9), E('mkacro',7,0,10),
             E('blade',7,3,0,'charge',{faction: 'frog'}), E('lily',7,6,0,'charge',{faction: 'frog'}),
           ],
-          reinforce: () => [{turn: 3, units: [E('mkacro',7,0,6), E('mkacro',7,9,6), E('mkbrute',7,4,0)]}],
+          reinforce: () => [{turn: 3, units: [E('mkacro',7,0,7), E('mkacro',7,9,7), E('mkbrute',7,4,0)]}],
           bossTalk: [
             {who: 'tamarind', text: 'Young master. Come home. Please. Your mother is waiting.'},
             {who: 'speshul', text: 'I can\'t, Tamarind. You know I can\'t.'},
@@ -1388,7 +1388,7 @@ const CAMPAIGNS = {
                 {who: 'speshul', text: 'Because you\'d never have let us stand up. Not really. Not even you.'},
               ]}),
             E('rfencer',6,3,11), E('rfencer',6,6,11), E('rlancer',6,4,13,'guard'), E('rlancer',6,5,13,'guard'),
-            E('rarcher',6,2,9,'guard'), E('rarcher',6,7,9,'guard'), E('mkacro',6,1,12,'charge',{faction: 'monkey'}), E('mkbrute',6,8,12,'charge',{faction: 'monkey'}),
+            E('rarcher',6,2,9,'guard'), E('rarcher',6,7,9,'guard'), E('mkacro',6,2,12,'charge',{faction: 'monkey'}), E('mkbrute',6,7,12,'charge',{faction: 'monkey'}),
           ],
           events: [{turn: 2, defect: true, popup: 'Betrayal!', talk: [
             {who: 'monkey', text: 'Sorry, Your Highness. He\'s our prince. Not you.'},

@@ -50,7 +50,8 @@ function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCod
 const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS},
                      troopxm: {base: 'troop', palette: () => FESTIVE_FURS},   // December: Republic soldiers with festive fur
                      black: {base: 'black', palette: () => SKINS},   // Fraggle's Black Guard (art/black-*.png)
-                     elf: {base: 'elf', palette: () => SKINS}};       // festive frog scouts in elf green (art/elf-*.png)
+                     elf: {base: 'elf', palette: () => SKINS},
+                     mk: {base: 'mk', palette: () => MONKEY_FURS}};   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
@@ -99,6 +100,13 @@ function artResolve(ent, kind){
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w];
     if (pose && ART['black' + e + pose + fur]?.[kind]) return 'black' + e + pose + fur;
     if (ART['black' + e + fur]?.[kind]) return 'black' + e + fur;
+  }
+  if (sp.base === 'mk'){
+    // Monkeyland soldiers: one portrait and map icon, and a battle pose for each weapon (art/mk<weapon>-battle.png;
+    // swords use mk-battle.png, and the healers read from a book like the scribes)
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'book'}[ent.w || CLASSES[cls]?.w] || '';
+    if (ART['mk' + pose + fur]?.[kind]) return 'mk' + pose + fur;
+    if (ART['mk' + fur]?.[kind]) return 'mk' + fur;
   }
   if (sp.base === 'elf'){
     // December frog scouts (the couriers, and the festive banner's soldiers): a battle pose for each weapon
@@ -262,6 +270,10 @@ async function buildFurVariants(){
   const black = ['', 'axe', 'lance', 'book', 'staff'].flatMap(p => ['black' + p, 'blackelite' + p]);
   for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', ...black]) await buildVariants(base, SKINS, skinWeight(base));
   furReady = true; loadReport(100);
+  // Monkeyland soldiers (Chapter Three on): their fur colours (art/mk*skin-<kind>.png) are made after the loading
+  // screen, in the background, so they don't slow the start. Until then they show as felt plush.
+  (async () => { for (const base of ['mk', 'mkaxe', 'mklance', 'mkbow', 'mkbook']) await buildVariants(base, MONKEY_FURS, skinWeight(base));
+    if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 
 function toast(msg){

@@ -132,10 +132,11 @@ const LOOKS = {
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Monkeyland (Chapter Three): placeholder felt plush until their art arrives
-  monkey:    {sp:'monkey', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
+  // art: 'mk' draws Monkeyland's armoured soldiers (art/mk*-*.png), fur recoloured
+  monkey:    {sp:'monkey', art:'mk', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
   aurora:    {sp:'monkey', fur:'#a87448', light:'#d29e6c', dark:'#5e3a1c', face:'#f4dcb8', gear:'tiara', big:true},
   speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
-  tamarind:  {sp:'monkey', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
+  tamarind:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -249,7 +250,7 @@ const SPEAKERS = Object.assign({
   courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
   burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
   fig:         {name:'Lookout Fig', faction:'monkey', look:'monkey'},
-  tamarind:    {name:'Captain Tamarind', faction:'monkey', look:'tamarind'},   // captain of the Governess's guard
+  tamarind:    {name:'Captain Tamarind', faction:'monkey', look:'tamarind', fur:'dark'},   // captain of the Governess's guard
   envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
   refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
   // side stories (29-data-sides-more.js)
@@ -272,6 +273,10 @@ const FURS = {
   tan: null, grey: [0, .12, .05], cream: [4, .55, .38], white: [0, .1, .6],
   chocolate: [-4, .85, -.38], sooty: [0, .15, -.6], ginger: [-6, 1.45, -.02], sandy: [10, .75, .16],
 };
+// Monkey fur for the Monkeyland soldier art (art/mk*-*.png; the fur is marked by art/mk*skin-*.png), same format.
+// 'brown' is the art as drawn.
+const MONKEY_FURS = {brown: null, golden: [10, 1.2, .14], ginger: [-8, 1.35, -.02], grey: [0, .12, .04], dark: [0, .75, -.42], snow: [6, .3, .46], chestnut: [-4, 1.1, -.2]};
+
 // December: festive fur for the Raepublic festive banner's soldiers (same format; keys become art like 'troopaxexberry').
 const FESTIVE_FURS = {xberry: [-30, 1.1, -.3], xholly: [105, .5, -.4], xgilt: [12, 1.45, .04], xpepper: [-38, .95, .3]};
 
@@ -310,6 +315,7 @@ const ART_CROP = {
   minerbulk: {panel: ['215% auto', '60% 2%'], talk: ['160% auto', '62% 1%']}, // bulky mine rabbit
   troopelite: {panel: ['205% auto', '50% 3%'], talk: ['150% auto', '50% 2%']},   // elite Republic soldier, every fur
   black:   {panel: ['230% auto', '42% 9%'], talk: ['165% auto', '42% 7%']},
+  mk:      {panel: ['205% auto', '50% 7%'], talk: ['150% auto', '50% 5%']},   // Monkeyland soldiers, every fur
   elf:     {panel: ['200% auto', '48% 5%'], talk: ['150% auto', '48% 4%']},   // festive frog scouts, every skin   // Fraggle's Black Guard, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
