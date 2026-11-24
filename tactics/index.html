@@ -847,6 +847,12 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .renergy{display:flex;flex-direction:column;gap:8px;margin:8px 16px 14px;padding:12px 14px;border-radius:10px;background:rgba(0,0,0,.25);border:1px dashed rgba(255,255,255,.2);font-size:14px}
 .renergy .energy{margin-top:0}
 .btn.noenergy{filter:grayscale(.85) brightness(.75)}
+/* ---------- Monkeyland (Chapter Three) ---------- */
+#phase.f-monkey{color:#f2b88a}
+.por.f-monkey{background-image:radial-gradient(circle at 50% 30%, #7a4a2a, #24140a 75%);box-shadow:0 0 0 2px #d6a060, 0 0 0 4px #141010}
+.tpor.f-monkey{box-shadow:0 0 0 2px #d6a060, 0 0 0 5px #120c0a, 0 16px 30px rgba(0,0,0,.6);background-image:radial-gradient(circle at 50% 35%, #7a4a2a, #24140a 75%)}
+.tname.f-monkey{background:#7a3e22;color:#f6e2c4}
+.plate.f-monkey{background:linear-gradient(180deg,#6a3e22,#341c0e)}
 
 </style>
 
@@ -1624,6 +1630,10 @@ const FACTIONS = {
   frog:  {name: 'Friggliarchy', currency: 'Crowns', playerLine: 'THE FRIGGLIARCHY COMMANDS', enemyLine: 'THE FRIGGLIARCHY STIRS',
           band: '#2c4419', text: '#dbeeaa', sub: '#b9d27a', coaster: 'rgba(30,48,16,.8)', stitch: 'rgba(220,235,150,.6)',
           fort: ['#4c6e2a', '#6b4a8a'], letter: 'F'},
+  // Chapter Three: Monkeyland, a conquered state that serves the Friggliarchy (its soldiers fight for whichever side holds them)
+  monkey: {name: 'Monkeyland',   currency: 'Petals', playerLine: 'MONKEYLAND RALLIES',       enemyLine: 'THE MONKEYS SWARM',
+          band: '#8a4a2a', text: '#f6e2c4', sub: '#f2b8c6', coaster: 'rgba(150,84,40,.82)', stitch: 'rgba(250,225,190,.65)',
+          fort: ['#c0763a', '#e0a0b8'], letter: 'M'},
   mouse: {name: 'Scrumbly Mischief', currency: 'Crumbs', playerLine: 'THE MISCHIEF SCURRIES', enemyLine: 'THE MISCHIEF SCURRIES',
           band: '#4a3c34', text: '#f1e2d0', sub: '#d7b9a0', coaster: 'rgba(70,56,48,.8)', stitch: 'rgba(240,220,200,.6)',
           fort: ['#8a6a50', '#d8c8b0'], letter: 'S'},
@@ -1681,6 +1691,14 @@ const CLASSES = {
   xscribe:   {name: 'Carol Scribe',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Carols',    base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   courier:   {name: 'Gift Courier',   w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Candy Cane',        base: {mhp:17,atk:5, def:3, spd:9,skl:5,mov:4}, g: {mhp:40,atk:20,def:20,spd:30,skl:20}},   // December event: carries presents, runs for the road
   giftgiver: {name: 'Gift-Bringer',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Naughty List',  base: {mhp:20,atk:11,def:4, spd:6,skl:9,mov:5}, g: {mhp:60,atk:50,def:25,spd:35,skl:55}},   // Chriggle Chraggle (December banner)
+  // Monkeyland (Chapter Three). mt 'climb': monkeys go through trees and flowers (F) as if it were open ground.
+  mkacro:    {name: 'Acrobat',        w: 'sword', rng: [1,1], mt: 'climb',   wname: 'Petal Sabre',       base: {mhp:18,atk:10,def:3, spd:10,skl:9,mov:6}, g: {mhp:55,atk:40,def:20,spd:60,skl:55}},
+  mkguard:   {name: 'Vine Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Vine Spear',        base: {mhp:21,atk:10,def:7, spd:5,skl:6,mov:5}, g: {mhp:75,atk:40,def:45,spd:30,skl:40}},
+  mkbrute:   {name: 'Thumper',        w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Stone Club',        base: {mhp:24,atk:12,def:5, spd:5,skl:4,mov:5}, g: {mhp:85,atk:50,def:30,spd:30,skl:30}},
+  mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
+  heir:      {name: 'Canopy Heir',    w: 'sword', rng: [1,1], mt: 'climb',   wname: 'Wooden Sabre',      base: {mhp:19,atk:10,def:4, spd:11,skl:8,mov:6}, g: {mhp:60,atk:45,def:25,spd:65,skl:50}},   // Speshul
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -1736,6 +1754,11 @@ const LOOKS = {
   biggle:    {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'bandana', band:'#c8506a'},
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
+  // Monkeyland (Chapter Three): placeholder felt plush until their art arrives
+  monkey:    {sp:'monkey', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
+  aurora:    {sp:'monkey', fur:'#a87448', light:'#d29e6c', dark:'#5e3a1c', face:'#f4dcb8', gear:'tiara', big:true},
+  speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
+  tamarind:  {sp:'monkey', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -1752,6 +1775,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -1817,6 +1841,13 @@ const CHARACTERS = {
   chriggle:    {name:'Chriggle Chraggle', faction:'frog', look:'chriggle', cls:'giftgiver', lv:3, stars:3, stats:{mhp:25,atk:13,def:5,spd:6,skl:10,mov:5},   // December banner only
                 retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
                 intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
+  // Chapter Three: Monkeyland (placeholder art). Speshul joins the Raepublic; Aurora joins the Friggliarchy.
+  aurora:      {name:'Aurora', faction:'monkey', look:'aurora', cls:'governess', lv:6, stats:{mhp:25,atk:13,def:6,spd:8,skl:11,mov:5},
+                retort:'I kneel so that they never have to. Can you say the same?',
+                intro:{title:'Governess of Monkeyland', text:'She rules what is left of a kingdom the frogs conquered centuries ago. She has kept her people alive by kneeling, and she has never once let them see what it costs her.'}},
+  speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
+                retort:'We were a kingdom once! We can be one again!',
+                intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -1835,6 +1866,15 @@ const SPEAKERS = Object.assign({
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
   sludge:      {name:'Sergeant Sludge', faction:'frog', look:'guard'},     // Flopsy's Day Out
+  // Chapter Three: Monkeyland
+  monkey:      {name:'Monkey Guard', faction:'monkey', look:'monkey'},
+  monkeys:     {name:'The Monkeys', faction:'monkey', look:'monkey'},
+  courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
+  burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
+  fig:         {name:'Lookout Fig', faction:'monkey', look:'monkey'},
+  tamarind:    {name:'Captain Tamarind', faction:'monkey', look:'tamarind'},   // captain of the Governess's guard
+  envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
+  refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
   // side stories (29-data-sides-more.js)
   magpie:      {name:'Magpie', faction:'rae', look:'workerBig', fur:'chocolate'},   // Brigand's old gang
   reeve:       {name:'Reeve Puddock', faction:'frog', look:'guard'},
@@ -2162,10 +2202,12 @@ const ABILITIES = {
   onestroke:   {name: 'One Stroke',        icon: '🪓', text: '+25 Crit against enemies below half HP.'},
   guiding:     {name: 'Guiding Nose',      icon: '🦌', text: 'Allies who start their move within 2 squares of Ilc get +1 Mov: his bright red nose shows the way through the snow.'},
   naughty:     {name: 'Naughty List',      icon: '📜', text: 'Any enemy Chriggle Chraggle hits goes on the Naughty List: for the rest of the battle, everyone deals it +2 damage.'},
+  bend:        {name: 'Bend, Not Break',   icon: '🙇', text: 'Once a battle, a blow that would unstitch Aurora leaves her standing on 1 HP instead.'},
+  wecan:       {name: 'We Can Fight!',     icon: '✊', text: 'Against an enemy of a higher level than him, Speshul gets +2 damage and +10 Hit.'},
   nobody:      {name: 'Nobody Comes',      icon: '🌑', text: 'With no ally within 2 squares, Fraggle Jr. gets +3 Atk and +3 Spd.'},
 };
 const CHARACTER_ABILITY = {rae: 'nextto', sister: 'seams', willow: 'lesson', brigand: 'fingers', condemned: 'walkedaway', froggle: 'drawback',
-  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty', ilc: 'guiding'};
+  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty', ilc: 'guiding', aurora: 'bend', speshul: 'wecan'};
 // The ability of a unit or record: its attire's (if the attire brings one), else its character's.
 const abilityOf = u => u && (ATTIRES[u.attire]?.ability || CHARACTER_ABILITY[u.key]) || null;
 const hasAb = (u, id) => abilityOf(u) === id;
@@ -2389,9 +2431,42 @@ function mouse(g, cx, cy, s, L){
   g.restore();
 }
 
+// Monkeyland (Chapter Three) placeholder: round head, big side ears, a pale heart-shaped face
+function monkey(g, cx, cy, s, L){
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const side of [-1,1]){
+    g.fillStyle = L.fur; ell(g, cx + side*.9*s, cy - .02*s, .34*s, .38*s); g.fill(); stitchStroke(g, L.dark, s);
+    g.fillStyle = L.face; ell(g, cx + side*.9*s, cy - .0*s, .2*s, .24*s); g.fill();
+  }
+  const gr = g.createRadialGradient(cx - .3*s, cy - .45*s, s*.1, cx, cy, s*1.1);
+  gr.addColorStop(0, L.light); gr.addColorStop(1, L.fur);
+  g.fillStyle = gr; ell(g, cx, cy - .05*s, .86*s, .84*s); g.fill(); stitchStroke(g, L.dark, s);
+  // the face: two eye lobes and a muzzle, in one pale patch
+  g.fillStyle = L.face;
+  ell(g, cx - .28*s, cy - .2*s, .3*s, .32*s); g.fill(); ell(g, cx + .28*s, cy - .2*s, .3*s, .32*s); g.fill();
+  ell(g, cx, cy + .26*s, .5*s, .36*s); g.fill();
+  g.beginPath(); g.ellipse(cx, cy + .02*s, .6*s, .6*s, 0, Math.PI*.15, Math.PI*.85); stitchStroke(g, 'rgba(120,80,40,.35)', s, .6);
+  button(g, cx - .27*s, cy - .2*s, .12*s); button(g, cx + .27*s, cy - .2*s, .12*s);
+  g.fillStyle = L.dark; ell(g, cx - .07*s, cy + .12*s, .035*s, .03*s); g.fill(); ell(g, cx + .07*s, cy + .12*s, .035*s, .03*s); g.fill();
+  g.strokeStyle = L.dark; g.lineWidth = Math.max(.8, s*.045); g.beginPath(); g.arc(cx, cy + .2*s, .24*s, Math.PI*.2, Math.PI*.8); g.stroke();
+  if (L.gear === 'bandana') bandana(g, cx, cy - .12*s, s, L.band || '#e8a33a', s*.86, s*.62);
+  if (L.gear === 'tiara'){   // the Governess's circlet of gold petals
+    g.fillStyle = '#e6be55'; g.strokeStyle = '#8a6418'; g.lineWidth = Math.max(.8, s*.03);
+    g.beginPath(); g.moveTo(cx - .55*s, cy - .66*s);
+    for (let i = 0; i <= 4; i++){ const x = cx - .55*s + i*.275*s; g.lineTo(x - .07*s, cy - .74*s); g.lineTo(x, cy - (i % 2 ? .96 : 1.06)*s); g.lineTo(x + .07*s, cy - .74*s); }
+    g.lineTo(cx + .55*s, cy - .66*s); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = '#e66a8a'; ell(g, cx, cy - .82*s, .07*s, .07*s); g.fill();
+  }
+  if (L.gear === 'helm'){   // guard captain's leaf-green helm
+    g.fillStyle = '#5e7a3a'; g.beginPath(); g.ellipse(cx, cy - .5*s, .74*s, .5*s, 0, Math.PI, 0); g.fill(); stitchStroke(g, '#2a3a18', s);
+    g.fillStyle = '#e8b84a'; g.fillRect(cx - .74*s, cy - .54*s, 1.48*s, .1*s);
+  }
+  g.restore();
+}
+
 function drawPlush(g, look, cx, cy, s){
   const L = LOOKS[look] || LOOKS.worker;
-  ({bun: bunny, frog, mouse})[L.sp](g, cx, cy, s, L);
+  ({bun: bunny, frog, mouse, monkey})[L.sp](g, cx, cy, s, L);
 }
 const portraitCache = {};
 function plushPortrait(look){
@@ -2458,6 +2533,24 @@ const THEMES = {
     'B': ['Plank Walk', 'Boards over the flooded shaft.'],
     'T': ['Guard Post', 'A frog post with water and bandages. Restores 20% HP at the start of each phase.'],
     'X': ['Rock Wall', 'Solid stone.'],
+  },
+  blossom: {   // Monkeyland (Chapter Three): meadows and flowers. Monkeys (mt 'climb') cross F as open ground.
+    '.': ['Flower Meadow', 'Soft felt grass, dotted with stitched daisies.'],
+    'F': ['Blossom Trees', 'Felt trees heavy with pink blossom. Good cover. Monkeys swing straight through.'],
+    'M': ['Hay Bales', 'Stacked felt bales. Hard going, harder to hit.'],
+    'W': ['Lily Stream', 'A ribbon of blue satin, lilies along the edge. No one swims in satin.'],
+    'B': ['Garden Bridge', 'A little painted bridge, very pretty, very narrow.'],
+    'T': ['Bell Tower', 'A monkey watch tower with a bell on top. Restores 20% HP at the start of each phase.'],
+    'X': ['Hedge Wall', 'A clipped felt hedge, far too thick to push through.'],
+  },
+  castle: {   // the Governess's castle (Chapter Three)
+    '.': ['Flagstones', 'Old stitched stone, worn smooth by centuries of monkeys.'],
+    'F': ['Flower Urns', 'Great stone urns of blossom. Something to crouch behind. Monkeys climb straight over.'],
+    'M': ['Pillars', 'Thick stone pillars. Hard going, harder to hit.'],
+    'W': ['Moat', 'Green water. Nobody goes in.'],
+    'B': ['Drawbridge', 'The only way over the moat.'],
+    'T': ['Throne Dais', 'The raised seat of the Governess. Restores 20% HP at the start of each phase.'],
+    'X': ['Castle Wall', 'Solid stone, older than the Friggliarchy.'],
   },
   snow: {   // meadow terrain under snow (the December event)
     '.': ['Snowy Clearing', 'Fresh felt snow, crunchy underfoot.'],
@@ -2646,6 +2739,102 @@ const MAPS = {
     '.F......F.',
     'FF......FF',
   ]},
+  // ---- Chapter Three: Monkeyland ----
+  // where the forest gives out into the meadows: trees at the top, flowers below (exits on the bottom row in R3-1)
+  meadowEdge: {theme: 'blossom', names: {'F': ['Forest Edge', 'The last felt trees, and the first blossom. Good cover.']}, rows: [
+    'FF.FF.FFFF',
+    'F...F..F.F',
+    '.F......F.',
+    'F..M..F..F',
+    '.F......F.',
+    '...F..F...',
+    '..........',
+    '.M..FF..M.',
+    '..........',
+    '.F......F.',
+    '..........',
+    '..F.MM.F..',
+    '..........',
+    '.F......F.',
+    '..........',
+    '...F..F...',
+  ]},
+  // open flower meadows, a bell tower at the top (the lookout's goal in R3-2)
+  blossomFields: {theme: 'blossom', rows: [
+    '.F..TT..F.',
+    '..........',
+    'F..M..M..F',
+    '..........',
+    '.F.F..F.F.',
+    '..........',
+    'M...FF...M',
+    '..........',
+    '.F......F.',
+    '...M..M...',
+    '..........',
+    'F..F..F..F',
+    '..........',
+    '.F......F.',
+    '..........',
+    'F........F',
+  ]},
+  // the approach to the Governess's castle: moat and drawbridge, the wall with its gate, the inner court
+  castleGate: {theme: 'castle', names: {'T': ['Gatehouse', 'The castle gatehouse. Restores 20% HP at the start of each phase.']}, rows: [
+    '.T..MM..T.',
+    '..........',
+    'XXXX..XXXX',
+    '..........',
+    '.F......F.',
+    'WWWWBBWWWW',
+    '..........',
+    '.F..M...F.',
+    '..........',
+    'F..F..F..F',
+    '..........',
+    '.M......M.',
+    '..F....F..',
+    '..........',
+    '.F......F.',
+    'F........F',
+  ]},
+  // the great hall: the throne at the top, pillars down the sides, the doors at the bottom (exits in F3-5)
+  castleHall: {theme: 'castle', rows: [
+    'XX..TT..XX',
+    'X........X',
+    'X.M....M.X',
+    'X........X',
+    'X.F.FF.F.X',
+    'X........X',
+    'X.M....M.X',
+    'X........X',
+    'X..F..F..X',
+    'X........X',
+    'X.M....M.X',
+    'X........X',
+    'XX..FF..XX',
+    '..........',
+    '.F......F.',
+    '...X..X...',
+  ]},
+  // the meadows below the castle, split by a stream: where Monkeyland splits in two
+  schismField: {theme: 'blossom', rows: [
+    'F.F....F.F',
+    '..........',
+    '.M..T...M.',
+    '..........',
+    'F.F.FF.F.F',
+    '..........',
+    'WWBWWWWBWW',
+    '..........',
+    '.F..MM..F.',
+    '..........',
+    'F..F..F..F',
+    '..........',
+    '.M......M.',
+    '..F.T..F..',
+    '..........',
+    'F.F....F.F',
+  ]},
   // December event: the felt forest under snow. The couriers' road leaves along the bottom row.
   snowWoods: {theme: 'snow', rows: [
     '..F....F..',
@@ -2763,7 +2952,8 @@ function validateMaps(){
 //                 for you; they join the army if the battle is won (skipped if they're already in the army)
 //   star          the stage's bonus challenge (one ★ per stage, worth GACHA.starTokens recruiting currency once;
 //                 a cleared stage can be replayed to try again). {lord} in the text becomes the leader's name.
-//                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage)
+//                 types: noLosses | turns (n: win by the end of turn n) | unhurt (the leader takes no damage) | allies (no ally falls)
+//                        | catch (n: catch at least n runners, with an intercept objective)
 //                        | bossBy (key: that unit defeats the boss) | fewer (n: deploy at most n units)
 // A chapter with stub:true is a placeholder for story not written yet.
 // A chapter can set enemyMods: {stat: +/-n}, added to every enemy in its stages (difficulty tuning). A stage can set
@@ -2772,7 +2962,8 @@ function validateMaps(){
 //
 // Scene lines
 //   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
-//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods, court, ridge, republic, warcamp)
+//   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods, court, ridge, republic, warcamp, snow,
+//                                              monkeyland, castlegate, castle: the last three borrow other paintings until theirs arrive)
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
@@ -3287,7 +3478,280 @@ const CAMPAIGNS = {
           reward: {res: 600, tokens: 6},
         },
       ]},
-      {id: 'RC3', title: 'Chapter Three', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
+      {id: 'RC3', title: 'Chapter Three', name: 'Monkeyland', enemyMods: {mhp: -1},
+       stages: [
+
+        // ---------------- Stage 1: out of the forest (escort the refugees) ----------------
+        {
+          id: 'R3-1', title: 'Out of the Woods', map: 'meadowEdge', enemyFaction: 'frog',
+          star: {type: 'allies', text: 'No refugee is lost'},
+          objective: {type: 'survive', turns: 5, escort: true, who: 'refugees', dest: 'the meadows'}, escort: true, maxDeploy: 7,
+          exits: [[0,15],[1,15],[2,15],[4,15],[5,15],[7,15],[8,15],[9,15]],
+          deploy: [[4,5],[5,5],[3,6],[6,6],[2,5],[7,5],[4,6],[5,6]],
+          brief: 'The Raepublic is leaving the forest. Hold back the frogs while the refugees walk down into the meadows (the gold squares). They go on their own; the frogs go for them first.',
+          prepNote: 'The refugees (blue) walk to the gold squares by themselves, and leave the map there. Keep the frogs off them for five turns.',
+          allies: () => [1,3,5,8,2,6,7].map((x, i) => E('hauler',2,x,1 + (i % 3),'courier',{courier: true, key: 'ally', name: 'Refugee', look: 'workerLop', bonus: {mov: -1}})),
+          enemies: () => [
+            E('blade',4,0,0), E('blade',4,9,1), E('bruiser',4,3,0), E('lily',4,6,0), E('reed',4,2,2), E('reed',4,8,3),
+          ],
+          reinforce: () => [
+            {turn: 1, units: [E('blade',4,0,0), E('bruiser',4,9,0)]},
+            {turn: 2, units: [E('lily',4,4,0), E('blade',5,5,0,'charge',{elite: true})]},
+            {turn: 3, units: [E('reed',4,1,0), E('bruiser',4,8,0), E('blade',4,0,7)]},
+          ],
+          pre: [
+            {card: 'Chapter Three', sub: 'Monkeyland'},
+            {scene: 'woods', place: 'The Raepublic Camp · Before Dawn'},
+            {who: 'narr', text: 'The scouts come back in the dark, out of breath. The King\'s army is in the woods. A whole army, and the King\'s youngest brother at its head.'},
+            {who: 'froggle', text: 'North is the King\'s road. West is the way we came. That leaves east.'},
+            {who: 'willow', text: 'East is Monkeyland.'},
+            {who: 'sister', text: 'Monkeys? Real monkeys?'},
+            {who: 'willow', text: 'Real monkeys. Monkeyland was a kingdom once, Flopsy. Older than the Friggliarchy. The frogs conquered it, long before any of us were stitched.'},
+            {who: 'willow', text: 'Now the monkeys guard the frogs\' borders better than the frogs do. They are the most loyal subjects the King has.'},
+            {who: 'rae', text: 'Loyal because they want to be?'},
+            {who: 'froggle', text: 'Out of duty, or out of fear. Nobody has ever asked them. If they catch us, they\'ll hand us to the frogs, and then there will be trouble.'},
+            {who: 'patch', text: 'So we go quiet. Quiet as mice.'},
+            {who: 'sister', text: 'We\'re not very good at quiet.'},
+            {who: 'narr', text: 'Behind them, at the edge of the trees, green helmets. The frogs have found the column.'},
+            {who: 'rae', text: 'Then we go quiet later. Everyone who can fight, with me! Get the others down into the meadows!'},
+          ],
+          post: [
+            {who: 'narr', text: 'The forest gives out all at once. Beyond it: meadows to the edge of the sky, and flowers everywhere, stitched in every colour there is.'},
+            {who: 'sister', text: 'Rae. Rae, look. It\'s all flowers. All of it.'},
+            {who: 'rae', text: 'I\'ve never seen so much sky.'},
+            {who: 'willow', text: 'Enjoy it. Out here, everyone can see us, too.'},
+          ],
+          reward: {res: 600},
+        },
+
+        // ---------------- Stage 2: catch the lookout ----------------
+        {
+          id: 'R3-2', title: 'The Lookout', map: 'blossomFields', enemyFaction: 'monkey',
+          star: {type: 'turns', n: 3, text: 'Catch Lookout Fig by the end of turn III'},
+          objective: {type: 'boss', dest: 'the bell tower'}, maxDeploy: 7,
+          exits: [[4,0],[5,0]],
+          escapeFail: 'Lookout Fig reached the bell tower, and rang it. Every monkey in the meadows knows the Raepublic is here.',
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'A monkey lookout has seen the column, and she\'s running for the bell tower. Catch her before she rings it.',
+          prepNote: 'Lookout Fig runs for the bell tower (the gold squares) and won\'t stop to fight. If she reaches it, the battle is lost. Monkeys climb through trees and flowers as if they weren\'t there.',
+          enemies: () => [
+            E('mkacro',4,4,9,'courier',{boss: true, flees: true, key: 'fig', name: 'Lookout Fig', bonus: {mov: -2}}),
+            E('mkguard',5,3,7,'guard'), E('mkguard',5,6,7,'guard'), E('mkthrow',5,1,5,'guard'), E('mkthrow',5,8,5,'guard'),
+            E('mkacro',5,2,10), E('mkacro',5,7,10), E('mkbrute',5,4,4,'guard'),
+          ],
+          bossTalk: [
+            {who: 'fig', text: 'Rabbits! Rabbits in the meadows! Let me go, let me go, I have to ring the bell!'},
+            {who: 'rae', text: 'We\'re not here to hurt anyone!'},
+            {who: 'fig', text: 'That\'s what the frogs said too!'},
+          ],
+          pre: [
+            {scene: 'monkeyland', place: 'The Meadows of Monkeyland'},
+            {who: 'narr', text: 'Two days into the meadows. No frogs. No monkeys. Only flowers, and bees, and the Raepublic trying very hard to be quiet.'},
+            {who: 'rae', text: 'Willow. If the monkeys were a kingdom once, maybe they remember it. Maybe we could talk to them.'},
+            {who: 'willow', text: 'Maybe. But they\'ve served the frogs for longer than anyone remembers. Habits that old are hard to break.'},
+            {who: 'narr', text: 'A rustle in the blossom trees. A small brown face. Two very wide eyes.'},
+            {who: 'fig', text: '…RABBITS! RABBITS IN THE MEADOWS!'},
+            {who: 'patch', text: 'She\'s heading for that tower. There\'s a bell on top!'},
+            {who: 'rae', text: 'Catch her! Don\'t hurt her, just catch her!'},
+          ],
+          post: [
+            {who: 'narr', text: 'Lookout Fig sits in the grass with her arms folded, glaring at everyone.'},
+            {who: 'fig', text: 'Go on, then. Unstitch me. That\'s what rabbits do.'},
+            {who: 'rae', text: 'Who told you that?'},
+            {who: 'fig', text: '…The frogs.'},
+            {who: 'rae', text: 'Go home, Fig. Tell your Governess the Raepublic means no harm. We\'re only passing through.'},
+            {who: 'narr', text: 'Fig stares at her. Then she runs, and doesn\'t look back.'},
+            {who: 'willow', text: 'You do know you\'ve just told the frogs\' most loyal servants exactly where we are.'},
+            {who: 'rae', text: 'They\'d have found us anyway. This way, they hear it from us first.'},
+          ],
+          reward: {res: 600},
+        },
+
+        // ---------------- Stage 3: the monkeys come, with the prince ----------------
+        {
+          id: 'R3-3', title: 'Trouble in the Flowers', map: 'blossomFields', enemyFaction: 'monkey',
+          requires: ['F3-2'], convergence: 'The Flower Fields',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'survive', turns: 5}, maxDeploy: 7,
+          deploy: [[4,8],[5,8],[3,9],[6,9],[4,10],[5,10],[2,9],[7,9]],
+          brief: 'The monkeys have come for the camp in the flowers, and frogs with them. Hold out until dawn.',
+          enemies: () => [
+            E('heir',5,4,1,'charge',{key: 'speshul', name: 'Speshul', look: 'speshul', flees: true, talk: [
+                {who: 'speshul', text: 'You\'re… you\'re Rae Rabbit. The real one! Mother says you\'re a monster.'},
+                {who: 'rae', text: 'Do I look like one?'},
+                {who: 'speshul', text: '…You look tired. Monsters don\'t look tired.'},
+              ]}),
+            E('mkacro',5,1,2), E('mkacro',5,8,2), E('mkguard',5,3,3), E('mkguard',5,6,3), E('mkthrow',5,2,0,'guard'), E('mkthrow',5,7,0,'guard'),
+            E('blade',5,0,6,'charge',{faction: 'frog'}),
+          ],
+          reinforce: () => [
+            {turn: 2, units: [E('prince',6,5,0,'charge',{key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', faction: 'frog', flees: true, talk: [
+                {who: 'tiggle', text: 'Rae Rabbit. You can\'t keep running forever.'},
+                {who: 'rae', text: 'Watch me.'},
+              ]}), E('lily',5,4,0,'charge',{faction: 'frog'})]},
+            {turn: 3, units: [E('mkbrute',5,0,12), E('mkacro',5,9,12)]},
+            {turn: 4, units: [E('mkchant',5,4,0,'guard'), E('mkacro',5,1,0), E('mkacro',5,8,0)]},
+          ],
+          pre: [
+            {scene: 'monkeyland', place: 'The Flower Fields · Night'},
+            {who: 'narr', text: 'The Raepublic camps in a sea of flowers. Nobody sleeps much.'},
+            {who: 'patch', text: 'Torches. Over there, and there, and there. Monkeys. Lots of them.'},
+            {who: 'froggle', text: 'And frogs among them. Green helmets. The prince has found friends.'},
+            {who: 'sister', text: 'So much for passing through.'},
+            {who: 'rae', text: 'Hold the camp until the sun comes up. And nobody unstitches a monkey they don\'t have to.'},
+            {who: 'patch', text: 'They\'re not making it easy, Commander.'},
+            {who: 'rae', text: 'I know. Do it anyway.'},
+          ],
+          post: [
+            {who: 'narr', text: 'Dawn comes up pink over the flowers. The monkeys melt back into the blossom trees.'},
+            {who: 'narr', text: 'One of them was left behind with a twisted ankle: an old courtier, very dignified, very cross.'},
+            {who: 'courtier', text: 'The young one? That was Speshul. The Governess\'s son. Her only son.'},
+            {who: 'rae', text: 'He didn\'t want to fight us. I saw it. He looked at us like he was seeing the world for the first time.'},
+            {who: 'courtier', text: 'He looks at everything like that. It is very trying.'},
+            {who: 'rae', text: 'Then I\'m going to talk to his mother.'},
+            {who: 'froggle', text: 'Rae. The Governess lives in a castle full of guards, and every frog in Monkeyland reports to her.'},
+            {who: 'rae', text: 'Then that\'s the last place they\'ll expect us.'},
+          ],
+          reward: {res: 650},
+        },
+
+        // ---------------- Stage 4: push into the castle ----------------
+        {
+          id: 'R3-4', title: 'The Castle Gate', map: 'castleGate', enemyFaction: 'monkey',
+          star: {type: 'bossBy', key: 'rae', text: '{lord} drives back Captain Tamarind herself'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'Rae means to meet the Governess, whether the Governess likes it or not. Cross the drawbridge, and drive back the captain of her guard.',
+          enemies: () => [
+            E('mkguard',7,4,1,'hold',{boss: true, elite: true, flees: true, key: 'tamarind', name: 'Captain Tamarind', look: 'tamarind'}),
+            E('mkguard',6,4,4,'guard'), E('mkguard',6,5,4,'guard'), E('mkthrow',6,1,3,'guard'), E('mkthrow',6,8,3,'guard'),
+            E('mkacro',6,2,7), E('mkacro',6,7,8), E('mkbrute',7,4,6), E('mkchant',6,5,1,'guard'),
+            E('lily',6,1,1,'guard',{faction: 'frog'}), E('reed',6,8,1,'guard',{faction: 'frog'}),
+          ],
+          bossTalk: [
+            {who: 'tamarind', text: 'Nobody walks into the Governess\'s castle. Nobody.'},
+            {who: 'rae', text: 'I\'m not walking. I\'m knocking. Very loudly.'},
+          ],
+          pre: [
+            {scene: 'castlegate', place: 'The Governess\'s Castle'},
+            {who: 'narr', text: 'The castle stands on a hill above the meadows, older than anything in the Friggliarchy. Frog banners hang from every tower.'},
+            {who: 'willow', text: 'Rae. Listen to me. This isn\'t brave. This is walking into a trap and knocking on it.'},
+            {who: 'rae', text: 'The monkeys attacked us because the frogs told them to. Nobody\'s ever asked them what they want. I\'m going to ask.'},
+            {who: 'patch', text: 'I\'m with the Commander. Somebody\'s got to hold the door for her.'},
+            {who: 'froggle', text: '…Then be quick. The prince won\'t be far behind us.'},
+          ],
+          post: [
+            {who: 'narr', text: 'Captain Tamarind falls back through the gate, his guard scattering into the courtyard.'},
+            {who: 'tamarind', text: 'The Governess will not see you!'},
+            {who: 'rae', text: 'She will. I\'ll wait in her hall until she does.'},
+            {who: 'patch', text: 'I\'ll hold the gate. Go on, Commander. Go and ask your question.'},
+          ],
+          reward: {res: 650},
+        },
+
+        // ---------------- Stage 5: the meeting; Speshul changes sides ----------------
+        {
+          id: 'R3-5', title: 'The Governess', map: 'castleHall', enemyFaction: 'frog',
+          requires: ['F3-4'], convergence: 'The Castle',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,13],[5,13],[3,13],[6,13],[4,14],[5,14],[2,14],[7,14]],
+          brief: 'The Governess has refused you, and the King\'s envoy wants you in chains. Defeat the envoy before his guard closes the hall.',
+          prepNote: 'Some of the Governess\'s guard may not stay on the frogs\' side for long.',
+          enemies: () => [
+            E('blade',6,4,1,'hold',{boss: true, elite: true, key: 'envoy', name: 'The King\'s Envoy', look: 'duelist'}),
+            E('lily',6,3,2,'guard'), E('lily',6,6,2,'guard'), E('reed',6,2,4,'guard'), E('reed',6,7,4,'guard'), E('bruiser',6,4,6),
+            E('mkguard',6,2,8,'charge',{faction: 'monkey', defects: true}), E('mkacro',6,7,8,'charge',{faction: 'monkey', defects: true}),
+            E('mkthrow',6,3,10,'guard',{faction: 'monkey', defects: true}), E('mkguard',6,6,10,'charge',{faction: 'monkey', defects: true}),
+            E('mkacro',6,1,5,'charge',{faction: 'monkey'}), E('mkbrute',6,8,6,'charge',{faction: 'monkey'}),
+          ],
+          // turn 2: Speshul stands up, and half the hall's guard goes with him
+          events: [{turn: 2, join: 'speshul', at: [4, 11], mustSurvive: true, defect: true, popup: 'For Speshul!', talk: [
+            {who: 'speshul', text: 'STOP! Everybody stop!'},
+            {who: 'aurora', text: 'Speshul. Go to your room.'},
+            {who: 'speshul', text: 'No, Mother. I\'ve read every book in this castle. We were a kingdom! We had our own songs, and our own laws, and our own flag!'},
+            {who: 'speshul', text: 'And then the frogs came, and we knelt, and we\'ve been kneeling so long we\'ve forgotten we have legs!'},
+            {who: 'aurora', text: 'We knelt so that we would still be alive to sing those songs.'},
+            {who: 'speshul', text: 'We don\'t sing them! Nobody\'s sung them in a hundred years!'},
+            {who: 'speshul', text: 'Monkeys of the guard! Who\'s with me?'},
+          ]}],
+          pre: [
+            {scene: 'castle', place: 'The Great Hall'},
+            {who: 'narr', text: 'The great hall. Old banners, faded almost white, hang behind the frog ones. On the throne sits a monkey in a circlet of gold petals.'},
+            {who: 'narr', text: 'Beside her stands a frog in the King\'s colours, with his hand on his sword.'},
+            {who: 'aurora', text: 'You must be the rabbit from the mines. You\'re smaller than they say.'},
+            {who: 'rae', text: 'Governess. We aren\'t here to fight you. We\'re asking for passage through your land. And, if you\'ll give it, help.'},
+            {who: 'aurora', text: 'Help. Against the Friggliarchy.'},
+            {who: 'rae', text: 'You were a kingdom once. You could be again.'},
+            {who: 'aurora', text: 'I have kept these people alive for twenty years by kneeling. Do you know how many monkeys stood up, the last time anyone tried?'},
+            {who: 'aurora', text: 'Neither do I. Nobody could count them afterwards.'},
+            {who: 'aurora', text: 'The answer is no, Rae Rabbit. I am sorry. I truly am.'},
+            {who: 'envoy', text: 'There. You have your answer. Guards! Take the rebels!'},
+            {who: 'narr', text: 'Up in the gallery, a young monkey in an orange bandana grips the rail so hard his knuckles go pale.'},
+          ],
+          post: [
+            {who: 'narr', text: 'The envoy flees through a side door. The hall is quiet, and split straight down the middle.'},
+            {who: 'aurora', text: 'You\'ve taken my son.'},
+            {who: 'speshul', text: 'Nobody took me, Mother. I\'m going. I want to see the world. I want us to have a world to see.'},
+            {who: 'aurora', text: 'And when the frogs come for this, and they will, who do you think will kneel to keep the rest alive? I will. Always.'},
+            {who: 'aurora', text: 'I will not help you, Rae Rabbit. Leave my castle.'},
+            {who: 'narr', text: 'Rae turns to go. Behind her, one by one, monkeys of the guard put down their frog colours, and follow.'},
+            {who: 'sister', text: 'Rae… there are so many of them.'},
+            {who: 'rae', text: 'I know.'},
+          ],
+          reward: {res: 650},
+        },
+
+        // ---------------- Stage 6: the schism ----------------
+        {
+          id: 'R3-6', title: 'The Schism', map: 'schismField', enemyFaction: 'monkey',
+          requires: ['F3-5'], convergence: 'Monkeyland Divided',
+          star: {type: 'allies', text: 'No monkey ally falls'},
+          objective: {type: 'boss'}, maxDeploy: 7, mustDeploy: ['speshul'],
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'Monkeys loyal to the Governess block the bridges out of Monkeyland. Break through, and defeat Captain Tamarind. The monkeys who chose you fight beside you.',
+          prepNote: 'Speshul must come. The monkeys who changed sides fight beside you, on their own (blue coasters).',
+          allies: () => [E('mkguard',5,3,11,'charge',{key: 'ally', name: 'Guard Pippin'}), E('mkacro',5,6,11,'charge',{key: 'ally', name: 'Acrobat Kiwi'}),
+                         E('mkthrow',5,1,12,'charge',{key: 'ally', name: 'Thrower Sorrel'}), E('mkbrute',5,8,12,'charge',{key: 'ally', name: 'Thumper Mango'})],
+          enemies: () => [
+            E('mkguard',8,4,2,'hold',{boss: true, elite: true, key: 'tamarind', name: 'Captain Tamarind', look: 'tamarind'}),
+            E('mkguard',7,2,5,'guard'), E('mkguard',7,7,5,'guard'), E('mkthrow',7,1,3,'guard'), E('mkthrow',7,8,3,'guard'), E('mkchant',7,5,2,'guard'),
+            E('mkacro',7,2,8), E('mkacro',7,7,8), E('mkbrute',7,4,9), E('mkacro',7,0,10),
+            E('blade',7,3,0,'charge',{faction: 'frog'}), E('lily',7,6,0,'charge',{faction: 'frog'}),
+          ],
+          reinforce: () => [{turn: 3, units: [E('mkacro',7,0,6), E('mkacro',7,9,6), E('mkbrute',7,4,0)]}],
+          bossTalk: [
+            {who: 'tamarind', text: 'Young master. Come home. Please. Your mother is waiting.'},
+            {who: 'speshul', text: 'I can\'t, Tamarind. You know I can\'t.'},
+            {who: 'tamarind', text: 'Then I\'m sorry. I swore to keep Monkeyland whole.'},
+          ],
+          pre: [
+            {scene: 'monkeyland', place: 'The Stream Below the Castle · Morning'},
+            {who: 'narr', text: 'At the stream below the castle, Monkeyland splits in two.'},
+            {who: 'narr', text: 'On one bank, the monkeys who chose Speshul. On the other, the monkeys who chose the Governess. Brothers. Neighbours. Old friends. Some of them are shouting each other\'s names.'},
+            {who: 'speshul', text: 'That\'s Captain Tamarind on the bridge. He taught me to climb. He taught everyone to climb.'},
+            {who: 'rae', text: 'Speshul. You don\'t have to fight him.'},
+            {who: 'speshul', text: 'Yes I do. That\'s the whole point, isn\'t it? Somebody has to.'},
+          ],
+          post: [
+            {who: 'narr', text: 'Captain Tamarind falls on the bridge he held all morning.'},
+            {who: 'tamarind', text: 'I served your mother. And her mother before her…'},
+            {who: 'tamarind', text: '…I would have served you, young master. Gladly.'},
+            {who: 'narr', text: 'The Raepublic crosses the stream. Behind them, the meadows. Ahead, the hills. Speshul stands on the bridge a long time.'},
+            {who: 'speshul', text: 'Centuries. Monkeyland had centuries of peace. Bad peace. Kneeling peace. But peace.'},
+            {who: 'speshul', text: 'And I ended it in a morning.'},
+            {who: 'rae', text: 'It wasn\'t peace, Speshul. It was waiting.'},
+            {who: 'speshul', text: '…Then I hope we were worth the wait.'},
+            {who: 'froggle', text: 'Rae. I\'ve counted. Four hundred monkeys came with us. Four hundred more mouths. And four hundred more spears.'},
+            {who: 'willow', text: 'And every frog in the Friggliarchy now knows exactly where we are, and exactly how many of us there are.'},
+            {who: 'rae', text: 'Then we keep moving.'},
+            {who: 'rae', thought: true, text: 'We\'re bigger than we\'ve ever been. We\'re stronger than we\'ve ever been. And we\'ve never been easier to find.'},
+            {card: 'End of Chapter Three', sub: 'Monkeyland'},
+          ],
+          reward: {res: 700, tokens: 6},
+        },
+      ]},
+      {id: 'RC4', title: 'Chapter Four', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
     ],
   },
 
@@ -3674,7 +4138,254 @@ const CAMPAIGNS = {
           reward: {res: 600, tokens: 6},
         },
       ]},
-      {id: 'FC3', title: 'Chapter Three', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
+      {id: 'FC3', title: 'Chapter Three', name: 'The Governess', enemyMods: {mhp: -1}, stages: [
+
+        // ---------------- Stage 1 ----------------
+        {
+          id: 'F3-1', title: 'Into Monkeyland', map: 'meadowEdge', enemyFaction: 'rae',
+          star: {type: 'turns', n: 7, text: 'Win by the end of turn VII'},
+          objective: {type: 'rout'}, maxDeploy: 7,
+          deploy: [[4,0],[5,0],[3,1],[6,1],[2,1],[7,1],[4,1],[5,1]],
+          brief: 'The rebels have slipped out of the forest into Monkeyland, and left a rearguard in the meadows behind them. Rout it.',
+          enemies: () => [
+            E('rfighter',4,4,8,'guard',{elite: true}), E('rlancer',4,2,7,'guard'), E('rlancer',4,7,7,'guard'), E('rarcher',4,3,10,'guard'),
+            E('rarcher',4,6,10,'guard'), E('radept',4,5,11,'guard'), E('rfencer',4,1,5), E('rfencer',4,8,5), E('rfighter',4,4,12),
+          ],
+          pre: [
+            {card: 'Chapter Three', sub: 'The Governess'},
+            {scene: 'woods', place: 'The Edge of the Woods'},
+            {who: 'narr', text: 'A letter comes from the court, sealed in green wax. Biggle reads it aloud.'},
+            {who: 'biggle', text: '"The King thanks his youngest brother for uncovering Fraggle Friggle\'s treason. The matter is closed. It will not be spoken of again."'},
+            {who: 'biggle', text: '"Follow the rebels into Monkeyland. The Governess will give you every monkey you need." …Well. There you are, little brother. A hero.'},
+            {who: 'tiggle', thought: true, text: 'A hero. For a lie. And nobody will ever ask.'},
+            {who: 'tiggle', text: 'Monkeyland. I\'ve only ever seen it on maps. What are they like, the monkeys?'},
+            {who: 'biggle', text: 'Loyal. Very loyal. They were a kingdom once, before great-great-grandfather. These days they\'re the best border guards we have.'},
+            {who: 'tiggle', text: 'Loyal because they want to be?'},
+            {who: 'biggle', text: '…That\'s not the sort of question a prince asks out loud, Tiggle.'},
+            {who: 'scout', text: 'Your Highness! Rebels in the meadows! A rearguard, holding the way out of the woods!'},
+          ],
+          post: [
+            {who: 'narr', text: 'The rearguard breaks and runs east into the flowers. Out of the blossom trees comes a party of monkeys, a monkey in a circlet of gold petals at their head.'},
+            {who: 'narr', text: 'She kneels in the grass before Tiggle. Every monkey behind her kneels too, all at once, as if they\'d practised it.'},
+            {who: 'aurora', text: 'Your Highness. Monkeyland welcomes the King\'s brother. Everything we have is yours.'},
+            {who: 'speshul', text: 'Is it true you beat the black frog? All on your own? With everyone watching?'},
+            {who: 'aurora', text: 'Speshul!'},
+            {who: 'tiggle', text: '…Nobody was watching.'},
+            {who: 'tiggle', thought: true, text: 'She kneels like someone who has done it every day of her life. Like it hurts, every time.'},
+          ],
+          reward: {res: 600},
+        },
+
+        // ---------------- Stage 2: the hunt, with Speshul ----------------
+        {
+          id: 'F3-2', title: 'The Hunt', map: 'blossomFields', enemyFaction: 'rae',
+          star: {type: 'allies', text: 'No ally falls'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,15],[5,15],[3,14],[6,14],[2,15],[7,15],[4,14],[5,14]],
+          brief: 'Hunt down a Republic band in the flower fields, with the Governess\'s hunters beside you, and the Governess\'s son.',
+          prepNote: 'The monkey hunters fight beside you, on their own (blue coasters). If Speshul is beaten, he runs home to his mother.',
+          allies: () => [
+            E('heir',5,4,12,'charge',{key: 'speshul', name: 'Speshul', look: 'speshul', flees: true, bonus: {mhp: 6, def: 2}}),
+            E('mkacro',4,1,13,'charge',{key: 'ally', name: 'Hunter Plum'}), E('mkthrow',4,7,13,'charge',{key: 'ally', name: 'Hunter Quince'}),
+            E('mkguard',4,8,12,'charge',{key: 'ally', name: 'Hunter Date'}),
+          ],
+          enemies: () => [
+            E('rfighter',5,4,1,'hold',{boss: true, elite: true, flees: true, key: 'burr', name: 'Burr'}),
+            E('rlancer',5,3,3,'guard'), E('rlancer',5,6,3,'guard'), E('rarcher',5,1,2,'guard'), E('rarcher',5,8,2,'guard'),
+            E('rfencer',5,2,7), E('rfencer',5,7,7), E('radept',5,5,5,'guard'), E('rfighter',5,4,9),
+          ],
+          events: [{turn: 2, talk: [
+            {who: 'speshul', text: 'Your Highness, look at them. They\'re not fighting to win. They\'re fighting to get away.'},
+            {who: 'tiggle', thought: true, text: 'He\'s right. I wish he weren\'t.'},
+          ]}],
+          bossTalk: [
+            {who: 'burr', text: 'Monkeys hunting rabbits for frogs! What did they ever give you, eh?'},
+            {who: 'speshul', text: '…'},
+          ],
+          pre: [
+            {scene: 'monkeyland', place: 'The Governess\'s Hunting Lodge'},
+            {who: 'aurora', text: 'My best hunters are yours, Your Highness. And one more. My son.'},
+            {who: 'tiggle', text: 'Your son? Governess, it\'ll be dangerous.'},
+            {who: 'aurora', text: 'He reads too many books about the old days. He thinks the world is full of glory. He needs to see what it is really like, at the side of the King\'s brother.'},
+            {who: 'aurora', text: 'Show him, Your Highness. And bring him back to me.'},
+            {who: 'speshul', text: 'I\'ll be no trouble! I can climb anything. Ask anyone. Ask Captain Tamarind. He says I\'m a menace.'},
+            {who: 'biggle', thought: true, text: 'Wonderful. A nursery outing.'},
+          ],
+          post: [
+            {who: 'narr', text: 'The Republic sergeant crashes away through the blossom, bleeding stuffing, and the rest of his band scatters after him.'},
+            {who: 'speshul', text: 'Your Highness? Why are we hunting them? They didn\'t do anything to us.'},
+            {who: 'tiggle', text: 'They broke the King\'s law.'},
+            {who: 'speshul', text: 'So did we, once. In the books. Before.'},
+            {who: 'tiggle', thought: true, text: 'Before the frogs. He means before us.'},
+          ],
+          reward: {res: 600},
+        },
+
+        // ---------------- Stage 3: the granary runners ----------------
+        {
+          id: 'F3-3', title: 'The Granary', map: 'blossomFields', enemyFaction: 'rae',
+          requires: ['R3-3'], convergence: 'After the Flower Fields',
+          star: {type: 'catch', n: 5, text: 'Catch at least five grain runners'},
+          objective: {type: 'intercept', who: 'grain runners', dest: 'the woods'}, maxDeploy: 7,
+          exits: [[0,15],[2,15],[4,15],[6,15],[8,15]],
+          deploy: [[4,6],[5,6],[3,7],[6,7],[1,7],[8,7],[4,8],[5,8]],
+          brief: 'In the night, rebels raided the monkeys\' granary. Their runners are carrying the winter\'s grain south. Catch as many as you can.',
+          prepNote: 'The grain runners don\'t stop to fight: they run for the gold squares. Eight in all. The battle ends once they\'re all caught or gone.',
+          enemies: () => [
+            ...[[2,0],[5,1],[7,0]].map(([x, y]) => E('runner',5,x,y,'courier',{courier: true, name: 'Grain Runner', bonus: {mov: -2}})),
+            E('rlancer',5,3,10,'guard'), E('rlancer',5,6,10,'guard'), E('rfencer',5,1,12), E('rarcher',5,8,12,'guard'),
+          ],
+          reinforce: () => [
+            {turn: 1, units: [[1,0],[4,0],[8,1]].map(([x, y]) => E('runner',5,x,y,'courier',{courier: true, name: 'Grain Runner', bonus: {mov: -2}}))},
+            {turn: 2, units: [E('runner',5,3,0,'courier',{courier: true, name: 'Grain Runner', bonus: {mov: -2}}), E('runner',5,6,0,'courier',{courier: true, name: 'Grain Runner', bonus: {mov: -2}}), E('rfighter',5,5,0)]},
+          ],
+          pre: [
+            {scene: 'monkeyland', place: 'The Granary · Dawn'},
+            {who: 'narr', text: 'The night attack on the rebel camp failed. The rabbits held. And while the monkeys were busy, other rabbits found the granary.'},
+            {who: 'aurora', text: 'That was the winter\'s grain. For the whole of the eastern meadows.'},
+            {who: 'tiggle', text: 'Then we get it back.'},
+            {who: 'speshul', text: 'They\'re hungry, Your Highness. That\'s all. They\'re only hungry.'},
+            {who: 'aurora', text: 'So will we be, by midwinter. Go with the prince, Speshul.'},
+          ],
+          post: [
+            {who: 'narr', text: 'Sacks of grain lie in the grass where the runners dropped them.'},
+            {who: 'speshul', text: 'One of them was so small. Smaller than the sack.'},
+            {who: 'tiggle', thought: true, text: 'Rae\'s people are starving, and the Governess\'s people will starve if they win. Everyone in this is hungry except the King.'},
+            {who: 'scout', text: 'Your Highness! The rabbits! They\'ve turned around. They\'re marching on the castle!'},
+            {who: 'biggle', text: 'On the castle? Are they mad?'},
+            {who: 'tiggle', text: 'No. She\'s going to ask.'},
+          ],
+          reward: {res: 650},
+        },
+
+        // ---------------- Stage 4: back to the castle ----------------
+        {
+          id: 'F3-4', title: 'Rabbits at the Gate', map: 'castleGate', enemyFaction: 'rae',
+          requires: ['R3-4'], convergence: 'The Castle',
+          star: {type: 'bossBy', key: 'tiggle', text: '{lord} drives back Patch himself'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'The rabbits have forced the castle gate, and the Governess is inside with them. Take the gate back. The castle\'s monkeys fight beside you.',
+          allies: () => [E('mkguard',5,2,10,'charge',{key: 'ally', name: 'Gate Guard'}), E('mkthrow',5,7,10,'charge',{key: 'ally', name: 'Wall Thrower'})],
+          enemies: () => [
+            E('rfighter',6,4,2,'hold',{boss: true, elite: true, flees: true, key: 'patch', name: 'Patch', look: 'patch'}),
+            E('rlancer',6,5,2,'guard'), E('rarcher',6,1,1,'guard'), E('rarcher',6,8,1,'guard'), E('radept',6,4,0,'guard'),
+            E('rlancer',5,4,4,'guard',{elite: true}), E('rfencer',6,2,7), E('rfencer',6,7,7), E('rfighter',6,5,8),
+          ],
+          bossTalk: [
+            {who: 'patch', text: 'Sorry, prince! The Commander\'s busy. Leave a message!'},
+            {who: 'tiggle', text: 'Get out of my way, rabbit.'},
+            {who: 'patch', text: 'Can\'t. I promised. And I\'ve only got the one eye, so I\'ve got to keep the promises I make.'},
+          ],
+          pre: [
+            {scene: 'castlegate', place: 'The Governess\'s Castle'},
+            {who: 'narr', text: 'Tiggle\'s column runs the last mile to the castle. The drawbridge is down. There are rabbits on the walls.'},
+            {who: 'tamarind', text: 'Your Highness! They forced the gate! Rae Rabbit is in the great hall, with the Governess!'},
+            {who: 'biggle', text: 'In the hall. With the frogs\' own envoy. That rabbit has nerve, I\'ll give her that.'},
+            {who: 'tiggle', text: 'Take the gate back. Then I\'m going to that hall.'},
+          ],
+          post: [
+            {who: 'narr', text: 'The one-eyed rabbit falls back through the courtyard, shouting for his soldiers.'},
+            {who: 'patch', text: 'Inside, lads! Inside! Tell the Commander the prince is coming!'},
+            {who: 'tiggle', text: 'Biggle. Hold the gate. I\'m going in.'},
+            {who: 'biggle', text: 'Not alone you\'re not.'},
+          ],
+          reward: {res: 650},
+        },
+
+        // ---------------- Stage 5: betrayal in the hall; fight your way out ----------------
+        {
+          id: 'F3-5', title: 'Betrayal', map: 'castleHall', enemyFaction: 'rae',
+          requires: ['R3-5'], convergence: 'The Great Hall',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'escape', dest: 'the castle doors (the gold squares)'}, maxDeploy: 7,
+          exits: [[4,15],[5,15]],
+          deploy: [[4,1],[5,1],[3,1],[6,1],[4,2],[5,2],[3,3],[6,3]],
+          brief: 'The great hall has turned against you. Fight your way out of the castle: get Tiggle to the doors.',
+          prepNote: 'The battle is won as soon as Tiggle Taggle reaches the castle doors (the gold squares). The monkey guards beside you… may not stay beside you.',
+          allies: () => [E('mkguard',6,2,4,'guard',{key: 'ally', name: 'Hall Guard', defects: true}), E('mkguard',6,7,4,'guard',{key: 'ally', name: 'Hall Guard', defects: true}),
+                         E('mkacro',6,1,6,'guard',{key: 'ally', name: 'Hall Acrobat', defects: true}), E('mkthrow',6,8,6,'guard',{key: 'ally', name: 'Hall Thrower', defects: true})],
+          enemies: () => [
+            E('heir',6,4,9,'guard',{key: 'speshul', name: 'Speshul', look: 'speshul', flees: true, talk: [
+                {who: 'speshul', text: 'I\'m sorry, Your Highness. I liked you. I really did.'},
+                {who: 'tiggle', text: 'Then why?'},
+                {who: 'speshul', text: 'Because you\'d never have let us stand up. Not really. Not even you.'},
+              ]}),
+            E('rfencer',6,3,11), E('rfencer',6,6,11), E('rlancer',6,4,13,'guard'), E('rlancer',6,5,13,'guard'),
+            E('rarcher',6,2,9,'guard'), E('rarcher',6,7,9,'guard'), E('mkacro',6,1,12,'charge',{faction: 'monkey'}), E('mkbrute',6,8,12,'charge',{faction: 'monkey'}),
+          ],
+          events: [{turn: 2, defect: true, popup: 'Betrayal!', talk: [
+            {who: 'monkey', text: 'Sorry, Your Highness. He\'s our prince. Not you.'},
+            {who: 'tiggle', text: '…What?'},
+            {who: 'biggle', text: 'Betrayal! Protect the prince! Get him to the doors!'},
+          ]}],
+          pre: [
+            {scene: 'castle', place: 'The Great Hall'},
+            {who: 'narr', text: 'Tiggle reaches the great hall by the side stair, with the Governess\'s own guard around him. He is too late.'},
+            {who: 'narr', text: 'The envoy is gone. Rae Rabbit is gone. And standing in the middle of the hall, with half the castle guard at his back, is Speshul.'},
+            {who: 'aurora', text: 'Your Highness. I did not invite them. I refused them. I swear it.'},
+            {who: 'speshul', text: 'She did. I didn\'t.'},
+            {who: 'tiggle', text: 'Speshul. Come here. Come away from them, and we\'ll forget this happened.'},
+            {who: 'speshul', text: 'That\'s what frogs always say. That\'s what you said to Mother, three hundred years ago.'},
+            {who: 'narr', text: 'Around Tiggle, the monkeys of the guard shift on their feet, and look at one another.'},
+          ],
+          post: [
+            {who: 'narr', text: 'Tiggle\'s column bursts out of the castle doors into the daylight, bruised and torn and furious.'},
+            {who: 'tiggle', text: 'They turned on us. The monkeys. They\'ve served us for centuries, and they turned on us in an instant.'},
+            {who: 'biggle', text: 'Served, little brother. Not loved. Never loved. I thought you knew.'},
+            {who: 'narr', text: 'Behind them comes the Governess, and with her, the monkeys who stayed.'},
+            {who: 'aurora', text: 'Your Highness. Not all of us. Not all of us.'},
+          ],
+          reward: {res: 650},
+        },
+
+        // ---------------- Stage 6: the schism; Aurora's bargain ----------------
+        {
+          id: 'F3-6', title: 'The Schism', map: 'schismField', enemyFaction: 'monkey',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,1],[5,1],[3,0],[6,0],[2,1],[7,1],[4,0],[5,0]],
+          brief: 'The monkeys who followed Speshul are crossing the stream with the rebels. Stop them, and drive Speshul back. The Governess fights beside you.',
+          prepNote: 'Aurora and the monkeys who stayed loyal fight beside you, on their own (blue coasters). Aurora must not fall.',
+          allies: () => [E('governess',6,4,3,'guard',{key: 'aurora', name: 'Aurora', look: 'aurora', vip: true, bonus: {mhp: 6, def: 2}}),
+                         E('mkguard',6,2,3,'charge',{key: 'ally', name: 'Loyal Guard'}), E('mkchant',6,6,3,'charge',{key: 'ally', name: 'Loyal Chanter'})],
+          enemies: () => [
+            E('heir',8,4,12,'hold',{boss: true, elite: true, flees: true, key: 'speshul', name: 'Speshul', look: 'speshul'}),
+            E('mkguard',7,2,9,'guard'), E('mkguard',7,7,9,'guard'), E('mkthrow',7,3,11,'guard'), E('mkthrow',7,6,11,'guard'),
+            E('mkacro',7,1,7), E('mkacro',7,8,7), E('mkbrute',7,4,8),
+            E('rlancer',7,2,13,'guard',{faction: 'rae'}), E('rarcher',7,7,13,'guard',{faction: 'rae'}),
+          ],
+          reinforce: () => [{turn: 3, units: [E('mkacro',7,0,10), E('mkacro',7,9,10), E('rfencer',7,4,15,'charge',{faction: 'rae'})]}],
+          bossTalk: [
+            {who: 'speshul', text: 'You let them hunt us with you! You let them kneel! You\'re no better than the rest of the frogs!'},
+            {who: 'tiggle', text: 'I am a frog, Speshul. I\'m trying to be a better one. It\'s harder than it looks.'},
+          ],
+          pre: [
+            {scene: 'monkeyland', place: 'The Stream Below the Castle · Morning'},
+            {who: 'narr', text: 'At the stream below the castle, Monkeyland splits in two.'},
+            {who: 'aurora', text: 'Your Highness. Let me come with you. He is my son.'},
+            {who: 'tiggle', text: 'He\'s leading a rebellion against the Friggliarchy, Governess.'},
+            {who: 'aurora', text: 'I know what he is doing. I know what the King does to rebels. I have seen it.'},
+            {who: 'aurora', text: 'So I will ask you for one thing. When this is over, whatever he has done: clemency. For my son. Spare him.'},
+            {who: 'aurora', text: 'Promise me that, and I will serve you. Me, and every monkey who stayed. For as long as I am stitched.'},
+            {who: 'tiggle', thought: true, text: 'The King would never allow it. The King doesn\'t need to know.'},
+            {who: 'tiggle', text: '…You have my word, Aurora. Speshul will be spared.'},
+          ],
+          post: [
+            {who: 'narr', text: 'Speshul falls back across the stream with the rabbits. On the far bank, he turns, and looks back at his mother, for a long time.'},
+            {who: 'narr', text: 'Then he is gone, and four hundred monkeys with him.'},
+            {who: 'aurora', text: 'Centuries of peace. And it ends at a stream, on a sunny morning, with everyone shouting.'},
+            {who: 'tiggle', text: 'It isn\'t over, Aurora. I meant what I said. Whatever happens, he\'ll be spared.'},
+            {who: 'aurora', text: 'I know. That is why I am still here.'},
+            {who: 'biggle', text: 'Half of Monkeyland, gone over to the rebels in a day. Friggle will be… displeased.'},
+            {who: 'tiggle', thought: true, text: 'She didn\'t take them, Rae Rabbit. She didn\'t steal anything. She asked, and they went.'},
+            {who: 'tiggle', thought: true, text: 'Nobody ever asked them before. Not once. Not us.'},
+            {card: 'End of Chapter Three', sub: 'The Governess'},
+          ],
+          reward: {res: 700, tokens: 6, joins: ['aurora']},
+        },
+      ]},
+      {id: 'FC4', title: 'Chapter Four', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
     ],
   },
 };
@@ -5493,6 +6204,7 @@ function starCheck(star, v){
   switch (star.type){
     case 'noLosses': return v.lost > 0 ? 'missed' : v.over ? 'ok' : 'pending';
     case 'allies':   return v.allyLost > 0 ? 'missed' : v.over ? 'ok' : 'pending';
+    case 'catch':    return (v.caught || 0) >= star.n ? 'ok' : v.over ? 'missed' : 'pending';
     case 'turns':    return v.turn > star.n ? 'missed' : v.over ? 'ok' : 'pending';
     case 'unhurt':   return v.lordHit ? 'missed' : v.over ? 'ok' : 'pending';
     case 'bossBy':   return v.bossBy ? (v.bossBy === star.key ? 'ok' : 'missed') : 'pending';
@@ -5949,6 +6661,7 @@ function moveCost(u, x, y){
   if (u.mt === 'mounted'){ if (ch === 'F') return 3; if (ch === 'M') return 99; }
   if (u.mt === 'armor' && ch === 'M') return 99;
   if (u.mt === 'bog' && ch === 'M') return 2;
+  if (u.mt === 'climb' && ch === 'F') return 1;   // monkeys swing through trees and flowers
   return c;
 }
 
@@ -5970,7 +6683,7 @@ function enemyUnit(sp, faction, teamId = 'e'){
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, talk, talked: false});
+  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, defects: !!sp.defects, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -5990,7 +6703,7 @@ function runBattle(campKey, ch, records, opts = {}){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
        objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
-       events: opts.replay ? [] : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
+       events: opts.replay ? (ch.events || []).filter(ev => ev.defect).map(ev => ({turn: ev.turn, defect: ev.defect, popup: ev.popup})) : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   // solo: only the leader starts on the field; the rest arrive with the stage's twist
@@ -6082,6 +6795,7 @@ function calc(a, d, ap, dp){
   if (hasAb(d, 'bait') && phase === 'e' && sideOfTeam(d) === 'p' && !d.baitUsed) def += 2;
   if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
+  if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
   if (hasAb(d, 'cantcatch') && d.ranFar) hitB -= 25;
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
@@ -6177,6 +6891,7 @@ async function strike(a, d, f){
   if (roll < f.hit){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
+    if (d.hp <= 0 && from > 1 && hasAb(d, 'bend') && !d.bendUsed){ d.hp = 1; d.bendUsed = true; abilityPop(d, 'bend'); }   // Bend, Not Break
     if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
@@ -6301,21 +7016,23 @@ async function courierAct(e){
     if (bk !== K(e.x, e.y)){ await wait(150); await moveAlong(e, pathTo(map, bk)); }
   }
   if (onExit(e)){
-    e.escaped = true; popup(e, B.ch.escort ? '🎁 Delivered!' : 'Got away!', B.ch.escort ? '#9ff0b0' : '#ffb3a6'); Sfx.play(B.ch.escort ? 'coin' : 'flee');
+    e.escaped = true; const safe = sideOfTeam(e) === 'p'; popup(e, safe ? (B.ch.event ? '🎁 Delivered!' : 'Safe!') : 'Got away!', safe ? '#9ff0b0' : '#ffb3a6'); Sfx.play(safe ? 'coin' : 'flee');
     await tween(380, t => { e.alpha = 1 - t; }); e.dead = true;
   }
   updateDanger();
 }
 function objectiveText(){
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
-  const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
-    : ob.type === 'survive' ? (B.ch.escort ? `Protect the couriers until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach the road.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
-    : ob.type === 'intercept' ? 'Catch as many couriers as you can before they reach the road.' : 'Rout the enemy.';
+  const runner = units.find(u => u.boss && u.ai === 'courier');
+  const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
+    : ob.type === 'survive' ? (B.ch.escort ? `Protect the ${ob.who || 'couriers'} until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach ${ob.dest || 'the road'}.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
+    : ob.type === 'intercept' ? `Catch as many ${ob.who || 'couriers'} as you can before they reach ${ob.dest || 'the road'}.${B.ch.event ? '' : ` ${couriers().filter(u => u.dead && !u.escaped).length} caught.`}`
+    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
-const starLive = () => ({allyLost: units.filter(u => u.team === 'a' && u.dead).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
+const starLive = () => ({caught: couriers().filter(u => u.team === 'e' && u.dead && !u.escaped).length, allyLost: units.filter(u => u.team === 'a' && u.dead && !u.escaped).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
 function starHTML(){
   if (!B.ch.star) return '';
   const st = starCheck(B.ch.star, starLive()), had = hasStar(B.ch.id);
@@ -6512,8 +7229,7 @@ async function battleEvents(){
   for (const ev of B.events){
     if (ev.done || ev.turn !== turn || B.done) continue;
     ev.done = true;
-    if (ev.join){
-      if (units.some(u => u.team === 'p' && u.key === ev.join && !u.dead)) continue;   // already deployed
+    if (ev.join && !units.some(u => u.team === 'p' && u.key === ev.join && !u.dead)){   // (unless already deployed)
       // someone already in the army (and standing) runs in as themselves; otherwise they're new
       const have = SAVE.camps[B.campKey].roster.find(r => r.key === ev.join && !r.dead);
       const u = battleUnit(have || recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
@@ -6527,6 +7243,15 @@ async function battleEvents(){
       await wait(350);
     }
     if (ev.talk) await talk(ev.talk);
+    // defect: every unit spawned with defects:true changes sides (enemies become allies; allies turn on you)
+    if (ev.defect){
+      const who = units.filter(u => !u.dead && u.defects);
+      for (const u of who){
+        u.team = u.team === 'e' ? 'a' : 'e'; u.defects = false; u.ai = 'charge'; u.moved = false;
+        popup(u, u.team === 'a' ? (ev.popup || 'Changes sides!') : (ev.popup || 'Betrayal!'), u.team === 'a' ? '#9fe09a' : '#ff9a8a');
+      }
+      if (who.length){ Sfx.play(who[0].team === 'a' ? 'select' : 'flee'); tokenCache.clear(); updateDanger(); refreshTop(); await wait(700); }
+    }
   }
 }
 // A stage's twist (see `twist` in 25-data-campaign.js): once a survive objective is met, a scene plays,
@@ -6678,9 +7403,13 @@ function checkEnd(){
   const vip = units.find(u => u.team !== 'e' && u.vip && u.dead);
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.objective, boss = units.find(u => u.boss);
+  // a boss who runs for the exits (ai 'courier') and reaches one has got away: the battle is lost
+  if (ob.type === 'boss' && boss && boss.escaped){ finishBattle(false, false, 'escaped'); return true; }
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
+  // escape: the leader reaches one of the stage's exits
+  if (ob.type === 'escape' && lord && !lord.dead && onExit(lord)){ finishBattle(true); return true; }
   // event: over once every courier has been caught, delivered or got away, and no more are coming
-  if (B.ch.event && couriers().length && !couriers().some(u => !u.dead) && !B.waves.some(w => !w.spawned && w.units.some(s => s.courier))){ finishBattle(true); return true; }
+  if ((B.ch.event || ob.type === 'intercept') && couriers().length && !couriers().some(u => !u.dead) && !B.waves.some(w => !w.spawned && w.units.some(s => s.courier))){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
   if (!team('e').length && !(ob.type === 'survive' && (wavesLeft || (B.twist && !B.twist.done)))){ finishBattle(true); return true; }
   return false;
@@ -6772,7 +7501,7 @@ function resize(){
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
   const g = terrCv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); }
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'blossom') blossomOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'castle') castleOver(g, x, y, MAP[y][x]); }
   if (!noisePat){
     const n = document.createElement('canvas'); n.width = n.height = 96; const ng = n.getContext('2d');
     for (let i = 0; i < 1400; i++){ ng.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.18)' : 'rgba(255,245,220,.12)'; ng.fillRect(Math.random()*96, Math.random()*96, 1, Math.random()*2 + .5); }
@@ -6824,7 +7553,7 @@ function drawTile(g, x, y, ch){
     return;
   }
   const theme = mapDef?.theme || 'meadow';
-  if (theme !== 'meadow' && theme !== 'snow') return drawThemedTile(g, x, y, ch, theme);
+  if (theme !== 'meadow' && theme !== 'snow' && theme !== 'blossom') return drawThemedTile(g, x, y, ch, theme === 'castle' ? 'camp' : theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -6900,6 +7629,29 @@ function stones(g, X, Y, list, cols, stitch){
   });
 }
 // Snow: the meadow tile under a white blanket, with snow caps on trees and drifts
+// Monkeyland: stitched daisies in the grass, and pink blossom on every tree
+function blossomOver(g, x, y, ch){
+  const X = x*T, Y = y*T, cols = ['#fff6f0', '#ffd6e2', '#ffe58a', '#f4a6c4'];
+  if (ch === '.' || ch === 'B') for (let i = 0; i < 3; i++){
+    const fx = X + T*(.12 + .76*hash(x, y, i + 50)), fy = Y + T*(.12 + .76*hash(x, y, i + 60)), r = T*.035;
+    g.fillStyle = cols[Math.floor(hash(x, y, i + 70)*cols.length)];
+    for (let k = 0; k < 5; k++){ const a = k*Math.PI*2/5; ell(g, fx + Math.cos(a)*r, fy + Math.sin(a)*r, r*.8, r*.8); g.fill(); }
+    g.fillStyle = '#e8a33a'; ell(g, fx, fy, r*.6, r*.6); g.fill();
+  }
+  if (ch === 'F') for (let i = 0; i < 9; i++){
+    g.fillStyle = i % 3 ? 'rgba(248,168,198,.92)' : 'rgba(255,226,236,.95)';
+    ell(g, X + T*(.18 + .64*hash(x, y, i + 80)), Y + T*(.12 + .5*hash(x, y, i + 90)), T*.06, T*.05); g.fill();
+  }
+}
+// the castle: a cool grey wash over the camp-style ground, so it reads as stone
+function castleOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  if (ch === '.' || ch === 'T' || ch === 'F'){ g.fillStyle = 'rgba(150,150,165,.42)'; g.fillRect(X, Y, T, T);
+    g.strokeStyle = 'rgba(60,60,70,.25)'; g.lineWidth = 1; g.strokeRect(X + .5, Y + .5, T/2, T/2); g.strokeRect(X + T/2 + .5, Y + T/2 + .5, T/2 - 1, T/2 - 1); }
+  if (ch === 'X' || ch === 'M'){ g.fillStyle = 'rgba(140,140,155,.62)'; g.fillRect(X, Y, T, T); g.strokeStyle = 'rgba(50,50,60,.4)'; g.lineWidth = 1;
+    for (let r = 0; r < 3; r++){ const yy = Y + T*(r + 1)/3; g.beginPath(); g.moveTo(X, yy); g.lineTo(X + T, yy); g.stroke(); const xx = X + T*(r % 2 ? .25 : .65); g.beginPath(); g.moveTo(xx, yy - T/3); g.lineTo(xx, yy); g.stroke(); } }
+  if (ch === 'F') for (let i = 0; i < 5; i++){ g.fillStyle = i % 2 ? '#f4a6c4' : '#ffe58a'; ell(g, X + T*(.3 + .4*hash(x, y, i + 30)), Y + T*(.2 + .3*hash(x, y, i + 40)), T*.06, T*.06); g.fill(); }
+}
 function snowOver(g, x, y, ch){
   const X = x*T, Y = y*T;
   // a cool blue-white snowfield; forests keep their green so they still read as cover
@@ -6958,7 +7710,8 @@ function tokenFor(u, variant){
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
+  // your own units stand on your side's coaster, whatever their people (a monkey in the Raepublic stands on red)
+  const L = LOOKS[u.look] || LOOKS.worker, F = (u.team === 'p' && FACTIONS[B?.pf]) || FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   const ally = u.team === 'a';   // allies stand on a blue coaster
   const spar = u.team === 'e' && u.faction === B?.pf;   // training opponents from your own side stand on grey
   g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
@@ -6973,7 +7726,7 @@ function tokenFor(u, variant){
     const sc = Math.min(T*1.16/icon.width, T*tall/icon.height), w = icon.width*sc, h = icon.height*sc;
     g.drawImage(icon, ox + T*.5 - w/2, oy + T*.88 - h, w, h);
   } else {
-    const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
+    const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : L.sp === 'monkey' ? .26 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
     drawPlush(g, u.look, ox + T*.5, oy + T*(L.sp === 'bun' ? .44 : .46) + (L.small ? T*.05 : 0), s);
   }
   const bx = ox + T*.84, by = oy + T*.7, br = T*.14;
@@ -7132,6 +7885,9 @@ window.addEventListener('resize', () => fitActors());
 const NIGHT_LIT = ['quarters', 'ridge'];
 // Where to anchor a backdrop when a tall phone screen crops its sides (default: centre).
 const BG_POS = {ridge: '70% 30%'};
+// Scenes whose painting hasn't arrived yet borrow another's (drop art/bg-<scene>.jpg in and it's used instead):
+// Chapter Three's Monkeyland meadows, the castle gate and the castle's great hall.
+const SCENE_FALLBACK = {monkeyland: 'ridge', castlegate: 'yard', castle: 'court'};
 // Diagrams a line can show with show:'name'.
 const DIAGRAMS = {
   // the weapon triangle, plus tomes over bows: each arrow points at what it beats
@@ -7177,11 +7933,12 @@ function talk(rawLines){
       // a diagram shown above the text while this line is up (see DIAGRAMS)
       $('#tdiag').hidden = !l.show; if (l.show) $('#tdiag').innerHTML = DIAGRAMS[l.show]();
       if (l.scene){   // change the backdrop and clear the stage
-        $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
+        const sc = ART.bg?.[l.scene] ? l.scene : (SCENE_FALLBACK[l.scene] || l.scene);
+        $('#sbg').dataset.bg = sc; $('#splace').textContent = l.place || '';
         // painted backdrop (art/bg-<scene>.jpg) where there is one; darker for night and dusk scenes
         // (night is darker than dusk/evening); the drawn placeholder details are hidden under a painting
-        const bg = ART.bg?.[l.scene], pl = l.place || '', shade = NIGHT_LIT.includes(l.scene) ? 0 : /night/i.test(pl) ? .66 : /dusk|evening/i.test(pl) ? .5 : 0;
-        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) ${BG_POS[l.scene] || 'center 30%'}/cover no-repeat` : '';
+        const bg = ART.bg?.[sc], pl = l.place || '', shade = NIGHT_LIT.includes(sc) ? 0 : /night/i.test(pl) ? .66 : /dusk|evening/i.test(pl) ? .5 : 0;
+        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) ${BG_POS[sc] || 'center 30%'}/cover no-repeat` : '';
         $('#sbg').toggleAttribute('data-painted', !!bg);
         for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
         anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);
@@ -7264,7 +8021,7 @@ function recChip(ck, sg, team){
   const low = have < rec - .5;
   return `<span class="chip${low ? " under" : ""}" title="Your team's average: Lv ${have.toFixed(1)}">Rec. Lv ${rec}${low ? ` · yours ${have.toFixed(1)}` : ''}</span>`;
 }
-const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the couriers for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? 'Catch the couriers' : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the ${ob.who || 'couriers'} for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? `Catch the ${ob.who || 'couriers'}` : ob.type === 'escape' ? 'Escape' : 'Rout the enemy';
 function chapterRef(id){
   const f = findStage(id); if (!f) return id;
   return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
@@ -7599,7 +8356,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason === 'escaped' ? (ch.escapeFail || 'They got away.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="renergy"><span><b>−1 energy.</b> ${r.energyLeft ? `${r.energyLeft} left.` : 'You\'re out: battles wait until some comes back.'} One comes back every hour.</span>${energyHTML('big')}</div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }

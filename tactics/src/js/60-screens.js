@@ -22,7 +22,7 @@ function recChip(ck, sg, team){
   const low = have < rec - .5;
   return `<span class="chip${low ? " under" : ""}" title="Your team's average: Lv ${have.toFixed(1)}">Rec. Lv ${rec}${low ? ` · yours ${have.toFixed(1)}` : ''}</span>`;
 }
-const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the couriers for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? 'Catch the couriers' : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the ${ob.who || 'couriers'} for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? `Catch the ${ob.who || 'couriers'}` : ob.type === 'escape' ? 'Escape' : 'Rout the enemy';
 function chapterRef(id){
   const f = findStage(id); if (!f) return id;
   return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
@@ -357,7 +357,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason === 'escaped' ? (ch.escapeFail || 'They got away.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="renergy"><span><b>−1 energy.</b> ${r.energyLeft ? `${r.energyLeft} left.` : 'You\'re out: battles wait until some comes back.'} One comes back every hour.</span>${energyHTML('big')}</div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }

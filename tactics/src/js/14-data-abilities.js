@@ -20,10 +20,12 @@ const ABILITIES = {
   onestroke:   {name: 'One Stroke',        icon: '🪓', text: '+25 Crit against enemies below half HP.'},
   guiding:     {name: 'Guiding Nose',      icon: '🦌', text: 'Allies who start their move within 2 squares of Ilc get +1 Mov: his bright red nose shows the way through the snow.'},
   naughty:     {name: 'Naughty List',      icon: '📜', text: 'Any enemy Chriggle Chraggle hits goes on the Naughty List: for the rest of the battle, everyone deals it +2 damage.'},
+  bend:        {name: 'Bend, Not Break',   icon: '🙇', text: 'Once a battle, a blow that would unstitch Aurora leaves her standing on 1 HP instead.'},
+  wecan:       {name: 'We Can Fight!',     icon: '✊', text: 'Against an enemy of a higher level than him, Speshul gets +2 damage and +10 Hit.'},
   nobody:      {name: 'Nobody Comes',      icon: '🌑', text: 'With no ally within 2 squares, Fraggle Jr. gets +3 Atk and +3 Spd.'},
 };
 const CHARACTER_ABILITY = {rae: 'nextto', sister: 'seams', willow: 'lesson', brigand: 'fingers', condemned: 'walkedaway', froggle: 'drawback',
-  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty', ilc: 'guiding'};
+  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty', ilc: 'guiding', aurora: 'bend', speshul: 'wecan'};
 // The ability of a unit or record: its attire's (if the attire brings one), else its character's.
 const abilityOf = u => u && (ATTIRES[u.attire]?.ability || CHARACTER_ABILITY[u.key]) || null;
 const hasAb = (u, id) => abilityOf(u) === id;

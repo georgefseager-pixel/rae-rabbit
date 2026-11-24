@@ -807,3 +807,9 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .renergy{display:flex;flex-direction:column;gap:8px;margin:8px 16px 14px;padding:12px 14px;border-radius:10px;background:rgba(0,0,0,.25);border:1px dashed rgba(255,255,255,.2);font-size:14px}
 .renergy .energy{margin-top:0}
 .btn.noenergy{filter:grayscale(.85) brightness(.75)}
+/* ---------- Monkeyland (Chapter Three) ---------- */
+#phase.f-monkey{color:#f2b88a}
+.por.f-monkey{background-image:radial-gradient(circle at 50% 30%, #7a4a2a, #24140a 75%);box-shadow:0 0 0 2px #d6a060, 0 0 0 4px #141010}
+.tpor.f-monkey{box-shadow:0 0 0 2px #d6a060, 0 0 0 5px #120c0a, 0 16px 30px rgba(0,0,0,.6);background-image:radial-gradient(circle at 50% 35%, #7a4a2a, #24140a 75%)}
+.tname.f-monkey{background:#7a3e22;color:#f6e2c4}
+.plate.f-monkey{background:linear-gradient(180deg,#6a3e22,#341c0e)}

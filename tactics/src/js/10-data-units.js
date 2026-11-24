@@ -7,6 +7,10 @@ const FACTIONS = {
   frog:  {name: 'Friggliarchy', currency: 'Crowns', playerLine: 'THE FRIGGLIARCHY COMMANDS', enemyLine: 'THE FRIGGLIARCHY STIRS',
           band: '#2c4419', text: '#dbeeaa', sub: '#b9d27a', coaster: 'rgba(30,48,16,.8)', stitch: 'rgba(220,235,150,.6)',
           fort: ['#4c6e2a', '#6b4a8a'], letter: 'F'},
+  // Chapter Three: Monkeyland, a conquered state that serves the Friggliarchy (its soldiers fight for whichever side holds them)
+  monkey: {name: 'Monkeyland',   currency: 'Petals', playerLine: 'MONKEYLAND RALLIES',       enemyLine: 'THE MONKEYS SWARM',
+          band: '#8a4a2a', text: '#f6e2c4', sub: '#f2b8c6', coaster: 'rgba(150,84,40,.82)', stitch: 'rgba(250,225,190,.65)',
+          fort: ['#c0763a', '#e0a0b8'], letter: 'M'},
   mouse: {name: 'Scrumbly Mischief', currency: 'Crumbs', playerLine: 'THE MISCHIEF SCURRIES', enemyLine: 'THE MISCHIEF SCURRIES',
           band: '#4a3c34', text: '#f1e2d0', sub: '#d7b9a0', coaster: 'rgba(70,56,48,.8)', stitch: 'rgba(240,220,200,.6)',
           fort: ['#8a6a50', '#d8c8b0'], letter: 'S'},
@@ -64,6 +68,14 @@ const CLASSES = {
   xscribe:   {name: 'Carol Scribe',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Carols',    base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   courier:   {name: 'Gift Courier',   w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Candy Cane',        base: {mhp:17,atk:5, def:3, spd:9,skl:5,mov:4}, g: {mhp:40,atk:20,def:20,spd:30,skl:20}},   // December event: carries presents, runs for the road
   giftgiver: {name: 'Gift-Bringer',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Naughty List',  base: {mhp:20,atk:11,def:4, spd:6,skl:9,mov:5}, g: {mhp:60,atk:50,def:25,spd:35,skl:55}},   // Chriggle Chraggle (December banner)
+  // Monkeyland (Chapter Three). mt 'climb': monkeys go through trees and flowers (F) as if it were open ground.
+  mkacro:    {name: 'Acrobat',        w: 'sword', rng: [1,1], mt: 'climb',   wname: 'Petal Sabre',       base: {mhp:18,atk:10,def:3, spd:10,skl:9,mov:6}, g: {mhp:55,atk:40,def:20,spd:60,skl:55}},
+  mkguard:   {name: 'Vine Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Vine Spear',        base: {mhp:21,atk:10,def:7, spd:5,skl:6,mov:5}, g: {mhp:75,atk:40,def:45,spd:30,skl:40}},
+  mkbrute:   {name: 'Thumper',        w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Stone Club',        base: {mhp:24,atk:12,def:5, spd:5,skl:4,mov:5}, g: {mhp:85,atk:50,def:30,spd:30,skl:30}},
+  mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
+  heir:      {name: 'Canopy Heir',    w: 'sword', rng: [1,1], mt: 'climb',   wname: 'Wooden Sabre',      base: {mhp:19,atk:10,def:4, spd:11,skl:8,mov:6}, g: {mhp:60,atk:45,def:25,spd:65,skl:50}},   // Speshul
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -119,6 +131,11 @@ const LOOKS = {
   biggle:    {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'bandana', band:'#c8506a'},
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
+  // Monkeyland (Chapter Three): placeholder felt plush until their art arrives
+  monkey:    {sp:'monkey', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
+  aurora:    {sp:'monkey', fur:'#a87448', light:'#d29e6c', dark:'#5e3a1c', face:'#f4dcb8', gear:'tiara', big:true},
+  speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
+  tamarind:  {sp:'monkey', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -135,6 +152,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -200,6 +218,13 @@ const CHARACTERS = {
   chriggle:    {name:'Chriggle Chraggle', faction:'frog', look:'chriggle', cls:'giftgiver', lv:3, stars:3, stats:{mhp:25,atk:13,def:5,spd:6,skl:10,mov:5},   // December banner only
                 retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
                 intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
+  // Chapter Three: Monkeyland (placeholder art). Speshul joins the Raepublic; Aurora joins the Friggliarchy.
+  aurora:      {name:'Aurora', faction:'monkey', look:'aurora', cls:'governess', lv:6, stats:{mhp:25,atk:13,def:6,spd:8,skl:11,mov:5},
+                retort:'I kneel so that they never have to. Can you say the same?',
+                intro:{title:'Governess of Monkeyland', text:'She rules what is left of a kingdom the frogs conquered centuries ago. She has kept her people alive by kneeling, and she has never once let them see what it costs her.'}},
+  speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
+                retort:'We were a kingdom once! We can be one again!',
+                intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -218,6 +243,15 @@ const SPEAKERS = Object.assign({
   fraggle:     {name:'Fraggle Friggle', faction:'frog', look:'fraggle'},     // the King's cousin, lord of the woods (art/fraggle-*.png)
   republic:    {name:'Republic Soldiers', faction:'rae', look:'soldier'},
   sludge:      {name:'Sergeant Sludge', faction:'frog', look:'guard'},     // Flopsy's Day Out
+  // Chapter Three: Monkeyland
+  monkey:      {name:'Monkey Guard', faction:'monkey', look:'monkey'},
+  monkeys:     {name:'The Monkeys', faction:'monkey', look:'monkey'},
+  courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
+  burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
+  fig:         {name:'Lookout Fig', faction:'monkey', look:'monkey'},
+  tamarind:    {name:'Captain Tamarind', faction:'monkey', look:'tamarind'},   // captain of the Governess's guard
+  envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
+  refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
   // side stories (29-data-sides-more.js)
   magpie:      {name:'Magpie', faction:'rae', look:'workerBig', fur:'chocolate'},   // Brigand's old gang
   reeve:       {name:'Reeve Puddock', faction:'frog', look:'guard'},

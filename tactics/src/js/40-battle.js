@@ -27,6 +27,7 @@ function moveCost(u, x, y){
   if (u.mt === 'mounted'){ if (ch === 'F') return 3; if (ch === 'M') return 99; }
   if (u.mt === 'armor' && ch === 'M') return 99;
   if (u.mt === 'bog' && ch === 'M') return 2;
+  if (u.mt === 'climb' && ch === 'F') return 1;   // monkeys swing through trees and flowers
   return c;
 }
 
@@ -48,7 +49,7 @@ function enemyUnit(sp, faction, teamId = 'e'){
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, talk, talked: false});
+  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, defects: !!sp.defects, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -68,7 +69,7 @@ function runBattle(campKey, ch, records, opts = {}){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
        objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
-       events: opts.replay ? [] : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
+       events: opts.replay ? (ch.events || []).filter(ev => ev.defect).map(ev => ({turn: ev.turn, defect: ev.defect, popup: ev.popup})) : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
   // solo: only the leader starts on the field; the rest arrive with the stage's twist
@@ -160,6 +161,7 @@ function calc(a, d, ap, dp){
   if (hasAb(d, 'bait') && phase === 'e' && sideOfTeam(d) === 'p' && !d.baitUsed) def += 2;
   if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
+  if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
   if (hasAb(d, 'cantcatch') && d.ranFar) hitB -= 25;
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
@@ -255,6 +257,7 @@ async function strike(a, d, f){
   if (roll < f.hit){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
+    if (d.hp <= 0 && from > 1 && hasAb(d, 'bend') && !d.bendUsed){ d.hp = 1; d.bendUsed = true; abilityPop(d, 'bend'); }   // Bend, Not Break
     if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
@@ -379,21 +382,23 @@ async function courierAct(e){
     if (bk !== K(e.x, e.y)){ await wait(150); await moveAlong(e, pathTo(map, bk)); }
   }
   if (onExit(e)){
-    e.escaped = true; popup(e, B.ch.escort ? '🎁 Delivered!' : 'Got away!', B.ch.escort ? '#9ff0b0' : '#ffb3a6'); Sfx.play(B.ch.escort ? 'coin' : 'flee');
+    e.escaped = true; const safe = sideOfTeam(e) === 'p'; popup(e, safe ? (B.ch.event ? '🎁 Delivered!' : 'Safe!') : 'Got away!', safe ? '#9ff0b0' : '#ffb3a6'); Sfx.play(safe ? 'coin' : 'flee');
     await tween(380, t => { e.alpha = 1 - t; }); e.dead = true;
   }
   updateDanger();
 }
 function objectiveText(){
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
-  const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
-    : ob.type === 'survive' ? (B.ch.escort ? `Protect the couriers until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach the road.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
-    : ob.type === 'intercept' ? 'Catch as many couriers as you can before they reach the road.' : 'Rout the enemy.';
+  const runner = units.find(u => u.boss && u.ai === 'courier');
+  const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
+    : ob.type === 'survive' ? (B.ch.escort ? `Protect the ${ob.who || 'couriers'} until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach ${ob.dest || 'the road'}.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
+    : ob.type === 'intercept' ? `Catch as many ${ob.who || 'couriers'} as you can before they reach ${ob.dest || 'the road'}.${B.ch.event ? '' : ` ${couriers().filter(u => u.dead && !u.escaped).length} caught.`}`
+    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
-const starLive = () => ({allyLost: units.filter(u => u.team === 'a' && u.dead).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
+const starLive = () => ({caught: couriers().filter(u => u.team === 'e' && u.dead && !u.escaped).length, allyLost: units.filter(u => u.team === 'a' && u.dead && !u.escaped).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
 function starHTML(){
   if (!B.ch.star) return '';
   const st = starCheck(B.ch.star, starLive()), had = hasStar(B.ch.id);
@@ -590,8 +595,7 @@ async function battleEvents(){
   for (const ev of B.events){
     if (ev.done || ev.turn !== turn || B.done) continue;
     ev.done = true;
-    if (ev.join){
-      if (units.some(u => u.team === 'p' && u.key === ev.join && !u.dead)) continue;   // already deployed
+    if (ev.join && !units.some(u => u.team === 'p' && u.key === ev.join && !u.dead)){   // (unless already deployed)
       // someone already in the army (and standing) runs in as themselves; otherwise they're new
       const have = SAVE.camps[B.campKey].roster.find(r => r.key === ev.join && !r.dead);
       const u = battleUnit(have || recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
@@ -605,6 +609,15 @@ async function battleEvents(){
       await wait(350);
     }
     if (ev.talk) await talk(ev.talk);
+    // defect: every unit spawned with defects:true changes sides (enemies become allies; allies turn on you)
+    if (ev.defect){
+      const who = units.filter(u => !u.dead && u.defects);
+      for (const u of who){
+        u.team = u.team === 'e' ? 'a' : 'e'; u.defects = false; u.ai = 'charge'; u.moved = false;
+        popup(u, u.team === 'a' ? (ev.popup || 'Changes sides!') : (ev.popup || 'Betrayal!'), u.team === 'a' ? '#9fe09a' : '#ff9a8a');
+      }
+      if (who.length){ Sfx.play(who[0].team === 'a' ? 'select' : 'flee'); tokenCache.clear(); updateDanger(); refreshTop(); await wait(700); }
+    }
   }
 }
 // A stage's twist (see `twist` in 25-data-campaign.js): once a survive objective is met, a scene plays,
@@ -756,9 +769,13 @@ function checkEnd(){
   const vip = units.find(u => u.team !== 'e' && u.vip && u.dead);
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.objective, boss = units.find(u => u.boss);
+  // a boss who runs for the exits (ai 'courier') and reaches one has got away: the battle is lost
+  if (ob.type === 'boss' && boss && boss.escaped){ finishBattle(false, false, 'escaped'); return true; }
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
+  // escape: the leader reaches one of the stage's exits
+  if (ob.type === 'escape' && lord && !lord.dead && onExit(lord)){ finishBattle(true); return true; }
   // event: over once every courier has been caught, delivered or got away, and no more are coming
-  if (B.ch.event && couriers().length && !couriers().some(u => !u.dead) && !B.waves.some(w => !w.spawned && w.units.some(s => s.courier))){ finishBattle(true); return true; }
+  if ((B.ch.event || ob.type === 'intercept') && couriers().length && !couriers().some(u => !u.dead) && !B.waves.some(w => !w.spawned && w.units.some(s => s.courier))){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
   if (!team('e').length && !(ob.type === 'survive' && (wavesLeft || (B.twist && !B.twist.done)))){ finishBattle(true); return true; }
   return false;

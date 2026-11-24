@@ -33,6 +33,9 @@ window.addEventListener('resize', () => fitActors());
 const NIGHT_LIT = ['quarters', 'ridge'];
 // Where to anchor a backdrop when a tall phone screen crops its sides (default: centre).
 const BG_POS = {ridge: '70% 30%'};
+// Scenes whose painting hasn't arrived yet borrow another's (drop art/bg-<scene>.jpg in and it's used instead):
+// Chapter Three's Monkeyland meadows, the castle gate and the castle's great hall.
+const SCENE_FALLBACK = {monkeyland: 'ridge', castlegate: 'yard', castle: 'court'};
 // Diagrams a line can show with show:'name'.
 const DIAGRAMS = {
   // the weapon triangle, plus tomes over bows: each arrow points at what it beats
@@ -78,11 +81,12 @@ function talk(rawLines){
       // a diagram shown above the text while this line is up (see DIAGRAMS)
       $('#tdiag').hidden = !l.show; if (l.show) $('#tdiag').innerHTML = DIAGRAMS[l.show]();
       if (l.scene){   // change the backdrop and clear the stage
-        $('#sbg').dataset.bg = l.scene; $('#splace').textContent = l.place || '';
+        const sc = ART.bg?.[l.scene] ? l.scene : (SCENE_FALLBACK[l.scene] || l.scene);
+        $('#sbg').dataset.bg = sc; $('#splace').textContent = l.place || '';
         // painted backdrop (art/bg-<scene>.jpg) where there is one; darker for night and dusk scenes
         // (night is darker than dusk/evening); the drawn placeholder details are hidden under a painting
-        const bg = ART.bg?.[l.scene], pl = l.place || '', shade = NIGHT_LIT.includes(l.scene) ? 0 : /night/i.test(pl) ? .66 : /dusk|evening/i.test(pl) ? .5 : 0;
-        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) ${BG_POS[l.scene] || 'center 30%'}/cover no-repeat` : '';
+        const bg = ART.bg?.[sc], pl = l.place || '', shade = NIGHT_LIT.includes(sc) ? 0 : /night/i.test(pl) ? .66 : /dusk|evening/i.test(pl) ? .5 : 0;
+        $('#sbg').style.background = bg ? `${shade ? `linear-gradient(rgba(10,12,30,${shade}), rgba(10,12,30,${shade})), ` : ''}url(${bg}) ${BG_POS[sc] || 'center 30%'}/cover no-repeat` : '';
         $('#sbg').toggleAttribute('data-painted', !!bg);
         for (const s of ['L', 'R']){ onStage[s] = null; actors[s].classList.remove('on', 'dim'); }
         anim($('#sbg'), [{opacity: 0}, {opacity: 1}], 500);

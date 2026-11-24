@@ -18,7 +18,7 @@ function resize(){
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
   const g = terrCv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); }
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'blossom') blossomOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'castle') castleOver(g, x, y, MAP[y][x]); }
   if (!noisePat){
     const n = document.createElement('canvas'); n.width = n.height = 96; const ng = n.getContext('2d');
     for (let i = 0; i < 1400; i++){ ng.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.18)' : 'rgba(255,245,220,.12)'; ng.fillRect(Math.random()*96, Math.random()*96, 1, Math.random()*2 + .5); }
@@ -70,7 +70,7 @@ function drawTile(g, x, y, ch){
     return;
   }
   const theme = mapDef?.theme || 'meadow';
-  if (theme !== 'meadow' && theme !== 'snow') return drawThemedTile(g, x, y, ch, theme);
+  if (theme !== 'meadow' && theme !== 'snow' && theme !== 'blossom') return drawThemedTile(g, x, y, ch, theme === 'castle' ? 'camp' : theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -146,6 +146,29 @@ function stones(g, X, Y, list, cols, stitch){
   });
 }
 // Snow: the meadow tile under a white blanket, with snow caps on trees and drifts
+// Monkeyland: stitched daisies in the grass, and pink blossom on every tree
+function blossomOver(g, x, y, ch){
+  const X = x*T, Y = y*T, cols = ['#fff6f0', '#ffd6e2', '#ffe58a', '#f4a6c4'];
+  if (ch === '.' || ch === 'B') for (let i = 0; i < 3; i++){
+    const fx = X + T*(.12 + .76*hash(x, y, i + 50)), fy = Y + T*(.12 + .76*hash(x, y, i + 60)), r = T*.035;
+    g.fillStyle = cols[Math.floor(hash(x, y, i + 70)*cols.length)];
+    for (let k = 0; k < 5; k++){ const a = k*Math.PI*2/5; ell(g, fx + Math.cos(a)*r, fy + Math.sin(a)*r, r*.8, r*.8); g.fill(); }
+    g.fillStyle = '#e8a33a'; ell(g, fx, fy, r*.6, r*.6); g.fill();
+  }
+  if (ch === 'F') for (let i = 0; i < 9; i++){
+    g.fillStyle = i % 3 ? 'rgba(248,168,198,.92)' : 'rgba(255,226,236,.95)';
+    ell(g, X + T*(.18 + .64*hash(x, y, i + 80)), Y + T*(.12 + .5*hash(x, y, i + 90)), T*.06, T*.05); g.fill();
+  }
+}
+// the castle: a cool grey wash over the camp-style ground, so it reads as stone
+function castleOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  if (ch === '.' || ch === 'T' || ch === 'F'){ g.fillStyle = 'rgba(150,150,165,.42)'; g.fillRect(X, Y, T, T);
+    g.strokeStyle = 'rgba(60,60,70,.25)'; g.lineWidth = 1; g.strokeRect(X + .5, Y + .5, T/2, T/2); g.strokeRect(X + T/2 + .5, Y + T/2 + .5, T/2 - 1, T/2 - 1); }
+  if (ch === 'X' || ch === 'M'){ g.fillStyle = 'rgba(140,140,155,.62)'; g.fillRect(X, Y, T, T); g.strokeStyle = 'rgba(50,50,60,.4)'; g.lineWidth = 1;
+    for (let r = 0; r < 3; r++){ const yy = Y + T*(r + 1)/3; g.beginPath(); g.moveTo(X, yy); g.lineTo(X + T, yy); g.stroke(); const xx = X + T*(r % 2 ? .25 : .65); g.beginPath(); g.moveTo(xx, yy - T/3); g.lineTo(xx, yy); g.stroke(); } }
+  if (ch === 'F') for (let i = 0; i < 5; i++){ g.fillStyle = i % 2 ? '#f4a6c4' : '#ffe58a'; ell(g, X + T*(.3 + .4*hash(x, y, i + 30)), Y + T*(.2 + .3*hash(x, y, i + 40)), T*.06, T*.06); g.fill(); }
+}
 function snowOver(g, x, y, ch){
   const X = x*T, Y = y*T;
   // a cool blue-white snowfield; forests keep their green so they still read as cover
@@ -204,7 +227,8 @@ function tokenFor(u, variant){
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const L = LOOKS[u.look] || LOOKS.worker, F = FACTIONS[u.faction], ox = T*.3, oy = T*.3;
+  // your own units stand on your side's coaster, whatever their people (a monkey in the Raepublic stands on red)
+  const L = LOOKS[u.look] || LOOKS.worker, F = (u.team === 'p' && FACTIONS[B?.pf]) || FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   const ally = u.team === 'a';   // allies stand on a blue coaster
   const spar = u.team === 'e' && u.faction === B?.pf;   // training opponents from your own side stand on grey
   g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
@@ -219,7 +243,7 @@ function tokenFor(u, variant){
     const sc = Math.min(T*1.16/icon.width, T*tall/icon.height), w = icon.width*sc, h = icon.height*sc;
     g.drawImage(icon, ox + T*.5 - w/2, oy + T*.88 - h, w, h);
   } else {
-    const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
+    const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : L.sp === 'monkey' ? .26 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
     drawPlush(g, u.look, ox + T*.5, oy + T*(L.sp === 'bun' ? .44 : .46) + (L.small ? T*.05 : 0), s);
   }
   const bx = ox + T*.84, by = oy + T*.7, br = T*.14;

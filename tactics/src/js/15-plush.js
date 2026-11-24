@@ -196,9 +196,42 @@ function mouse(g, cx, cy, s, L){
   g.restore();
 }
 
+// Monkeyland (Chapter Three) placeholder: round head, big side ears, a pale heart-shaped face
+function monkey(g, cx, cy, s, L){
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const side of [-1,1]){
+    g.fillStyle = L.fur; ell(g, cx + side*.9*s, cy - .02*s, .34*s, .38*s); g.fill(); stitchStroke(g, L.dark, s);
+    g.fillStyle = L.face; ell(g, cx + side*.9*s, cy - .0*s, .2*s, .24*s); g.fill();
+  }
+  const gr = g.createRadialGradient(cx - .3*s, cy - .45*s, s*.1, cx, cy, s*1.1);
+  gr.addColorStop(0, L.light); gr.addColorStop(1, L.fur);
+  g.fillStyle = gr; ell(g, cx, cy - .05*s, .86*s, .84*s); g.fill(); stitchStroke(g, L.dark, s);
+  // the face: two eye lobes and a muzzle, in one pale patch
+  g.fillStyle = L.face;
+  ell(g, cx - .28*s, cy - .2*s, .3*s, .32*s); g.fill(); ell(g, cx + .28*s, cy - .2*s, .3*s, .32*s); g.fill();
+  ell(g, cx, cy + .26*s, .5*s, .36*s); g.fill();
+  g.beginPath(); g.ellipse(cx, cy + .02*s, .6*s, .6*s, 0, Math.PI*.15, Math.PI*.85); stitchStroke(g, 'rgba(120,80,40,.35)', s, .6);
+  button(g, cx - .27*s, cy - .2*s, .12*s); button(g, cx + .27*s, cy - .2*s, .12*s);
+  g.fillStyle = L.dark; ell(g, cx - .07*s, cy + .12*s, .035*s, .03*s); g.fill(); ell(g, cx + .07*s, cy + .12*s, .035*s, .03*s); g.fill();
+  g.strokeStyle = L.dark; g.lineWidth = Math.max(.8, s*.045); g.beginPath(); g.arc(cx, cy + .2*s, .24*s, Math.PI*.2, Math.PI*.8); g.stroke();
+  if (L.gear === 'bandana') bandana(g, cx, cy - .12*s, s, L.band || '#e8a33a', s*.86, s*.62);
+  if (L.gear === 'tiara'){   // the Governess's circlet of gold petals
+    g.fillStyle = '#e6be55'; g.strokeStyle = '#8a6418'; g.lineWidth = Math.max(.8, s*.03);
+    g.beginPath(); g.moveTo(cx - .55*s, cy - .66*s);
+    for (let i = 0; i <= 4; i++){ const x = cx - .55*s + i*.275*s; g.lineTo(x - .07*s, cy - .74*s); g.lineTo(x, cy - (i % 2 ? .96 : 1.06)*s); g.lineTo(x + .07*s, cy - .74*s); }
+    g.lineTo(cx + .55*s, cy - .66*s); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = '#e66a8a'; ell(g, cx, cy - .82*s, .07*s, .07*s); g.fill();
+  }
+  if (L.gear === 'helm'){   // guard captain's leaf-green helm
+    g.fillStyle = '#5e7a3a'; g.beginPath(); g.ellipse(cx, cy - .5*s, .74*s, .5*s, 0, Math.PI, 0); g.fill(); stitchStroke(g, '#2a3a18', s);
+    g.fillStyle = '#e8b84a'; g.fillRect(cx - .74*s, cy - .54*s, 1.48*s, .1*s);
+  }
+  g.restore();
+}
+
 function drawPlush(g, look, cx, cy, s){
   const L = LOOKS[look] || LOOKS.worker;
-  ({bun: bunny, frog, mouse})[L.sp](g, cx, cy, s, L);
+  ({bun: bunny, frog, mouse, monkey})[L.sp](g, cx, cy, s, L);
 }
 const portraitCache = {};
 function plushPortrait(look){

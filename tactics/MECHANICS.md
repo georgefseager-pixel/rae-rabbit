@@ -49,6 +49,11 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | hollow | roots, rocks | F2-4 |
 | riverWoods | forest, rocks, river | R2-1, F2-1, FD-1 |
 | flowerField | barricade `X` with two gaps, earth `M`, stockade fort | FD-3 |
+| meadowEdge (blossom) | forest edge into flower meadows; exits on the bottom row in R3-1 | R3-1, F3-1 |
+| blossomFields (blossom) | blossom trees `F`, hay bales `M`, the bell tower `T` at the top | R3-2, R3-3, F3-2, F3-3 |
+| castleGate (castle) | moat `W` and drawbridge `B`, castle wall `X` with a gate gap, gatehouses `T` | R3-4, F3-4 |
+| castleHall (castle) | walls down both sides, pillars `M`, throne dais `T`, doors at the bottom | R3-5, F3-5 |
+| schismField (blossom) | a stream `W` with two bridges, forts `T` both sides | R3-6, F3-6 |
 | snowWoods (snow) | snowy pines `F`, drifts `M`; road exits along the bottom row | XM-R, XM-F (December) |
 
 ## Movement types (a class's `mt`)
@@ -58,6 +63,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | foot | 2 | 3 | most |
 | armor | 2 | can't enter | Lily Knight, Armoured Guard |
 | bog | 2 | 2 | Club Guard, Marsh Lord (frogs at home in the marsh) |
+| climb | 1 | 3 | monkeys: Acrobat, Nut Thrower, Canopy Heir (Speshul). Trees and flowers are open ground to them |
 | mounted | 3 | can't enter | Rose Knight (Biggle's attire) |
 
 Mounted units move far on open ground (Rose Knight: Mov 7) but are slowed by forest and blocked by rocks: good on
@@ -112,9 +118,10 @@ and The Lesson, which only help the player.
 | `charge` (default) | heads for the player and attacks | pressure, ambushes |
 | `guard` | waits until a player unit comes within its reach, then charges ("Waits for you") | defenders on rocks or forts; lets the player pull enemies out one at a time (**WL-1**, **WL-3**) |
 | `hold` | never moves; attacks anything in range | bosses on forts, gate-keepers |
+| `courier` (a boss) | as below, but a boss who reaches an exit has got away and the battle is LOST (`escapeFail` explains) | R3-2 (Lookout Fig runs for the bell) |
 | `courier` | never attacks; runs for the nearest of the stage's `exits` and leaves the map there (`escaped`, not a kill). Enemy AI goes for couriers first (+25 target score) | December event (XM-R as enemies, XM-F as allies) |
 
-Spawn extras: `faction` (fight for another side), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
+Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, `monkey`), `defects` (changes sides at a `defect` event), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
 `talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`.
 
 ## Stage-level mechanics
@@ -146,7 +153,11 @@ Spawn extras: `faction` (fight for another side), `boss`, `elite` (★★ art an
 | Prepare-screen note | `prepNote` | F2-4, all side stories |
 | Intercept (catch fleeing couriers; over when none are left on the map or still to come) | `objective: {type: 'intercept'}` + `exits` | XM-R |
 | Escort (protect couriers until the turn limit, or until they're all delivered or lost) | `objective: {type: 'survive', turns, escort: true}` + `escort: true` + `exits` | XM-F |
-| Exit squares (gold, ⬇) where couriers leave | `exits: [[x,y],…]` | XM-R, XM-F |
+| Exit squares (gold, ⬇) where couriers leave | `exits: [[x,y],…]` | XM-R, XM-F, R3-1, R3-2, F3-3, F3-5 |
+| Escort outside the event (refugees walk to the exits on their own) | `objective: {type: 'survive', turns, escort: true, who, dest}` + allies with `ai: 'courier', courier: true` | R3-1 |
+| Intercept outside the event (no gifts; over when no runner is left) | `objective: {type: 'intercept', who, dest}` + enemy couriers | F3-3 (the grain runners) |
+| Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5 |
+| Units change sides mid-battle | `events: [{turn, defect: true, popup, talk}]` + spawns with `defects: true`: enemies become allies, allies become enemies. Happens on replays too | R3-5 (Speshul's guards join you), F3-5 (the hall guard betray Tiggle) |
 
 ### Bonus stars (`star.type`)
 
@@ -157,7 +168,8 @@ Spawn extras: `faction` (fight for another side), `boss`, `elite` (★★ art an
 | `unhurt` | the leader is never hit (with `lead`, that leader) | R1-1, F1-3, WL-3 (Rae), FD-2 (Flopsy) |
 | `bossBy` (key) | that character lands the blow on the boss | R1-3, R2-4, F1-1, F2-3 |
 | `fewer` (n) | deploy at most n | F1-4 |
-| `allies` | no ally falls | R2-2 |
+| `allies` | no ally falls (allies who leave by an exit are safe) | R2-2, R3-1, R3-6, F3-2 |
+| `catch` (n) | catch at least n runners (intercept) | F3-3 |
 
 ## Things the player has been taught (and where to reuse them)
 
@@ -179,8 +191,20 @@ per level, HP counted at half). The current line on both routes:
 |---|---|---|---|
 | Recommended | 1 · 1 · 2 · 2 | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
 
+Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7.
+
 Keep new stages on this line: about +½ a level per stage, and +1 for a finale. Expected player levels (from the
 experience rules) run roughly a level above it by late Chapter Two.
+
+## Chapter Three: Monkeyland
+
+Six stages a side (one more than Chapter Two), `enemyMods: {mhp: -1}`, deploy 7. Convergence gates: R3-3 needs F3-2,
+F3-3 needs R3-3, F3-4 needs R3-4, R3-5 needs F3-4, F3-5 needs R3-5, R3-6 needs F3-5. Speshul joins the Raepublic in
+R3-5 (a mid-battle `join` that must survive; R3-6 `mustDeploy`s him); Aurora joins the Friggliarchy after F3-6.
+Abilities: Aurora, Bend, Not Break (once a battle, survive a killing blow on 1 HP); Speshul, We Can Fight! (+2 damage,
++10 Hit against higher-level enemies). Placeholder art: monkeys are felt plush (`LOOKS.monkey/aurora/speshul/tamarind`);
+scenes `monkeyland`, `castlegate` and `castle` borrow ridge, yard and court until their paintings arrive
+(`SCENE_FALLBACK` in `50-dialogue.js`). Your own units always stand on your side's coaster, whatever their faction.
 
 ## Progression and unlocks
 
