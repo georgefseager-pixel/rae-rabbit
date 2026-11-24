@@ -160,19 +160,14 @@ experience rules) run roughly a level above it by late Chapter Two.
 
 ## Economy
 
-Pull currency (Whispers / Writs) comes only from clearing stages, bonus stars, side stories, the daily log-in, or
-trading 400 money for one. Daily log-in (`66-login.js`): every new calendar day counts as one
-more log-in (not necessarily consecutive). Log-ins give both stories 2, 2, 3, 2, 3, 3 and, every seventh, a milestone
-with a reveal: log-in 7 is Rae's Casual Wear (+5 each), log-in 14 Tiggle's Formal Wear (+5 each); after that the
-second week repeats with 10 each on the seventh. The campaign screen's "Debug: New Day" makes it claimable again. Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), never pull currency: 100 pulls
-released in full return about 2,900 money, about 7 pulls' worth when traded, so there is no loop.
+Pull currency (Whispers / Writs) comes from clearing stages (1 each, chapter finales 6), bonus stars (3), side stories
+(2, 2, 3 per set, plus their stars), the daily log-in, or trading 400 money for one. Target: a typical chapter (most
+stars, a few side stories, a week of log-ins) earns about two-thirds of a banner. Typical per side: Chapter One about 28,
+Chapter Two about 45. Getting both ★★★ from a two-character banner costs about 60 on average (median 50–60, 3 in 4 by 80).
+Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), never pull currency.
 
-## Side stories written so far
-
-Each set steps recommended Lv 3 → 4 → 5. Rae: Willow's Lessons (WL), Flopsy's Day Out (FD), Heads I Go (BR, Brigand),
-Every Scaffold (CD, the Condemned), The Ledger (FG, Froggle), Someone Comes (PT, Patch). Tiggle: Wanting Things (BG,
-Biggle), Before the Monster (RH, Rhubarb, flashback), The Sentence (EX, the Executioner), Worth (FJ, Fraggle Jr.,
-flashback). Placeholder characters (Lantern, Iron-Ear, Duckweed, Glimmer, Bogsworth) have none yet.
-
-Story ties to keep consistent: Hawthorn (RH-3) is Willow's lost hero, and the grey rabbit who arrives too late is
-Willow; CD-2 and EX-2 are the same fight from each side (the Condemned vs the Executioner at the block yard).
+Daily log-in (`66-login.js`): every new calendar day counts as one more log-in (not necessarily consecutive). Each
+gives ONE currency, alternating: odd log-ins Whispers, even Writs. 2, 2, 3, 2, 3, 3, then the seventh is a milestone
+with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Formal Wear (+5 Writs); after that the
+second week repeats with 10 on every seventh. About 10 of each per week. "Debug: New Day" on the campaign screen makes
+it claimable again.

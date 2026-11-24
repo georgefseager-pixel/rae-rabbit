@@ -259,7 +259,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: '…Keep walking, little one. Don\'t look back.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, tokens: 10, joins: ['sister']},   // the finale: enough for a first ×10 when recruiting opens
+          reward: {res: 500, tokens: 6, joins: ['sister']},   // the finale (with the rest of the chapter, about a first ×10 when recruiting opens
         },
       ]},
       // Chapter Two: Rae in her Republic uniform (outfit '' = art/rae-*.png), Little Sister as Flopsy Flora ('flora').
@@ -549,7 +549,7 @@ const CAMPAIGNS = {
             {who: "willow", text: "Found her.", thought: true},
             {card: "End of Chapter Two", sub: "The Raepublic"},
           ],
-          reward: {res: 600, tokens: 10},
+          reward: {res: 600, tokens: 6},
         },
       ]},
       {id: 'RC3', title: 'Chapter Three', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
@@ -729,7 +729,7 @@ const CAMPAIGNS = {
             {who: 'tiggle', text: 'If she\'s real, she\'s out there, and she\'s coming. Then I\'ll be the one who stops her.'},
             {card: 'End of Chapter One', sub: 'The Prince'},
           ],
-          reward: {res: 500, tokens: 10},
+          reward: {res: 500, tokens: 6},
         },
       ]},
       {id: 'FC2', title: 'Chapter Two', name: 'The Black Frog', enemyMods: {mhp: -2, atk: -1}, stages: [
@@ -936,7 +936,7 @@ const CAMPAIGNS = {
             {who: "tiggle", text: "Rae Rabbit. This is all your fault."},
             {card: "End of Chapter Two", sub: "The Black Frog"},
           ],
-          reward: {res: 600, tokens: 10},
+          reward: {res: 600, tokens: 6},
         },
       ]},
       {id: 'FC3', title: 'Chapter Three', name: 'Still to be written', stub: true, brief: 'Still to be written.'},

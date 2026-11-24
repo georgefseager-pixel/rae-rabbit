@@ -1,6 +1,6 @@
 // ================= Side Stories: the rest of the unique characters =================
 // Same format as 28-data-sides.js. Rhubarb's and Fraggle Jr.'s are flashbacks, set years before the war.
-const sideReward = (n, weapon, to) => ({res: [400, 500, 600][n], tokens: [3, 3, 5][n], ...(weapon ? {weapons: [{id: weapon, to}]} : {})});
+const sideReward = (n, weapon, to) => ({res: [400, 500, 600][n], tokens: [2, 2, 3][n], ...(weapon ? {weapons: [{id: weapon, to}]} : {})});
 
 Object.assign(SIDE_SETS, {
   // ======================================== The Raepublic ========================================

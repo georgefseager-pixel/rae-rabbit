@@ -22,11 +22,12 @@ const GACHA = {
   // money (Thread / Crowns, never pull currency) for releasing a unit or a spare weapon of each rarity. Kept far below
   // `trade` (400 money for one pull): on average a pull's results release for under a tenth of that, so there's no loop.
   release: {1: 15, 2: 40, 3: 100},
-  // Pull currency is meant to be scarce: roughly one ×10 per chapter, plus what bonus stars earn.
-  // (Chapter One: 3 stages × 2, its finale 10, and up to 4 stars × 5 = 16 to 36 when recruiting opens.)
+  // Pull currency is meant to be scarce: a chapter (with its stars, a few side stories and a week of log-ins) earns
+  // roughly two-thirds of what it takes to recruit both ★★★ from a banner (about 60 on average), so finishing a
+  // banner takes about a chapter and a half. Chapter One: 3 stages × 1, its finale 6, up to 4 stars × 3 = 9–21.
   startTokens: 0,
-  stageTokens: 2,         // for clearing a stage the first time, unless the stage's reward sets `tokens`
-  starTokens: 5,          // for earning a stage's bonus star (once per stage)
+  stageTokens: 1,         // for clearing a stage the first time, unless the stage's reward sets `tokens`
+  starTokens: 3,          // for earning a stage's bonus star (once per stage)
 };
 
 const GACHA_ARMY = {

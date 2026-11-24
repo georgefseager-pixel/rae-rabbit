@@ -47,7 +47,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'In the mines, I\'d have charged straight up.'},
           {who: 'willow', text: 'In the mines, you had nothing to lose. Same time tomorrow? No. Rest. You\'ll know when the next lesson is.'},
         ],
-        reward: {res: 400, tokens: 3},
+        reward: {res: 400, tokens: 2},
       },
       {
         id: 'WL-2', title: 'Lesson Two: Swords, Axes and Spears', map: 'ford', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
@@ -79,7 +79,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'It\'s like a game of stones and scissors.'},
           {who: 'willow', text: 'It is a game of stones and scissors. Only the scissors are very sharp. One lesson left.'},
         ],
-        reward: {res: 500, tokens: 3},
+        reward: {res: 500, tokens: 2},
       },
       {
         id: 'WL-3', title: 'Lesson Three: Never Alone', map: 'republicCamp', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
@@ -110,7 +110,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'I barely did anything. They wouldn\'t let me.'},
           {who: 'willow', text: 'That\'s what it looks like when an army fights beside you. Come and find me tonight. There\'s something I want to tell you.'},
         ],
-        reward: {res: 600, tokens: 5},
+        reward: {res: 600, tokens: 3},
       },
     ]},
 
@@ -146,7 +146,7 @@ const SIDE_SETS = {
           {who: 'republic', text: 'They… ran. A whole patrol, and they ran from the Commander\'s little sister.'},
           {who: 'sister', text: 'I heard that. And I\'ve still not got any flowers. Come on, there are more past the trees.'},
         ],
-        reward: {res: 400, tokens: 3},
+        reward: {res: 400, tokens: 2},
       },
       {
         id: 'FD-2', title: 'Scarier Than She Looks', map: 'forestTrail', enemyFaction: 'frog',
@@ -180,7 +180,7 @@ const SIDE_SETS = {
           {who: 'republic', text: 'You are, Flopsy Flora. Honestly. You are.'},
           {who: 'sister', text: 'The field. He said the field. That\'s where the flowers are.'},
         ],
-        reward: {res: 500, tokens: 3},
+        reward: {res: 500, tokens: 2},
       },
       {
         id: 'FD-3', title: 'The Flower Field', map: 'flowerField', enemyFaction: 'frog',
@@ -217,7 +217,7 @@ const SIDE_SETS = {
           {who: 'sister', text: 'Come on. We\'re very late for lunch, and Rae is going to be so cross.'},
           {who: 'sister', thought: true, text: 'And then I\'m going to sew this onto her coat.'},
         ],
-        reward: {res: 600, tokens: 5, weapons: [{id: 'patchneedle', to: 'sister'}]},
+        reward: {res: 600, tokens: 3, weapons: [{id: 'patchneedle', to: 'sister'}]},
       },
     ]},
 };

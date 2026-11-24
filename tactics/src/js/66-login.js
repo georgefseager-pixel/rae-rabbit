@@ -1,9 +1,10 @@
 // ================= Daily log-in =================
 // Every new (local) calendar day you open the campaign screen counts as one more log-in: they don't need to be in a
 // row, and missing days costs nothing. Log-ins are shown in weeks of seven; every seventh is a milestone with a
-// recruit-style reveal. Rewards go to BOTH stories' recruiting currency (Whispers and Writs).
-//   Log-in 7: Rae's Casual Wear (+5 each)    Log-in 14: Tiggle's Formal Wear (+5 each)
-//   After 14, the second week repeats, with 10 each on every seventh instead of a costume.
+// recruit-style reveal. Each log-in gives ONE story's recruiting currency, alternating: odd log-ins Whispers
+// (the Raepublic), even log-ins Writs (the Friggliarchy).
+//   Log-in 7: Rae's Casual Wear (+5 Whispers)    Log-in 14: Tiggle's Formal Wear (+5 Writs)
+//   After 14, the second week repeats, with 10 on every seventh instead of a costume.
 // State: SAVE.login = {claimed: log-ins claimed in all, last: 'YYYY-MM-DD' of the last}.
 const LOGIN = {
   track: [{tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['rae', 'raeCasual'], instead: 10},
@@ -19,41 +20,43 @@ function loginEntry(n){
   return e.attire && !ownsAttire(e.attire) ? e : e.instead ? {tokens: e.instead, milestone: true} : e;
 }
 const isMilestone = n => n % 7 === 6;
+const loginCk = n => n % 2 === 0 ? 'rae' : 'frog';   // which story's currency log-in n (0-based) gives
+const curOf = n => GACHA_ARMY[loginCk(n)].currency;
 
 function claimLogin(){
   if (!loginPending()) return null;
   const st = loginState(), n = st.claimed, e = loginEntry(n), got = [];
-  for (const ck of Object.keys(CAMPAIGNS)){ gachaState(ck).tokens += e.tokens; got.push(`+${e.tokens} ${GACHA_ARMY[ck].currency}`); }
+  const ck = loginCk(n); gachaState(ck).tokens += e.tokens; got.push(`+${e.tokens} ${GACHA_ARMY[ck].currency}`);
   if (e.attire) got.push(...grantAttires(e.attire[0], [e.attire[1]]));
   st.claimed++; st.last = todayKey(); saveGame();
   return {n, e, got};
 }
 
-const sealsHTML = () => Object.keys(CAMPAIGNS).map(ck => `<span class="f-${CAMPAIGNS[ck].faction}"><span class="seal sm">${GACHA_ARMY[ck].seal}</span></span>`).join('');
+const sealsHTML = (cks = Object.keys(CAMPAIGNS)) => [].concat(cks).map(ck => `<span class="f-${CAMPAIGNS[ck].faction}"><span class="seal sm">${GACHA_ARMY[ck].seal}</span></span>`).join('');
 const attireArt = ([, id]) => { const a = ATTIRES[id]; return artFor({key: a.char, look: CHARACTERS[a.char]?.look || a.char, attire: id}, 'portrait'); };
 // One week of the calendar: the week holding log-in `n` (the next to claim, or the one just claimed).
 function loginHTML(claimed){
   const st = loginState(), n = claimed ? claimed.n : st.claimed, start = Math.floor(n/7)*7, week = start/7 + 1;
   const cell = i => { const k = start + i, e = claimed && k === claimed.n ? claimed.e : loginEntry(k);
     const got = k < st.claimed, today = !claimed && k === n, just = claimed && k === claimed.n;
-    return `<div class="lday${got ? ' got' : ''}${today ? ' today' : ''}${just ? ' just' : ''}">${today ? '<em class="ltoday">Today</em>' : ''}<b>${k + 1}</b><div class="lseals">${sealsHTML()}</div>
-      <small>+${e.tokens} each</small>${got ? '<i class="lstamp">✓</i>' : ''}${just ? `<span class="lfloat">+${e.tokens}</span>` : ''}</div>`; };
+    return `<div class="lday${got ? ' got' : ''}${today ? ' today' : ''}${just ? ' just' : ''}">${today ? '<em class="ltoday">Today</em>' : ''}<b>${k + 1}</b><div class="lseals">${sealsHTML(loginCk(k))}</div>
+      <small>+${e.tokens} ${curOf(k)}</small>${got ? '<i class="lstamp">✓</i>' : ''}${just ? `<span class="lfloat">+${e.tokens}</span>` : ''}</div>`; };
   const k7 = start + 6, e7 = claimed && claimed.n === k7 ? claimed.e : loginEntry(k7), got7 = k7 < st.claimed, today7 = !claimed && n === k7;
   const prize = e7.attire ? (() => { const a = ATTIRES[e7.attire[1]];
       return `<div class="lprizeart"><img alt="" src="${attireArt(e7.attire)}"></div>
         <div class="lprizetxt"><b>${today7 ? 'Today · ' : ''}Milestone · log-in ${k7 + 1}</b><h2>${a.name}</h2><span>A costume for ${speakerName(a.char)}</span><small>${a.desc}</small>
-        <small class="lplus">+${e7.tokens} ${GACHA_ARMY.rae.currency} and ${GACHA_ARMY.frog.currency}</small></div>`; })()
-    : `<div class="lprizeart"><div class="lseals big">${sealsHTML()}</div></div>
-       <div class="lprizetxt"><b>${today7 ? 'Today · ' : ''}Week bonus · log-in ${k7 + 1}</b><h2>+${e7.tokens} each</h2><span>${GACHA_ARMY.rae.currency} and ${GACHA_ARMY.frog.currency}, at the end of this week</span></div>`;
+        <small class="lplus">+${e7.tokens} ${curOf(k7)}</small></div>`; })()
+    : `<div class="lprizeart"><div class="lseals big">${sealsHTML(loginCk(k7))}</div></div>
+       <div class="lprizetxt"><b>${today7 ? 'Today · ' : ''}Week bonus · log-in ${k7 + 1}</b><h2>+${e7.tokens} ${curOf(k7)}</h2><span>For the ${FACTIONS[CAMPAIGNS[loginCk(k7)].faction].name}, at the end of this week</span></div>`;
   // what's waiting in later weeks
   const next = LOGIN.track.map((e, k) => ({e, k})).find(({e, k}) => e.attire && k > k7 && !ownsAttire(e.attire));
   const teaser = next ? `<p class="lnext">Still to come: <b>${ATTIRES[next.e.attire[1]].name}</b> for ${speakerName(ATTIRES[next.e.attire[1]].char)}, at log-in ${next.k + 1}.</p>` : '';
   return `<div class="card wsheet login">
     <div class="lhead"><div class="lkick">Daily Log-in · Week ${week}</div>
       <h1>${claimed ? `Log-in ${claimed.n + 1} claimed` : `Log-in ${n + 1}`}</h1>
-      ${claimed ? '' : (() => { const e = loginEntry(n); return `<div class="ltodayline">Today: <b>+${e.tokens} ${GACHA_ARMY.rae.currency}</b> and <b>+${e.tokens} ${GACHA_ARMY.frog.currency}</b>${e.attire ? ` and <b>${ATTIRES[e.attire[1]].name}</b>` : ''}</div>`; })()}
+      ${claimed ? '' : (() => { const e = loginEntry(n); return `<div class="ltodayline">Today: <b>+${e.tokens} ${curOf(n)}</b> for the ${FACTIONS[CAMPAIGNS[loginCk(n)].faction].name}${e.attire ? ` and <b>${ATTIRES[e.attire[1]].name}</b>` : ''}</div>`; })()}
       <div class="lbar"><i style="width:${(Math.min(st.claimed, start + 7) - start)/7*100}%"></i></div>
-      <p class="meta">Every new day you visit counts, even with days missed in between. Rewards go to both stories.</p></div>
+      <p class="meta">Every new day you visit counts, even with days missed in between. Days alternate between ${GACHA_ARMY.rae.currency} and ${GACHA_ARMY.frog.currency}.</p></div>
     <div class="lgrid">${[0, 1, 2, 3, 4, 5].map(cell).join('')}</div>
     <div class="lprize${got7 ? ' got' : ''}${today7 ? ' today' : ''}">${prize}${got7 ? '<i class="lstamp">✓</i>' : ''}</div>
     ${teaser}
@@ -67,9 +70,9 @@ function revealHTML(stage, claimed){
     <p>Log-in ${claimed.n + 1}. Something has been left for you.</p><div class="meta">Tap to break the seal</div></div></div>`;
   const e = claimed.e, a = e.attire && ATTIRES[e.attire[1]];
   return `<div class="lreveal"><div class="spin"><div class="sray"></div>
-    <div class="sart${a ? '' : ' sw'}">${a ? `<img alt="" src="${attireArt(e.attire)}">` : `<div class="lseals big">${sealsHTML()}</div>`}</div>
-    <div class="sstars">★★★</div><h2>${a ? a.name : `+${e.tokens} each`}</h2>
-    <p>${a ? `A new costume for ${speakerName(a.char)}` : `${GACHA_ARMY.rae.currency} and ${GACHA_ARMY.frog.currency}`}</p>
+    <div class="sart${a ? '' : ' sw'}">${a ? `<img alt="" src="${attireArt(e.attire)}">` : `<div class="lseals big">${sealsHTML(loginCk(claimed.n))}</div>`}</div>
+    <div class="sstars">★★★</div><h2>${a ? a.name : `+${e.tokens} ${curOf(claimed.n)}`}</h2>
+    <p>${a ? `A new costume for ${speakerName(a.char)}` : `For the ${FACTIONS[CAMPAIGNS[loginCk(claimed.n)].faction].name}`}</p>
     ${a ? `<p class="sdesc">${a.desc}</p>` : ''}<div class="stag">${claimed.got.join(' · ')}</div><div class="meta">Tap to continue</div></div></div>`;
 }
 
