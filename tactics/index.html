@@ -493,6 +493,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .gback{display:grid;place-items:center;background:repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 4px, transparent 4px 8px), linear-gradient(180deg,var(--navy2),var(--navy));
   outline:1.5px dashed var(--thread);outline-offset:-5px}
 .f-frog .gback{background:repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 4px, transparent 4px 8px), linear-gradient(180deg,#2f4320,#1a260f)}
+.ov.festive .gback{background:linear-gradient(90deg,transparent 44%,#e8c46a 44% 56%,transparent 56%),linear-gradient(0deg,transparent 44%,#e8c46a 44% 56%,transparent 56%),repeating-linear-gradient(45deg,#b8322c 0 10px,#9e2620 10px 20px)}
+.ov.festive.f-frog .gback{background:linear-gradient(90deg,transparent 44%,#e8c46a 44% 56%,transparent 56%),linear-gradient(0deg,transparent 44%,#e8c46a 44% 56%,transparent 56%),repeating-linear-gradient(45deg,#2f6a3a 0 10px,#24552d 10px 20px)}
 .gcard.s2 .gback{box-shadow:inset 0 0 18px rgba(200,210,222,.45)}
 .gcard.s3 .gback{box-shadow:inset 0 0 22px rgba(236,198,115,.75)}
 .gface{transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;padding:4px 3px;gap:0;text-align:center;background:linear-gradient(180deg,#2a1d16,#140d0a)}
@@ -795,6 +797,39 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .acts .wide{flex-basis:100%;order:-1}
 #panel .acts{flex-wrap:wrap}
 .abig img{width:115%;height:115%;object-fit:contain;object-position:50% 20%}
+/* ===== Seasonal event (December) ===== */
+.evcard{position:relative;overflow:hidden;margin:14px 0 10px;padding:14px 14px 12px;border-radius:14px;
+  background:linear-gradient(160deg,#1d3b2a,#14261c 55%,#3a1414);border:2px solid transparent;
+  background-clip:padding-box;box-shadow:0 0 0 2px #c9372f,0 0 0 4px #f3e7cb,0 0 0 6px #2f7a3e,0 10px 26px rgba(0,0,0,.5)}
+.evcard h3{font-family:var(--stencil);font-size:24px;margin:2px 0 6px;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.evcard p{margin:0 0 8px;color:#e6eedf;font-size:14px;line-height:1.4}
+.evkick{font-family:var(--fell);letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:#ffd98a}
+.evcard .chips{margin-bottom:10px}.chip.evc{background:rgba(201,55,47,.35);color:#ffe1d6}
+.evcard .btn{width:100%}
+.evplay{background:linear-gradient(180deg,#d1453a,#9a2219);box-shadow:0 0 0 2px #f3e7cb inset}
+.evbal{margin-top:8px;font-size:13px;color:#cfe0c8;text-align:center}.evbal b{color:#ffd98a;font-weight:600}
+.evsnow,.bsnow{position:absolute;inset:0;pointer-events:none;opacity:.7;
+  background-image:radial-gradient(2px 2px at 20% 30%,#fff 60%,transparent 61%),radial-gradient(2px 2px at 70% 20%,#fff 60%,transparent 61%),
+  radial-gradient(1.5px 1.5px at 40% 70%,#fff 60%,transparent 61%),radial-gradient(2.5px 2.5px at 85% 60%,#fff 60%,transparent 61%),
+  radial-gradient(1.5px 1.5px at 10% 85%,#fff 60%,transparent 61%),radial-gradient(2px 2px at 55% 45%,#fff 60%,transparent 61%);
+  background-size:160px 160px;animation:snowfall 9s linear infinite}
+@keyframes snowfall{from{background-position:0 -160px}to{background-position:30px 160px}}
+@media (prefers-reduced-motion: reduce){ .evsnow,.bsnow{animation:none} }
+.evstrip{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 0;padding:10px 14px;border-radius:12px;cursor:pointer;text-align:left;color:#fff;font:inherit;
+  background:linear-gradient(90deg,#9a2219,#1f5c30);border:2px dashed #f3e7cb;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.evstrip>span:first-child{font-size:26px}.evstrip b{display:block;font-family:var(--fell);font-weight:400;font-size:17px}.evstrip small{color:#ffe6b0}
+.evstrip>span:last-child{margin-left:auto;font-size:22px}
+.gbanner.festive{outline:3px dashed #f3e7cb;outline-offset:-8px;box-shadow:0 0 0 3px #c9372f,0 0 0 6px #2f7a3e,0 14px 34px rgba(0,0,0,.55)}
+.gbanner.festive .btitle h2{color:#fff}.gbanner.festive .bkind{color:#ffd98a}
+.brate.fest{background:#2f7a3e}
+.bsnow{z-index:2}
+.tok.festive .seal{background:radial-gradient(circle at 35% 30%,#e0574b,#8f231e 70%);font-size:14px}
+.evuntil{font-family:var(--fell);font-size:14px;color:#ffd98a}
+.gtease.festive .note{background:repeating-linear-gradient(45deg,#c9372f 0 18px,#a8281f 18px 36px);border:none;position:relative}
+.gtease.festive .note::before,.gtease.festive .note::after{content:"";position:absolute;background:#ecc673}
+.gtease.festive .note::before{left:0;right:0;top:calc(50% - 9px);height:18px}.gtease.festive .note::after{top:0;bottom:0;left:calc(50% - 9px);width:18px}
+.gtease.festive .seal{position:relative;z-index:1;background:radial-gradient(circle at 35% 30%,#3c9a50,#1f5c30 70%)}
+.rgift{background:rgba(201,55,47,.25)!important}
 
 </style>
 
@@ -1583,6 +1618,7 @@ const CLASSES = {
   gpike:     {name: 'Black Pike',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pennant Pike',      base: {mhp:20,atk:10,def:6, spd:5,skl:5,mov:5}, g: {mhp:70,atk:40,def:45,spd:25,skl:35}},
   gscribe:   {name: 'Black Scribe',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Thorns',    base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   gchaplain: {name: 'Black Chaplain', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Thorn Sceptre',     base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  courier:   {name: 'Gift Courier',   w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Candy Cane',        base: {mhp:17,atk:5, def:3, spd:9,skl:5,mov:4}, g: {mhp:40,atk:20,def:20,spd:30,skl:20}},   // December event: carries presents, runs for the road
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -1636,6 +1672,7 @@ const LOOKS = {
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
+  courier:   {sp:'frog', art:'none', skin:'#7fae4a', light:'#a3cc6e', dark:'#3f5e22', belly:'#e4f0b8', gear:'bandana', band:'#c0392b'},   // placeholder until the courier art arrives
   froggle:   {sp:'frog', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
   fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
   patch:     {sp:'bun', ears:'up', fur:'#d8742a', light:'#ee9a52', dark:'#8a4214', scarf:'#2c3559', gear:'eyepatch'},
@@ -1651,7 +1688,7 @@ const LOOKS = {
 const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', courier:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
 };
 
@@ -1987,6 +2024,9 @@ const ATTIRES = {
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
+  // December festive banners (31-data-events.js). Placeholders: no art yet, so they show the story outfit.
+  raeFestive:    {char: 'rae',    outfit: 'festive', name: 'Festive Jumper (placeholder)', desc: 'A knitted jumper with a reindeer on it. The reindeer looks slightly worried.'},
+  tiggleFestive: {char: 'tiggle', outfit: 'festive', name: 'Festive Cloak (placeholder)', desc: 'Green velvet, gold bells, and a hood with a bobble. Biggle says it is undignified. Biggle is jealous.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3}, ability: 'lancecharge',
@@ -2328,6 +2368,15 @@ const THEMES = {
     'T': ['Guard Post', 'A frog post with water and bandages. Restores 20% HP at the start of each phase.'],
     'X': ['Rock Wall', 'Solid stone.'],
   },
+  snow: {   // meadow terrain under snow (the December event)
+    '.': ['Snowy Clearing', 'Fresh felt snow, crunchy underfoot.'],
+    'F': ['Snowy Pines', 'Felt pines with cotton-wool snow on every branch. Good cover.'],
+    'M': ['Snowdrift', 'Deep, soft, and very cold. Hard going, harder to hit.'],
+    'W': ['Frozen Pond', 'Thin ice. Nobody is that brave.'],
+    'B': ['Icy Bridge', 'Planks with a glaze of frost.'],
+    'T': ['Present Depot', 'Stacked crates of presents. Restores 20% HP at the start of each phase.'],
+    'X': ['Snow Wall', 'Packed snow, taller than a frog.'],
+  },
   camp: {
     '.': ['Camp Yard', 'Bare dirt, stamped flat by roll calls.'],
     'F': ['Crates', 'Ore crates waiting for the carts. Good cover.'],
@@ -2505,6 +2554,25 @@ const MAPS = {
     '..........',
     '.F......F.',
     'FF......FF',
+  ]},
+  // December event: the felt forest under snow. The couriers' road leaves along the bottom row.
+  snowWoods: {theme: 'snow', rows: [
+    '..F....F..',
+    '.F..F.....',
+    '....F..F.F',
+    'F.M.....M.',
+    '...F..F...',
+    '.F......F.',
+    '..M.FF.M..',
+    '..........',
+    'F..F..F..F',
+    '..M....M..',
+    '.F..FF..F.',
+    '..........',
+    'F.M.F..M.F',
+    '..........',
+    '.F......F.',
+    '...F..F...',
   ]},
   // Chapter Two: the black frog's hill, his lookout at the top
   thornHill: {theme: 'meadow', names: {'F': ['Thorn Thicket', 'Felt thorns. Good cover, if you don\'t mind the prickles.'], 'M': ['Hill Rocks', 'Stuffed boulders. Hard going, harder to hit.'],
@@ -5362,6 +5430,143 @@ function rollLevel(statsObj, g){
   return ups;
 }
 
+// ---------------- 31-data-events.js ----------------
+// ================= Seasonal events =================
+// A seasonal event runs for a set month and brings time-limited side stories and/or recruiting banners. Events only
+// appear once a route's Side Stories are open (the Camp), and introduce themselves with a short tutorial.
+// Event side stories can be played once a (game) day, and pay the event's own currency by how well you did.
+//   EVENTS[id] = {name, month (0 = January … 11 = December), currency: {ck: {name, one}}, intro: {ck: [lines]}}
+// Event stages live with the side stories (CAMPAIGNS[ck].sides, `event: id`) and event banners with the other
+// banners (GACHA_ARMY[ck].banners, `event: id`, `currency: 'gifts'`).
+// Debug: "Debug: December" pretends it's the event month; "Debug: New Day" moves the game's calendar on a day
+// (so the daily log-in and once-a-day event stories come round again).
+const gameDate = () => new Date(Date.now() + ((typeof SAVE !== 'undefined' && SAVE?.debugDays) || 0)*864e5);
+const EVENTS = {
+  december: {
+    name: 'The Festive Season', month: 11, icon: '🎁',
+    currency: {rae: {name: 'Rabbit Gifts', one: 'Rabbit Gift'}, frog: {name: 'Frog Gifts', one: 'Frog Gift'}},
+    intro: {
+      rae: [
+        {who: 'narr', text: 'Snow has fallen on the felt forest. It\'s the festive season, for the whole of December!'},
+        {who: 'sister', text: 'Rae! RAE! The frog couriers are out with their present sacks again! Every year it\'s presents for frogs and a cold for rabbits!'},
+        {who: 'narr', text: 'A seasonal side story is open on the Side Stories tab: How Rae Stole Christmas. It can be played once a day, all December.'},
+        {who: 'narr', text: 'Every frog courier you catch is a Rabbit Gift. Spend them on the festive recruiting banner, before the season ends.'},
+      ],
+      frog: [
+        {who: 'narr', text: 'Snow has fallen on the felt forest. It\'s the festive season, for the whole of December!'},
+        {who: 'scout', text: 'Your Highness! The rabbits are after the festival presents! The ones for the frog children at the capital!'},
+        {who: 'narr', text: 'A seasonal side story is open on the Side Stories tab: Froggy Festivities. It can be played once a day, all December.'},
+        {who: 'narr', text: 'Every courier you get safely through is a Frog Gift. Spend them on the festive recruiting banner, before the season ends.'},
+      ],
+    },
+  },
+};
+const eventActive = id => { const E = EVENTS[id]; return !!E && (!!SAVE?.debugDecember && id === 'december' || gameDate().getMonth() === E.month); };
+const eventsOn = ck => Object.keys(EVENTS).filter(id => eventActive(id) && campOpen(ck));
+const giftName = (ck, n) => n === 1 ? EVENTS.december.currency[ck].one : EVENTS.december.currency[ck].name;
+
+// ---------- December side stories ----------
+const COURIER = (x, y, extra = {}) => E('courier', 4, x, y, 'courier', {courier: true, name: 'Gift Courier', ...extra});
+CAMPAIGNS.rae.sides.push({
+  id: 'XM-R', title: 'How Rae Stole Christmas', event: 'december', map: 'snowWoods', enemyFaction: 'frog', enemyLine: 'THE COURIERS SET OFF',
+  objective: {type: 'intercept'}, maxDeploy: 6, enemyMods: {},
+  deploy: [[4,9],[5,9],[3,11],[6,11],[1,11],[8,11]],
+  exits: [[1,15],[4,15],[5,15],[8,15]],
+  brief: 'Frog couriers are carrying the festive presents south through the snowy woods. Catch as many as you can before they reach the road at the bottom of the map. Every courier caught is a Rabbit Gift.',
+  prepNote: 'Once a day, all December. The couriers don\'t fight unless cornered: they run for the road (the gold squares). Eight in all. Catching every one is hard.',
+  enemies: () => [COURIER(2,0), COURIER(7,0), COURIER(4,1), E('reed',4,1,13,'guard'), E('reed',4,8,13,'guard')],
+  reinforce: () => [
+    {turn: 1, units: [COURIER(1,0), COURIER(5,0), COURIER(8,0)]},
+    {turn: 2, units: [COURIER(3,0), COURIER(6,0), E('blade',4,4,0)]},
+  ],
+  pre: [
+    {card: 'Seasonal Side Story', sub: 'How Rae Stole Christmas'},
+    {scene: 'woods', place: 'The Snowy Woods · December'},
+    {who: 'narr', text: 'Every year, on the shortest day, frog couriers carry sacks of presents through the woods to the capital.'},
+    {who: 'sister', text: 'Presents. For FROGS. Every single year. Do you know what rabbits get every year, Rae?'},
+    {who: 'rae', text: '…Extra digging?'},
+    {who: 'sister', text: 'Extra digging! And a cold!'},
+    {who: 'willow', text: 'Technically, those presents were bought with ore that rabbits dug.'},
+    {who: 'rae', text: 'So technically, they\'re our presents.'},
+    {who: 'sister', text: 'TECHNICALLY!'},
+    {who: 'rae', text: 'Right. The couriers run for the road south. We catch as many as we can before they get there. Nobody gets hurt. Much.'},
+    {who: 'sister', text: 'And then rabbits get presents! I\'m wearing my scarf. It\'s a stealing scarf now.'},
+  ],
+  post: [
+    {who: 'sister', text: 'Look at them all! Socks! A tin drum! A jar of pickled flies… we can give that one back.'},
+    {who: 'willow', text: 'This one\'s just a lump of coal.'},
+    {who: 'rae', text: 'Who\'s it addressed to?'},
+    {who: 'willow', text: '"Rhubarb."'},
+    {who: 'rae', text: '…Put it back in the sack. Some things are tradition.'},
+  ],
+  reward: {res: 200, tokens: 0},
+});
+CAMPAIGNS.frog.sides.push({
+  id: 'XM-F', title: 'Froggy Festivities', event: 'december', map: 'snowWoods', enemyFaction: 'rae', enemyLine: 'THE PRESENT THIEVES STRIKE',
+  objective: {type: 'survive', turns: 6, escort: true}, escort: true, maxDeploy: 6, enemyMods: {},
+  deploy: [[3,2],[5,2],[2,2],[4,3],[6,3],[1,3]],
+  exits: [[1,15],[4,15],[5,15],[8,15]],
+  brief: 'Rabbit thieves are after the festival presents. Get the frog couriers to the road at the bottom of the map, or keep them safe for six turns. Every courier protected is a Frog Gift.',
+  prepNote: 'Once a day, all December. The couriers (blue) walk to the road on their own, slowly: they\'re carrying presents. The rabbits go for the couriers first. Saving all eight is hard.',
+  allies: () => [COURIER(1,0,{bonus: {mov: -1}}), COURIER(3,0,{bonus: {mov: -1}}), COURIER(5,0,{bonus: {mov: -1}}), COURIER(8,0,{bonus: {mov: -1}}),
+                 COURIER(2,1,{bonus: {mov: -1}}), COURIER(6,1,{bonus: {mov: -1}}), COURIER(7,1,{bonus: {mov: -1}}), COURIER(9,1,{bonus: {mov: -1}})],
+  enemies: () => [E('runner',4,0,6), E('runner',4,9,7), E('rfencer',4,0,9), E('rfighter',4,9,10), E('rarcher',4,2,12,'guard'), E('rlancer',4,7,12,'guard')],
+  reinforce: () => [
+    {turn: 1, units: [E('runner',4,0,4), E('runner',4,9,4)]},
+    {turn: 2, units: [E('rfencer',4,0,13), E('rfighter',4,9,13)]},
+    {turn: 3, units: [E('runner',4,4,15), E('runner',4,5,15)]},
+  ],
+  pre: [
+    {card: 'Seasonal Side Story', sub: 'Froggy Festivities'},
+    {scene: 'woods', place: 'The Snowy Woods · December'},
+    {who: 'narr', text: 'Every year, on the shortest day, couriers carry presents through the woods to the frog children of the capital.'},
+    {who: 'scout', text: 'Your Highness! Terrible news! Rabbits in the woods! They\'re stealing the PRESENTS!'},
+    {who: 'tiggle', text: 'The presents? Who steals presents?'},
+    {who: 'biggle', text: 'Rabbits, apparently. In their infinite wickedness.'},
+    {who: 'tiggle', text: 'Biggle, are you wearing a paper crown?'},
+    {who: 'biggle', text: '…It came out of a cracker. It\'s regulation.'},
+    {who: 'tiggle', text: 'Right. We get the couriers to the road south. Every present that gets through is a frog child who doesn\'t cry on festival morning.'},
+    {who: 'biggle', text: 'Shields up. Crowns on.'},
+  ],
+  post: [
+    {who: 'tiggle', text: 'We got them through! Well. Most of them.'},
+    {who: 'scout', text: 'One of the rabbits took a whole sack, Highness. She was wearing a scarf. She said it was a "stealing scarf".'},
+    {who: 'biggle', text: 'Disgraceful. …Has anyone seen my crown?'},
+  ],
+  reward: {res: 200, tokens: 0},
+});
+// side story fields the list expects
+for (const ck of ['rae', 'frog']) for (const s of CAMPAIGNS[ck].sides) if (s.event){
+  const at = CAMPAIGNS[ck].stages.find(x => x.id === SIDE_OPENS[ck]); Object.assign(s, {side: true, chapter: at.chapter, ci: at.ci, si: 0, rank: 0});
+}
+const eventPlayedToday = s => (SAVE.eventPlays || {})[s.id] === todayKey();
+const eventMaxGifts = s => [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? s.allies({}) : []), ...(s.reinforce ? s.reinforce({}).flatMap(w => w.units) : [])].filter(u => u.courier).length;
+
+// ---------- December banners (paid with Gifts) ----------
+GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
+  pool: ['brigand', 'condemned', 'froggle', 'patch'], attires: ['raeFestive'], bg: 'woods',
+  tease: 'A parcel in brown paper, tied with string. It\'s been shaken. Something rattles.',
+  blurb: 'Placeholder festive banner, December only. Paid for with Rabbit Gifts from How Rae Stole Christmas. Featuring a festive costume for Rae.'});
+GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
+  pool: ['rhubarb', 'executioner', 'fragglejr'], attires: ['tiggleFestive'], bg: 'woods',
+  tease: 'A box wrapped in green paper and gold ribbon, stamped with the royal seal. It smells faintly of pondweed.',
+  blurb: 'Placeholder festive banner, December only. Paid for with Frog Gifts from Froggy Festivities. Featuring a festive costume for Tiggle.'});
+// what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}
+function bannerCur(ck, b){
+  if (b?.currency === 'gifts'){ const c = EVENTS[b.event].currency[ck]; return {key: 'gifts', name: c.name, one: c.one, seal: '🎁', tease: b.tease}; }
+  const a = GACHA_ARMY[ck]; return {key: 'tokens', name: a.currency, one: a.one, seal: a.seal, tease: a.tease};
+}
+// event banners show only while their event is on (and the Camp is open)
+const bannerVisible = b => !b.event || (eventActive(b.event) && campOpen(b.army));
+
+// ---------- The event's tutorial (once per season, per route) ----------
+const eventTutKey = (id, ck) => `tut-event-${id}-${gameDate().getFullYear()}-${ck}`;
+function eventTutorial(ck){
+  const id = eventsOn(ck).find(id => !SAVE.flags[eventTutKey(id, ck)]); if (!id) return;
+  SAVE.flags[eventTutKey(id, ck)] = true; saveGame();
+  return talk([{card: EVENTS[id].name, sub: 'Seasonal Event'}, ...EVENTS[id].intro[ck]]).then(() => { hubTab = 'side'; renderHub(); });
+}
+
 // ---------------- 33-arms.js ----------------
 // ================= Weapons: owning, carrying, equipping =================
 // Each army keeps its weapons in SAVE.camps[ck].arms as items {uid, id} (id is a key of WEAPONS).
@@ -5440,7 +5645,7 @@ for (const [ck, a] of Object.entries(GACHA_ARMY)) for (const b of a.banners) b.a
 const recruitOpen = ck => !!SAVE?.debugUnlock || isCleared(GACHA_ARMY[ck].opensAfter);
 // A banner's ★★★ characters: its own `pool`, else its featured characters. Never another banner's.
 const bannerPool = b => b.pool || b.featured || GACHA_ARMY[b.army].rares;
-const bannerOpen = b => recruitOpen(b.army) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
+const bannerOpen = b => recruitOpen(b.army) && bannerVisible(b) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
 const findBanner = (ck, id) => GACHA_ARMY[ck].banners.find(b => b.id === id);
 const isGachaUnit = rec => rec.key === 'recruit' || CHARACTERS[rec.key]?.stars === 3;
 
@@ -5504,8 +5709,9 @@ function grantPull(ck, banner, stars){
 // Spend pull currency on n pulls from a banner. Returns the results, or null if it can't be afforded.
 function doPull(ck, bannerId, n){
   const g = gachaState(ck), banner = findBanner(ck, bannerId);
-  if (!banner || !bannerOpen(banner) || g.tokens < n) return null;
-  g.tokens -= n;
+  const cur = bannerCur(ck, banner).key;   // Whispers/Writs, or an event's Gifts
+  if (!banner || !bannerOpen(banner) || (g[cur] || 0) < n) return null;
+  g[cur] -= n;
   let pity = g.pity[bannerId] || 0;
   const rolls = [];
   for (let i = 0; i < n; i++){
@@ -5585,7 +5791,7 @@ function enemyUnit(sp, faction, teamId = 'e'){
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, talk, talked: false});
+  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -5632,7 +5838,7 @@ function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
   Music.jingle(win ? 'victory' : 'defeat');
-  B.resolve({win, retreated, reason, turn, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, gifts: win && B.ch.event ? giftCount() : 0, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -5880,10 +6086,47 @@ async function levelUp(u){
 
 // ---------- Panel ----------
 function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>`; }
+// ---------- Event couriers (31-data-events.js) ----------
+const couriers = () => units.filter(u => u.courier);
+// gifts so far: couriers caught (stealing) or couriers safe (escorting)
+const giftCount = () => B.ch.escort ? couriers().filter(u => u.escaped || !u.dead).length : couriers().filter(u => u.dead && !u.escaped).length;
+const giftLine = () => `<b>${EVENTS[B.ch.event].icon} ${giftCount()} of ${eventMaxGifts(B.ch)} ${B.ch.escort ? 'safe' : 'caught'}</b>`;
+const onExit = u => (B.ch.exits || []).some(([x, y]) => x === u.x && y === u.y);
+function exitField(u){
+  const f = new Array(COLS*ROWS).fill(Infinity), open = [];
+  for (const [x, y] of B.ch.exits || []){ f[K(x, y)] = 0; open.push(K(x, y)); }
+  while (open.length){
+    open.sort((a, b) => f[a] - f[b]);
+    const cur = open.shift(), cx = KX(cur), cy = KY(cur);
+    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx = cx + dx, ny = cy + dy; if (!inBounds(nx, ny)) continue;
+      const c = moveCost(u, cx, cy); if (c >= 99) continue;
+      const nk = K(nx, ny), nd = f[cur] + c;
+      if (nd < f[nk]){ f[nk] = nd; open.push(nk); }
+    }
+  }
+  return f;
+}
+// a courier runs for the nearest exit; reaching it, it leaves the map (escaped, or delivered)
+async function courierAct(e){
+  if (!onExit(e)){
+    const map = reach(e), f = exitField(e);
+    let bk = K(e.x, e.y);
+    for (const dk of destinations(e, map)) if (f[dk] < f[bk] || (f[dk] === f[bk] && map.get(dk).d < map.get(bk).d)) bk = dk;
+    if (bk !== K(e.x, e.y)){ await wait(150); await moveAlong(e, pathTo(map, bk)); }
+  }
+  if (onExit(e)){
+    e.escaped = true; popup(e, B.ch.escort ? '🎁 Delivered!' : 'Got away!', B.ch.escort ? '#9ff0b0' : '#ffb3a6'); Sfx.play(B.ch.escort ? 'coin' : 'flee');
+    await tween(380, t => { e.alpha = 1 - t; }); e.dead = true;
+  }
+  updateDanger();
+}
 function objectiveText(){
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
-    : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
+    : ob.type === 'survive' ? (B.ch.escort ? `Protect the couriers until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach the road.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
+    : ob.type === 'intercept' ? 'Catch as many couriers as you can before they reach the road.' : 'Rout the enemy.';
+  if (B.ch.event) return `${goal} ${giftLine()}`;
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
@@ -6124,6 +6367,7 @@ async function runTwist(){
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
+  wave.spawned = true;
   let first = true;
   for (const sp of wave.units){
     const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
@@ -6203,6 +6447,7 @@ async function aiAct(e){
     const th = e.w === 'staff' ? rangeTiles(destinations(e, reach(e)), [1, 2]) : threat(e);
     if (foes(e).some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
   }
+  if (e.ai === 'courier') return courierAct(e);
   if (e.w === 'staff') return aiHeal(e);
   const map = e.ai === 'hold' ? new Map([[K(e.x, e.y), {d: 0, prev: -1}]]) : reach(e);
   const dests = destinations(e, map);
@@ -6216,7 +6461,8 @@ async function aiAct(e){
       if (A.dmg*hits >= p.hp) score += 40*A.hit/100;
       if (D.can) score -= D.dmg*D.hit/100*(D.dbl ? 2 : 1)*.4;
       score += ter(pos.x, pos.y).def*1.5 + (p.lord ? 2 : 0) + (p.vip ? 3 : 0) - map.get(dk).d*.05;
-      if (hasAb(p, 'bait')) score += 1000;   // Bait, By Choice: anyone who can reach Patch goes for him
+      if (hasAb(p, 'bait')) score += 1000;
+      if (p.courier) score += 25;   // the December thieves go for the presents   // Bait, By Choice: anyone who can reach Patch goes for him
       if (!best || score > best.score) best = {score, dk, p};
     }
   }
@@ -6247,6 +6493,8 @@ function checkEnd(){
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
+  // event: over once every courier has been caught, delivered or got away, and no more are coming
+  if (B.ch.event && couriers().length && !couriers().some(u => !u.dead) && !B.waves.some(w => !w.spawned && w.units.some(s => s.courier))){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
   if (!team('e').length && !(ob.type === 'survive' && (wavesLeft || (B.twist && !B.twist.done)))){ finishBattle(true); return true; }
   return false;
@@ -6338,7 +6586,7 @@ function resize(){
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
   const g = terrCv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) drawTile(g, x, y, MAP[y][x]);
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); }
   if (!noisePat){
     const n = document.createElement('canvas'); n.width = n.height = 96; const ng = n.getContext('2d');
     for (let i = 0; i < 1400; i++){ ng.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.18)' : 'rgba(255,245,220,.12)'; ng.fillRect(Math.random()*96, Math.random()*96, 1, Math.random()*2 + .5); }
@@ -6390,7 +6638,7 @@ function drawTile(g, x, y, ch){
     return;
   }
   const theme = mapDef?.theme || 'meadow';
-  if (theme !== 'meadow') return drawThemedTile(g, x, y, ch, theme);
+  if (theme !== 'meadow' && theme !== 'snow') return drawThemedTile(g, x, y, ch, theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -6464,6 +6712,24 @@ function stones(g, X, Y, list, cols, stitch){
     g.fillStyle = 'rgba(255,255,255,.12)'; ell(g, X + T*a - T*r*.3, Y + T*b - T*r*.3, T*r*.4, T*r*.25); g.fill();
     g.beginPath(); g.ellipse(X + T*a, Y + T*b, T*r*.82, T*r*.62, 0, 0, Math.PI*2); stitchStroke(g, stitch, T*.45, .7);
   });
+}
+// Snow: the meadow tile under a white blanket, with snow caps on trees and drifts
+function snowOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  // a cool blue-white snowfield; forests keep their green so they still read as cover
+  g.fillStyle = ch === 'F' ? 'rgba(222,234,250,.5)' : ch === 'M' ? 'rgba(232,240,252,.7)' : 'rgba(226,236,250,.64)'; g.fillRect(X, Y, T, T);
+  g.fillStyle = 'rgba(160,182,214,.22)'; ell(g, X + T*hash(x, y, 7), Y + T*hash(x, y, 8), T*.34, T*.1); g.fill();   // drift shadow
+  g.fillStyle = 'rgba(255,255,255,.95)';
+  for (let i = 0; i < 4; i++){ ell(g, X + T*hash(x, y, i + 30), Y + T*hash(x, y, i + 40), T*.022, T*.022); g.fill(); }
+  if (ch === 'F') for (const [a, b, s] of [[.3, .5, .9], [.72, .42, 1], [.52, .86, .8]]){   // snowy pines
+    const cx = X + T*a, by = Y + T*b, w = T*.2*s, h = T*.34*s;
+    g.fillStyle = 'rgba(40,50,60,.22)'; ell(g, cx + w*.2, by + T*.03, w*.9, T*.05); g.fill();
+    g.fillStyle = '#5a3e2a'; g.fillRect(cx - T*.02, by - T*.04, T*.04, T*.06);
+    for (let k = 0; k < 2; k++){ const ty = by - h*.3*k, tw = w*(1 - k*.28);
+      g.fillStyle = k ? '#2f6a4a' : '#26583d'; g.beginPath(); g.moveTo(cx - tw, ty - T*.02); g.lineTo(cx + tw, ty - T*.02); g.lineTo(cx, ty - h*.75); g.closePath(); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.moveTo(cx - tw*.45, ty - h*.42); g.lineTo(cx + tw*.45, ty - h*.42); g.lineTo(cx, ty - h*.75); g.closePath(); g.fill(); }
+  }
+  if (ch === 'M'){ g.fillStyle = 'rgba(150,170,200,.6)'; ell(g, X + T*.55, Y + T*.78, T*.38, T*.14); g.fill(); g.fillStyle = '#fbfdff'; ell(g, X + T*.5, Y + T*.7, T*.32, T*.16); g.fill(); }
 }
 function drawThemedTile(g, x, y, ch, theme){
   const X = x*T, Y = y*T, mine = theme === 'mine';
@@ -6578,6 +6844,10 @@ function render(now){
   if (shake > 0){ sx = (Math.random() - .5)*T*.15*shake; sy = (Math.random() - .5)*T*.15*shake; shake = Math.max(0, shake - .06); }
   ctx.translate(sx, sy);
   ctx.drawImage(terrCv, 0, 0, COLS*T, ROWS*T);
+  if (B?.ch?.exits){   // where couriers leave the map (the December event)
+    for (const [ex, ey] of B.ch.exits){ ctx.fillStyle = 'rgba(255,190,60,.42)'; ctx.fillRect(ex*T + 1, ey*T + 1, T - 2, T - 2); ctx.strokeStyle = 'rgba(190,120,20,.8)'; ctx.lineWidth = 2; ctx.strokeRect(ex*T + 2, ey*T + 2, T - 4, T - 4); ctx.fillStyle = '#8a4a10';
+      ctx.font = `${Math.round(T*.42)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = .85; ctx.fillText('⬇', ex*T + T/2, ey*T + T/2); ctx.globalAlpha = 1; }
+  }
   if (showDanger) fillKeys(dangerKeys, 'rgba(255,128,32,.26)');
   if (inspect && !inspect.dead){
     const m = inspect.ai === 'hold' ? [K(inspect.x, inspect.y)] : destinations(inspect, reach(inspect));
@@ -6807,7 +7077,7 @@ function recChip(ck, sg, team){
   const low = have < rec - .5;
   return `<span class="chip${low ? " under" : ""}" title="Your team's average: Lv ${have.toFixed(1)}">Rec. Lv ${rec}${low ? ` · yours ${have.toFixed(1)}` : ''}</span>`;
 }
-const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? `Survive ${ob.turns} turns` : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the couriers for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? 'Catch the couriers' : 'Rout the enemy';
 function chapterRef(id){
   const f = findStage(id); if (!f) return id;
   return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
@@ -6860,6 +7130,7 @@ function sideLock(ck, s){
   return null;
 }
 const sideState = (ck, j) => { const s = CAMPAIGNS[ck].sides[j];
+  if (s.event) return !(eventActive(s.event) && campOpen(ck)) ? {s: 'locked', why: 'Seasonal'} : eventPlayedToday(s) ? {s: 'played'} : {s: 'next'};
   return SAVE.camps[ck].cleared.includes(s.id) ? {s: 'done'} : sideLock(ck, s) ? {s: 'locked', why: sideLock(ck, s)} : {s: 'next'}; };
 const sidesNew = ck => CAMPAIGNS[ck].sides.filter((s, j) => sideState(ck, j).s === 'next').length;
 function sideRewardHTML(ck, s){
@@ -6874,11 +7145,23 @@ function sideNodeHTML(ck, s, j){
     ${s.teaser ? `<div class="nmeta">${s.teaser}</div>` : ''}<div class="chips"><span class="chip">${st.why}</span></div></div></div>`;
   return nodeHTML(ck, s, 's' + j, st);
 }
+// Seasonal event side stories: a festive card at the top of the tab, playable once a day
+function eventNodeHTML(ck, s, j){
+  const st = sideState(ck, j), E_ = EVENTS[s.event], cur = E_.currency[ck], best = (SAVE.eventBest || {})[s.id];
+  return `<div class="evcard"><div class="evsnow" aria-hidden="true"></div>
+    <div class="evkick">${E_.icon} ${E_.name} · December only</div><h3>${s.title}</h3>
+    <p>${s.brief}</p>
+    <div class="chips">${recChip(ck, s)}<span class="chip">${objectiveLabel(s.objective)}</span><span class="chip evc">Up to ${eventMaxGifts(s)} ${cur.name} a day</span>${best != null ? `<span class="chip">Best: ${best} of ${eventMaxGifts(s)}</span>` : ''}</div>
+    ${st.s === 'played' ? `<button class="btn" type="button" disabled>Played today · come back tomorrow</button>`
+      : `<button class="btn primary evplay" data-play="s${j}" type="button">${E_.icon} Play today's run</button>`}
+    <div class="evbal">You have <b>${gachaState(ck).gifts || 0} ${cur.name}</b> for the festive recruiting banner.</div></div>`;
+}
 function sidesHTML(ck){
   const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
-  if (!sets.length) return '<div class="hint">No side stories on this route yet.</div>';
   const sides = CAMPAIGNS[ck].sides;
-  return `<div class="hint">Every unique member of the army has three side stories. One opens with each support rank (C, B and A) you reach with them at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
+  const seasonal = sides.map((s, j) => s.event && sideState(ck, j).s !== 'locked' ? eventNodeHTML(ck, s, j) : '').join('');
+  if (!sets.length) return seasonal || '<div class="hint">No side stories on this route yet.</div>';
+  return `${seasonal}<div class="hint">Every unique member of the army has three side stories. One opens with each support rank (C, B and A) you reach with them at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
     ${sets.map(([key, set]) => { const done = sidesDone(ck, key), rank = supportRank(ck, key);
       const sTag = rank >= 4 ? '<span class="chip ok">Support S reached</span>' : done === 3 ? '<span class="chip conv">Support S ready at the Camp</span>' : `<span class="chip">Support S: clear all three</span>`;
       return `<div class="sset"><div class="por f-${CAMPAIGNS[ck].faction}">${portraitInner({key, look: CHARACTERS[key].look || key}, 'panel')}</div>
@@ -6902,10 +7185,11 @@ function renderHub(){
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
+    ${eventsOn(ck).map(id => { const s = camp.sides.find(x => x.event === id); return s ? `<button class="evstrip" data-hubtab="side" type="button"><span>${EVENTS[id].icon}</span><span><b>${EVENTS[id].name}</b><small>${s.title}${eventPlayedToday(s) ? ' · played today' : ' · ready to play'}</small></span><span>›</span></button>` : ''; }).join('')}
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
-    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button></div>
+    <div class="dbg"><button class="btn" data-debug type="button">${SAVE.debugUnlock ? 'Debug: Relock' : 'Debug: Unlock Everything'}</button><button class="btn" data-newday type="button">Debug: New Day</button><button class="btn" data-december type="button">${SAVE.debugDecember ? 'Debug: Not December' : 'Debug: December'}</button></div>
   </div>`;
   showScreen('hub');
   unlockTutorials(ck);   // anything that just opened explains itself here
@@ -7006,6 +7290,7 @@ const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key) && (!ch.flashback |
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
   const ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
+  if (ch.event && (eventPlayedToday(ch) || !eventActive(ch.event))){ toast(eventActive(ch.event) ? 'Already played today. Come back tomorrow!' : 'This seasonal story isn\'t on right now.'); renderHub(); return; }
   const max = Math.min(ch.maxDeploy, ch.deploy.length);
   // mustDeploy: characters this stage needs (always picked, after the leader)
   const must = r => (ch.mustDeploy || []).includes(r.key);
@@ -7021,7 +7306,7 @@ function openPrep(ck, i){
 function renderPrep(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
   const max = Math.min(ch.maxDeploy, ch.deploy.length), order = [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r))];
-  const replaying = SAVE.camps[ck].cleared.includes(ch.id);
+  const replaying = SAVE.camps[ck].cleared.includes(ch.id) && !ch.event;
   $('#prep').innerHTML = `<div class="sin f-${camp.faction}">
     <div class="sbar"><button class="btn" data-go="hub" type="button">‹ Back</button><h1>Prepare</h1><div class="res">${stOf().res}<small>${FACTIONS[camp.faction].currency}</small></div></div>
     <div class="brief"><div class="kick">${camp.name} · ${stageLabel(ch)}${ch.convergence ? ' · Convergence' : ''}</div><h2>${ch.title}</h2><p>${ch.brief}</p>
@@ -7052,14 +7337,19 @@ function togglePick(uid){
 async function playChapter(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => isLead(ch, r)), ...st.roster.filter(r => !isLead(ch, r) && canDeploy(ch, r) && prep.picks.has(r.uid))].filter(r => !r.dead);
-  const replay = st.cleared.includes(ch.id);   // replays skip the story and its one-time rewards
-  if (!replay){
+  // replays skip the story and its one-time rewards; a seasonal story is fresh each day (full pay) but tells its story once
+  const seen = st.cleared.includes(ch.id), replay = seen && !ch.event;
+  if (!seen){
     applyOutfits(ck, ch.chapter.outfits);
     await talk(ch.pre);
     if (ch.rename){ applyRename(ck, ch.rename); saveGame(); }
   }
-  const res = await runBattle(ck, ch, recs, {replay});
+  const res = await runBattle(ck, ch, recs, {replay: seen});
   const kills = B.kills, lightFingers = B.bonusRes || 0;   // Brigand's Light Fingers
+  // seasonal event: gifts by how well you did; once a (game) day
+  const gifts = res.win && ch.event ? res.gifts : 0;
+  if (res.win && ch.event){ gachaState(ck).gifts = (gachaState(ck).gifts || 0) + gifts; (SAVE.eventPlays ||= {})[ch.id] = todayKey();
+    (SAVE.eventBest ||= {})[ch.id] = Math.max(SAVE.eventBest[ch.id] || 0, gifts); }
   if (!res.win){
     B = null;
     renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i});
@@ -7080,7 +7370,7 @@ async function playChapter(){
   if (starNew) SAVE.stars[ch.id] = true;
   const spoils = (replay ? Math.round(ch.reward.res/2) : ch.reward.res) + kills*15 + lightFingers, tokens = (replay ? 0 : ch.reward.tokens ?? GACHA.stageTokens) + starTokens;
   st.res += spoils; gachaState(ck).tokens += tokens;
-  if (!replay){
+  if (!seen){
     for (const key of ch.departs || []) for (const r of st.roster) if (r.key === key && !r.departed){ r.dead = true; r.departed = true; r.fallsIn = ch.fallsIn?.[key]; departed.push(r.name || CHARACTERS[key].name); }
     for (const f of ch.reward.flags || []) SAVE.flags[f] = true;
     // anyone who joined mid-battle keeps the experience they earned there
@@ -7088,11 +7378,11 @@ async function playChapter(){
     for (const key of ch.reward.joins || []) if (!st.roster.some(r => r.key === key)){ st.roster.push(recordFor(key)); joined.push(CHARACTERS[key].name); }
     st.cleared.push(ch.id);
   }
-  const armed = replay ? [] : grantStoryWeapons(ck, ch.reward.weapons);
+  const armed = seen ? [] : grantStoryWeapons(ck, ch.reward.weapons);
   saveGame();
-  if (!replay) await talk(ch.post);
+  if (!seen) await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, armed, lost: res.lost.map(u => u.name), departed});
+  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, gifts, armed, lost: res.lost.map(u => u.name), departed});
 }
 
 function renderResult(r){
@@ -7104,7 +7394,9 @@ function renderResult(r){
     html = `<div class="brief"><div class="kick">${r.replay ? 'Replay victory' : 'Victory'} · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
-        <div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>
+        ${ch.event ? `<div class="rgift"><span>${EVENTS[ch.event].icon} ${ch.escort ? 'Couriers kept safe' : 'Couriers caught'}: ${r.gifts} of ${eventMaxGifts(ch)}${(SAVE.eventBest||{})[ch.id] != null ? ` · best ${SAVE.eventBest[ch.id]}` : ''}</span><b>+${r.gifts} ${giftName(r.ck, r.gifts)}</b></div>
+        <div><span>Come back tomorrow to play again</span><b>Once a day</b></div>`
+          : `<div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>`}
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${r.armed?.length ? `<div><span>New weapons</span><b>${r.armed.join(', ')}</b></div>` : ''}
@@ -7167,6 +7459,7 @@ document.addEventListener('click', e => {
   else if ('trade' in d){ if (tradeForToken(SAVE.current)) renderArmy(); }
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if ('newday' in d) debugNewDay();
+  else if ('december' in d){ SAVE.debugDecember = !SAVE.debugDecember; saveGame(); toast(SAVE.debugDecember ? 'Debug: it is December. The festive season is on.' : 'Debug: back to the real date.'); renderHub(); }
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
   else if ('begin' in d) playChapter();
@@ -7215,8 +7508,8 @@ function bannerArt(ck, b){
   return `<div class="bhero"${bg ? ` style="--bgimg:url(${bg})"` : ''}>
       <div class="brays"></div>
       <div class="bfigs n${items.length}">${figs}</div>
-      <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
-      ${b.featured ? '<div class="brate">Rate up</div>' : ''}
+      <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${b.festive ? '❄ Festive banner · December only ❄' : b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
+      ${b.festive ? '<div class="brate fest">🎁 Festive</div><div class="bsnow" aria-hidden="true"></div>' : b.featured ? '<div class="brate">Rate up</div>' : ''}
       <div class="bplates">${plates}</div>
     </div>`;
 }
@@ -7248,7 +7541,7 @@ function bannerRosterHTML(ck, b){
 }
 function recruitTabHTML(ck){
   const army = GACHA_ARMY[ck], g = gachaState(ck), st = SAVE.camps[ck], F = FACTIONS[CAMPAIGNS[ck].faction];
-  const banners = army.banners;
+  const banners = army.banners.filter(bannerVisible);   // seasonal banners only while their event is on
   if (!recruitOpen(ck)){   // locked until Chapter One is finished: show what's coming
     const first = banners[0];
     return `<div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div></div>
@@ -7257,17 +7550,17 @@ function recruitTabHTML(ck){
         <p class="meta">Keep the ${army.currency} you earn from battles: they're what you'll recruit with.</p></div></div>`;
   }
   if (!gachaSel[ck] || !bannerOpen(findBanner(ck, gachaSel[ck]))) gachaSel[ck] = banners[0].id;
-  const b = findBanner(ck, gachaSel[ck]), pity = g.pity[b.id] || 0, R = GACHA.rarity;
+  const b = findBanner(ck, gachaSel[ck]), cur = bannerCur(ck, b), bal = g[cur.key] || 0, pity = g.pity[b.id] || 0, R = GACHA.rarity;
   const poolRares = [...bannerPool(b).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
                      ...(b.featured || []).filter(k => !bannerPool(b).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
                      ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${CHARACTERS[ATTIRES[id].char].name} (rate up)`)].join(', ');
   return `
-    <div class="gbar"><div class="tok"><span class="seal sm">${army.seal}</span><b>${g.tokens}</b> ${army.currency}</div>
-      <button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button></div>
+    <div class="gbar"><div class="tok${b.festive ? ' festive' : ''}"><span class="seal sm">${cur.seal}</span><b>${bal}</b> ${cur.name}</div>
+      ${b.festive ? `<span class="evuntil">🎁 Festive · until 31 December</span>` : `<button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button>`}</div>
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
-      ${x.name}<small>${bannerOpen(x) ? (x.kind === 'featured' ? 'Featured' : 'Standard') : 'Locked'}</small></button>`).join('')}</div>
+      ${x.festive ? '🎁 ' : ''}${x.name}<small>${!bannerOpen(x) ? 'Locked' : x.festive ? 'Festive · December' : x.kind === 'featured' ? 'Featured' : 'Standard'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
-    <div class="gbanner f-${CAMPAIGNS[ck].faction}" data-b="${b.id}">
+    <div class="gbanner f-${CAMPAIGNS[ck].faction}${b.festive ? ' festive' : ''}" data-b="${b.id}">
       ${bannerArt(ck, b)}
       ${(() => { const R = bannerRoster(ck, b); return R.got === R.total ? `<div class="bdone"><b>Complete</b><span>Everyone on this banner has joined. Recruiting again gives weapons.</span></div>` : ''; })()}
       <div class="binfo"><p>${b.blurb}</p>
@@ -7278,8 +7571,8 @@ function recruitTabHTML(ck){
       </div>
     </div>
     <div class="pullbtns">
-      <button class="btn" data-pull="1" type="button" ${g.tokens < 1 ? 'disabled' : ''}>Recruit ×1 · 1 ${army.one}</button>
-      <button class="btn primary" data-pull="10" type="button" ${g.tokens < 10 ? 'disabled' : ''}>Recruit ×10 · 10 ${army.currency}</button>
+      <button class="btn" data-pull="1" type="button" ${bal < 1 ? 'disabled' : ''}>${b.festive ? '🎁 Unwrap' : 'Recruit'} ×1 · 1 ${cur.one}</button>
+      <button class="btn primary" data-pull="10" type="button" ${bal < 10 ? 'disabled' : ''}>${b.festive ? '🎁 Unwrap' : 'Recruit'} ×10 · 10 ${cur.name}</button>
     </div>
     ${bannerRosterHTML(ck, b)}
     <details class="rates"><summary>Rates and pool</summary>
@@ -7297,17 +7590,18 @@ function recruitTabHTML(ck){
 }
 
 // ---------- Pull reveal ----------
+let pullSeal = '';   // the card backs' seal for the pull being shown (an event banner's 🎁)
 function cardHTML(r, i, single){
   if (r.weapon){ const w = r.weapon;
     return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal pull ${i + 1}">
-    <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
+    <div class="gin"><div class="gback"><span class="seal">${pullSeal}</span></div>
       <div class="gface"><div class="gpor gw">${weaponIconSVG(w, single ? 120 : 52)}</div>
         <div class="gtxt"><div class="gstars">${stars(r.stars)}</div><div class="gname">${w.name}</div><div class="gcls">${WTYPE[w.type]}${w.lash ? ' · Whip' : ''}</div><div class="gtag">Weapon</div></div>
       </div></div></button>`;
   }
   if (r.attire){ const ent = attireEnt(r.attireId), art = single ? artFor(ent, 'portrait') : (artFor(ent, 'token') || artFor(ent, 'portrait'));
     return `<button class="gcard s3" data-card="${i}" type="button" aria-label="Reveal pull ${i + 1}">
-    <div class="gin"><div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
+    <div class="gin"><div class="gback"><span class="seal">${pullSeal}</span></div>
       <div class="gface"><div class="gpor"><img alt="" src="${art || plushPortrait(ent.look)}"></div>
         <div class="gtxt"><div class="gstars">${stars(3)}</div><div class="gname">${r.attire.name}</div><div class="gcls">${r.rec.name}</div><div class="gtag">Attire</div></div>
       </div></div></button>`;
@@ -7317,7 +7611,7 @@ function cardHTML(r, i, single){
   const tag = r.kind === 'back' ? 'Returns' : 'New';
   return `<button class="gcard s${r.stars}" data-card="${i}" type="button" aria-label="Reveal recruit ${i + 1}">
     <div class="gin">
-      <div class="gback"><span class="seal">${GACHA_ARMY[SAVE.current].seal}</span></div>
+      <div class="gback"><span class="seal">${pullSeal}</span></div>
       <div class="gface">
         <div class="gpor">${art ? `<img alt="" src="${art}">` : `<img alt="" src="${plushPortrait(look)}">`}</div>
         <div class="gtxt">
@@ -7377,13 +7671,14 @@ function introCard(rec, intro, kicker){
 }
 async function runPull(ck, n){
   const army = GACHA_ARMY[ck], results = doPull(ck, gachaSel[ck], n);
-  if (!results){ toast(`Not enough ${army.currency}.`); return; }
+  const B_ = findBanner(ck, gachaSel[ck]), cur = bannerCur(ck, B_); pullSeal = cur.seal;
+  if (!results){ toast(`Not enough ${cur.name}.`); return; }
   const best = Math.max(...results.map(r => r.stars));
   const ov = $('#gacha'), stage = $('#gstage');
-  ov.className = 'ov f-' + CAMPAIGNS[ck].faction; ov.hidden = false;
+  ov.className = 'ov f-' + CAMPAIGNS[ck].faction + (B_.festive ? ' festive' : ''); ov.hidden = false;
   // 1. The sealed message. Its seal glows in the colour of the best result.
-  stage.innerHTML = `<div class="gtease"><div class="note" style="--glow:${GACHA.rarity[best].color}"><span class="seal big">${army.seal}</span></div>
-    <p>${army.tease}</p><div class="meta">Tap to break the seal</div></div>`;
+  stage.innerHTML = `<div class="gtease${B_.festive ? ' festive' : ''}"><div class="note" style="--glow:${GACHA.rarity[best].color}"><span class="seal big">${cur.seal}</span></div>
+    <p>${cur.tease}</p><div class="meta">${B_.festive ? 'Tap to unwrap' : 'Tap to break the seal'}</div></div>`;
   const note = stage.querySelector('.note');
   anim(note, [{transform: 'rotate(-2deg)'}, {transform: 'rotate(2deg)'}, {transform: 'rotate(-2deg)'}], 700, {iterations: Infinity});
   await new Promise(res => { ov.onclick = res; });
@@ -7406,7 +7701,7 @@ async function runPull(ck, n){
   const finishReveal = () => {
     const g = gachaState(ck);
     stage.querySelector('.gacts').innerHTML = `<button class="btn" data-gdone type="button">Done</button>
-      <button class="btn primary" data-again="${n}" type="button" ${g.tokens < n ? 'disabled' : ''}>Again ×${n} · ${g.tokens} left</button>`;
+      <button class="btn primary" data-again="${n}" type="button" ${(g[cur.key] || 0) < n ? 'disabled' : ''}>Again ×${n} · ${g[cur.key] || 0} left</button>`;
   };
   stage.onclick = async e => {
     if (busyReveal) return;
@@ -7706,13 +8001,15 @@ function sideTutorial(ck){
 let tutorialsRunning = false;
 async function unlockTutorials(ck){
   if (tutorialsRunning || !$('#title').hidden) return;
-  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck)) && !(sidesOpen(ck) && !sidesSeen(ck))) return;
+  const eventNew = eventsOn(ck).some(id => !SAVE.flags[eventTutKey(id, ck)]);
+  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck)) && !(sidesOpen(ck) && !sidesSeen(ck)) && !eventNew) return;
   tutorialsRunning = true;
   await wait(50); $('#hub').scrollTo({top: 0});   // the buttons the tutorial points at are at the top
   try {
     if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
     if (sidesOpen(ck) && !sidesSeen(ck)) await sideTutorial(ck);
+    if (eventsOn(ck).some(id => !SAVE.flags[eventTutKey(id, ck)])) await eventTutorial(ck);
   } finally { tutorialsRunning = false; }
 }
 
@@ -7729,7 +8026,7 @@ const LOGIN = {
   track: [{tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['rae', 'raeCasual'], instead: 10},
           {tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['frog', 'tiggleFormal'], instead: 10}],
 };
-const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const todayKey = () => { const d = gameDate(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const loginState = () => (SAVE.login ||= {claimed: 0, last: ''});
 const loginPending = () => !!SAVE && loginState().last !== todayKey();
 const ownsAttire = ([ck, id]) => SAVE.camps[ck].roster.some(r => r.key === ATTIRES[id].char && r.attires?.includes(id));
@@ -7832,7 +8129,8 @@ async function checkDailyLogin(force){
   };
 }
 // Debug: pretend today is a new day (the log-in becomes claimable again).
-function debugNewDay(){ loginState().last = ''; saveGame(); checkDailyLogin(true); }
+// (the game's calendar moves on a day: the log-in and once-a-day event stories come round again)
+function debugNewDay(){ SAVE.debugDays = (SAVE.debugDays || 0) + 1; saveGame(); toast('Debug: a new day.'); renderHub(); checkDailyLogin(true); }
 
 // ---------------- 90-main.js ----------------
 // ================= Boot =================

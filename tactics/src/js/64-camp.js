@@ -140,12 +140,14 @@ function sideTutorial(ck){
 let tutorialsRunning = false;
 async function unlockTutorials(ck){
   if (tutorialsRunning || !$('#title').hidden) return;
-  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck)) && !(sidesOpen(ck) && !sidesSeen(ck))) return;
+  const eventNew = eventsOn(ck).some(id => !SAVE.flags[eventTutKey(id, ck)]);
+  if (!(recruitOpen(ck) && !recruitSeen(ck)) && !(campOpen(ck) && !campSeen(ck)) && !(sidesOpen(ck) && !sidesSeen(ck)) && !eventNew) return;
   tutorialsRunning = true;
   await wait(50); $('#hub').scrollTo({top: 0});   // the buttons the tutorial points at are at the top
   try {
     if (recruitOpen(ck) && !recruitSeen(ck)) await recruitTutorial(ck);
     if (campOpen(ck) && !campSeen(ck)) await campTutorial(ck);
     if (sidesOpen(ck) && !sidesSeen(ck)) await sideTutorial(ck);
+    if (eventsOn(ck).some(id => !SAVE.flags[eventTutKey(id, ck)])) await eventTutorial(ck);
   } finally { tutorialsRunning = false; }
 }

@@ -9,7 +9,7 @@ for (const [ck, a] of Object.entries(GACHA_ARMY)) for (const b of a.banners) b.a
 const recruitOpen = ck => !!SAVE?.debugUnlock || isCleared(GACHA_ARMY[ck].opensAfter);
 // A banner's ★★★ characters: its own `pool`, else its featured characters. Never another banner's.
 const bannerPool = b => b.pool || b.featured || GACHA_ARMY[b.army].rares;
-const bannerOpen = b => recruitOpen(b.army) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
+const bannerOpen = b => recruitOpen(b.army) && bannerVisible(b) && (!b.after || SAVE?.debugUnlock || isCleared(b.after));   // debug unlock opens every banner
 const findBanner = (ck, id) => GACHA_ARMY[ck].banners.find(b => b.id === id);
 const isGachaUnit = rec => rec.key === 'recruit' || CHARACTERS[rec.key]?.stars === 3;
 
@@ -73,8 +73,9 @@ function grantPull(ck, banner, stars){
 // Spend pull currency on n pulls from a banner. Returns the results, or null if it can't be afforded.
 function doPull(ck, bannerId, n){
   const g = gachaState(ck), banner = findBanner(ck, bannerId);
-  if (!banner || !bannerOpen(banner) || g.tokens < n) return null;
-  g.tokens -= n;
+  const cur = bannerCur(ck, banner).key;   // Whispers/Writs, or an event's Gifts
+  if (!banner || !bannerOpen(banner) || (g[cur] || 0) < n) return null;
+  g[cur] -= n;
   let pity = g.pity[bannerId] || 0;
   const rolls = [];
   for (let i = 0; i < n; i++){

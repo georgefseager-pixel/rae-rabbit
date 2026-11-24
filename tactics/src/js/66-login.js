@@ -10,7 +10,7 @@ const LOGIN = {
   track: [{tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['rae', 'raeCasual'], instead: 10},
           {tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['frog', 'tiggleFormal'], instead: 10}],
 };
-const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const todayKey = () => { const d = gameDate(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const loginState = () => (SAVE.login ||= {claimed: 0, last: ''});
 const loginPending = () => !!SAVE && loginState().last !== todayKey();
 const ownsAttire = ([ck, id]) => SAVE.camps[ck].roster.some(r => r.key === ATTIRES[id].char && r.attires?.includes(id));
@@ -113,4 +113,5 @@ async function checkDailyLogin(force){
   };
 }
 // Debug: pretend today is a new day (the log-in becomes claimable again).
-function debugNewDay(){ loginState().last = ''; saveGame(); checkDailyLogin(true); }
+// (the game's calendar moves on a day: the log-in and once-a-day event stories come round again)
+function debugNewDay(){ SAVE.debugDays = (SAVE.debugDays || 0) + 1; saveGame(); toast('Debug: a new day.'); renderHub(); checkDailyLogin(true); }

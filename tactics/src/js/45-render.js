@@ -18,7 +18,7 @@ function resize(){
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
   const g = terrCv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) drawTile(g, x, y, MAP[y][x]);
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); }
   if (!noisePat){
     const n = document.createElement('canvas'); n.width = n.height = 96; const ng = n.getContext('2d');
     for (let i = 0; i < 1400; i++){ ng.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.18)' : 'rgba(255,245,220,.12)'; ng.fillRect(Math.random()*96, Math.random()*96, 1, Math.random()*2 + .5); }
@@ -70,7 +70,7 @@ function drawTile(g, x, y, ch){
     return;
   }
   const theme = mapDef?.theme || 'meadow';
-  if (theme !== 'meadow') return drawThemedTile(g, x, y, ch, theme);
+  if (theme !== 'meadow' && theme !== 'snow') return drawThemedTile(g, x, y, ch, theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -144,6 +144,24 @@ function stones(g, X, Y, list, cols, stitch){
     g.fillStyle = 'rgba(255,255,255,.12)'; ell(g, X + T*a - T*r*.3, Y + T*b - T*r*.3, T*r*.4, T*r*.25); g.fill();
     g.beginPath(); g.ellipse(X + T*a, Y + T*b, T*r*.82, T*r*.62, 0, 0, Math.PI*2); stitchStroke(g, stitch, T*.45, .7);
   });
+}
+// Snow: the meadow tile under a white blanket, with snow caps on trees and drifts
+function snowOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  // a cool blue-white snowfield; forests keep their green so they still read as cover
+  g.fillStyle = ch === 'F' ? 'rgba(222,234,250,.5)' : ch === 'M' ? 'rgba(232,240,252,.7)' : 'rgba(226,236,250,.64)'; g.fillRect(X, Y, T, T);
+  g.fillStyle = 'rgba(160,182,214,.22)'; ell(g, X + T*hash(x, y, 7), Y + T*hash(x, y, 8), T*.34, T*.1); g.fill();   // drift shadow
+  g.fillStyle = 'rgba(255,255,255,.95)';
+  for (let i = 0; i < 4; i++){ ell(g, X + T*hash(x, y, i + 30), Y + T*hash(x, y, i + 40), T*.022, T*.022); g.fill(); }
+  if (ch === 'F') for (const [a, b, s] of [[.3, .5, .9], [.72, .42, 1], [.52, .86, .8]]){   // snowy pines
+    const cx = X + T*a, by = Y + T*b, w = T*.2*s, h = T*.34*s;
+    g.fillStyle = 'rgba(40,50,60,.22)'; ell(g, cx + w*.2, by + T*.03, w*.9, T*.05); g.fill();
+    g.fillStyle = '#5a3e2a'; g.fillRect(cx - T*.02, by - T*.04, T*.04, T*.06);
+    for (let k = 0; k < 2; k++){ const ty = by - h*.3*k, tw = w*(1 - k*.28);
+      g.fillStyle = k ? '#2f6a4a' : '#26583d'; g.beginPath(); g.moveTo(cx - tw, ty - T*.02); g.lineTo(cx + tw, ty - T*.02); g.lineTo(cx, ty - h*.75); g.closePath(); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.moveTo(cx - tw*.45, ty - h*.42); g.lineTo(cx + tw*.45, ty - h*.42); g.lineTo(cx, ty - h*.75); g.closePath(); g.fill(); }
+  }
+  if (ch === 'M'){ g.fillStyle = 'rgba(150,170,200,.6)'; ell(g, X + T*.55, Y + T*.78, T*.38, T*.14); g.fill(); g.fillStyle = '#fbfdff'; ell(g, X + T*.5, Y + T*.7, T*.32, T*.16); g.fill(); }
 }
 function drawThemedTile(g, x, y, ch, theme){
   const X = x*T, Y = y*T, mine = theme === 'mine';
@@ -258,6 +276,10 @@ function render(now){
   if (shake > 0){ sx = (Math.random() - .5)*T*.15*shake; sy = (Math.random() - .5)*T*.15*shake; shake = Math.max(0, shake - .06); }
   ctx.translate(sx, sy);
   ctx.drawImage(terrCv, 0, 0, COLS*T, ROWS*T);
+  if (B?.ch?.exits){   // where couriers leave the map (the December event)
+    for (const [ex, ey] of B.ch.exits){ ctx.fillStyle = 'rgba(255,190,60,.42)'; ctx.fillRect(ex*T + 1, ey*T + 1, T - 2, T - 2); ctx.strokeStyle = 'rgba(190,120,20,.8)'; ctx.lineWidth = 2; ctx.strokeRect(ex*T + 2, ey*T + 2, T - 4, T - 4); ctx.fillStyle = '#8a4a10';
+      ctx.font = `${Math.round(T*.42)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = .85; ctx.fillText('⬇', ex*T + T/2, ey*T + T/2); ctx.globalAlpha = 1; }
+  }
   if (showDanger) fillKeys(dangerKeys, 'rgba(255,128,32,.26)');
   if (inspect && !inspect.dead){
     const m = inspect.ai === 'hold' ? [K(inspect.x, inspect.y)] : destinations(inspect, reach(inspect));

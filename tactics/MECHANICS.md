@@ -49,6 +49,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | hollow | roots, rocks | F2-4 |
 | riverWoods | forest, rocks, river | R2-1, F2-1, FD-1 |
 | flowerField | barricade `X` with two gaps, earth `M`, stockade fort | FD-3 |
+| snowWoods (snow) | snowy pines `F`, drifts `M`; road exits along the bottom row | XM-R, XM-F (December) |
 
 ## Movement types (a class's `mt`)
 
@@ -104,6 +105,7 @@ and The Lesson, which only help the player.
 | `charge` (default) | heads for the player and attacks | pressure, ambushes |
 | `guard` | waits until a player unit comes within its reach, then charges ("Waits for you") | defenders on rocks or forts; lets the player pull enemies out one at a time (**WL-1**, **WL-3**) |
 | `hold` | never moves; attacks anything in range | bosses on forts, gate-keepers |
+| `courier` | never attacks; runs for the nearest of the stage's `exits` and leaves the map there (`escaped`, not a kill). Enemy AI goes for couriers first (+25 target score) | December event (XM-R as enemies, XM-F as allies) |
 
 Spawn extras: `faction` (fight for another side), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
 `talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`.
@@ -135,6 +137,9 @@ Spawn extras: `faction` (fight for another side), `boss`, `elite` (★★ art an
 | Difficulty | `enemyMods` on a chapter or a stage | Ch. 1 (heavy), Ch. 2 (light), R1-3/R1-4/F1-3/F1-4 (eased), side stories `{}` |
 | Enemy banner text | `enemyLine` | F2-4, WL-* |
 | Prepare-screen note | `prepNote` | F2-4, all side stories |
+| Intercept (catch fleeing couriers; over when none are left on the map or still to come) | `objective: {type: 'intercept'}` + `exits` | XM-R |
+| Escort (protect couriers until the turn limit, or until they're all delivered or lost) | `objective: {type: 'survive', turns, escort: true}` + `escort: true` + `exits` | XM-F |
+| Exit squares (gold, ⬇) where couriers leave | `exits: [[x,y],…]` | XM-R, XM-F |
 
 ### Bonus stars (`star.type`)
 
@@ -180,6 +185,31 @@ experience rules) run roughly a level above it by late Chapter Two.
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |
 | Training | after Support A |
+
+## Seasonal events (`31-data-events.js`)
+
+An event runs for a calendar month (`EVENTS[id].month`) of the game's clock (`gameDate()`, which includes Debug: New
+Day's skipped days). It only shows on a route once that route's Camp and Side Stories are open, and introduces itself
+with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck>`). While it's on:
+
+- the hub shows a festive strip linking to the Side Stories tab, where the event's stories sit at the top in a festive card;
+- event side stories (`event: id` in `CAMPAIGNS[ck].sides`) can be played **once a game day** (`SAVE.eventPlays`). Each
+  day's run is a fresh run (full money, no "replay" penalty), but the story scenes only play the first time;
+- they pay the event's own currency by result: one gift per courier caught (XM-R) or kept safe (XM-F), up to 8. A defeat
+  pays nothing and doesn't use up the day. Best result is kept in `SAVE.eventBest`;
+- event banners (`event: id`, `currency: 'gifts'`, `festive: true` in `GACHA_ARMY[ck].banners`) appear, paid with that
+  currency (`gachaState(ck).gifts`), using the usual rules (own ★★★ only). They have present-themed seals, card backs and
+  an "unwrap" reveal. `bannerCur(ck, b)` says what a banner is paid with.
+
+| Event | When | Raepublic | Friggliarchy | Currency |
+|---|---|---|---|---|
+| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" | Rabbit Gifts / Frog Gifts |
+
+Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
+the clock on a day, so the daily log-in and the once-a-day event stories come round again.
+
+Placeholder art still to come: the courier (frog scout) look (`LOOKS.courier`, `art: 'none'`), the snowy-woods scene,
+and the festive costumes (`raeFestive`, `tiggleFestive` in `13-data-attires.js`).
 
 ## Economy
 

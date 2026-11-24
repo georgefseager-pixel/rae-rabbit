@@ -48,6 +48,7 @@ const CLASSES = {
   gpike:     {name: 'Black Pike',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pennant Pike',      base: {mhp:20,atk:10,def:6, spd:5,skl:5,mov:5}, g: {mhp:70,atk:40,def:45,spd:25,skl:35}},
   gscribe:   {name: 'Black Scribe',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Thorns',    base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:10,spd:40,skl:50}},
   gchaplain: {name: 'Black Chaplain', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Thorn Sceptre',     base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  courier:   {name: 'Gift Courier',   w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Candy Cane',        base: {mhp:17,atk:5, def:3, spd:9,skl:5,mov:4}, g: {mhp:40,atk:20,def:20,spd:30,skl:20}},   // December event: carries presents, runs for the road
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -101,6 +102,7 @@ const LOOKS = {
   king:      {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'crown', big:true},
   scout:     {sp:'frog', skin:'#6a8f3a', light:'#8cad55', dark:'#33491b', belly:'#c5d58c', gear:'reed', small:true},
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
+  courier:   {sp:'frog', art:'none', skin:'#7fae4a', light:'#a3cc6e', dark:'#3f5e22', belly:'#e4f0b8', gear:'bandana', band:'#c0392b'},   // placeholder until the courier art arrives
   froggle:   {sp:'frog', skin:'#6f9a52', light:'#93bc74', dark:'#38552a', belly:'#dfe8c0', gear:'bandana', band:'#b5302a'},
   fraggle:   {sp:'frog', skin:'#26262c', light:'#4a4a54', dark:'#0b0b0e', belly:'#5c5c66', gear:'circlet', eye:'#c41e2a', big:true},
   patch:     {sp:'bun', ears:'up', fur:'#d8742a', light:'#ee9a52', dark:'#8a4214', scarf:'#2c3559', gear:'eyepatch'},
@@ -116,7 +118,7 @@ const LOOKS = {
 const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', courier:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
 };
 

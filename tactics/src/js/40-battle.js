@@ -48,7 +48,7 @@ function enemyUnit(sp, faction, teamId = 'e'){
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, talk, talked: false});
+  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, talk, talked: false});
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -95,7 +95,7 @@ function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
   Music.jingle(win ? 'victory' : 'defeat');
-  B.resolve({win, retreated, reason, turn, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, gifts: win && B.ch.event ? giftCount() : 0, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -343,10 +343,47 @@ async function levelUp(u){
 
 // ---------- Panel ----------
 function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 'panel')}</div>`; }
+// ---------- Event couriers (31-data-events.js) ----------
+const couriers = () => units.filter(u => u.courier);
+// gifts so far: couriers caught (stealing) or couriers safe (escorting)
+const giftCount = () => B.ch.escort ? couriers().filter(u => u.escaped || !u.dead).length : couriers().filter(u => u.dead && !u.escaped).length;
+const giftLine = () => `<b>${EVENTS[B.ch.event].icon} ${giftCount()} of ${eventMaxGifts(B.ch)} ${B.ch.escort ? 'safe' : 'caught'}</b>`;
+const onExit = u => (B.ch.exits || []).some(([x, y]) => x === u.x && y === u.y);
+function exitField(u){
+  const f = new Array(COLS*ROWS).fill(Infinity), open = [];
+  for (const [x, y] of B.ch.exits || []){ f[K(x, y)] = 0; open.push(K(x, y)); }
+  while (open.length){
+    open.sort((a, b) => f[a] - f[b]);
+    const cur = open.shift(), cx = KX(cur), cy = KY(cur);
+    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx = cx + dx, ny = cy + dy; if (!inBounds(nx, ny)) continue;
+      const c = moveCost(u, cx, cy); if (c >= 99) continue;
+      const nk = K(nx, ny), nd = f[cur] + c;
+      if (nd < f[nk]){ f[nk] = nd; open.push(nk); }
+    }
+  }
+  return f;
+}
+// a courier runs for the nearest exit; reaching it, it leaves the map (escaped, or delivered)
+async function courierAct(e){
+  if (!onExit(e)){
+    const map = reach(e), f = exitField(e);
+    let bk = K(e.x, e.y);
+    for (const dk of destinations(e, map)) if (f[dk] < f[bk] || (f[dk] === f[bk] && map.get(dk).d < map.get(bk).d)) bk = dk;
+    if (bk !== K(e.x, e.y)){ await wait(150); await moveAlong(e, pathTo(map, bk)); }
+  }
+  if (onExit(e)){
+    e.escaped = true; popup(e, B.ch.escort ? '🎁 Delivered!' : 'Got away!', B.ch.escort ? '#9ff0b0' : '#ffb3a6'); Sfx.play(B.ch.escort ? 'coin' : 'flee');
+    await tween(380, t => { e.alpha = 1 - t; }); e.dead = true;
+  }
+  updateDanger();
+}
 function objectiveText(){
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const goal = ob.type === 'boss' ? `Defeat ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}.`
-    : ob.type === 'survive' ? `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).` : 'Rout the enemy.';
+    : ob.type === 'survive' ? (B.ch.escort ? `Protect the couriers until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach the road.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
+    : ob.type === 'intercept' ? 'Catch as many couriers as you can before they reach the road.' : 'Rout the enemy.';
+  if (B.ch.event) return `${goal} ${giftLine()}`;
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
 }
@@ -587,6 +624,7 @@ async function runTwist(){
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
+  wave.spawned = true;
   let first = true;
   for (const sp of wave.units){
     const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); u.alpha = 0; units.push(u);
@@ -666,6 +704,7 @@ async function aiAct(e){
     const th = e.w === 'staff' ? rangeTiles(destinations(e, reach(e)), [1, 2]) : threat(e);
     if (foes(e).some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
   }
+  if (e.ai === 'courier') return courierAct(e);
   if (e.w === 'staff') return aiHeal(e);
   const map = e.ai === 'hold' ? new Map([[K(e.x, e.y), {d: 0, prev: -1}]]) : reach(e);
   const dests = destinations(e, map);
@@ -679,7 +718,8 @@ async function aiAct(e){
       if (A.dmg*hits >= p.hp) score += 40*A.hit/100;
       if (D.can) score -= D.dmg*D.hit/100*(D.dbl ? 2 : 1)*.4;
       score += ter(pos.x, pos.y).def*1.5 + (p.lord ? 2 : 0) + (p.vip ? 3 : 0) - map.get(dk).d*.05;
-      if (hasAb(p, 'bait')) score += 1000;   // Bait, By Choice: anyone who can reach Patch goes for him
+      if (hasAb(p, 'bait')) score += 1000;
+      if (p.courier) score += 25;   // the December thieves go for the presents   // Bait, By Choice: anyone who can reach Patch goes for him
       if (!best || score > best.score) best = {score, dk, p};
     }
   }
@@ -710,6 +750,8 @@ function checkEnd(){
   if (vip){ finishBattle(false, false, 'vip:' + vip.name); return true; }
   const ob = B.objective, boss = units.find(u => u.boss);
   if (ob.type === 'boss' && boss && boss.dead){ finishBattle(true); return true; }
+  // event: over once every courier has been caught, delivered or got away, and no more are coming
+  if (B.ch.event && couriers().length && !couriers().some(u => !u.dead) && !B.waves.some(w => !w.spawned && w.units.some(s => s.courier))){ finishBattle(true); return true; }
   const wavesLeft = B.waves.some(w => w.turn > turn || (w.turn === turn && phase === 'p'));
   if (!team('e').length && !(ob.type === 'survive' && (wavesLeft || (B.twist && !B.twist.done)))){ finishBattle(true); return true; }
   return false;
