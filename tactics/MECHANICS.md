@@ -209,9 +209,11 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
 
-Placeholder art still to come: the courier (frog scout) look (`LOOKS.courier`, `art: 'none'`), the snowy-woods scene,
-and the festive costumes (`raeFestive` on the Raepublic banner; `tiggleFestive` is defined but on no banner for now, since
-Chriggle Chraggle is the Friggliarchy banner's only ★★★).
+Art: the couriers and the Friggliarchy festive banner's soldiers are frog scouts in elf green (`art/elf*-*.png`, a
+battle pose per weapon; skins recoloured from `elf*skin` masks). The banner's ★ soldiers (`troops: 'elves'`: Elf Guard,
+Holly Axe, Pennant Elf, Elf Archer, Carol Scribe) wear the green; its ★★ wear Santa red, built at load from the
+`elf*armour` masks. Still to come: the snowy-woods scene and the festive costumes (`raeFestive` on the Raepublic
+banner; `tiggleFestive` is defined but on no banner for now, since Chriggle Chraggle is the Friggliarchy banner's only ★★★).
 
 ## Economy
 

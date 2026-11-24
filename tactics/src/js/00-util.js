@@ -48,7 +48,8 @@ function artKey(key, kind, o = outfitOf(key)){ return o && ART[key + o]?.[kind] 
 // (art/grunt-*.png, skin colours in SKINS).
 function strHash(s){ let h = 7; for (const c of String(s)) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
 const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'grunt', palette: () => SKINS}, troop: {base: 'troop', palette: () => FURS},
-                     black: {base: 'black', palette: () => SKINS}};   // Fraggle's Black Guard (art/black-*.png)
+                     black: {base: 'black', palette: () => SKINS},   // Fraggle's Black Guard (art/black-*.png)
+                     elf: {base: 'elf', palette: () => SKINS}};       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
@@ -96,6 +97,14 @@ function artResolve(ent, kind){
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w];
     if (pose && ART['black' + e + pose + fur]?.[kind]) return 'black' + e + pose + fur;
     if (ART['black' + e + fur]?.[kind]) return 'black' + e + fur;
+  }
+  if (sp.base === 'elf'){
+    // December frog scouts (the couriers, and the festive banner's soldiers): a battle pose for each weapon
+    // (art/elf<weapon>-battle.png; swords and staves use elf-battle.png). ★★ wear Santa red: built at load from art/elf*armour-*.png.
+    const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book'}[ent.w || CLASSES[cls]?.w] || '';
+    if (ART['elf' + pose + e + fur]?.[kind]) return 'elf' + pose + e + fur;
+    if (ART['elf' + e + fur]?.[kind]) return 'elf' + e + fur;
   }
   if (sp.base === 'grunt'){
     // ★★ frog soldiers wear red (elite) armour: art built from art/grunt*armour-*.png at load
@@ -180,7 +189,7 @@ async function buildVariants(base, palette, weightOf){
     } catch (e){ console.warn('recolour failed for', base, kind, e); }
   }
 }
-async function buildEliteArmour(base){
+async function buildEliteArmour(base, tone = l => l*.95, sat = s => s*1.25 + .08){
   loadReport(65 + 34*Math.min(1, ++variantsDone/VARIANT_SETS));
   if (!ART[base]) return;
   ART[base + 'elite'] = {};
@@ -193,7 +202,7 @@ async function buildEliteArmour(base){
       for (let i = 0; i < W*H; i++){
         if (m[i] <= 0) continue;
         const [, s, l] = rgbToHsl(px[i*4]/255, px[i*4 + 1]/255, px[i*4 + 2]/255);
-        const [r, gg, b] = hslToRgb(356, clamp(s*1.25 + .08, 0, 1), l*.95);
+        const [r, gg, b] = hslToRgb(356, clamp(sat(s), 0, 1), tone(l));
         px[i*4] += (r*255 - px[i*4])*m[i]; px[i*4 + 1] += (gg*255 - px[i*4 + 1])*m[i]; px[i*4 + 2] += (b*255 - px[i*4 + 2])*m[i];
       }
       g.putImageData(data, 0, 0);
@@ -204,7 +213,7 @@ async function buildEliteArmour(base){
 }
 const loadReport = (v, text) => window.__load?.(v, text);   // the loading screen's bar (shell.html)
 let variantsDone = 0;
-const VARIANT_SETS = 9 + 5 + 2 + 14;   // the buildVariants / buildEliteArmour calls below, for the loading bar
+const VARIANT_SETS = 9 + 5 + 2 + 14 + 5 + 10;   // the buildVariants / buildEliteArmour calls below, for the loading bar
 async function buildFurVariants(){
   loadReport(65, 'Dyeing the soldiers\u2019 coats…');
   for (const base of ['miner', 'minerbulk', 'minerold', 'minersling', 'troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook',
@@ -219,9 +228,12 @@ async function buildFurVariants(){
   });
   // Elite (★★) frog art: the green armour, cloak, plume and banner turned red, before the skin colours.
   for (const base of ['grunt', 'gruntbow']) await buildEliteArmour(base);
+  // ★★ festive frogs: the elf-green hat and coat turned Santa red (lifted a little: the green felt is dark)
+  const elves = ['elf', 'elfaxe', 'elflance', 'elfbow', 'elfbook'];
+  for (const base of elves) await buildEliteArmour(base, l => clamp(l*1.35 + .07, 0, .6), s => s*1.7 + .25);
   // Fraggle's Black Guard (black*) recolour the same way, from art/black*skin-<kind>.png.
   const black = ['', 'axe', 'lance', 'book', 'staff'].flatMap(p => ['black' + p, 'blackelite' + p]);
-  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', ...black]) await buildVariants(base, SKINS, async (kind, px, W, H) => {
+  for (const base of ['grunt', 'gruntbow', 'gruntelite', 'gruntbowelite', ...black, ...elves.flatMap(b => [b, b + 'elite'])]) await buildVariants(base, SKINS, async (kind, px, W, H) => {
     // the elite grunts reuse the plain grunt masks; the elite Black Guard have masks of their own
     const skin = await maskAlpha(ART[(ART[base + 'skin'] ? base : base.replace('elite', '')) + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
     for (let i = 0; i < w.length; i++){
