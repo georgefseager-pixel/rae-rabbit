@@ -22,6 +22,10 @@ const ATTIRES = {
   tiggleFestive: {char: 'tiggle', outfit: 'festive', name: 'Festive Cloak (placeholder)', desc: 'Green velvet, gold bells, and a hood with a bobble. Biggle says it is undignified. Biggle is jealous.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
+  // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker
+  // than the Lily Knight's armour, and much easier to break.
+  gingerbiggle: {char: 'biggle', outfit: 'ginger', name: 'Gingerbiggle', cls: 'gingerknight', mods: {def: -5, spd: 5, skl: 2, mov: 1}, ability: 'cantcatch',
+              desc: 'From a nightmare Biggle had after eating an entire gingerbread house, roof and all. He woke up, had the costume made, and will not discuss it.'},
   rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3}, ability: 'lancecharge',
               desc: 'Biggle\'s parade armour, rose-pink and gold, and the royal stables\' finest horse. He insists the colour is "crimson".'},
 };

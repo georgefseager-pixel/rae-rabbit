@@ -159,6 +159,7 @@ function calc(a, d, ap, dp){
   if (hasAb(d, 'bait') && phase === 'e' && sideOfTeam(d) === 'p' && !d.baitUsed) def += 2;
   if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
+  if (hasAb(d, 'cantcatch') && d.ranFar) hitB -= 25;
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, atk + tri - def),
@@ -175,6 +176,7 @@ let popups = [], shots = [], banner = null, shake = 0;
 function popup(u, text, color){ popups.push({x: u.x + .5, y: u.y + .3, text, color, t0: performance.now(), dur: 950}); }
 async function moveAlong(u, path){
   u.movedDist = (u.movedDist || 0) + Math.max(0, path.length - 1);
+  if (hasAb(u, 'cantcatch') && u.movedDist >= 3) u.ranFar = true;   // Can't Catch Me: until his next turn
   for (let i = 1; i < path.length; i++){
     const fx = KX(path[i-1]), fy = KY(path[i-1]), tx = KX(path[i]), ty = KY(path[i]);
     Sfx.play('step');
@@ -403,7 +405,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -541,7 +543,7 @@ async function act(a){
   else if (a === 'heal') startTargeting('heal');
   else if (a === 'draw') startTargeting('draw');
   else if (a === 'wait') finishUnit(sel);
-  else if (a === 'cancel'){ const u = sel; place(u, orig.x, orig.y); u.movedDist = 0; select(u); }
+  else if (a === 'cancel'){ const u = sel; place(u, orig.x, orig.y); u.movedDist = 0; u.ranFar = false; select(u); }
   else if (a === 'back') openActions();
   else if (a === 'confirm' && fc){
     busy = true; refreshTop();
@@ -572,6 +574,7 @@ async function startPlayerPhase(){
   for (const u of team('p')) u.moved = false;
   for (const u of units){ u.movedDist = 0; if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) === 'p')) u.seams = 0; }
   for (const u of units) if (sideOfTeam(u) !== 'p') u.hobbled = false;   // enemies' slowed turn is over
+  for (const u of units) if (sideOfTeam(u) === 'p') u.ranFar = false;   // Can't Catch Me lasts until his next turn
   refreshTop(); panelIdle();
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
   await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
@@ -636,7 +639,7 @@ async function spawnReinforcements(){
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
-  for (const u of units){ u.movedDist = 0; u.baitUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false;
+  for (const u of units){ u.movedDist = 0; u.baitUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false; else u.ranFar = false;
     if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) !== 'p')) u.seams = 0; }
   if (team('a').length){   // allied phase: they fight on their own
     Sfx.play('phase', 'p');

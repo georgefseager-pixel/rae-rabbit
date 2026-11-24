@@ -115,9 +115,9 @@ GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', 
   tease: 'A parcel in brown paper, tied with string. It\'s been shaken. Something rattles.',
   blurb: 'Placeholder festive banner, December only. Paid for with Rabbit Gifts from How Rae Stole Christmas. Featuring a festive costume for Rae.'});
 GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
-  pool: ['chriggle'], bg: 'woods', troops: 'elves',
+  pool: ['chriggle'], attires: ['gingerbiggle'], bg: 'woods', troops: 'elves',
   tease: 'A box wrapped in green paper and gold ribbon, stamped with the royal seal. It smells faintly of pondweed.',
-  blurb: 'December only, paid for with Frog Gifts from Froggy Festivities. Chriggle Chraggle, the first Gift-Bringer and Friggle Fraggle\'s legendary ancestor, has come down from wherever he spends the rest of the year. He has a list. The ★ soldiers who answer are frog scouts in elf green; the ★★ have been promoted to Santa red.'});
+  blurb: 'December only, paid for with Frog Gifts from Froggy Festivities. Chriggle Chraggle, the first Gift-Bringer and Friggle Fraggle\'s legendary ancestor, has come down from wherever he spends the rest of the year. He has a list. Featuring Gingerbiggle: Biggle in gingerbread, as he appeared in a nightmare after eating an entire gingerbread house. The ★ soldiers who answer are frog scouts in elf green; the ★★ have been promoted to Santa red.'});
 GACHA_ARMY.frog.troops.elves = {stars: [1, 2], generic: ['xblade', 'xaxe', 'xpike', 'xbow', 'xscribe'],
   names: ['Jingle', 'Tinsel', 'Sprout', 'Holly', 'Pudding', 'Bauble', 'Sleet', 'Cracker', 'Nutmeg', 'Figgy', 'Wassail', 'Snowdrop', 'Mince', 'Clove', 'Ivy']};
 // what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}

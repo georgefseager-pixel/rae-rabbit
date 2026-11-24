@@ -34,6 +34,7 @@ const CLASSES = {
   // Frogs
   prince:    {name: 'Frog Prince',    w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Royal Blade',      base: {mhp:19,atk:11,def:5, spd:9,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:55,skl:50}},
   roseknight:{name: 'Rose Knight',    w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Rose Lance',        base: {mhp:24,atk:12,def:8, spd:7,skl:7,mov:7}, g: {mhp:70,atk:45,def:35,spd:40,skl:40}},   // Biggle's Rose Knight attire: on horseback
+  gingerknight:{name: 'Gingerbread Knight', w: 'sword', rng: [1,1], mt: 'foot', wname: 'Candy Cane Rapier', base: {mhp:24,atk:12,def:7, spd:8,skl:9,mov:5}, g: {mhp:70,atk:45,def:30,spd:45,skl:45}},   // Biggle's Gingerbiggle attire (December)
   lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
   lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
   bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
@@ -127,7 +128,7 @@ const LOOKS = {
 const CLASS_LOOK = {
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', courier:'courier', giftgiver:'chriggle', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
 };
 
@@ -278,6 +279,7 @@ const ART_CROP = {
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
+  biggleginger: {panel: ['190% auto', '44% 9%'], talk: ['145% auto', '44% 7%']},   // Gingerbiggle attire
   bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},   // Rose Knight attire: mounted, so the face is small and high
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)

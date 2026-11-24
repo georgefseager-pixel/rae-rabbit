@@ -12,7 +12,8 @@ function basicWeapon(rec){
 function weaponOf(rec){
   if (rec.arm){
     const ck = campOfRec(rec), it = ck && armsOf(ck).find(a => a.uid === rec.arm), w = it && WEAPONS[it.id];
-    if (w) return {...w, rng: w.rng || CLASSES[clsOf(rec)].rng, uid: it.uid, id: it.id};
+    // a weapon the current class can't use (e.g. his halberd while Biggle wears a sword-class attire) waits in the Armoury
+    if (w && canCarry(rec, w)) return {...w, rng: w.rng || CLASSES[clsOf(rec)].rng, uid: it.uid, id: it.id};
   }
   return basicWeapon(rec);
 }

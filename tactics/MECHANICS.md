@@ -68,12 +68,14 @@ open maps and bridges (ford, riverWoods), awkward on rocky ones (ridge, thornHil
 An attire can change a character's class (and so weapon, movement and growths) and stats while worn
 (`13-data-attires.js`). Story scenes always show the story outfit. Attires come from the story (dialogue `{attire}`)
 or from recruiting: a banner's `attires: [ids]` are featured ★★★ results alongside its characters; a duplicate, or
-one whose character isn't in the army, becomes a ★★★ weapon instead.
+one whose character isn't in the army, becomes a ★★★ weapon instead. A carried weapon the attire's class can't use
+waits in the Armoury (the class's basic weapon is used) and comes back when the attire comes off.
 
 | Attire | Character | Change | From |
 |---|---|---|---|
 | Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
 | Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
+| Gingerbiggle | Biggle | Lily Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
 
 ## Unique abilities (`14-data-abilities.js`)
 
@@ -94,6 +96,7 @@ and The Lesson, which only help the player.
 | Tiggle | They Listen | allies within 2: +10 Hit | |
 | Biggle | Hold the Line | enemies stop when they reach a square next to him | choke points, bridges |
 | Biggle (Rose Knight) | Lance Charge | +3 damage after moving 3+ squares that turn | open maps |
+| Biggle (Gingerbiggle) | Can't Catch Me | after moving 3+ squares, enemies get −25 Hit against him until his next turn | open maps, hit-and-run |
 | Rhubarb | Keep Them Digging | an enemy she hits moves only 1 square next turn | |
 | The Executioner | One Stroke | +25 Crit vs enemies below half HP | |
 | Fraggle Jr. | Nobody Comes | no ally within 2: +3 Atk, +3 Spd | flanks |
@@ -204,7 +207,7 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 
 | Event | When | Raepublic | Friggliarchy | Currency |
 |---|---|---|---|---|
-| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer) | Rabbit Gifts / Frog Gifts |
+| The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer; attire Gingerbiggle) | Rabbit Gifts / Frog Gifts |
 
 Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.

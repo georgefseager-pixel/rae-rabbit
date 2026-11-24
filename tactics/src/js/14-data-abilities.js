@@ -14,6 +14,7 @@ const ABILITIES = {
   listen:      {name: 'They Listen',       icon: '📣', text: 'Allies within 2 squares of Tiggle get +10 Hit.'},
   holdline:    {name: 'Hold the Line',     icon: '🛡️', text: 'Enemies can\'t move past the squares next to Biggle: they have to stop there, or go round.'},
   lancecharge: {name: 'Lance Charge',      icon: '🐎', text: 'On horseback: +3 damage if Biggle moved at least 3 squares before attacking this turn.'},
+  cantcatch:   {name: 'Can\'t Catch Me',     icon: '🍪', text: 'Run, run, as fast as you can: if Gingerbiggle moved at least 3 squares this turn, enemies get −25 Hit against him until his next turn.'},
   digging:     {name: 'Keep Them Digging', icon: '⛏️', text: 'An enemy Rhubarb hits can only move 1 square on its next turn.'},
   onestroke:   {name: 'One Stroke',        icon: '🪓', text: '+25 Crit against enemies below half HP.'},
   naughty:     {name: 'Naughty List',      icon: '📜', text: 'Any enemy Chriggle Chraggle hits goes on the Naughty List: for the rest of the battle, everyone deals it +2 damage.'},
