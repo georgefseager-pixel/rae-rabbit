@@ -63,7 +63,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | foot | 2 | 3 | most |
 | armor | 2 | can't enter | Lily Knight, Armoured Guard |
 | bog | 2 | 2 | Club Guard, Marsh Lord (frogs at home in the marsh) |
-| climb | 1 | 3 | monkeys: Acrobat, Nut Thrower, Canopy Heir (Speshul). Trees and flowers are open ground to them |
+| climb | 1 | 3 | monkeys: Acrobat, Nut Thrower, Canopy Heir (Speshul, a bow). Trees and flowers are open ground to them |
 | mounted | 3 | can't enter | Rose Knight (Biggle's attire) |
 
 Mounted units move far on open ground (Rose Knight: Mov 7) but are slowed by forest and blocked by rocks: good on
@@ -205,7 +205,7 @@ Abilities: Aurora, Bend, Not Break (once a battle, survive a killing blow on 1 H
 +10 Hit against higher-level enemies). Art: Monkeyland's soldiers (and Captain Cornelius, in dark fur) use `art/mk*-*.png` (★★ / `elite: true` monkeys use the
 gilded, scarred `art/mkelite*-*.png`), a battle pose per weapon
 (healers read from the book pose), fur recoloured from the `mk*skin` masks into `MONKEY_FURS` in the background just after
-loading. Aurora has her own art (`art/aurora-*.png`); Speshul is still felt plush (`LOOKS.speshul`);
+loading. Aurora has her own art (`art/aurora-*.png`); Speshul too (`art/speshul-*.png`; a bowman, Canopy Heir);
 scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg-*.jpg`). Your own units always stand on your side's coaster, whatever their faction.
 
 ## Progression and unlocks

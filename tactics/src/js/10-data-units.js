@@ -75,7 +75,7 @@ const CLASSES = {
   mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
-  heir:      {name: 'Canopy Heir',    w: 'sword', rng: [1,1], mt: 'climb',   wname: 'Wooden Sabre',      base: {mhp:19,atk:10,def:4, spd:11,skl:8,mov:6}, g: {mhp:60,atk:45,def:25,spd:65,skl:50}},   // Speshul
+  heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -135,7 +135,7 @@ const LOOKS = {
   // art: 'mk' draws Monkeyland's armoured soldiers (art/mk*-*.png), fur recoloured
   monkey:    {sp:'monkey', art:'mk', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
   aurora:    {sp:'monkey', fur:'#3a3038', light:'#5a4c58', dark:'#1c161c', face:'#f4dcb8', gear:'tiara', big:true},   // art/aurora-*.png
-  speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
+  speshul:   {sp:'monkey', fur:'#7ea23a', light:'#a2c45c', dark:'#46601c', face:'#f6e0be', gear:'tiara', small:true},   // art/speshul-*.png
   cornelius:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
   kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
   persimmon: {sp:'monkey', art:'none', fur:'#7a5034', light:'#a07052', dark:'#40261a', face:'#ecceaa', gear:'helm'},                     // placeholder ★★★ (Friggliarchy monkey banner)
@@ -337,6 +337,7 @@ const ART_CROP = {
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   ilc:      {panel: ['175% auto', '46% 10%'], talk: ['135% auto', '46% 8%']},
+  speshul:  {panel: ['165% auto', '52% 6%'], talk: ['130% auto', '52% 4%']},
   aurora:   {panel: ['165% auto', '50% 6%'], talk: ['130% auto', '50% 4%']},   // the Governess: her crown sits high
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
