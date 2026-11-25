@@ -75,7 +75,7 @@ const CLASSES = {
   mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
-  priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Lotus (a healer)
+  priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
@@ -138,7 +138,7 @@ const LOOKS = {
   monkey:    {sp:'monkey', art:'mk', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
   aurora:    {sp:'monkey', fur:'#3a3038', light:'#5a4c58', dark:'#1c161c', face:'#f4dcb8', gear:'tiara', big:true},   // art/aurora-*.png
   speshul:   {sp:'monkey', fur:'#7ea23a', light:'#a2c45c', dark:'#46601c', face:'#f6e0be', gear:'tiara', small:true},   // art/speshul-*.png
-  lotus:     {sp:'monkey', fur:'#e48aa0', light:'#f6b4c4', dark:'#9a4a5c', face:'#f6e0be', gear:'tiara'},   // art/lotus-*.png
+  chansey:     {sp:'monkey', fur:'#e48aa0', light:'#f6b4c4', dark:'#9a4a5c', face:'#f6e0be', gear:'tiara'},   // art/chansey-*.png
   cornelius: {sp:'monkey', fur:'#d0642a', light:'#ee8a4e', dark:'#7a3412', face:'#b08a70', gear:'helm', big:true},   // art/cornelius-*.png (an orangutan)
   kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
@@ -157,7 +157,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
-  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'lotus',
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -229,7 +229,7 @@ const CHARACTERS = {
   cornelius:   {name:'Captain Cornelius', faction:'monkey', look:'cornelius', cls:'guardcapt', lv:6, stars:3, stats:{mhp:29,atk:14,def:9,spd:4,skl:7,mov:5},   // The Loyal Court banner
                 retort:'I swore to keep Monkeyland whole. I am still trying.',
                 intro:{title:'Captain of the Governess\'s Guard', text:'An old orangutan who has guarded three Governesses and taught every monkey in the castle to climb, Speshul included. When Monkeyland split at the stream, he stayed with Aurora. He has not said a word about it since.'}},
-  lotus:       {name:'Lotus', faction:'monkey', look:'lotus', cls:'priestess', lv:6, stars:3, stats:{mhp:23,atk:10,def:5,spd:8,skl:9,mov:5},   // The Loyal Court banner
+  chansey:       {name:'Chansey', faction:'monkey', look:'chansey', cls:'priestess', lv:6, stars:3, stats:{mhp:23,atk:10,def:5,spd:8,skl:9,mov:5},   // The Loyal Court banner
                 retort:'Please. There is still time to put that down.',
                 intro:{title:'Head Priestess of Monkeyland', text:'Aurora\'s head priestess, keeper of the lotus temple and of an egg nobody has ever seen hatch. She believes kindness can mend anything, even a crown. She has written the King a petition every spring for thirty years. He has never once replied.'}},
   aurora:      {name:'Aurora', faction:'monkey', look:'aurora', cls:'governess', lv:6, stats:{mhp:25,atk:13,def:6,spd:8,skl:11,mov:5},
@@ -262,7 +262,7 @@ const SPEAKERS = Object.assign({
   courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
   burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
   pecan:       {name:'Lookout Pecan', faction:'monkey', look:'monkey'},
-  governor:    {name:'Governor Bulrush', faction:'frog', look:'toadknight'},   // the King's governor of the eastern march (Lotus's side stories)
+  governor:    {name:'Governor Bulrush', faction:'frog', look:'toadknight'},   // the King's governor of the eastern march (Chansey's side stories)
   sorrel:      {name:'Lord Sorrel', faction:'monkey', look:'monkey'},   // Aurora's elder brother (her side stories)
   envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
   refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
@@ -344,7 +344,7 @@ const ART_CROP = {
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   ilc:      {panel: ['175% auto', '46% 10%'], talk: ['135% auto', '46% 8%']},
-  lotus:    {panel: ['160% auto', '50% 6%'], talk: ['128% auto', '50% 4%']},
+  chansey:    {panel: ['160% auto', '50% 6%'], talk: ['128% auto', '50% 4%']},
   cornelius: {panel: ['160% auto', '50% 7%'], talk: ['128% auto', '50% 5%']},
   speshul:  {panel: ['165% auto', '52% 6%'], talk: ['130% auto', '52% 4%']},
   aurora:   {panel: ['165% auto', '50% 6%'], talk: ['130% auto', '50% 4%']},   // the Governess: her crown sits high

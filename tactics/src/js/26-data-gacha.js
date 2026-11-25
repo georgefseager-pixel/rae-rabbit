@@ -79,8 +79,8 @@ const GACHA_ARMY = {
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
       {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], attires: ['rose'], after: 'F2-4', bg: 'woods', troops: 'fraggle',
        blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard. Biggle\'s Rose Knight attire is featured too.'},
-      {id: 'frog-monkeys', name: 'The Loyal Court', kind: 'featured', featured: ['cornelius', 'lotus'], after: 'F3-6', bg: 'castle', troops: 'monkeys',
-       blurb: 'Captain Cornelius, the old orangutan who stayed with the Governess when Monkeyland split, brings her guard to the prince, and Lotus, her head priestess, brings her blessing. They kneel, as they always have. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
+      {id: 'frog-monkeys', name: 'The Loyal Court', kind: 'featured', featured: ['cornelius', 'chansey'], after: 'F3-6', bg: 'castle', troops: 'monkeys',
+       blurb: 'Captain Cornelius, the old orangutan who stayed with the Governess when Monkeyland split, brings her guard to the prince, and Chansey, her head priestess, brings her blessing. They kneel, as they always have. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
     ],
   },
 };

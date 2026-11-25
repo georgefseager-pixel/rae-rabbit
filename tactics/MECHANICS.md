@@ -109,7 +109,7 @@ and The Lesson, which only help the player.
 | The Executioner | One Stroke | +25 Crit vs enemies below half HP | |
 | Fraggle Jr. | Nobody Comes | no ally within 2: +3 Atk, +3 Spd | flanks |
 | Ilc the Scout | Guiding Nose | allies who start their move within 2 squares of him get +1 Mov | escorts, races, long marches |
-| Lotus | Sanctuary | whoever she mends can't be chosen as a target by enemies until her next turn | protecting a wounded front-liner |
+| Chansey | Sanctuary | whoever she mends can't be chosen as a target by enemies until her next turn | protecting a wounded front-liner |
 | Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
@@ -158,7 +158,7 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Exit squares (gold, ⬇) where couriers leave | `exits: [[x,y],…]` | XM-R, XM-F, R3-1, R3-2, F3-3, F3-5 |
 | Escort outside the event (refugees walk to the exits on their own) | `objective: {type: 'survive', turns, escort: true, who, dest}` + allies with `ai: 'courier', courier: true` | R3-1 |
 | Intercept outside the event (no gifts; over when no runner is left) | `objective: {type: 'intercept', who, dest}` + enemy couriers | F3-3 (the grain runners) |
-| Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5, LO-2 |
+| Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5, CS-2 |
 | Units change sides mid-battle | `events: [{turn, defect: true, popup, talk}]` + spawns with `defects: true`: enemies become allies, allies become enemies. Happens on replays too | R3-5 (Speshul's guards join you), F3-5 (the hall guard betray Tiggle) |
 
 ### Bonus stars (`star.type`)
@@ -194,7 +194,7 @@ per level, HP counted at half). The current line on both routes:
 | Recommended | 1 · 1 · 2 · 2 | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
 
 Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Side stories of Chapter Three's characters (Speshul, Aurora,
-Cornelius, Lotus; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
+Cornelius, Chansey; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
 
 Keep new stages on this line: about +½ a level per stage, and +1 for a finale. Expected player levels (from the
 experience rules) run roughly a level above it by late Chapter Two.
@@ -217,7 +217,7 @@ scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg
 |---|---|
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
-| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, placeholder ★★★ Kumquat; ★★★ Captain Cornelius and Lotus) | after each route's Chapter Three finale (R3-6, F3-6) |
+| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, placeholder ★★★ Kumquat; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |
