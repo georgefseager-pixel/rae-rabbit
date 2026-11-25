@@ -422,10 +422,6 @@ document.addEventListener('click', e => {
 
 // ---------- Title ----------
 // How the two-campaign structure works, shown once when a new game starts.
-const INTRO = [
-  {who: 'narr', text: 'There are two stories here: the Raepublic and the Friggliarchy. Switch between them whenever you like.'},
-  {who: 'narr', text: 'Sometimes the stories meet. When they do, neither can go on until both have reached that point.'},
-];
 $('#contBtn').addEventListener('click', () => {
   SAVE = SAVE || Store.load();
   if (!SAVE) return;
@@ -435,5 +431,5 @@ $('#newBtn').addEventListener('click', async e => {
   if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again to erase your save')) return;
   newSave(); saveGame(); prep = null;
   $('#title').hidden = true; renderHub();
-  await talk(INTRO); Music.want(campTrack());
+  Music.want(campTrack());
 });
