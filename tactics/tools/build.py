@@ -26,7 +26,7 @@ import hashlib
 CACHE = ROOT / "tools" / ".artcache"   # encoded images, by source file contents (slow WebP effort, so only redone when art changes)
 CACHE.mkdir(exist_ok=True)
 def embed(f, key, kind):
-    h = hashlib.sha1(f.read_bytes() + f"{key}|{kind}|v2".encode()).hexdigest()
+    h = hashlib.sha1(f.read_bytes() + f"{key}|{kind}|v3".encode()).hexdigest()
     c = CACHE / h
     if c.exists(): return c.read_text()
     out = _embed(f, key, kind); c.write_text(out); return out
@@ -34,8 +34,9 @@ def embed(f, key, kind):
 def _embed(f, key, kind):
     """Character art is embedded as WebP (much smaller, keeps transparency); masks and JPEG
     backgrounds as they are. Images are capped at SIZES, plenty for a phone screen."""
-    if f.suffix == ".jpg":
-        return "data:image/jpeg;base64," + base64.b64encode(f.read_bytes()).decode()
+    if f.suffix == ".jpg":   # painted backgrounds: WebP at quality 80 is visually the same and about a fifth smaller
+        buf = io.BytesIO(); Image.open(f).convert("RGB").save(buf, "WEBP", quality=80, method=6)
+        return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
     if key.endswith(MASKS):   # lossless WebP: exactly the same pixels as the PNG, about half the size
         buf = io.BytesIO(); Image.open(f).save(buf, "WEBP", lossless=True, method=6)
         return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
