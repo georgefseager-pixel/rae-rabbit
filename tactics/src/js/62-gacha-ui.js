@@ -8,7 +8,7 @@ const attireEnt = id => { const a = ATTIRES[id], c = CHARACTERS[a.char]; return 
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const items = [...keys.map(k => ({ent: k, look: CHARACTERS[k].look || k, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls})),
-                 ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${CHARACTERS[ATTIRES[id].char].name} · attire`}))];
+                 ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${charName(ATTIRES[id].char)} · attire`}))];
   const figs = items.map((x, i) => {
     const art = artFor(x.ent, 'portrait'), src = art || plushPortrait(x.look);
     return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
@@ -34,7 +34,7 @@ function bannerRoster(ck, b){
     ent: {key: 'recruit', look: CLASS_LOOK[t.cls], cls: t.cls, name: t.name, uid: t.id, stars: t.stars, faction: CAMPAIGNS[ck].faction}}));
   // featured attires count as ★★★ results too
   for (const id of b.attires || []){ const a = ATTIRES[id];
-    rares.push({stars: 3, name: `${a.name} (${CHARACTERS[a.char].name}'s attire)`, cls: attireEnt(id).cls, ent: attireEnt(id), got: st.roster.some(r => r.key === a.char && r.attires?.includes(id))}); }
+    rares.push({stars: 3, name: `${a.name} (${charName(a.char)}'s attire)`, cls: attireEnt(id).cls, ent: attireEnt(id), got: st.roster.some(r => r.key === a.char && r.attires?.includes(id))}); }
   const all = [...rares, ...soldiers];
   return {rares, soldiers, got: all.filter(x => x.got).length, total: all.length};
 }
@@ -63,7 +63,7 @@ function recruitTabHTML(ck){
   const b = findBanner(ck, gachaSel[ck]), cur = bannerCur(ck, b), bal = g[cur.key] || 0, pity = g.pity[b.id] || 0, R = GACHA.rarity;
   const poolRares = [...bannerPool(b).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
                      ...(b.featured || []).filter(k => !bannerPool(b).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
-                     ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${CHARACTERS[ATTIRES[id].char].name} (rate up)`)].join(', ');
+                     ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${charName(ATTIRES[id].char)} (rate up)`)].join(', ');
   return `
     <div class="gbar"><div class="tok${b.festive ? ' festive' : ''}"><span class="seal sm">${cur.seal}</span><b>${bal}</b> ${cur.name}</div>
       ${b.festive ? `<span class="evuntil">🎁 Festive · until 31 December</span>` : `<button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button>`}</div>

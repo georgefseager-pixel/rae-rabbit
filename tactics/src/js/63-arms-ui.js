@@ -1,7 +1,7 @@
 // ================= Armoury tab and the weapon picker =================
 const weaponRowHTML = (w, extra = '', count = 0, cmp = null) => `<div class="wrow s${w.stars || 0}${cmp ? ' cmp-' + cmp.verdict : ''}">${weaponIconSVG(w, 34)}
   <div class="wtxt"><div class="wname">${w.name}${count > 1 ? ` <span class="wcount">×${count}</span>` : ''} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
-    <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
+    <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${speakerName(w.owner) || CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
     ${cmp ? cmp.html : ''}${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
 // Compare a weapon with the one being carried: per-stat changes (green better, red worse) and a verdict.
 function compareWeapons(w, cur){
@@ -38,7 +38,9 @@ function armouryTabHTML(ck){
 // by who carries them, and picking one swaps.
 function openWeaponPicker(uid){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === uid); if (!rec) return;
-  const cur = weaponOf(rec), basic = basicWeapon(rec), mine = rec.arm;
+  const cur = weaponOf(rec), basic = basicWeapon(rec), cls = clsOf(rec);
+  // a weapon the current class can't use (an attire changed it) waits in the Armoury: it isn't what they're carrying
+  const mine = rec.arm && cur.uid === rec.arm ? rec.arm : null;
   const usable = armsOf(ck).filter(it => WEAPONS[it.id] && canCarry(rec, WEAPONS[it.id]));
   const spares = {}, carried = [];
   for (const it of usable){
@@ -49,17 +51,17 @@ function openWeaponPicker(uid){
   const byPower = (a, b) => WEAPONS[b].stars - WEAPONS[a].stars || WEAPONS[b].mt - WEAPONS[a].mt;
   let ov = $('#armsheet');
   if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
-  const curW = withRange(cur, rec.cls);
+  const curW = withRange(cur, cls);
   const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count, on ? null : compareWeapons(w, curW))}</button>`;
   const rows = [];
-  if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], rec.cls), mine, '<span class="whold">Carrying</span>', 0, true));
-  rows.push(pick(withRange(basic, rec.cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));
+  if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], cls), mine, '<span class="whold">Carrying</span>', 0, true));
+  rows.push(pick(withRange(basic, cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));
   for (const id of Object.keys(spares).sort(byPower)){
     const n = spares[id].length;
-    rows.push(pick(withRange(WEAPONS[id], rec.cls), spares[id][0].uid, `<span class="whold free">${n > 1 ? `${n} spare` : 'Spare'}</span>`, n));
+    rows.push(pick(withRange(WEAPONS[id], cls), spares[id][0].uid, `<span class="whold free">${n > 1 ? `${n} spare` : 'Spare'}</span>`, n));
   }
   for (const {it, h} of carried.sort((a, b) => byPower(a.it.id, b.it.id)))
-    rows.push(pick(withRange(WEAPONS[it.id], rec.cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
+    rows.push(pick(withRange(WEAPONS[it.id], cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
   ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[clsOf(rec)].w]} user · carrying ${cur.name}</h2>
     <div class="wlist">${rows.join('')}</div>
     ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[clsOf(rec)].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}

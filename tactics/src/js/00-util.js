@@ -287,8 +287,14 @@ function toast(msg){
 
 // Two-tap confirmation for destructive buttons (the viewer has no confirm() dialog).
 function armed(btn, label){
-  if (btn.dataset.armed){ delete btn.dataset.armed; return true; }
-  const orig = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label;
-  setTimeout(() => { if (btn.dataset.armed){ delete btn.dataset.armed; btn.textContent = orig; } }, 2500);
+  if (btn.dataset.armed){ delete btn.dataset.armed; return true; }   // (the label is put back by the timer below)
+  // the confirmation is usually longer than the label: keep the button's size, and shrink the text until it fits
+  const orig = btn.textContent, r = btn.getBoundingClientRect();
+  btn.dataset.armed = '1'; btn.style.width = r.width + 'px'; btn.style.height = r.height + 'px'; btn.textContent = label;
+  btn.classList.add('armed');
+  let fs = parseFloat(getComputedStyle(btn).fontSize) || 16;
+  while (fs > 9 && (btn.scrollWidth > btn.clientWidth + 1 || btn.scrollHeight > btn.clientHeight + 1)){ fs -= 0.5; btn.style.fontSize = fs + 'px'; }
+  const reset = () => { btn.textContent = orig; btn.classList.remove('armed'); btn.style.width = btn.style.height = btn.style.fontSize = ''; };
+  setTimeout(() => { if (btn.dataset.armed){ delete btn.dataset.armed; reset(); } }, 2500);
   return false;
 }

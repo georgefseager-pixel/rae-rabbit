@@ -9,6 +9,7 @@ const nowMs = () => gameDate().getTime();
 function energyNow(){
   const e = SAVE.energy ||= {n: ENERGY.max, t: nowMs()}, now = nowMs();
   if (e.n >= ENERGY.max){ e.n = ENERGY.max; e.t = now; return e; }
+  if (e.t > now) e.t = now;   // the clock went backwards (time zone, a manual change): count from now, don't stall
   const got = Math.floor((now - e.t)/ENERGY.regenMs);
   if (got > 0){ e.n = Math.min(ENERGY.max, e.n + got); e.t = e.n >= ENERGY.max ? now : e.t + got*ENERGY.regenMs; }
   return e;

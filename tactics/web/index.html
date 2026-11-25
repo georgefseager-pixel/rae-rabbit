@@ -871,6 +871,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   color:#f3e7cb;font:15px 'Alegreya Sans',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.6);cursor:pointer}
 #updbar b{color:#ecc673}
 
+/* a button asking 'tap again' (armed() in 00-util.js): the longer label wraps and shrinks to fit */
+.btn.armed{white-space:normal;line-height:1.05;overflow:hidden;padding-left:8px;padding-right:8px}
+.bchips{display:grid;grid-template-columns:1fr 1fr;overflow:visible}   /* every banner in view: two to a row */
+.bchip{min-width:0;font-size:14px;line-height:1.15}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -1252,9 +1257,15 @@ function toast(msg){
 
 // Two-tap confirmation for destructive buttons (the viewer has no confirm() dialog).
 function armed(btn, label){
-  if (btn.dataset.armed){ delete btn.dataset.armed; return true; }
-  const orig = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label;
-  setTimeout(() => { if (btn.dataset.armed){ delete btn.dataset.armed; btn.textContent = orig; } }, 2500);
+  if (btn.dataset.armed){ delete btn.dataset.armed; return true; }   // (the label is put back by the timer below)
+  // the confirmation is usually longer than the label: keep the button's size, and shrink the text until it fits
+  const orig = btn.textContent, r = btn.getBoundingClientRect();
+  btn.dataset.armed = '1'; btn.style.width = r.width + 'px'; btn.style.height = r.height + 'px'; btn.textContent = label;
+  btn.classList.add('armed');
+  let fs = parseFloat(getComputedStyle(btn).fontSize) || 16;
+  while (fs > 9 && (btn.scrollWidth > btn.clientWidth + 1 || btn.scrollHeight > btn.clientHeight + 1)){ fs -= 0.5; btn.style.fontSize = fs + 'px'; }
+  const reset = () => { btn.textContent = orig; btn.classList.remove('armed'); btn.style.width = btn.style.height = btn.style.fontSize = ''; };
+  setTimeout(() => { if (btn.dataset.armed){ delete btn.dataset.armed; reset(); } }, 2500);
   return false;
 }
 
@@ -6959,6 +6970,8 @@ function speakerName(who){
   for (const c of Object.values(SAVE?.camps || {})){ const r = c.roster.find(r => r.key === who); if (r) return r.name; }
   return SAVE?.names?.[who] || SPEAKERS[who]?.name || '';
 }
+// a character's name as the story has it now (Rabbit becomes Rae Rabbit, Little Sister becomes Flopsy Flora)
+const charName = key => speakerName(key) || CHARACTERS[key]?.name || key;
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
 const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[clsOf(rec)].g;
@@ -9164,7 +9177,7 @@ const attireEnt = id => { const a = ATTIRES[id], c = CHARACTERS[a.char]; return 
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const items = [...keys.map(k => ({ent: k, look: CHARACTERS[k].look || k, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls})),
-                 ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${CHARACTERS[ATTIRES[id].char].name} · attire`}))];
+                 ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${charName(ATTIRES[id].char)} · attire`}))];
   const figs = items.map((x, i) => {
     const art = artFor(x.ent, 'portrait'), src = art || plushPortrait(x.look);
     return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
@@ -9190,7 +9203,7 @@ function bannerRoster(ck, b){
     ent: {key: 'recruit', look: CLASS_LOOK[t.cls], cls: t.cls, name: t.name, uid: t.id, stars: t.stars, faction: CAMPAIGNS[ck].faction}}));
   // featured attires count as ★★★ results too
   for (const id of b.attires || []){ const a = ATTIRES[id];
-    rares.push({stars: 3, name: `${a.name} (${CHARACTERS[a.char].name}'s attire)`, cls: attireEnt(id).cls, ent: attireEnt(id), got: st.roster.some(r => r.key === a.char && r.attires?.includes(id))}); }
+    rares.push({stars: 3, name: `${a.name} (${charName(a.char)}'s attire)`, cls: attireEnt(id).cls, ent: attireEnt(id), got: st.roster.some(r => r.key === a.char && r.attires?.includes(id))}); }
   const all = [...rares, ...soldiers];
   return {rares, soldiers, got: all.filter(x => x.got).length, total: all.length};
 }
@@ -9219,7 +9232,7 @@ function recruitTabHTML(ck){
   const b = findBanner(ck, gachaSel[ck]), cur = bannerCur(ck, b), bal = g[cur.key] || 0, pity = g.pity[b.id] || 0, R = GACHA.rarity;
   const poolRares = [...bannerPool(b).map(k => `${CHARACTERS[k].name}${b.featured?.includes(k) ? ' (rate up)' : ''}`),
                      ...(b.featured || []).filter(k => !bannerPool(b).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
-                     ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${CHARACTERS[ATTIRES[id].char].name} (rate up)`)].join(', ');
+                     ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${charName(ATTIRES[id].char)} (rate up)`)].join(', ');
   return `
     <div class="gbar"><div class="tok${b.festive ? ' festive' : ''}"><span class="seal sm">${cur.seal}</span><b>${bal}</b> ${cur.name}</div>
       ${b.festive ? `<span class="evuntil">🎁 Festive · until 31 December</span>` : `<button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button>`}</div>
@@ -9413,7 +9426,7 @@ function recruitTutorial(ck){
 // ================= Armoury tab and the weapon picker =================
 const weaponRowHTML = (w, extra = '', count = 0, cmp = null) => `<div class="wrow s${w.stars || 0}${cmp ? ' cmp-' + cmp.verdict : ''}">${weaponIconSVG(w, 34)}
   <div class="wtxt"><div class="wname">${w.name}${count > 1 ? ` <span class="wcount">×${count}</span>` : ''} <span class="wst">${w.stars ? '★'.repeat(w.stars) : 'Basic'}</span></div>
-    <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
+    <div class="wmeta">${WTYPE[w.type]}${w.lash ? ' (whip)' : ''} · ${weaponStatsText(w)}${w.owner ? ` · ${speakerName(w.owner) || CHARACTERS[w.owner]?.name || w.owner} only` : ''}</div>
     ${cmp ? cmp.html : ''}${w.desc ? `<div class="wdesc">${w.desc}</div>` : ''}</div>${extra}</div>`;
 // Compare a weapon with the one being carried: per-stat changes (green better, red worse) and a verdict.
 function compareWeapons(w, cur){
@@ -9450,7 +9463,9 @@ function armouryTabHTML(ck){
 // by who carries them, and picking one swaps.
 function openWeaponPicker(uid){
   const ck = SAVE.current, rec = stOf().roster.find(r => r.uid === uid); if (!rec) return;
-  const cur = weaponOf(rec), basic = basicWeapon(rec), mine = rec.arm;
+  const cur = weaponOf(rec), basic = basicWeapon(rec), cls = clsOf(rec);
+  // a weapon the current class can't use (an attire changed it) waits in the Armoury: it isn't what they're carrying
+  const mine = rec.arm && cur.uid === rec.arm ? rec.arm : null;
   const usable = armsOf(ck).filter(it => WEAPONS[it.id] && canCarry(rec, WEAPONS[it.id]));
   const spares = {}, carried = [];
   for (const it of usable){
@@ -9461,17 +9476,17 @@ function openWeaponPicker(uid){
   const byPower = (a, b) => WEAPONS[b].stars - WEAPONS[a].stars || WEAPONS[b].mt - WEAPONS[a].mt;
   let ov = $('#armsheet');
   if (!ov){ ov = document.createElement('div'); ov.id = 'armsheet'; ov.className = 'ov'; document.body.appendChild(ov); }
-  const curW = withRange(cur, rec.cls);
+  const curW = withRange(cur, cls);
   const pick = (w, val, side, count = 0, on = false) => `<button class="wpick${on ? ' on' : ''}" data-arm-equip="${val || ''}" type="button">${weaponRowHTML(w, `<div class="wside">${side}</div>`, count, on ? null : compareWeapons(w, curW))}</button>`;
   const rows = [];
-  if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], rec.cls), mine, '<span class="whold">Carrying</span>', 0, true));
-  rows.push(pick(withRange(basic, rec.cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));
+  if (mine) rows.push(pick(withRange(WEAPONS[armsOf(ck).find(a => a.uid === mine).id], cls), mine, '<span class="whold">Carrying</span>', 0, true));
+  rows.push(pick(withRange(basic, cls), null, mine ? '' : '<span class="whold">Carrying</span>', 0, !mine));
   for (const id of Object.keys(spares).sort(byPower)){
     const n = spares[id].length;
-    rows.push(pick(withRange(WEAPONS[id], rec.cls), spares[id][0].uid, `<span class="whold free">${n > 1 ? `${n} spare` : 'Spare'}</span>`, n));
+    rows.push(pick(withRange(WEAPONS[id], cls), spares[id][0].uid, `<span class="whold free">${n > 1 ? `${n} spare` : 'Spare'}</span>`, n));
   }
   for (const {it, h} of carried.sort((a, b) => byPower(a.it.id, b.it.id)))
-    rows.push(pick(withRange(WEAPONS[it.id], rec.cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
+    rows.push(pick(withRange(WEAPONS[it.id], cls), it.uid, `<span class="whold swap">Swap with ${h.name}</span><small class="wgets">${h.name} gets ${swapResult(ck, rec, h)}</small>`));
   ov.innerHTML = `<div class="card wsheet"><h1>${rec.name}</h1><h2>${WTYPE[CLASSES[clsOf(rec)].w]} user · carrying ${cur.name}</h2>
     <div class="wlist">${rows.join('')}</div>
     ${usable.length ? '' : `<p class="meta">No other ${WTYPE[CLASSES[clsOf(rec)].w].toLowerCase()}s yet. They come from the story and from recruiting.</p>`}
@@ -9811,6 +9826,7 @@ const nowMs = () => gameDate().getTime();
 function energyNow(){
   const e = SAVE.energy ||= {n: ENERGY.max, t: nowMs()}, now = nowMs();
   if (e.n >= ENERGY.max){ e.n = ENERGY.max; e.t = now; return e; }
+  if (e.t > now) e.t = now;   // the clock went backwards (time zone, a manual change): count from now, don't stall
   const got = Math.floor((now - e.t)/ENERGY.regenMs);
   if (got > 0){ e.n = Math.min(ENERGY.max, e.n + got); e.t = e.n >= ENERGY.max ? now : e.t + got*ENERGY.regenMs; }
   return e;
@@ -9852,7 +9868,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '42bad216cfe1';
+const BUILD_ID = '8c89c94e3c78';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

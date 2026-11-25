@@ -100,6 +100,8 @@ function speakerName(who){
   for (const c of Object.values(SAVE?.camps || {})){ const r = c.roster.find(r => r.key === who); if (r) return r.name; }
   return SAVE?.names?.[who] || SPEAKERS[who]?.name || '';
 }
+// a character's name as the story has it now (Rabbit becomes Rae Rabbit, Little Sister becomes Flopsy Flora)
+const charName = key => speakerName(key) || CHARACTERS[key]?.name || key;
 const saveGame = () => Store.save(SAVE);
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
 const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[clsOf(rec)].g;
