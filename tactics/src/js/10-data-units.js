@@ -134,7 +134,7 @@ const LOOKS = {
   // Monkeyland (Chapter Three): placeholder felt plush until their art arrives
   // art: 'mk' draws Monkeyland's armoured soldiers (art/mk*-*.png), fur recoloured
   monkey:    {sp:'monkey', art:'mk', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
-  aurora:    {sp:'monkey', fur:'#a87448', light:'#d29e6c', dark:'#5e3a1c', face:'#f4dcb8', gear:'tiara', big:true},
+  aurora:    {sp:'monkey', fur:'#3a3038', light:'#5a4c58', dark:'#1c161c', face:'#f4dcb8', gear:'tiara', big:true},   // art/aurora-*.png
   speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
   cornelius:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
   kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
@@ -337,6 +337,7 @@ const ART_CROP = {
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   ilc:      {panel: ['175% auto', '46% 10%'], talk: ['135% auto', '46% 8%']},
+  aurora:   {panel: ['165% auto', '50% 6%'], talk: ['130% auto', '50% 4%']},   // the Governess: her crown sits high
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},

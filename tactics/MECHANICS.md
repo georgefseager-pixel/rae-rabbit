@@ -205,7 +205,7 @@ Abilities: Aurora, Bend, Not Break (once a battle, survive a killing blow on 1 H
 +10 Hit against higher-level enemies). Art: Monkeyland's soldiers (and Captain Cornelius, in dark fur) use `art/mk*-*.png` (★★ / `elite: true` monkeys use the
 gilded, scarred `art/mkelite*-*.png`), a battle pose per weapon
 (healers read from the book pose), fur recoloured from the `mk*skin` masks into `MONKEY_FURS` in the background just after
-loading. Aurora and Speshul are still felt plush (`LOOKS.aurora/speshul`);
+loading. Aurora has her own art (`art/aurora-*.png`); Speshul is still felt plush (`LOOKS.speshul`);
 scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg-*.jpg`). Your own units always stand on your side's coaster, whatever their faction.
 
 ## Progression and unlocks
