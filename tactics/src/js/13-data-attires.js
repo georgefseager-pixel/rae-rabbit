@@ -16,6 +16,7 @@ const ATTIRES = {
   floraRags: {char: 'sister', outfit: 'camp', name: 'Camp Rags', desc: 'Little Sister\'s old camp clothes. Flopsy Flora never threw them away.'},
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
+  floraCarrot: {char: 'sister', outfit: 'carrot', name: 'In a Carrot', desc: 'Flopsy sewed it herself, from a sack of orange felt and a great deal of enthusiasm. She says it is camouflage. Nobody has had the heart to ask for what.'},   // log-in 21: look only
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
   // Across the Stream (after Chapter Three): Rae in the armour of the monkey militia who came south with Speshul.
   // A spear instead of a sword; sturdier, and slower.

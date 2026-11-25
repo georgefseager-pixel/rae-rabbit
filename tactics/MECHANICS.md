@@ -279,6 +279,6 @@ Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), 
 
 Daily log-in (`66-login.js`): every new calendar day counts as one more log-in (not necessarily consecutive). Each
 gives ONE currency, alternating: odd log-ins Whispers, even Writs. 2, 2, 3, 2, 3, 3, then the seventh is a milestone
-with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Formal Wear (+5 Writs); after that the
+with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Formal Wear (+5 Writs), log-in 21 Flopsy's In a Carrot (look only); after that the
 second week repeats with 10 on every seventh. About 10 of each per week. "Debug: New Day" on the campaign screen makes
 it claimable again.

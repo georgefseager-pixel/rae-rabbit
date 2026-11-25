@@ -3,12 +3,13 @@
 // row, and missing days costs nothing. Log-ins are shown in weeks of seven; every seventh is a milestone with a
 // recruit-style reveal. Each log-in gives ONE story's recruiting currency, alternating: odd log-ins Whispers
 // (the Raepublic), even log-ins Writs (the Friggliarchy).
-//   Log-in 7: Rae's Casual Wear (+5 Whispers)    Log-in 14: Tiggle's Formal Wear (+5 Writs)
-//   After 14, the second week repeats, with 10 on every seventh instead of a costume.
+//   Log-in 7: Rae's Casual Wear (+5 Whispers)    Log-in 14: Tiggle's Formal Wear (+5 Writs)    Log-in 21: Flopsy's In a Carrot
+//   After 21, the second week repeats, with 10 on every seventh instead of a costume.
 // State: SAVE.login = {claimed: log-ins claimed in all, last: 'YYYY-MM-DD' of the last}.
 const LOGIN = {
   track: [{tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['rae', 'raeCasual'], instead: 10},
-          {tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['frog', 'tiggleFormal'], instead: 10}],
+          {tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['frog', 'tiggleFormal'], instead: 10},
+          {tokens: 2}, {tokens: 2}, {tokens: 3}, {tokens: 2}, {tokens: 3}, {tokens: 3}, {tokens: 5, attire: ['rae', 'floraCarrot'], instead: 10}],
 };
 const todayKey = () => { const d = gameDate(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const loginState = () => (SAVE.login ||= {claimed: 0, last: ''});

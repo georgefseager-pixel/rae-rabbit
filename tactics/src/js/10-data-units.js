@@ -308,7 +308,7 @@ const SKINS = {
 // drop pushes the bottom of the art below the stage, behind the dialogue box: used for art cropped
 // at the waist, so it reads as a full-sized figure rather than a giant head.
 const STAGE_SIZE = {
-  sistercamp: {h: .8}, sisterflora: {h: .8}, sisterxmas: {h: .8},     // the little sister
+  sistercamp: {h: .8}, sisterflora: {h: .8}, sisterxmas: {h: .8}, sistercarrot: {h: .82},     // the little sister
   king: {h: 1.15},                                // full-body art: a little taller than everyone, as befits a king
   condemned: {h: .92},                            // big ears: a touch smaller so they stay on screen
   fragglejr: {h: .84},                            // the young son: shorter than Tiggle
@@ -355,6 +355,7 @@ const ART_CROP = {
   biggleginger: {panel: ['190% auto', '44% 9%'], talk: ['145% auto', '44% 7%']},   // Gingerbiggle attire
   bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},   // Rose Knight attire: mounted, so the face is small and high
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
+  sistercarrot: {panel: ['175% auto', '48% 6%'], talk: ['140% auto', '48% 4%']},   // In a Carrot (log-in 21)
   sisterxmas: {panel: ['185% auto', '45% 8%'], talk: ['145% auto', '45% 6%']},   // Hoppy Xmas attire
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)
 };
