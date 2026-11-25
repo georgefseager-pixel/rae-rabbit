@@ -26,7 +26,7 @@ import hashlib
 CACHE = ROOT / "tools" / ".artcache"   # encoded images, by source file contents (slow WebP effort, so only redone when art changes)
 CACHE.mkdir(exist_ok=True)
 def embed(f, key, kind):
-    h = hashlib.sha1(f.read_bytes() + f"{key}|{kind}|v4".encode()).hexdigest()
+    h = hashlib.sha1(f.read_bytes() + f"{key}|{kind}|v5".encode()).hexdigest()
     c = CACHE / h
     if c.exists(): return c.read_text()
     out = _embed(f, key, kind); c.write_text(out); return out
@@ -47,9 +47,9 @@ def _embed(f, key, kind):
         im = im.resize((round(im.width * SIZES[kind] / im.height), SIZES[kind]), Image.LANCZOS)
     # a light smoothing of the colour (not the outline) removes palette speckle, which compresses badly
     a = im.getchannel("A"); im = im.filter(ImageFilter.GaussianBlur(.5)); im.putalpha(a)
-    # method 6: same quality, smaller file. alpha_quality 80: the transparent edges compress too (lossless edges were
-    # about a fifth of every character image; at 80 they look the same, even zoomed in)
-    buf = io.BytesIO(); im.save(buf, "WEBP", quality=75, alpha_quality=80, method=6)
+    # method 6: same quality, smaller file. alpha_quality 60: the transparent edges compress too (lossless edges were
+    # about a fifth of every character image; at 60 they look the same, even zoomed in)
+    buf = io.BytesIO(); im.save(buf, "WEBP", quality=75, alpha_quality=60, method=6)
     return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
 
 for f in sorted([*(ROOT / "art").glob("*.png"), *(ROOT / "art").glob("*.jpg")]):
