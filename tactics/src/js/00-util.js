@@ -104,7 +104,11 @@ function artResolve(ent, kind){
   if (sp.base === 'mk'){
     // Monkeyland soldiers: one portrait and map icon, and a battle pose for each weapon (art/mk<weapon>-battle.png;
     // swords use mk-battle.png, and the healers read from a book like the scribes)
+    // ★★ (elite) monkeys wear the gilded armour and the scar: the same set as art/mkelite*-*.png
+    const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'book'}[ent.w || CLASSES[cls]?.w] || '';
+    if (ART['mk' + e + pose + fur]?.[kind]) return 'mk' + e + pose + fur;
+    if (ART['mk' + e + fur]?.[kind]) return 'mk' + e + fur;
     if (ART['mk' + pose + fur]?.[kind]) return 'mk' + pose + fur;
     if (ART['mk' + fur]?.[kind]) return 'mk' + fur;
   }
@@ -272,7 +276,7 @@ async function buildFurVariants(){
   furReady = true; loadReport(100);
   // Monkeyland soldiers (Chapter Three on): their fur colours (art/mk*skin-<kind>.png) are made after the loading
   // screen, in the background, so they don't slow the start. Until then they show as felt plush.
-  (async () => { for (const base of ['mk', 'mkaxe', 'mklance', 'mkbow', 'mkbook']) await buildVariants(base, MONKEY_FURS, skinWeight(base));
+  (async () => { for (const base of ['mk', 'mkaxe', 'mklance', 'mkbow', 'mkbook', 'mkelite', 'mkeliteaxe', 'mkelitelance', 'mkelitebow', 'mkelitebook']) await buildVariants(base, MONKEY_FURS, skinWeight(base));
     if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 

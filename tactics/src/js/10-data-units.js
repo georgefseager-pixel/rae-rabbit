@@ -137,6 +137,8 @@ const LOOKS = {
   aurora:    {sp:'monkey', fur:'#a87448', light:'#d29e6c', dark:'#5e3a1c', face:'#f4dcb8', gear:'tiara', big:true},
   speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
   tamarind:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
+  kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
+  persimmon: {sp:'monkey', art:'none', fur:'#7a5034', light:'#a07052', dark:'#40261a', face:'#ecceaa', gear:'helm'},                     // placeholder ★★★ (Friggliarchy monkey banner)
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -182,6 +184,8 @@ const CHARACTERS = {
   patch:    {name:'Patch', faction:'rae', look:'patch', cls:'rfighter', wname:'Corporal\'s Axe', lv:4, stars:3, stats:{mhp:27,atk:13,def:7,spd:6,skl:6,mov:5},   // one-eyed Republic corporal; second Raepublic banner
              retort:'Only the one eye left, frog, and it\'s on you!',
              intro:{title:'Corporal, East Company', text:'He has marched at the front of the Republic\'s columns longer than anyone, and been caught by the frogs more times than he will admit. One of those times cost him an eye. He laughs about it. He laughs about most things.'}},
+  kumquat:  {name:'Kumquat', faction:'rae', look:'kumquat', cls:'mkguard', lv:6, stars:3, placeholder:true, stats:{mhp:27,atk:14,def:9,spd:8,skl:9,mov:5}, retort:'I chose the rabbits. I\'d choose them again.',
+             intro:{title:'Placeholder character', text:'A monkey who crossed the stream with Speshul. Their story is still to be written.'}},
   ilc:      {name:'Ilc the Scout', faction:'rae', look:'ilc', cls:'runaway', lv:3, stars:3, stats:{mhp:23,atk:12,def:6,spd:9,skl:8,mov:5},   // December banner only: a frog scout who defected
              retort:'Sorry! Sorry. I\'m on the other side now. Merry festival, though!',
              intro:{title:'The Runaway Scout', text:'A young frog scout who spent every December carrying presents past the mine camps to frog children, and never once to a rabbit. This year he walked his sack straight through the Raepublic\'s gate instead. He has not been back.'}},
@@ -226,6 +230,8 @@ const CHARACTERS = {
   speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
                 retort:'We were a kingdom once! We can be one again!',
                 intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
+  persimmon:   {name:'Persimmon', faction:'frog', look:'persimmon', cls:'mkthrow', lv:6, stars:3, placeholder:true, stats:{mhp:24,atk:14,def:6,spd:10,skl:12,mov:5}, retort:'The Governess stayed. So did I.',
+                intro:{title:'Placeholder character', text:'A monkey who stayed loyal to the Governess. Their story is still to be written.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.

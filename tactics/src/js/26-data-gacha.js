@@ -40,7 +40,12 @@ const GACHA_ARMY = {
     rares: ['brigand', 'condemned', 'lantern', 'ironear'],
     // Other companies a banner can draw its soldiers from (troops: '<name>'). Republic soldiers choose their names.
     // (★★ Republic veterans wear the plumed helmet)
-    troops: {republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
+    troops: {
+      // Monkeyland's soldiers who went with Speshul (Chapter Three): ★ in bronze, ★★ in the gilded elite armour
+      monkeys: {stars: [1, 2], generic: ['mkacro', 'mkguard', 'mkbrute', 'mkthrow', 'mkchant'],
+        names: ['Loquat', 'Guava', 'Lychee', 'Papaya', 'Pomelo', 'Durian', 'Sapote', 'Longan', 'Rambutan', 'Medlar',
+                'Jujube', 'Carambola', 'Mangosteen', 'Cherimoya', 'Feijoa']},
+      republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
       // the ten ★ soldiers take the first ten names, the five ★★ veterans the last five
       names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy',
               'Comfrey', 'Mallow', 'Teasel', 'Vetch', 'Woad']}},
@@ -49,6 +54,8 @@ const GACHA_ARMY = {
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
       {id: 'rae-froggle', name: 'The Republic Stands', kind: 'featured', featured: ['froggle', 'patch'], after: 'R2-4', bg: 'republic', troops: 'republic',
        blurb: 'Out of hiding at last: the frog who built the Republic and gave it away, and the one-eyed corporal who always marches at the front. The ★ soldiers who answer are trained troops of the Republic, and the ★★ are its helmeted veterans.'},
+      {id: 'rae-monkeys', name: 'Across the Stream', kind: 'featured', featured: ['kumquat'], after: 'R3-6', bg: 'monkeyland', troops: 'monkeys',
+       blurb: 'Placeholder ★★★. The monkeys who crossed the stream with Speshul take up the Raepublic\'s colours. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
       {id: 'rae-lantern', name: 'A Light Underground', kind: 'featured', featured: ['lantern'], after: 'R2-4', bg: 'mine', troops: 'republic',
        blurb: 'Placeholder banner. Lantern Rabbit answers more often, and the ★ soldiers who answer are trained troops of the Republic.'},
     ],
@@ -61,7 +68,12 @@ const GACHA_ARMY = {
     generic: ['lily', 'bruiser', 'reed', 'croaker', 'blade'],
     rares: ['duckweed', 'glimmer', 'bogsworth'],
     // Fraggle Friggle's Black Guard: the ★ and ★★ soldiers on Fraggle Jr.'s banner (★★ wear the closed helm)
-    troops: {fraggle: {stars: [1, 2], generic: ['gblade', 'gaxe', 'gpike', 'gscribe', 'gchaplain'],
+    troops: {
+      // the monkeys who stayed with the Governess (Chapter Three): ★ in bronze, ★★ in the gilded elite armour
+      monkeys: {stars: [1, 2], generic: ['mkacro', 'mkguard', 'mkbrute', 'mkthrow', 'mkchant'],
+        names: ['Acacia', 'Baobab', 'Cypress', 'Kapok', 'Mahogany', 'Teak', 'Sandalwood', 'Ebony', 'Rosewood', 'Wisteria',
+                'Magnolia', 'Camphor', 'Laurel', 'Myrtle', 'Banksia']},
+      fraggle: {stars: [1, 2], generic: ['gblade', 'gaxe', 'gpike', 'gscribe', 'gchaplain'],
       names: ['Thornback', 'Gloam', 'Blackwater', 'Nettlejaw', 'Sedge', 'Murkmire', 'Briarwick', 'Fen', 'Rook', 'Sloe',
               'Blackthorn', 'Wormwood', 'Grimsby', 'Tarn', 'Hollin']}},
     banners: [
@@ -69,6 +81,8 @@ const GACHA_ARMY = {
        blurb: 'The crown\'s keepers of the mines answer the call: the overseer with her lash, and the headsman with his axe.'},
       {id: 'frog-fragglejr', name: 'The Black Frog\'s Son', kind: 'featured', featured: ['fragglejr'], attires: ['rose'], after: 'F2-4', bg: 'woods', troops: 'fraggle',
        blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard. Biggle\'s Rose Knight attire is featured too.'},
+      {id: 'frog-monkeys', name: 'The Loyal Court', kind: 'featured', featured: ['persimmon'], after: 'F3-6', bg: 'castle', troops: 'monkeys',
+       blurb: 'Placeholder ★★★. The monkeys who stayed with the Governess kneel to the prince, as they always have. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
       {id: 'frog-duckweed', name: 'The King\'s Favour', kind: 'featured', featured: ['duckweed'], after: 'F2-4', bg: 'court',
        blurb: 'Placeholder banner. Dame Duckweed answers more often.'},
       {id: 'frog-glimmer', name: 'Watch on the Ridge', kind: 'featured', featured: ['glimmer'], after: 'F2-4', bg: 'woods',

@@ -701,7 +701,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('mkguard',7,4,1,'hold',{boss: true, elite: true, flees: true, key: 'tamarind', name: 'Captain Tamarind', look: 'tamarind'}),
             E('mkguard',6,4,4,'guard'), E('mkguard',6,5,4,'guard'), E('mkthrow',6,1,3,'guard'), E('mkthrow',6,8,3,'guard'),
-            E('mkacro',6,2,7), E('mkacro',6,7,8), E('mkbrute',7,4,6), E('mkchant',6,5,1,'guard'),
+            E('mkacro',6,2,7), E('mkacro',6,7,8), E('mkbrute',7,4,6,'charge',{elite: true}), E('mkchant',6,5,1,'guard'),
             E('lily',6,1,1,'guard',{faction: 'frog'}), E('reed',6,8,1,'guard',{faction: 'frog'}),
           ],
           bossTalk: [
@@ -739,7 +739,7 @@ const CAMPAIGNS = {
             E('lily',6,3,2,'guard'), E('lily',6,6,2,'guard'), E('reed',6,2,4,'guard'), E('reed',6,7,4,'guard'), E('bruiser',6,4,6),
             E('mkguard',6,2,8,'charge',{faction: 'monkey', defects: true}), E('mkacro',6,7,8,'charge',{faction: 'monkey', defects: true}),
             E('mkthrow',6,3,10,'guard',{faction: 'monkey', defects: true}), E('mkguard',6,6,10,'charge',{faction: 'monkey', defects: true}),
-            E('mkacro',6,1,5,'charge',{faction: 'monkey'}), E('mkbrute',6,8,6,'charge',{faction: 'monkey'}),
+            E('mkacro',6,1,5,'charge',{faction: 'monkey'}), E('mkbrute',6,8,6,'charge',{faction: 'monkey', elite: true}),
           ],
           // turn 2: Speshul stands up, and half the hall's guard goes with him
           events: [{turn: 2, join: 'speshul', at: [4, 11], mustSurvive: true, defect: true, popup: 'For Speshul!', talk: [
@@ -792,7 +792,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('mkguard',8,4,2,'hold',{boss: true, elite: true, key: 'tamarind', name: 'Captain Tamarind', look: 'tamarind'}),
             E('mkguard',7,2,5,'guard'), E('mkguard',7,7,5,'guard'), E('mkthrow',7,1,3,'guard'), E('mkthrow',7,8,3,'guard'), E('mkchant',7,5,2,'guard'),
-            E('mkacro',7,2,8), E('mkacro',7,7,8), E('mkbrute',7,4,9), E('mkacro',7,0,10),
+            E('mkacro',7,2,8), E('mkacro',7,7,8), E('mkbrute',7,4,9,'charge',{elite: true}), E('mkacro',7,0,10),
             E('blade',7,3,0,'charge',{faction: 'frog'}), E('lily',7,6,0,'charge',{faction: 'frog'}),
           ],
           reinforce: () => [{turn: 3, units: [E('mkacro',7,0,7), E('mkacro',7,9,7), E('mkbrute',7,4,0)]}],
@@ -1428,7 +1428,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('heir',8,4,12,'hold',{boss: true, elite: true, flees: true, key: 'speshul', name: 'Speshul', look: 'speshul'}),
             E('mkguard',7,2,9,'guard'), E('mkguard',7,7,9,'guard'), E('mkthrow',7,3,11,'guard'), E('mkthrow',7,6,11,'guard'),
-            E('mkacro',7,1,7), E('mkacro',7,8,7), E('mkbrute',7,4,8),
+            E('mkacro',7,1,7), E('mkacro',7,8,7), E('mkbrute',7,4,8,'charge',{elite: true}),
             E('rlancer',7,2,13,'guard',{faction: 'rae'}), E('rarcher',7,7,13,'guard',{faction: 'rae'}),
           ],
           reinforce: () => [{turn: 3, units: [E('mkacro',7,0,10), E('mkacro',7,9,10), E('rfencer',7,4,15,'charge',{faction: 'rae'})]}],

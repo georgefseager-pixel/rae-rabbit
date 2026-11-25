@@ -202,7 +202,8 @@ Six stages a side (one more than Chapter Two), `enemyMods: {mhp: -1}`, deploy 7.
 F3-3 needs R3-3, F3-4 needs R3-4, R3-5 needs F3-4, F3-5 needs R3-5, R3-6 needs F3-5. Speshul joins the Raepublic in
 R3-5 (a mid-battle `join` that must survive; R3-6 `mustDeploy`s him); Aurora joins the Friggliarchy after F3-6.
 Abilities: Aurora, Bend, Not Break (once a battle, survive a killing blow on 1 HP); Speshul, We Can Fight! (+2 damage,
-+10 Hit against higher-level enemies). Art: Monkeyland's soldiers (and Captain Tamarind, in dark fur) use `art/mk*-*.png`, a battle pose per weapon
++10 Hit against higher-level enemies). Art: Monkeyland's soldiers (and Captain Tamarind, in dark fur) use `art/mk*-*.png` (★★ / `elite: true` monkeys use the
+gilded, scarred `art/mkelite*-*.png`), a battle pose per weapon
 (healers read from the book pose), fur recoloured from the `mk*skin` masks into `MONKEY_FURS` in the background just after
 loading. Aurora and Speshul are still felt plush (`LOOKS.aurora/speshul`);
 scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg-*.jpg`). Your own units always stand on your side's coaster, whatever their faction.
@@ -213,6 +214,7 @@ scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg
 |---|---|
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
+| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, placeholder ★★★ Kumquat / Persimmon) | after each route's Chapter Three finale (R3-6, F3-6) |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |
