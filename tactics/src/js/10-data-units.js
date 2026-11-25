@@ -255,7 +255,7 @@ const SPEAKERS = Object.assign({
   monkeys:     {name:'The Monkeys', faction:'monkey', look:'monkey'},
   courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
   burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
-  fig:         {name:'Lookout Fig', faction:'monkey', look:'monkey'},
+  pecan:       {name:'Lookout Pecan', faction:'monkey', look:'monkey'},
   tamarind:    {name:'Captain Tamarind', faction:'monkey', look:'tamarind', fur:'dark'},   // captain of the Governess's guard
   envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
   refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
