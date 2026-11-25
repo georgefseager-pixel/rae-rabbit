@@ -27,7 +27,7 @@ function moveCost(u, x, y){
   if (u.mt === 'mounted'){ if (ch === 'F') return 3; if (ch === 'M') return 99; }
   if (u.mt === 'armor' && ch === 'M') return 99;
   if (u.mt === 'bog' && ch === 'M') return 2;
-  if (u.mt === 'climb' && ch === 'F') return 1;   // monkeys swing through trees and flowers
+  if ((u.mt === 'climb' || u.climbAid) && ch === 'F') return 1;   // monkeys (and anyone Cornelius is teaching)   // monkeys swing through trees and flowers
   return c;
 }
 
@@ -103,7 +103,8 @@ function finishBattle(win, retreated = false, reason = ''){
 // ---------- Movement & ranges ----------
 function reach(u){
   const holders = foes(u).filter(o => !o.dead && hasAb(o, 'holdline'));
-  const guided = alliesNear(u, u, 2).some(o => hasAb(o, 'guiding')) ? 1 : 0;   // Guiding Nose: +1 Mov near Ilc
+  const guided = alliesNear(u, u, 2).some(o => hasAb(o, 'guiding')) ? 1 : 0;
+  u.climbAid = alliesNear(u, u, 2).some(o => hasAb(o, 'climbing'));   // Taught to Climb   // Guiding Nose: +1 Mov near Ilc
   const map = new Map([[K(u.x, u.y), {d: 0, prev: -1}]]), open = [K(u.x, u.y)];
   while (open.length){
     open.sort((a, b) => map.get(a).d - map.get(b).d);

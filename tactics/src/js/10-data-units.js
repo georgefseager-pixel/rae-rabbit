@@ -75,6 +75,7 @@ const CLASSES = {
   mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
+  guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
@@ -136,9 +137,8 @@ const LOOKS = {
   monkey:    {sp:'monkey', art:'mk', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
   aurora:    {sp:'monkey', fur:'#3a3038', light:'#5a4c58', dark:'#1c161c', face:'#f4dcb8', gear:'tiara', big:true},   // art/aurora-*.png
   speshul:   {sp:'monkey', fur:'#7ea23a', light:'#a2c45c', dark:'#46601c', face:'#f6e0be', gear:'tiara', small:true},   // art/speshul-*.png
-  cornelius:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
+  cornelius: {sp:'monkey', fur:'#d0642a', light:'#ee8a4e', dark:'#7a3412', face:'#b08a70', gear:'helm', big:true},   // art/cornelius-*.png (an orangutan)
   kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
-  persimmon: {sp:'monkey', art:'none', fur:'#7a5034', light:'#a07052', dark:'#40261a', face:'#ecceaa', gear:'helm'},                     // placeholder ★★★ (Friggliarchy monkey banner)
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -155,7 +155,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
-  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul',
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -224,14 +224,15 @@ const CHARACTERS = {
                 retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
                 intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
   // Chapter Three: Monkeyland (placeholder art). Speshul joins the Raepublic; Aurora joins the Friggliarchy.
+  cornelius:   {name:'Captain Cornelius', faction:'monkey', look:'cornelius', cls:'guardcapt', lv:6, stars:3, stats:{mhp:29,atk:14,def:9,spd:4,skl:7,mov:5},   // The Loyal Court banner
+                retort:'I swore to keep Monkeyland whole. I am still trying.',
+                intro:{title:'Captain of the Governess\'s Guard', text:'An old orangutan who has guarded three Governesses and taught every monkey in the castle to climb, Speshul included. When Monkeyland split at the stream, he stayed with Aurora. He has not said a word about it since.'}},
   aurora:      {name:'Aurora', faction:'monkey', look:'aurora', cls:'governess', lv:6, stats:{mhp:25,atk:13,def:6,spd:8,skl:11,mov:5},
                 retort:'I kneel so that they never have to. Can you say the same?',
                 intro:{title:'Governess of Monkeyland', text:'She rules what is left of a kingdom the frogs conquered centuries ago. She has kept her people alive by kneeling, and she has never once let them see what it costs her.'}},
   speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
                 retort:'We were a kingdom once! We can be one again!',
                 intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
-  persimmon:   {name:'Persimmon', faction:'frog', look:'persimmon', cls:'mkthrow', lv:6, stars:3, placeholder:true, stats:{mhp:24,atk:14,def:6,spd:10,skl:12,mov:5}, retort:'The Governess stayed. So did I.',
-                intro:{title:'Placeholder character', text:'A monkey who stayed loyal to the Governess. Their story is still to be written.'}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -256,7 +257,6 @@ const SPEAKERS = Object.assign({
   courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
   burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
   pecan:       {name:'Lookout Pecan', faction:'monkey', look:'monkey'},
-  cornelius:    {name:'Captain Cornelius', faction:'monkey', look:'cornelius', fur:'dark'},   // captain of the Governess's guard
   envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
   refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
   // side stories (29-data-sides-more.js)
@@ -337,6 +337,7 @@ const ART_CROP = {
   froggle:  {panel: ['165% auto', '55% 4%'], talk: ['130% auto', '55% 3%']},
   fraggle:  {panel: ['210% auto', '46% 3%'], talk: ['155% auto', '46% 2%']},
   ilc:      {panel: ['175% auto', '46% 10%'], talk: ['135% auto', '46% 8%']},
+  cornelius: {panel: ['160% auto', '50% 7%'], talk: ['128% auto', '50% 5%']},
   speshul:  {panel: ['165% auto', '52% 6%'], talk: ['130% auto', '52% 4%']},
   aurora:   {panel: ['165% auto', '50% 6%'], talk: ['130% auto', '50% 4%']},   // the Governess: her crown sits high
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},

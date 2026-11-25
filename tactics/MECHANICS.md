@@ -109,6 +109,7 @@ and The Lesson, which only help the player.
 | The Executioner | One Stroke | +25 Crit vs enemies below half HP | |
 | Fraggle Jr. | Nobody Comes | no ally within 2: +3 Atk, +3 Spd | flanks |
 | Ilc the Scout | Guiding Nose | allies who start their move within 2 squares of him get +1 Mov | escorts, races, long marches |
+| Captain Cornelius | Taught to Climb | allies who start their move within 2 squares of him cross trees and flowers (`F`) at cost 1, like monkeys | forests, flower fields |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
 ## Unit behaviour (spawn `ai`)
@@ -214,7 +215,7 @@ scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg
 |---|---|
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
-| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, placeholder ★★★ Kumquat / Persimmon) | after each route's Chapter Three finale (R3-6, F3-6) |
+| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, placeholder ★★★ Kumquat; ★★★ Captain Cornelius) | after each route's Chapter Three finale (R3-6, F3-6) |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

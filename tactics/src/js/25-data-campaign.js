@@ -699,7 +699,7 @@ const CAMPAIGNS = {
           deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
           brief: 'Rae means to meet the Governess, whether the Governess likes it or not. Cross the drawbridge, and drive back the captain of her guard.',
           enemies: () => [
-            E('mkguard',7,4,1,'hold',{boss: true, elite: true, flees: true, key: 'cornelius', name: 'Captain Cornelius', look: 'cornelius'}),
+            E('guardcapt',7,4,1,'hold',{boss: true, flees: true, key: 'cornelius', name: 'Captain Cornelius', look: 'cornelius'}),
             E('mkguard',6,4,4,'guard'), E('mkguard',6,5,4,'guard'), E('mkthrow',6,1,3,'guard'), E('mkthrow',6,8,3,'guard'),
             E('mkacro',6,2,7), E('mkacro',6,7,8), E('mkbrute',7,4,6,'charge',{elite: true}), E('mkchant',6,5,1,'guard'),
             E('lily',6,1,1,'guard',{faction: 'frog'}), E('reed',6,8,1,'guard',{faction: 'frog'}),
@@ -790,7 +790,7 @@ const CAMPAIGNS = {
           allies: () => [E('mkguard',5,3,11,'charge',{key: 'ally', name: 'Guard Banyan'}), E('mkacro',5,6,11,'charge',{key: 'ally', name: 'Acrobat Kiwi'}),
                          E('mkthrow',5,1,12,'charge',{key: 'ally', name: 'Thrower Sorrel'}), E('mkbrute',5,8,12,'charge',{key: 'ally', name: 'Thumper Mango'})],
           enemies: () => [
-            E('mkguard',8,4,2,'hold',{boss: true, elite: true, key: 'cornelius', name: 'Captain Cornelius', look: 'cornelius'}),
+            E('guardcapt',8,4,2,'hold',{boss: true, flees: true, key: 'cornelius', name: 'Captain Cornelius', look: 'cornelius'}),
             E('mkguard',7,2,5,'guard'), E('mkguard',7,7,5,'guard'), E('mkthrow',7,1,3,'guard'), E('mkthrow',7,8,3,'guard'), E('mkchant',7,5,2,'guard'),
             E('mkacro',7,2,8), E('mkacro',7,7,8), E('mkbrute',7,4,9,'charge',{elite: true}), E('mkacro',7,0,10),
             E('blade',7,3,0,'charge',{faction: 'frog'}), E('lily',7,6,0,'charge',{faction: 'frog'}),
@@ -810,8 +810,8 @@ const CAMPAIGNS = {
             {who: 'speshul', text: 'Yes I do. That\'s the whole point, isn\'t it? Somebody has to.'},
           ],
           post: [
-            {who: 'narr', text: 'Captain Cornelius falls on the bridge he held all morning.'},
-            {who: 'cornelius', text: 'I served your mother. And her mother before her…'},
+            {who: 'narr', text: 'Captain Cornelius goes down on one knee on the bridge he held all morning. His guards drag him back to the far bank.'},
+            {who: 'cornelius', text: 'I served your mother. And her mother before her. I will go on serving her.'},
             {who: 'cornelius', text: '…I would have served you, young master. Gladly.'},
             {who: 'narr', text: 'The Raepublic crosses the stream. Behind them, the meadows. Ahead, the hills. Speshul stands on the bridge a long time.'},
             {who: 'speshul', text: 'Centuries. Monkeyland had centuries of peace. Bad peace. Kneeling peace. But peace.'},

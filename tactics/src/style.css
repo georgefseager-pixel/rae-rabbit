@@ -813,3 +813,5 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .tpor.f-monkey{box-shadow:0 0 0 2px #d6a060, 0 0 0 5px #120c0a, 0 16px 30px rgba(0,0,0,.6);background-image:radial-gradient(circle at 50% 35%, #7a4a2a, #24140a 75%)}
 .tname.f-monkey{background:#7a3e22;color:#f6e2c4}
 .plate.f-monkey{background:linear-gradient(180deg,#6a3e22,#341c0e)}
+#gacha.f-monkey{background:radial-gradient(ellipse at 50% 40%, #4a2a14, #0b0705 75%)}   /* a Monkeyland recruit's reveal */
+.sintro.f-monkey{background:linear-gradient(180deg,#5a3418,#26140a);box-shadow:0 0 0 2px #d6a060,0 20px 50px rgba(0,0,0,.7)}   /* Monkeyland recruits (Cornelius) */
