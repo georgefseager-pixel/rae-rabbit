@@ -24,12 +24,16 @@ async function restoreSave(file){
     $('#contBtn').hidden = false; toast('Save restored. Tap Continue.');
   } catch (e){ toast('That file isn\'t a Toy Wars save.'); }
 }
+// (only on the hosted app: the Claude preview can't hand out files, and its save lives in the preview)
+if (!hosted()) document.querySelector('.tsave')?.remove();
+else {
 $('#backupBtn').addEventListener('click', backupSave);
 $('#restoreBtn').addEventListener('click', e => {
   if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again: this replaces your save')) return;
   $('#restoreFile').click();
 });
 $('#restoreFile').addEventListener('change', e => { const f = e.target.files?.[0]; if (f) restoreSave(f); e.target.value = ''; });
+}
 
 // ---------- Installed: keep the save, offline play, updates ----------
 if (hosted()){
