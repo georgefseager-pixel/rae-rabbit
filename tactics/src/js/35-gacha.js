@@ -57,7 +57,7 @@ function grantPull(ck, banner, stars){
   const army = GACHA_ARMY[ck], st = SAVE.camps[ck];
   if (stars === 3){
     const pool = bannerPool(banner), feat = [...(banner.featured || []), ...(banner.attires || []).map(id => 'attire:' + id)];
-    const key = feat.length && Math.random() < GACHA.featuredShare ? pick(feat) : pick(pool);
+    const key = feat.length && (!pool.length || Math.random() < GACHA.featuredShare) ? pick(feat) : pick(pool);   // a banner whose only ★★★ is an attire always gives it
     // a featured attire: for its character, if they're in the army and don't have it yet; otherwise a ★★★ weapon
     if (key.startsWith('attire:')){
       const id = key.slice(7), a = ATTIRES[id], rec = st.roster.find(r => r.key === a.char && !r.departed);

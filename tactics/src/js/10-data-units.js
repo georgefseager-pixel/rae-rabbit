@@ -75,6 +75,7 @@ const CLASSES = {
   mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
+  militia:   {name: 'Militia Captain',w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Militia Spear',     base: {mhp:21,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:70,atk:45,def:40,spd:35,skl:45}},   // Rae's Monkeyland Militia attire
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
@@ -140,7 +141,6 @@ const LOOKS = {
   speshul:   {sp:'monkey', fur:'#7ea23a', light:'#a2c45c', dark:'#46601c', face:'#f6e0be', gear:'tiara', small:true},   // art/speshul-*.png
   chansey:     {sp:'monkey', fur:'#e48aa0', light:'#f6b4c4', dark:'#9a4a5c', face:'#f6e0be', gear:'tiara'},   // art/chansey-*.png
   cornelius: {sp:'monkey', fur:'#d0642a', light:'#ee8a4e', dark:'#7a3412', face:'#b08a70', gear:'helm', big:true},   // art/cornelius-*.png (an orangutan)
-  kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -157,7 +157,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
-  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey',
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey', militia:'rae',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -186,8 +186,6 @@ const CHARACTERS = {
   patch:    {name:'Patch', faction:'rae', look:'patch', cls:'rfighter', wname:'Corporal\'s Axe', lv:4, stars:3, stats:{mhp:27,atk:13,def:7,spd:6,skl:6,mov:5},   // one-eyed Republic corporal; second Raepublic banner
              retort:'Only the one eye left, frog, and it\'s on you!',
              intro:{title:'Corporal, East Company', text:'He has marched at the front of the Republic\'s columns longer than anyone, and been caught by the frogs more times than he will admit. One of those times cost him an eye. He laughs about it. He laughs about most things.'}},
-  kumquat:  {name:'Kumquat', faction:'rae', look:'kumquat', cls:'mkguard', lv:6, stars:3, placeholder:true, stats:{mhp:27,atk:14,def:9,spd:8,skl:9,mov:5}, retort:'I chose the rabbits. I\'d choose them again.',
-             intro:{title:'Placeholder character', text:'A monkey who crossed the stream with Speshul. Their story is still to be written.'}},
   ilc:      {name:'Ilc the Scout', faction:'rae', look:'ilc', cls:'runaway', lv:3, stars:3, stats:{mhp:23,atk:12,def:6,spd:9,skl:8,mov:5},   // December banner only: a frog scout who defected
              retort:'Sorry! Sorry. I\'m on the other side now. Merry festival, though!',
              intro:{title:'The Runaway Scout', text:'A young frog scout who spent every December carrying presents past the mine camps to frog children, and never once to a rabbit. This year he walked his sack straight through the Raepublic\'s gate instead. He has not been back.'}},
@@ -333,6 +331,7 @@ const ART_CROP = {
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   tiggleformal: {panel: ['200% auto', '50% 2%'], talk: ['150% auto', '50% 1%']}, // Formal Wear (log-in reward)
+  raemilitia: {panel: ['175% auto', '48% 8%'], talk: ['135% auto', '48% 6%']},   // Monkeyland Militia attire
   raecasual: {panel: ['215% auto', '50% 2%'], talk: ['160% auto', '50% 1%']},   // Casual Wear (log-in reward)
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One

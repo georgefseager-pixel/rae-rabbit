@@ -312,6 +312,7 @@ async function doCombat(a, d){
   if (D.can) seq.push([d, a, D]);
   // Walked Away: below half HP, the defender strikes first
   if (D.can && hasAb(d, 'walkedaway') && d.hp < d.mhp/2){ seq.reverse(); abilityPop(d, 'walkedaway'); }
+  else if (D.can && hasAb(d, 'plant') && d.planted){ seq.reverse(); abilityPop(d, 'plant'); }   // Plant the Spear: braced, she strikes first
   if (A.dbl) seq.push([a, d, A]); else if (D.can && D.dbl) seq.push([d, a, D]);
   const hp0 = {a: a.hp, d: d.hp};
   speed = 1;
@@ -586,6 +587,7 @@ async function startPlayerPhase(){
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
   for (const u of units) if (sideOfTeam(u) === 'p') u.sanct = false;   // the player's Sanctuary lasts until their next turn
+  for (const u of units){ if (sideOfTeam(u) === 'p') u.planted = false; else u.planted = (u.movedDist || 0) <= 1; }
   for (const u of units){ u.movedDist = 0; u.guardUsed = false; if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) === 'p')) u.seams = 0; }
   for (const u of units) if (sideOfTeam(u) !== 'p') u.hobbled = false;   // enemies' slowed turn is over
   for (const u of units) if (sideOfTeam(u) === 'p') u.ranFar = false;   // Can't Catch Me lasts until his next turn
@@ -662,6 +664,7 @@ async function spawnReinforcements(){
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
   for (const u of units) if (sideOfTeam(u) !== 'p') u.sanct = false;
+  for (const u of units) if (sideOfTeam(u) === 'p') u.planted = (u.movedDist || 0) <= 1;   // Plant the Spear: braced if she barely moved
   for (const u of units){ u.movedDist = 0; u.baitUsed = false; u.guardUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false; else u.ranFar = false;
     if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) !== 'p')) u.seams = 0; }
   if (team('a').length){   // allied phase: they fight on their own

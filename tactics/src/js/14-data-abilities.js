@@ -4,6 +4,7 @@
 // look-only attires keep the character's. Placeholder characters have none yet. The rules live in 40-battle.js
 // (search for the ability id); this file is the list and the wording.
 const ABILITIES = {
+  plant:       {name: 'Plant the Spear',   icon: '🔱', text: 'If Rae stays where she is on her turn (or moves just 1 square), she strikes first whenever she is attacked before her next turn.'},
   nextto:      {name: 'Next to Me',        icon: '🤝', text: 'Rae and any ally standing next to her each deal +1 damage and take 1 less.'},
   present:     {name: 'Stocking Filler',   icon: '🎁', text: 'Whoever Flopsy mends gets a present: +3 damage in their next fight, attacking or defending.'},
   seams:       {name: 'Mended Seams',      icon: '🧵', text: 'Anyone Flopsy Flora mends also gets +2 Def until her next turn.'},

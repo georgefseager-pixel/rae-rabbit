@@ -434,7 +434,6 @@ const SUPPORTS = {
       ],
     },
     lantern:   {kind: 'friend', about: 'Placeholder character.'},
-    kumquat:   {kind: 'friend', about: 'Placeholder character.'},
     ironear:   {kind: 'friend', about: 'Placeholder character.'},
   },
   tiggle: {

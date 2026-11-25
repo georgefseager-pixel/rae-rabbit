@@ -17,6 +17,10 @@ const ATTIRES = {
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
+  // Across the Stream (after Chapter Three): Rae in the armour of the monkey militia who came south with Speshul.
+  // A spear instead of a sword; sturdier, and slower.
+  raeMilitia: {char: 'rae', outfit: 'militia', name: 'Monkeyland Militia', cls: 'militia', mods: {def: 3, spd: -2, mhp: 2}, ability: 'plant',
+              desc: 'The monkeys who crossed the stream made it for her, plate by plate, in the old Southern Watch colours. The helmet was made for a monkey. The ear holes were added later, with some difficulty.'},
   // December festive banner (31-data-events.js): Flopsy in a very large jumper. Same class and needle; a little
   // cosier (Def) and a little slower (Spd), and her mending comes with presents.
   floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',

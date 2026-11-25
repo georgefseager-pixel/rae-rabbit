@@ -26,6 +26,8 @@ function migrateSave(s){
   // Speshul became a bowman (his art arrived with a bow): his basic weapon follows, and a carried sword goes back
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'speshul' && r.wname !== 'Sunrise Bow'){
     r.wname = 'Sunrise Bow'; const it = (st.arms || []).find(a => a.uid === r.arm); if (it && WEAPONS[it.id]?.type !== 'bow') r.arm = null; }
+  // the placeholder Kumquat was replaced by Rae's Monkeyland Militia attire on Across the Stream
+  for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'kumquat');
   // the placeholder Persimmon was replaced by Captain Cornelius on The Loyal Court
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'persimmon');
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
