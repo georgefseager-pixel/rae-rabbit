@@ -136,7 +136,7 @@ const LOOKS = {
   monkey:    {sp:'monkey', art:'mk', fur:'#8e6038', light:'#b88454', dark:'#553419', face:'#efd3aa', gear:'none'},
   aurora:    {sp:'monkey', fur:'#a87448', light:'#d29e6c', dark:'#5e3a1c', face:'#f4dcb8', gear:'tiara', big:true},
   speshul:   {sp:'monkey', fur:'#c08a4e', light:'#e2b07a', dark:'#6a4420', face:'#f6e0be', gear:'bandana', band:'#e8a33a', small:true},
-  tamarind:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
+  cornelius:  {sp:'monkey', art:'mk', fur:'#6a4428', light:'#8e6040', dark:'#3a2210', face:'#dcbc94', gear:'helm', big:true},
   kumquat:   {sp:'monkey', art:'none', fur:'#b0703a', light:'#d89a62', dark:'#5e3818', face:'#f2d6ae', gear:'bandana', band:'#b5302a'},   // placeholder ★★★ (Raepublic monkey banner)
   persimmon: {sp:'monkey', art:'none', fur:'#7a5034', light:'#a07052', dark:'#40261a', face:'#ecceaa', gear:'helm'},                     // placeholder ★★★ (Friggliarchy monkey banner)
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
@@ -256,7 +256,7 @@ const SPEAKERS = Object.assign({
   courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
   burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
   pecan:       {name:'Lookout Pecan', faction:'monkey', look:'monkey'},
-  tamarind:    {name:'Captain Tamarind', faction:'monkey', look:'tamarind', fur:'dark'},   // captain of the Governess's guard
+  cornelius:    {name:'Captain Cornelius', faction:'monkey', look:'cornelius', fur:'dark'},   // captain of the Governess's guard
   envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
   refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
   // side stories (29-data-sides-more.js)
