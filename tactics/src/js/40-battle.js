@@ -27,7 +27,7 @@ function moveCost(u, x, y){
   if (u.mt === 'mounted'){ if (ch === 'F') return 3; if (ch === 'M') return 99; }
   if (u.mt === 'armor' && ch === 'M') return 99;
   if (u.mt === 'bog' && ch === 'M') return 2;
-  if ((u.mt === 'climb' || u.climbAid) && ch === 'F') return 1;   // monkeys (and anyone Cornelius is teaching)   // monkeys swing through trees and flowers
+  if (u.mt === 'climb' && ch === 'F') return 1;   // monkeys swing through trees and flowers   // monkeys swing through trees and flowers
   return c;
 }
 
@@ -103,8 +103,7 @@ function finishBattle(win, retreated = false, reason = ''){
 // ---------- Movement & ranges ----------
 function reach(u){
   const holders = foes(u).filter(o => !o.dead && hasAb(o, 'holdline'));
-  const guided = alliesNear(u, u, 2).some(o => hasAb(o, 'guiding')) ? 1 : 0;
-  u.climbAid = alliesNear(u, u, 2).some(o => hasAb(o, 'climbing'));   // Taught to Climb   // Guiding Nose: +1 Mov near Ilc
+  const guided = alliesNear(u, u, 2).some(o => hasAb(o, 'guiding')) ? 1 : 0;   // Guiding Nose: +1 Mov near Ilc
   const map = new Map([[K(u.x, u.y), {d: 0, prev: -1}]]), open = [K(u.x, u.y)];
   while (open.length){
     open.sort((a, b) => map.get(a).d - map.get(b).d);
@@ -306,6 +305,9 @@ async function doCombat(a, d){
     const r = foe === a ? d : a, retort = CHARACTERS[r.key]?.retort, answered = foe.talk.some(l => l.who === r.key);
     await talk([...foe.talk, ...(retort && !answered ? [{who: r.key, text: retort}] : [])]);
   }
+  // Guard Duty: Cornelius, next to the ally under attack, lunges at an attacker within 2 squares of him first (once a turn)
+  const guard = friends(d).find(g => g !== d && !g.dead && !g.guardUsed && hasAb(g, 'guardduty') && man(g, d) === 1 && man(g, a) <= 2);
+  if (guard){ guard.guardUsed = true; abilityPop(guard, 'guardduty'); await wait(250); await strike(guard, a, calc(guard, a, guard, a)); await wait(200); updateDanger(); if (a.dead){ checkEnd(); return; } }
   const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
   if (D.can) seq.push([d, a, D]);
   // Walked Away: below half HP, the defender strikes first
@@ -582,7 +584,7 @@ async function startPlayerPhase(){
   if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
-  for (const u of units){ u.movedDist = 0; if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) === 'p')) u.seams = 0; }
+  for (const u of units){ u.movedDist = 0; u.guardUsed = false; if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) === 'p')) u.seams = 0; }
   for (const u of units) if (sideOfTeam(u) !== 'p') u.hobbled = false;   // enemies' slowed turn is over
   for (const u of units) if (sideOfTeam(u) === 'p') u.ranFar = false;   // Can't Catch Me lasts until his next turn
   refreshTop(); panelIdle();
@@ -657,7 +659,7 @@ async function spawnReinforcements(){
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
-  for (const u of units){ u.movedDist = 0; u.baitUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false; else u.ranFar = false;
+  for (const u of units){ u.movedDist = 0; u.baitUsed = false; u.guardUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false; else u.ranFar = false;
     if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) !== 'p')) u.seams = 0; }
   if (team('a').length){   // allied phase: they fight on their own
     Sfx.play('phase', 'p');

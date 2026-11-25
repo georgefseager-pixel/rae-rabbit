@@ -109,7 +109,7 @@ and The Lesson, which only help the player.
 | The Executioner | One Stroke | +25 Crit vs enemies below half HP | |
 | Fraggle Jr. | Nobody Comes | no ally within 2: +3 Atk, +3 Spd | flanks |
 | Ilc the Scout | Guiding Nose | allies who start their move within 2 squares of him get +1 Mov | escorts, races, long marches |
-| Captain Cornelius | Taught to Climb | allies who start their move within 2 squares of him cross trees and flowers (`F`) at cost 1, like monkeys | forests, flower fields |
+| Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
 ## Unit behaviour (spawn `ai`)
