@@ -115,3 +115,19 @@ masks were made is recorded in `tools/miner-art/`; if the generic art is replace
 need redoing. A character can pick a coat with `fur: 'grey'`;
 generic rabbits get one from their id, so each keeps the same coat. Once a character has
 their own art, it replaces the generic art automatically.
+
+## Playing on a phone (installable web app)
+
+`python3 tactics/tools/build.py` writes two things:
+
+- `tactics/index.html`: the whole game in one file (what the Claude artifact shows).
+- `tactics/web/`: the same game as an installable web app, ready to put on any static website (GitHub Pages,
+  Netlify, Cloudflare Pages). Upload the whole folder. It holds `index.html`, `manifest.webmanifest` (name, icon,
+  full-screen), `icon-192.png` / `icon-512.png` (from `art/loading.jpg`), `sw.js` (keeps a copy for playing offline)
+  and `version.json` (the newest build id).
+
+On Android, open the site in Chrome and choose "Install app" (or "Add to Home screen"). To publish an update, rebuild
+and upload `tactics/web/` again: the installed game checks `version.json` when it opens and shows "A new version is
+ready. Tap to update." The save stays on the phone (and the game asks the browser to keep it safe); the title screen
+has Back up save / Restore save, which also moves a save between devices or websites. Keep the site's address the
+same: saves belong to the address.

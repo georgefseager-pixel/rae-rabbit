@@ -815,3 +815,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .plate.f-monkey{background:linear-gradient(180deg,#6a3e22,#341c0e)}
 #gacha.f-monkey{background:radial-gradient(ellipse at 50% 40%, #4a2a14, #0b0705 75%)}   /* a Monkeyland recruit's reveal */
 .sintro.f-monkey{background:linear-gradient(180deg,#5a3418,#26140a);box-shadow:0 0 0 2px #d6a060,0 20px 50px rgba(0,0,0,.7)}   /* Monkeyland recruits (Cornelius) */
+
+/* ---------- Installed app: save backup and updates (68-app.js) ---------- */
+.tsave{display:flex;gap:8px;justify-content:center}
+.tbtns .tsave .btn{font-size:12px;padding:6px 12px;min-height:34px;flex:1;opacity:.85}
+#updbar{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9000;
+  max-width:calc(100% - 32px);padding:12px 18px;border-radius:12px;border:1.5px solid #ecc673;background:linear-gradient(180deg,#3a2a14,#1e150a);
+  color:#f3e7cb;font:15px 'Alegreya Sans',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.6);cursor:pointer}
+#updbar b{color:#ecc673}

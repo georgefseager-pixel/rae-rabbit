@@ -73,6 +73,46 @@ for marker, value in [
     assert html.count(marker) == 1, f"marker {marker} must appear exactly once in shell.html"
     html = html.replace(marker, value)
 
+# a build id: changes whenever the game changes, so an installed copy knows when a new version has been published
+build_id = hashlib.sha1(html.encode()).hexdigest()[:12]
+assert html.count("/*@BUILD*/") == 1, "the build id marker must appear exactly once (68-app.js)"
+html = html.replace("/*@BUILD*/", build_id)
+
 out = ROOT / "index.html"
 out.write_text(html)
+
+# ---- tactics/web/: the same game as an installable web app, for hosting on a website ----
+# index.html (a full page that links the app manifest), manifest.webmanifest, sw.js (offline copy),
+# icon-192.png / icon-512.png (from the loading art), and version.json (the newest build id).
+WEB = ROOT / "web"; WEB.mkdir(exist_ok=True)
+head = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#120c08"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+</head><body>
+"""
+(WEB / "index.html").write_text(head + html + "\n</body></html>\n")
+_src = Image.open(ROOT / "art" / "loading.jpg").convert("RGB")
+_side = min(_src.size); _sq = _src.crop(((_src.width - _side)//2, 0, (_src.width - _side)//2 + _side, _side))
+for n in (192, 512): _sq.resize((n, n), Image.LANCZOS).save(WEB / f"icon-{n}.png", optimize=True)
+(WEB / "manifest.webmanifest").write_text(json.dumps({
+    "name": "Toy Wars", "short_name": "Toy Wars", "start_url": "./", "scope": "./", "display": "standalone",
+    "orientation": "portrait", "background_color": "#120c08", "theme_color": "#120c08",
+    "icons": [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+              {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}, indent=1))
+(WEB / "version.json").write_text(json.dumps({"build": build_id}))
+(WEB / "sw.js").write_text("""// Toy Wars offline copy. The game is one page: keep the last copy and open it straight away, online or not.
+// The game itself checks version.json and fetches new versions into this cache (68-app.js).
+const CACHE = 'toy-wars';
+self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'])).then(() => self.skipWaiting())); });
+self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
+self.addEventListener('fetch', e => {
+  const req = e.request; if (req.method !== 'GET') return;
+  const url = new URL(req.url); if (url.origin !== location.origin || url.pathname.endsWith('version.json')) return;
+  const key = req.mode === 'navigate' ? './' : req;
+  e.respondWith(caches.open(CACHE).then(async c => (await c.match(key)) || fetch(req).then(r => { if (r.ok) c.put(key, r.clone()); return r; })));
+});
+""")
 print(f"built {out.relative_to(ROOT.parent)}: {len(html)//1024} KB, art for {', '.join(art) or 'nobody'}")
