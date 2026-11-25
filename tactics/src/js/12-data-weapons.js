@@ -69,6 +69,12 @@ const WEAPONS = {
                  desc: 'He hasn\'t used it on a block since the day the prince didn\'t sign.'},
   provencleaver:{name: 'Proven Cleaver',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'fragglejr',
                  desc: 'His father\'s own, left in the mud by the river. Fraggle Friggle never asked for it back.'},
+  southernwatch:{name: 'Southern Watch',   type: 'bow',   stars: 3, mt: 4, hit: 15, crit: 10, owner: 'speshul',
+                 desc: 'Strung with silk, carved with the first Governess\'s sun. It hung in the old watch-fort for three hundred years, waiting for a monkey to come back for it.'},
+  firsttreaty:  {name: 'The First Treaty', type: 'tome',  stars: 3, mt: 4, hit: 10, crit: 5, owner: 'aurora',
+                 desc: 'The first treaty Monkeyland ever signed, as a kingdom, with nobody. Her mother hid it under the frog seals.'},
+  threesuns:    {name: 'Three Suns',       type: 'axe',   stars: 3, mt: 5, hit: 5, crit: 10, owner: 'cornelius',
+                 desc: 'From the King\'s own armoury. Three suns in the blade: one for each Governess he has guarded.'},
   // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.
 };
 

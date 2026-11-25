@@ -257,6 +257,7 @@ const SPEAKERS = Object.assign({
   courtier:    {name:'A Monkey Courtier', faction:'monkey', look:'monkey'},
   burr:        {name:'Burr', faction:'rae', look:'soldier'},   // a Republic sergeant (Patch's column in Chapter Two)
   pecan:       {name:'Lookout Pecan', faction:'monkey', look:'monkey'},
+  sorrel:      {name:'Lord Sorrel', faction:'monkey', look:'monkey'},   // Aurora's elder brother (her side stories)
   envoy:       {name:'The King\'s Envoy', faction:'frog', look:'duelist'},
   refugee:     {name:'Republic Refugees', faction:'rae', look:'workerLop', fur:'cream'},
   // side stories (29-data-sides-more.js)

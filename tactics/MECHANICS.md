@@ -142,8 +142,8 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Convergence gate | `requires` | R1-4 / F1-4 pair, R2-2 / F2-2, F2-3 / R2-2, F2-3b / R2-4 |
 | Someone else leads | `lead` | FD-1, FD-2, FD-3 (Flopsy) |
 | Characters kept out | `ban` | WL-* (Willow), FD-* (Rae) |
-| Training fight (no permanent losses, the boss yields) | `spar` | WL-1, WL-2, WL-3 |
-| Flashback (years ago: only the leader and ordinary soldiers) | `flashback` + `lead` | RH-1–3 (Rhubarb), FJ-1–3 (Fraggle Jr.) |
+| Training fight (no permanent losses, the boss yields) | `spar` | WL-1, WL-2, WL-3, CO-1 (taught: monkeys cross trees; keep to the open) |
+| Flashback (years ago: only the leader and ordinary soldiers) | `flashback` + `lead` | RH-1–3 (Rhubarb), FJ-1–3 (Fraggle Jr.), AU-2 (Aurora), CO-2 (Cornelius) |
 | Boss surrenders ("Yields!") instead of fleeing | `yields` + a `flees` boss | EX-1, EX-3 |
 | Enemies from another side (mixed factions) | spawn `faction` | BR-2 (Magpie's gang with the reeve's frogs) |
 | Lone leader (deploy 1) | `maxDeploy: 1` | FJ-1 |
@@ -192,7 +192,8 @@ per level, HP counted at half). The current line on both routes:
 |---|---|---|---|
 | Recommended | 1 · 1 · 2 · 2 | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
 
-Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7.
+Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Side stories of Chapter Three's characters (Speshul, Aurora,
+Cornelius; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
 
 Keep new stages on this line: about +½ a level per stage, and +1 for a finale. Expected player levels (from the
 experience rules) run roughly a level above it by late Chapter Two.
