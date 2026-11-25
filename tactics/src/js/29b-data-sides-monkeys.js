@@ -325,10 +325,118 @@ Object.assign(SIDE_SETS, {
         reward: sideReward(2, 'threesuns', 'cornelius'),
       },
     ]},
+
+  lotus: {camp: 'frog', title: 'Asking Kindly', about: 'The head priestess believes the King will listen, if he is only asked kindly enough. Tiggle wants very much to believe her.',
+    quests: [
+      {
+        id: 'LO-1', title: 'Sanctuary', map: 'blossomFields', enemyFaction: 'rae', mustDeploy: ['lotus'], yields: true, enemyMods: {},
+        teaser: 'The lotus temple shelters the wounded of every side. Somebody has come to take theirs back by force.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'boss'}, maxDeploy: 7,
+        deploy: [[4,1],[5,1],[3,1],[6,1],[2,1],[7,1],[4,2]],
+        brief: 'A Republic band has come for the rabbit wounded at the lotus temple, thinking them prisoners. Hold the temple and bring their sergeant to terms. Lotus must come.',
+        prepNote: 'Lotus must come. Their sergeant will yield, not fall.',
+        enemies: () => [
+          E('rfighter',7,4,13,'hold',{boss: true, flees: true, key: 'thistledown', name: 'Sergeant Thistledown', look: 'soldier'}),
+          E('rfencer',6,2,9), E('rfencer',6,7,9), E('rlancer',6,4,7), E('rarcher',6,1,11,'guard'), E('rarcher',6,8,11,'guard'),
+          E('radept',6,5,12,'guard'), E('rfighter',6,3,5),
+        ],
+        bossTalk: [
+          {who: 'republic', text: 'Give them back, frog! We know what you do to rabbit prisoners!'},
+          {who: 'lotus', text: 'They are not prisoners, Sergeant. They are patients. Come and see. Please. Nobody needs to be hurt today.'},
+        ],
+        pre: [
+          {scene: 'monkeyland', place: 'The Lotus Temple · Side Story'},
+          {who: 'narr', text: 'The lotus temple has taken in the wounded for three hundred years. Monkeys, frogs and, since the war came to the meadows, rabbits.'},
+          {who: 'scout', text: 'Highness! Republic soldiers, coming up the temple path! They think the rabbits here are prisoners!'},
+          {who: 'lotus', text: 'Then we must show them they are not. Your Highness, I beg you: hold them back, but do not hurt them more than you must.'},
+          {who: 'biggle', text: 'Hold back an attack without hurting anyone. Of course. Why not. Shall we also juggle?'},
+          {who: 'tiggle', text: 'We do it her way, Biggle.'},
+        ],
+        post: [
+          {who: 'narr', text: 'The sergeant lowers her axe at the temple steps. Inside, a bandaged rabbit sits up in bed and waves.'},
+          {who: 'republic', text: '…Bramble? You\'re all right? They\'ve mended you?'},
+          {who: 'lotus', text: 'He will be dancing in a week, Sergeant. Take him home when he can walk. Take a blessing too, if you have room.'},
+          {who: 'tiggle', thought: true, text: 'Rabbits and frogs and monkeys in the same building, and nobody fighting. I didn\'t know that was possible.'},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'LO-2', title: 'The Petition', map: 'castleGate', enemyFaction: 'frog', mustDeploy: ['lotus'], enemyMods: {},
+        teaser: 'Lotus is taking the meadows\' petition to the King\'s governor in person. She has asked Tiggle to come.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'escape', dest: 'the road (the gold squares)'}, maxDeploy: 7,
+        exits: [[0,15],[4,15],[5,15],[9,15]],
+        deploy: [[3,0],[2,0],[6,0],[7,0],[4,1],[5,1],[1,1]],
+        brief: 'The Governor has torn up the petition and ordered Lotus arrested. Get everyone out of his fort: get Tiggle to the road.',
+        prepNote: 'Lotus must come. The battle is won as soon as Tiggle reaches the road (the gold squares).',
+        enemies: () => [
+          E('toadknight',8,4,4,'guard',{elite: true, key: 'governor', name: 'Governor Bulrush'}),
+          E('lily',7,1,6), E('lily',7,8,6), E('reed',7,2,9,'guard'), E('reed',7,7,9,'guard'), E('bruiser',7,4,8), E('blade',7,5,11), E('croaker',6,6,12,'guard'),
+        ],
+        reinforce: () => [
+          {turn: 2, units: [E('blade',7,0,10), E('blade',7,9,10)]},
+          {turn: 3, units: [E('lily',7,3,14), E('lily',7,6,14)]},
+        ],
+        pre: [
+          {scene: 'castlegate', place: 'The Governor\'s Fort · Side Story'},
+          {who: 'lotus', text: 'Governor Bulrush. On behalf of every village in the meadows, I bring a petition for His Majesty the King.'},
+          {who: 'governor', text: 'Another one? Priestess, I have a drawer full of your petitions. I use them to light my fire.'},
+          {who: 'lotus', text: 'Then perhaps this one will keep you warm while you read it.'},
+          {who: 'narr', text: 'The Governor tears it in half, then in quarters, without reading a word.'},
+          {who: 'governor', text: 'Asking the King for things is sedition, Priestess. Guards! Take her.'},
+          {who: 'tiggle', text: 'Governor, she\'s with me. Touch her and you answer to the King\'s own brother.'},
+          {who: 'governor', text: 'The King\'s brother who lost half of Monkeyland? Take him too.'},
+        ],
+        post: [
+          {who: 'narr', text: 'They run down the road until the fort is out of sight, and then a little further, to be sure.'},
+          {who: 'lotus', text: 'He didn\'t read it. Not even the first line. I worked so hard on the first line.'},
+          {who: 'tiggle', text: 'Lotus. Maybe asking isn\'t enough. Not with frogs like him.'},
+          {who: 'lotus', text: 'Then I shall have to ask someone else. There is always someone else to ask, Your Highness.'},
+          {who: 'tiggle', thought: true, text: 'She really believes that. I wish I still did.'},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'LO-3', title: 'Listen to Your Heart', map: 'schismField', enemyFaction: 'frog', mustDeploy: ['lotus'], enemyMods: {},
+        teaser: 'Lotus has walked out onto the bridge at the stream, alone, to ask both banks for a truce.',
+        star: {type: 'bossBy', key: 'tiggle', text: 'Tiggle Taggle defeats Governor Bulrush himself'},
+        objective: {type: 'boss'}, maxDeploy: 7,
+        deploy: [[4,1],[5,1],[3,0],[6,0],[2,1],[7,1],[4,0]],
+        brief: 'Lotus has brokered a truce between the two halves of Monkeyland. Governor Bulrush has come to break it. Defeat him. The rebel monkeys at the truce fight beside you, for today.',
+        prepNote: 'Lotus must come. The rebel monkeys (blue) fight beside you, on their own.',
+        allies: () => [E('mkguard',7,3,8,'guard',{key: 'ally', name: 'Truce Guard'}), E('mkthrow',7,6,8,'guard',{key: 'ally', name: 'Truce Thrower'})],
+        enemies: () => [
+          E('toadknight',9,4,14,'hold',{boss: true, elite: true, flees: true, key: 'governor', name: 'Governor Bulrush'}),
+          E('lily',8,2,11), E('lily',8,7,11), E('reed',8,1,13,'guard'), E('reed',8,8,13,'guard'), E('bruiser',8,4,11), E('blade',8,3,9), E('blade',8,6,9), E('croaker',8,5,15,'guard'),
+        ],
+        bossTalk: [
+          {who: 'governor', text: 'Monkeys from both banks, holding hands in the middle of a bridge. Sedition, Priestess, every one of them!'},
+          {who: 'tiggle', text: 'It\'s a truce, Governor. For the planting. And it\'s under my protection.'},
+        ],
+        pre: [
+          {scene: 'monkeyland', place: 'The Stream Below the Castle · Side Story'},
+          {who: 'narr', text: 'Lotus walks out onto the bridge at the stream, with nothing in her hands but the temple\'s egg.'},
+          {who: 'lotus', text: 'Monkeys of both banks! The fields need planting, on both sides. Lay down your arms for one season. Plant together. Then argue, if you still want to.'},
+          {who: 'narr', text: 'Nobody moves. And then, on the rebel bank, a young monkey in a green crown lays down his bow. On the castle bank, Captain Cornelius lays down his axe.'},
+          {who: 'scout', text: 'Highness! Frogs on the south road! Governor Bulrush, with his whole garrison!'},
+          {who: 'lotus', text: 'Your Highness. What does your heart say?'},
+          {who: 'tiggle', text: '…It says the truce holds. Shields up. We\'re standing with the monkeys. Both banks.'},
+        ],
+        post: [
+          {who: 'narr', text: 'Governor Bulrush flees down the south road. Behind him, monkeys from both banks are helping each other to their feet.'},
+          {who: 'lotus', text: 'You see, Your Highness? You listened to your heart.'},
+          {who: 'tiggle', text: 'I did. And my heart told me to bring a shield.'},
+          {who: 'lotus', text: '…Yes. I suppose it did. Perhaps kindness needs a shield, sometimes. I shall have to think about that.'},
+          {who: 'narr', text: 'That night, for the first time in three hundred years, the temple\'s egg is warm.'},
+        ],
+        reward: sideReward(2, 'dawnegg', 'lotus'),
+      },
+    ]},
 });
 
 // Each set's quests go on its route's side story list, in the order they open (as in 29-data-sides-more.js).
-for (const key of ['speshul', 'aurora', 'cornelius']){
+for (const key of ['speshul', 'aurora', 'cornelius', 'lotus']){
   const set = SIDE_SETS[key], camp = CAMPAIGNS[set.camp], at = camp.stages.find(s => s.id === SIDE_OPENS[set.camp]);
   set.quests.forEach((q, k) => { Object.assign(q, {side: true, char: key, rank: k + 1, set, chapter: at.chapter, ci: at.ci, si: k}); camp.sides.push(q); });
 }
