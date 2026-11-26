@@ -6,6 +6,7 @@
 const ABILITIES = {
   plant:       {name: 'Plant the Spear',   icon: '🔱', text: 'If Rae stays where she is on her turn (or moves just 1 square), she strikes first whenever she is attacked before her next turn.'},
   nextto:      {name: 'Next to Me',        icon: '🤝', text: 'Rae and any ally standing next to her each deal +1 damage and take 1 less.'},
+  verse:       {name: 'Healing Verse',     icon: '📖', text: 'Each time one of Flopsy\'s spells hits, every ally standing next to her recovers 3 HP.'},
   present:     {name: 'Stocking Filler',   icon: '🎁', text: 'Whoever Flopsy mends gets a present: +3 damage in their next fight, attacking or defending.'},
   seams:       {name: 'Mended Seams',      icon: '🧵', text: 'Anyone Flopsy Flora mends also gets +2 Def until her next turn.'},
   lesson:      {name: 'The Lesson',        icon: '📖', text: 'Allies within 2 squares of Willow earn 20% more experience.'},

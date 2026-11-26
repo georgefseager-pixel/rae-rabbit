@@ -54,8 +54,8 @@ const GACHA_ARMY = {
        blurb: 'Two rabbits who answer the name: a bandit off the Mine Road, and a hooded prisoner who walked away from the block.'},
       {id: 'rae-froggle', name: 'The Republic Stands', kind: 'featured', featured: ['froggle', 'patch'], after: 'R2-4', bg: 'republic', troops: 'republic',
        blurb: 'Out of hiding at last: the frog who built the Republic and gave it away, and the one-eyed corporal who always marches at the front. The ★ soldiers who answer are trained troops of the Republic, and the ★★ are its helmeted veterans.'},
-      {id: 'rae-monkeys', name: 'Across the Stream', kind: 'featured', featured: [], attires: ['raeMilitia'], after: 'R3-6', bg: 'monkeyland', troops: 'monkeys',
-       blurb: 'The monkeys who crossed the stream with Speshul take up the Raepublic\'s colours, and have made Rae a suit of their militia\'s armour. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
+      {id: 'rae-monkeys', name: 'Across the Stream', kind: 'featured', featured: [], attires: ['raeMilitia', 'floraSorcerer'], after: 'R3-6', bg: 'monkeyland', troops: 'monkeys',
+       blurb: 'The monkeys who crossed the stream with Speshul take up the Raepublic\'s colours, and have made Rae a suit of their militia\'s armour, and Flopsy Flora a hat she refuses to take off. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
     ],
   },
   frog: {

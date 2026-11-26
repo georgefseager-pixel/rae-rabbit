@@ -82,6 +82,7 @@ waits in the Armoury (the class's basic weapon is used) and comes back when the 
 | Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
 | Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
 | Monkeyland Militia | Rae | Captain → Militia Captain (lance, Militia Spear): +2 HP, +3 Def, −2 Spd | Across the Stream (after Chapter Three) |
+| Simian Sorcerer | Flopsy Flora | Mender → Simian Sorcerer (tome, 1–2): +3 Atk, −1 Def, +1 Spd | Across the Stream (after Chapter Three) |
 | Hoppy Xmas | Flopsy Flora | same class and needle: +2 Def, −1 Spd | A Sack Full of Rabbits (December) |
 | Gingerbiggle | Biggle | Lily Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
 
@@ -97,6 +98,7 @@ and The Lesson, which only help the player.
 | Rae (Monkeyland Militia) | Plant the Spear | if she moved at most 1 square on her turn, she strikes first when attacked until her next turn | holding a line, choke points |
 | Rae | Next to Me | she and an adjacent ally: +1 damage dealt, −1 taken | formations |
 | Flopsy Flora | Mended Seams | whoever she mends: +2 Def until her next turn | |
+| Flopsy Flora (Simian Sorcerer) | Healing Verse | each time her spell hits, allies next to her recover 3 HP | |
 | Flopsy Flora (Hoppy Xmas) | Stocking Filler | whoever she mends gets +3 damage in their next fight (attacking or defending) | |
 | Willow | The Lesson | allies within 2 earn +20% EXP | |
 | Brigand | Light Fingers | +25 spoils per enemy he defeats | |
@@ -219,7 +221,7 @@ scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg
 |---|---|
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
-| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia attire only; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
+| The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

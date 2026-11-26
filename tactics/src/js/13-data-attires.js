@@ -18,6 +18,10 @@ const ATTIRES = {
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   floraCarrot: {char: 'sister', outfit: 'carrot', name: 'In a Carrot', desc: 'Flopsy sewed it herself, from a sack of orange felt and a great deal of enthusiasm. She says it is camouflage. Nobody has had the heart to ask for what.'},   // log-in 21: look only
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
+  // Across the Stream: Flopsy in the robes of a Monkeyland spell-reader. A tome instead of her needle; she still mends,
+  // after a fashion (Healing Verse).
+  floraSorcerer: {char: 'sister', outfit: 'sorcerer', name: 'Simian Sorcerer', cls: 'sorcerer', mods: {atk: 3, def: -1, spd: 1}, ability: 'verse',
+              desc: 'The temple monkeys taught her to read their spell-books. She learned very fast, mostly the shouty bits. The hat was her own idea. Nobody has been able to talk her out of it.'},
   // Across the Stream (after Chapter Three): Rae in the armour of the monkey militia who came south with Speshul.
   // A spear instead of a sword; sturdier, and slower.
   raeMilitia: {char: 'rae', outfit: 'militia', name: 'Monkeyland Militia', cls: 'militia', mods: {def: 3, spd: -2, mhp: 2}, ability: 'plant',

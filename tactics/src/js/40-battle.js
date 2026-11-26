@@ -261,6 +261,9 @@ async function strike(a, d, f){
     if (d.hp <= 0 && from > 1 && hasAb(d, 'bend') && !d.bendUsed){ d.hp = 1; d.bendUsed = true; abilityPop(d, 'bend'); }   // Bend, Not Break
     if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
+    if (hasAb(a, 'verse')){   // Healing Verse: allies beside her recover a little
+      for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
+    }
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');

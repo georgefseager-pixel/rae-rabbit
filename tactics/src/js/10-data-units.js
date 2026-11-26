@@ -75,6 +75,7 @@ const CLASSES = {
   mkthrow:   {name: 'Nut Thrower',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Seed Sling',        base: {mhp:17,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
+  sorcerer:  {name: 'Simian Sorcerer', w: 'tome', rng: [1,2], mt: 'foot',    wname: 'Book of Lotus Spells', base: {mhp:17,atk:10,def:2, spd:8,skl:8,mov:5}, g: {mhp:45,atk:50,def:15,spd:45,skl:50}},   // Flopsy's Simian Sorcerer attire
   militia:   {name: 'Militia Captain',w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Militia Spear',     base: {mhp:21,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:70,atk:45,def:40,spd:35,skl:45}},   // Rae's Monkeyland Militia attire
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
@@ -157,7 +158,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
-  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey', militia:'rae',
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey', militia:'rae', sorcerer:'sister',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -308,7 +309,7 @@ const SKINS = {
 // drop pushes the bottom of the art below the stage, behind the dialogue box: used for art cropped
 // at the waist, so it reads as a full-sized figure rather than a giant head.
 const STAGE_SIZE = {
-  sistercamp: {h: .8}, sisterflora: {h: .8}, sisterxmas: {h: .8}, sistercarrot: {h: .82},     // the little sister
+  sistercamp: {h: .8}, sisterflora: {h: .8}, sisterxmas: {h: .8}, sistercarrot: {h: .82}, sistersorcerer: {h: .84},     // the little sister
   king: {h: 1.15},                                // full-body art: a little taller than everyone, as befits a king
   condemned: {h: .92},                            // big ears: a touch smaller so they stay on screen
   fragglejr: {h: .84},                            // the young son: shorter than Tiggle
@@ -355,6 +356,7 @@ const ART_CROP = {
   biggleginger: {panel: ['190% auto', '44% 9%'], talk: ['145% auto', '44% 7%']},   // Gingerbiggle attire
   bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},   // Rose Knight attire: mounted, so the face is small and high
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
+  sistersorcerer: {panel: ['170% auto', '50% 9%'], talk: ['135% auto', '50% 7%']},   // Simian Sorcerer attire
   sistercarrot: {panel: ['175% auto', '48% 6%'], talk: ['140% auto', '48% 4%']},   // In a Carrot (log-in 21)
   sisterxmas: {panel: ['185% auto', '45% 8%'], talk: ['145% auto', '45% 6%']},   // Hoppy Xmas attire
   sisterflora: {panel: ['200% auto', '42% 6%'], talk: ['155% auto', '42% 6%']}, // Flopsy Flora, Chapter Two on (keeps art/sister-token.png)
