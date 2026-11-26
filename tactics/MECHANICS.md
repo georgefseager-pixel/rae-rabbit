@@ -229,7 +229,7 @@ scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg
 
 ## Seasonal events (`31-data-events.js`)
 
-An event runs for a calendar month (`EVENTS[id].month`) of the game's clock (`gameDate()`, which includes Debug: New
+An event runs for a calendar month (`EVENTS[id].month`) of the game's clock (`gameDate()`, which includes the debug menu's New
 Day's skipped days). It only shows on a route once that route's Camp and Side Stories are open, and introduces itself
 with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck>`). While it's on:
 
@@ -246,14 +246,14 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 |---|---|---|---|---|
 | The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" (★★★ Ilc the Scout, a frog defector with a spear; attire Hoppy Xmas for Flopsy) | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer; attire Gingerbiggle) | Rabbit Gifts / Frog Gifts |
 
-Debug (campaign screen): "Debug: December" / "Debug: Not December" toggles `SAVE.debugDecember`; "Debug: New Day" moves
+Debug menu, Time section: "December on/off" toggles `SAVE.debugDecember`; "New day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
 
 The Raepublic festive banner's soldiers (`troops: 'festive'`: Knitter, Log Splitter, Pole Bearer, Snowballer, Caroller)
 are the Republic troop art in the usual uniform, with festive fur instead of the natural colours (`FESTIVE_FURS` in
 `10-data-units.js`: berry red, holly green, gold, peppermint pink; ★★ keep the plumed helmet). Trial look: may be
 replaced by their own art.
-Festive art (these and the frog elves) is only dyed when needed: in December (or Debug: December), or once the army
+Festive art (these and the frog elves) is only dyed when needed: in December (or debug December), or once the army
 has such soldiers. That keeps the rest of the year's loading screen shorter.
 
 Art: the couriers and the Friggliarchy festive banner's soldiers are frog scouts in elf green (`art/elf*-*.png`, a
@@ -268,8 +268,8 @@ attires are Flopsy's Hoppy Xmas and Biggle's Gingerbiggle.
 Six energy, shared by both routes. Losing or retreating from any battle (story, side story, seasonal, training)
 costs 1; winning costs nothing. One comes back per hour, from timestamps, so it refills while the game is closed. At 0,
 the Prepare screen still opens but "Begin Battle" waits (it shows the countdown). The meter is on the campaign
-screen, the Prepare screen and the defeat screen. Uses the game clock, so "Debug: New Day" refills it;
-"Debug: Empty Energy" / "Debug: Refill Energy" sets it directly.
+screen, the Prepare screen and the defeat screen. Uses the game clock, so the debug menu's "New day" / "+1 hour" refill it;
+its energy buttons (0, 1, full) set it directly.
 
 ## Economy
 
@@ -282,5 +282,22 @@ Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), 
 Daily log-in (`66-login.js`): every new calendar day counts as one more log-in (not necessarily consecutive). Each
 gives ONE currency, alternating: odd log-ins Whispers, even Writs. 2, 2, 3, 2, 3, 3, then the seventh is a milestone
 with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Formal Wear (+5 Writs), log-in 21 Flopsy's In a Carrot (look only); after that the
-second week repeats with 10 on every seventh. About 10 of each per week. "Debug: New Day" on the campaign screen makes
+second week repeats with 10 on every seventh. About 10 of each per week. "New day" in the debug menu makes
 it claimable again.
+
+## Debug menu (`src/js/69-debug.js`)
+
+One "🔧 Debug" button on the campaign screen and in the battle menu. It asks for the password (`scrumbly`, any case);
+once entered it stays unlocked until the page is reloaded (opening the game with `#debug` skips the password). "Lock"
+closes it again. It acts on one army at a time (switch at the top). Sections fold away, and remember whether they're open:
+
+- **This battle** (battle menu only): win, lose, defeat every enemy, heal my units, units can act again, skip to the
+  objective turn (then End Turn to finish a survive/escort stage), boss to 1 HP, invincible (your units take no damage).
+- **Story progress**: jump to any stage (everything before it counts as cleared, with the story choices that implies),
+  clear the whole current chapter, unlock everything, reset this army's story; play / clear any side story, clear all.
+- **Resources**: money, pull currency, event gifts, next pull is a guaranteed ★★★ on every banner, zero everything.
+- **Army**: set everyone's level, recruit everyone, revive the fallen, every weapon, every costume, reset relationships,
+  set every support (or one character's) to none/C/B/A/S.
+- **Time, energy and events**: new day, +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.
+- **Tutorials and display**: replay tutorials, fast animations (4×), music off.
+- **Save**: copy the save as text, paste one back, wipe everything.

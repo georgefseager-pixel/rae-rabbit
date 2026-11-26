@@ -828,3 +828,25 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .btn.armed{white-space:normal;line-height:1.05;overflow:hidden;padding-left:8px;padding-right:8px}
 .bchips{display:grid;grid-template-columns:1fr 1fr;overflow:visible}   /* every banner in view: two to a row */
 .bchip{min-width:0;font-size:14px;line-height:1.15}
+
+/* ---------- Debug menu (69-debug.js) ---------- */
+#dbgsheet{z-index:9500;align-items:flex-start;overflow-y:auto;padding:max(12px, env(safe-area-inset-top)) 10px 24px}
+#dbgsheet .card{width:min(520px,100%);margin:0 auto}
+.dbgpw input,.dbgcard input,.dbgcard select,.dbgcard textarea{width:100%;font:15px var(--body);color:#f3e7cb;background:rgba(0,0,0,.35);border:1.5px solid rgba(236,198,115,.45);border-radius:8px;padding:9px 10px;margin-top:4px}
+.dbgpw input.bad{border-color:#e8493b}
+.dbgpw p{margin:6px 0 10px}
+.dbgrow{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.dbghead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dbghead h1{margin:0}
+.dbgarmy{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px}
+.dbgarmy .btn.on{outline:2px solid #ecc673;outline-offset:1px}
+.dbgnote{font-size:13px;opacity:.8;margin:6px 0 8px}
+.dbgsec{border-top:1px dashed rgba(236,198,115,.3);padding:8px 0}
+.dbgsec summary{cursor:pointer;font-family:var(--fell);font-size:17px;color:#ecc673;list-style:none}
+.dbgsec summary::before{content:'▸ ';display:inline-block;transition:transform .15s}
+.dbgsec[open] summary::before{transform:rotate(90deg)}
+.dbgbody{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.dbgbody label{font-size:13px;opacity:.9;display:block}
+.dbggrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.dbggrid .btn{font-size:12px;min-height:38px;padding:6px 8px;white-space:normal;line-height:1.1}
+.dbg .btn{font-size:13px}

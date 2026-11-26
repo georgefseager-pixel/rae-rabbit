@@ -257,7 +257,7 @@ async function strike(a, d, f){
   const roll = (Math.random()*100 + Math.random()*100)/2;   // two-roll hit, as in the classics
   if (roll < f.hit){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
-    const from = d.hp; d.hp = Math.max(0, d.hp - dmg);
+    const from = d.hp; d.hp = Math.max(0, d.hp - (B.god && sideOfTeam(d) === 'p' ? 0 : dmg));   // (debug: invincible)
     if (d.hp <= 0 && from > 1 && hasAb(d, 'bend') && !d.bendUsed){ d.hp = 1; d.bendUsed = true; abilityPop(d, 'bend'); }   // Bend, Not Break
     if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
@@ -851,10 +851,6 @@ $('#menuBtn').addEventListener('click', () => {
   $('#menu').hidden = false;
 });
 $('#resumeBtn').addEventListener('click', () => { $('#menu').hidden = true; });
-$('#skipWinBtn').addEventListener('click', e => {
-  if (!armed(e.currentTarget, 'Tap again to win now')) return;
-  $('#menu').hidden = true; finishBattle(true);   // the post-battle story and rewards still play
-});
 $('#retreatBtn').addEventListener('click', e => {
   if (!armed(e.currentTarget, 'Tap again: lose this battle')) return;
   $('#menu').hidden = true; finishBattle(false, true);

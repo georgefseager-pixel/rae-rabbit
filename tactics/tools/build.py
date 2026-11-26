@@ -73,6 +73,14 @@ for marker, value in [
     assert html.count(marker) == 1, f"marker {marker} must appear exactly once in shell.html"
     html = html.replace(marker, value)
 
+# Check the game's code as one script (the files share one scope, so e.g. two files declaring the same name would stop
+# the whole game from starting). Needs node; skipped if it isn't installed.
+import shutil, subprocess, tempfile
+if shutil.which("node"):
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as _t: _t.write('(() => {\n"use strict";\n' + js + "\n})();\n")
+    _r = subprocess.run(["node", "--check", _t.name], capture_output=True, text=True); pathlib.Path(_t.name).unlink()
+    if _r.returncode: raise SystemExit("The game's code doesn't parse as one script:\n" + _r.stderr)
+
 # a build id: changes whenever the game changes, so an installed copy knows when a new version has been published
 build_id = hashlib.sha1(html.encode()).hexdigest()[:12]
 assert html.count("/*@BUILD*/") == 1, "the build id marker must appear exactly once (68-app.js)"
