@@ -18,7 +18,7 @@ function resize(){
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
   const g = terrCv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'blossom') blossomOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'castle') castleOver(g, x, y, MAP[y][x]); }
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'blossom') blossomOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'castle') castleOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'shore') shoreOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'arena') arenaOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'ship') deckOver(g, x, y, MAP[y][x]); }
   if (!noisePat){
     const n = document.createElement('canvas'); n.width = n.height = 96; const ng = n.getContext('2d');
     for (let i = 0; i < 1400; i++){ ng.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.18)' : 'rgba(255,245,220,.12)'; ng.fillRect(Math.random()*96, Math.random()*96, 1, Math.random()*2 + .5); }
@@ -70,7 +70,7 @@ function drawTile(g, x, y, ch){
     return;
   }
   const theme = mapDef?.theme || 'meadow';
-  if (theme !== 'meadow' && theme !== 'snow' && theme !== 'blossom') return drawThemedTile(g, x, y, ch, theme === 'castle' ? 'camp' : theme);
+  if (theme !== 'meadow' && theme !== 'snow' && theme !== 'blossom' && theme !== 'shore') return drawThemedTile(g, x, y, ch, ['castle', 'arena', 'ship'].includes(theme) ? 'camp' : theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -168,6 +168,57 @@ function castleOver(g, x, y, ch){
   if (ch === 'X' || ch === 'M'){ g.fillStyle = 'rgba(140,140,155,.62)'; g.fillRect(X, Y, T, T); g.strokeStyle = 'rgba(50,50,60,.4)'; g.lineWidth = 1;
     for (let r = 0; r < 3; r++){ const yy = Y + T*(r + 1)/3; g.beginPath(); g.moveTo(X, yy); g.lineTo(X + T, yy); g.stroke(); const xx = X + T*(r % 2 ? .25 : .65); g.beginPath(); g.moveTo(xx, yy - T/3); g.lineTo(xx, yy); g.stroke(); } }
   if (ch === 'F') for (let i = 0; i < 5; i++){ g.fillStyle = i % 2 ? '#f4a6c4' : '#ffe58a'; ell(g, X + T*(.3 + .4*hash(x, y, i + 30)), Y + T*(.2 + .3*hash(x, y, i + 40)), T*.06, T*.06); g.fill(); }
+}
+// the shore: pale sand over the meadow; dune grass stays green, rocks go grey-blue, cliffs go dark
+function shoreOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  if (ch === 'W' || ch === 'B'){ g.fillStyle = 'rgba(40,150,160,.22)'; g.fillRect(X, Y, T, T);   // a greener, seaside blue
+    if (ch === 'W' && hash(x, y, 3) < .5){ g.fillStyle = 'rgba(255,255,255,.55)'; ell(g, X + T*(.2 + .6*hash(x, y, 4)), Y + T*(.25 + .5*hash(x, y, 5)), T*.08, T*.025); g.fill(); }
+    return; }
+  if (ch === '.' || ch === 'T'){ g.fillStyle = 'rgba(232,208,150,.78)'; g.fillRect(X, Y, T, T);
+    g.fillStyle = 'rgba(160,128,80,.35)'; for (let i = 0; i < 3; i++){ ell(g, X + T*hash(x, y, i + 20), Y + T*hash(x, y, i + 30), T*.02, T*.02); g.fill(); }
+    if (hash(x, y, 9) < .12){ g.fillStyle = '#f2c2c8'; g.beginPath(); g.moveTo(X + T*.6, Y + T*.6); g.arc(X + T*.6, Y + T*.6, T*.07, Math.PI, 0); g.closePath(); g.fill(); }   // a shell
+    if (ch === 'T') drawFort(g, X, Y, x, y);
+  }
+  if (ch === 'F'){ g.fillStyle = 'rgba(232,208,150,.45)'; g.fillRect(X, Y, T, T); }
+  if (ch === 'M'){ g.fillStyle = 'rgba(214,196,150,.55)'; g.fillRect(X, Y, T, T); hump(g, X + T*.58, Y + T*.84, T*.36, T*.5, '#7c8a92', 'rgba(40,50,56,.6)'); hump(g, X + T*.32, Y + T*.9, T*.26, T*.34, '#96a2a8', 'rgba(40,50,56,.5)');
+    g.fillStyle = '#3e7a4a'; ell(g, X + T*.6, Y + T*.45, T*.12, T*.04); g.fill(); }
+  if (ch === 'X'){ g.fillStyle = '#5a4e46'; g.fillRect(X, Y, T, T); g.strokeStyle = 'rgba(30,24,20,.6)'; g.lineWidth = Math.max(1, T*.03);
+    for (let i = 0; i < 3; i++){ g.beginPath(); g.moveTo(X + T*(.1 + .3*i), Y); g.lineTo(X + T*(.2 + .3*i), Y + T*.5); g.lineTo(X + T*(.12 + .3*i), Y + T); g.stroke(); }
+    g.fillStyle = 'rgba(255,255,255,.12)'; g.fillRect(X, Y, T, T*.08); }
+}
+// the tournament: raked pale sand, striped pennants, grandstands of benches
+function arenaOver(g, x, y, ch){
+  const X = x*T, Y = y*T, stripes = ['#c0392b', '#2e5f9a', '#d9b04a', '#4c8a3a'];
+  if (ch === '.' || ch === 'F' || ch === 'T'){ g.fillStyle = 'rgba(230,214,170,.7)'; g.fillRect(X, Y, T, T);
+    g.strokeStyle = 'rgba(150,120,80,.25)'; g.lineWidth = 1; for (let i = 1; i < 4; i++){ g.beginPath(); g.moveTo(X, Y + T*i/4); g.lineTo(X + T, Y + T*i/4); g.stroke(); } }
+  if (ch === 'F') for (const [a, b] of [[.28, .25], [.7, .4]]){   // pennants on poles
+    g.strokeStyle = '#5a3e24'; g.lineWidth = Math.max(1, T*.04); g.beginPath(); g.moveTo(X + T*a, Y + T*(b + .55)); g.lineTo(X + T*a, Y + T*b); g.stroke();
+    g.fillStyle = stripes[Math.floor(hash(x, y, a*10)*4)]; g.beginPath(); g.moveTo(X + T*a, Y + T*b); g.lineTo(X + T*(a + .24), Y + T*(b + .08)); g.lineTo(X + T*a, Y + T*(b + .18)); g.closePath(); g.fill();
+  }
+  if (ch === 'M'){ g.fillStyle = '#6a4a30'; g.fillRect(X, Y, T, T);   // benches, with frogs watching
+    for (let r = 0; r < 3; r++){ g.fillStyle = r % 2 ? '#8a6440' : '#9a7048'; g.fillRect(X, Y + T*(r/3 + .2), T, T*.1);
+      for (let i = 0; i < 3; i++){ if (hash(x, y, r*3 + i) < .55){ g.fillStyle = ['#6aa040', '#7bc043', '#5e8a3c', '#d9779a'][Math.floor(hash(x, y, r*3 + i + 9)*4)]; ell(g, X + T*(.18 + i*.32), Y + T*(r/3 + .17), T*.09, T*.07); g.fill(); } } } }
+  if (ch === 'X'){ g.fillStyle = '#e9dcc0'; g.fillRect(X + T*.08, Y, T*.84, T); for (let i = 0; i < 4; i++){ g.fillStyle = i % 2 ? '#c0392b' : '#2e5f9a'; g.fillRect(X + T*.08, Y + T*i/4, T*.84, T*.12); }
+    g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(X + T*.82, Y, T*.1, T); }
+  if (ch === 'T') drawFort(g, X, Y, x, y);
+}
+// the ships: planked decks, barrels, masts and rails
+function deckOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  if (ch === 'W' || ch === 'B') return;
+  g.fillStyle = ch === 'X' ? '#4a2e1c' : '#9a6a40'; g.fillRect(X, Y, T, T);
+  if (ch !== 'X'){ g.strokeStyle = 'rgba(60,36,20,.5)'; g.lineWidth = 1; for (let i = 1; i < 5; i++){ g.beginPath(); g.moveTo(X + T*i/5, Y); g.lineTo(X + T*i/5, Y + T); g.stroke(); }
+    g.fillStyle = 'rgba(30,18,10,.5)'; for (let i = 0; i < 5; i++){ ell(g, X + T*(i/5 + .1), Y + T*(hash(x, y, i) < .5 ? .15 : .85), T*.015, T*.015); g.fill(); } }
+  else { g.fillStyle = '#6a4228'; g.fillRect(X, Y + T*.3, T, T*.4); g.fillStyle = '#c9a24a'; g.fillRect(X, Y + T*.46, T, T*.06); }
+  if (ch === 'F') for (const [a, b] of [[.3, .6], [.68, .5]]){ const cx = X + T*a, cy = Y + T*b;
+    g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, cx + T*.03, cy + T*.2, T*.16, T*.06); g.fill();
+    g.fillStyle = '#7a4a26'; g.beginPath(); g.ellipse(cx, cy, T*.15, T*.22, 0, 0, Math.PI*2); g.fill();
+    g.strokeStyle = '#3a3a3e'; g.lineWidth = Math.max(1, T*.03); for (const k of [-.1, .1]){ g.beginPath(); g.moveTo(cx - T*.15, cy + T*k); g.lineTo(cx + T*.15, cy + T*k); g.stroke(); } }
+  if (ch === 'M'){ g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, X + T*.52, Y + T*.56, T*.22, T*.1); g.fill();
+    g.fillStyle = '#5a3a22'; ell(g, X + T*.5, Y + T*.5, T*.17, T*.17); g.fill(); g.fillStyle = '#7a5232'; ell(g, X + T*.47, Y + T*.47, T*.11, T*.11); g.fill();
+    g.strokeStyle = '#e0d2b0'; g.lineWidth = Math.max(1, T*.025); for (const [a, b] of [[.05, .1], [.95, .1], [.05, .9], [.95, .9]]){ g.beginPath(); g.moveTo(X + T*.5, Y + T*.5); g.lineTo(X + T*a, Y + T*b); g.stroke(); } }
+  if (ch === 'T') drawFort(g, X, Y, x, y);
 }
 function snowOver(g, x, y, ch){
   const X = x*T, Y = y*T;

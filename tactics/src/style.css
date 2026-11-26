@@ -850,3 +850,27 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .dbggrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .dbggrid .btn{font-size:12px;min-height:38px;padding:6px 8px;white-space:normal;line-height:1.1}
 .dbg .btn{font-size:13px}
+
+/* Chapter Four: placeholder backdrops until art/bg-shore.jpg, bg-arena.jpg and bg-ships.jpg arrive */
+.sbg[data-bg=shore]{background:
+  radial-gradient(ellipse 30% 14% at 72% 22%, rgba(255,236,190,.55), transparent 70%),
+  linear-gradient(180deg, transparent 47%, rgba(255,255,255,.5) 47.4%, transparent 48.6%),
+  linear-gradient(180deg, transparent 58%, rgba(255,255,255,.35) 58.3%, transparent 59.5%),
+  linear-gradient(180deg,#8fb4d0 0%,#cfe0e6 30%,#3f8aa0 36%,#2c6a84 52%,#e6cf98 62%,#d2b47a 80%,#a88a58 100%)}
+.sbg[data-bg=arena]{background:
+  repeating-linear-gradient(90deg, #c0392b 0 18px, #e9dcc0 18px 36px, #2e5f9a 36px 54px, #e9dcc0 54px 72px) 0 18%/100% 7% no-repeat,
+  repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 3px, transparent 3px 24px) 0 26%/100% 26% no-repeat,
+  linear-gradient(180deg,#6aa6d8 0%,#a8cce8 16%,#6a4a30 25%,#8a6440 52%,#e6d6aa 53%,#cfbb88 100%)}
+.sbg[data-bg=ships]{background:
+  linear-gradient(90deg, transparent 22%, #3a2414 22% 23.5%, transparent 23.5% 70%, #3a2414 70% 71.5%, transparent 71.5%) 0 0/100% 62% no-repeat,
+  linear-gradient(180deg, transparent 20%, #f2ead8 20% 38%, transparent 38%) 12% 0/24% 100% no-repeat,
+  linear-gradient(180deg, transparent 14%, #f2ead8 14% 34%, transparent 34%) 60% 0/22% 100% no-repeat,
+  linear-gradient(180deg, transparent 58%, #5a3a22 58% 72%, transparent 72%),
+  linear-gradient(180deg,#5a7a9a 0%,#9ab6cc 40%,#2c6a84 58%,#1e4a62 100%)}
+
+/* the pirates (Chapter Four) */
+#phase.f-pirate{color:#8fd8d0}
+.por.f-pirate{background-image:radial-gradient(circle at 50% 30%, #2e5a68, #0c1c24 75%);box-shadow:0 0 0 2px #9fd3cf, 0 0 0 4px #141010}
+.tpor.f-pirate{box-shadow:0 0 0 2px #9fd3cf, 0 0 0 5px #0a1014, 0 16px 30px rgba(0,0,0,.6);background-image:radial-gradient(circle at 50% 35%, #2e5a68, #0c1c24 75%)}
+.tname.f-pirate{background:#1f4a5a;color:#e2f2f0}
+.plate.f-pirate{background:linear-gradient(180deg,#24505e,#0e2630)}

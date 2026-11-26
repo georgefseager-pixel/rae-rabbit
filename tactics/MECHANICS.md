@@ -55,6 +55,18 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | castleHall (castle) | walls down both sides, pillars `M`, throne dais `T`, doors at the bottom | R3-5, F3-5 |
 | schismField (blossom) | a stream `W` with two bridges, forts `T` both sides | R3-6, F3-6 |
 | snowWoods (snow) | snowy pines `F`, drifts `M`; road exits along the bottom row | XM-R, XM-F (December) |
+| coastRoad (shore) | the sea `W` down the left edge, cliffs `X`, dune grass `F`, sea rocks `M`, a frog watch hut `T` | R4-1 |
+| beachCamp (shore) | the settlement: two jetties `B` into the sea at the top (where pirates land), a driftwood fence `X` with gaps, huts `T` | R4-2, R4-4 |
+| lighthouse (shore) | the lighthouse `T` on an island, reached by a causeway `B` two squares wide | R4-3 |
+| tidePools (shore) | rock pools `W` dotted over the beach, longboats `T` | R4-5 |
+| cove (shore) | cliffs `X` all round, the pirates' tents `T`, a pier `B` | R4-6 |
+| gangplanks (ship) | three ships, rails `X`, masts `M`, barrels `F`; single-square gangplanks `B` over the sea between them; Ducky's quarterdeck `T` | R4-7 |
+| grandArena (arena) | grandstands `M` round the edge, pennants `F`, the King's box `T` | F4-1, F4-6 |
+| gauntlet (arena) | four tilt barriers `X`, each with a gap on alternating sides; the bell (exits) at the top | F4-2 |
+| lists (arena) | open sand split by the tilt barrier `X` (with gaps); Tilly's pavilion `T` | F4-3 |
+| royalPark (meadow) | lawns, topiary `F`, fountains `M`, hedges `X`; gates (exits) along the bottom | F4-4 |
+| siegeGame (arena) | a mock fort of barriers `X` in the middle, gaps on every side, pavilions `T` inside | F4-5 |
+| royalArena (arena) | grandstands, the champion's dais `T` in the middle | F4-7 |
 
 ## Movement types (a class's `mt`)
 
@@ -64,7 +76,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | armor | 2 | can't enter | Lily Knight, Armoured Guard |
 | bog | 2 | 2 | Club Guard, Marsh Lord (frogs at home in the marsh) |
 | climb | 1 | 3 | monkeys: Acrobat, Nut Thrower, Canopy Heir (Speshul, a bow). Trees and flowers are open ground to them |
-| mounted | 3 | can't enter | Rose Knight (Biggle's attire) |
+| mounted | 3 | can't enter | Rose Knight (Biggle's attire), Lily Jouster (Tilly Tealbottom, F4-3) |
 
 Mounted units move far on open ground (Rose Knight: Mov 7) but are slowed by forest and blocked by rocks: good on
 open maps and bridges (ford, riverWoods), awkward on rocky ones (ridge, thornHill, ravine).
@@ -136,18 +148,20 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 |---|---|---|
 | Defeat the commander | `objective: {type: 'boss'}` | most stages |
 | …within a turn limit | `objective: {type: 'boss', limit: n}` | R1-3, R2-2b |
-| Rout | `objective: {type: 'rout'}` | F2-1, F2-4 (after the twist), FD-1 |
-| Survive | `objective: {type: 'survive', turns}` | F1-3, R2-1, R2-3 |
+| Rout | `objective: {type: 'rout'}` | F2-1, F2-4 (after the twist), FD-1, F4-1 |
+| Survive | `objective: {type: 'survive', turns}` | F1-3, R2-1, R2-3, R3-3, R4-4, F4-5 |
 | Reinforcements | `reinforce` | R2-1, R2-2, R2-3, F1-3, FD-1, FD-3 |
 | Twist (objective changes mid-battle) | `twist` | R2-1 (survive, then rout), F2-4 (duel, then the guard) |
 | Solo start, team arrives later | `solo` + `twist: {on: 'boss', arrive: true}` | F2-4 |
+| …or after surviving alone | `solo` + `objective: {type: 'survive', turns}` + `twist: {arrive: true, objective}` | R4-5 (Rae walks out to surrender; her friends arrive at the end of turn II) |
 | Must-deploy character | `mustDeploy` | F2-4 (Biggle) |
+| A usual unit fights against you | `ban` + the character as an enemy boss (`key`, so their ability works for the enemy) | F4-7 (Biggle Baggle; his Hold the Line stops your units) |
 | Allies (act on their own phase) | `allies` | R2-2 (Patch is a `vip`), R2-2b, R2-3, R2-4, F2-2 (Fraggle's guard) |
 | A character joins mid-battle | `events: [{turn, join}]` | R2-1 (Willow) |
 | Convergence gate | `requires` | R1-4 / F1-4 pair, R2-2 / F2-2, F2-3 / R2-2, F2-3b / R2-4 |
 | Someone else leads | `lead` | FD-1, FD-2, FD-3 (Flopsy) |
 | Characters kept out | `ban` | WL-* (Willow), FD-* (Rae) |
-| Training fight (no permanent losses, the boss yields) | `spar` | WL-1, WL-2, WL-3, CO-1 (taught: monkeys cross trees; keep to the open) |
+| Training fight (no permanent losses, the boss yields) | `spar` | WL-1, WL-2, WL-3, CO-1 (taught: monkeys cross trees; keep to the open), R4-2 (rabbits and monkeys, mixed teams), every round of the tournament (F4-1 to F4-7) |
 | Flashback (years ago: only the leader and ordinary soldiers) | `flashback` + `lead` | RH-1–3 (Rhubarb), FJ-1–3 (Fraggle Jr.), AU-2 (Aurora), CO-2 (Cornelius) |
 | Boss surrenders ("Yields!") instead of fleeing | `yields` + a `flees` boss | EX-1, EX-3 |
 | Enemies from another side (mixed factions) | spawn `faction` | BR-2 (Magpie's gang with the reeve's frogs) |
@@ -161,8 +175,8 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Escort (protect couriers until the turn limit, or until they're all delivered or lost) | `objective: {type: 'survive', turns, escort: true}` + `escort: true` + `exits` | XM-F |
 | Exit squares (gold, ⬇) where couriers leave | `exits: [[x,y],…]` | XM-R, XM-F, R3-1, R3-2, F3-3, F3-5 |
 | Escort outside the event (refugees walk to the exits on their own) | `objective: {type: 'survive', turns, escort: true, who, dest}` + allies with `ai: 'courier', courier: true` | R3-1 |
-| Intercept outside the event (no gifts; over when no runner is left) | `objective: {type: 'intercept', who, dest}` + enemy couriers | F3-3 (the grain runners) |
-| Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5, CS-2 |
+| Intercept outside the event (no gifts; over when no runner is left) | `objective: {type: 'intercept', who, dest}` + enemy couriers | F3-3 (the grain runners), F4-4 (the Ribbon Hunt's squires) |
+| Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5, CS-2, F4-2 (the Gauntlet's bell) |
 | Units change sides mid-battle | `events: [{turn, defect: true, popup, talk}]` + spawns with `defects: true`: enemies become allies, allies become enemies. Happens on replays too | R3-5 (Speshul's guards join you), F3-5 (the hall guard betray Tiggle) |
 
 ### Bonus stars (`star.type`)
@@ -175,7 +189,7 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | `bossBy` (key) | that character lands the blow on the boss | R1-3, R2-4, F1-1, F2-3 |
 | `fewer` (n) | deploy at most n | F1-4 |
 | `allies` | no ally falls (allies who leave by an exit are safe) | R2-2, R3-1, R3-6, F3-2 |
-| `catch` (n) | catch at least n runners (intercept) | F3-3 |
+| `catch` (n) | catch at least n runners (intercept) | F3-3, F4-4 |
 
 ## Things the player has been taught (and where to reuse them)
 
@@ -197,7 +211,7 @@ per level, HP counted at half). The current line on both routes:
 |---|---|---|---|
 | Recommended | 1 · 1 · 2 · 2 | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
 
-Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Side stories of Chapter Three's characters (Speshul, Aurora,
+Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Chapter Four: Raepublic 7 · 7 · 8 · 8 · 8 · 9 · 10; Friggliarchy 7 · 8 · 8 · 8 · 9 · 9 · 10. Side stories of Chapter Three's characters (Speshul, Aurora,
 Cornelius, Chansey; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
 
 Keep new stages on this line: about +½ a level per stage, and +1 for a finale. Expected player levels (from the
@@ -214,6 +228,29 @@ gilded, scarred `art/mkelite*-*.png`), a battle pose per weapon
 (healers read from the book pose), fur recoloured from the `mk*skin` masks into `MONKEY_FURS` in the background just after
 loading. Aurora has her own art (`art/aurora-*.png`); Speshul too (`art/speshul-*.png`; a bowman, Canopy Heir);
 scenes `monkeyland`, `castlegate` and `castle` have their own paintings (`art/bg-*.jpg`). Your own units always stand on your side's coaster, whatever their faction.
+
+## Chapter Four: The Shore / The Tournament
+
+The two stories split up: no convergence gates. Seven stages a side (one more than Chapter Three), `enemyMods: {mhp: -1}`,
+deploy 7. Chapter Five is a stub on both routes.
+
+- **The Shore (Raepublic).** The frog army is recalled north (R4-1), the Raepublic settles the beach. Rabbits and monkeys
+  argue over huts and settle it with a mixed-team training match (R4-2), take the old lighthouse (R4-3), then pirates
+  arrive after the King's bounty on Rae (R4-4). Rae walks out alone to give herself up and her friends follow her (R4-5,
+  a solo survive with a twist), the Raepublic attacks the pirates' cove (R4-6; Ducky escapes to sea), and boards
+  Ducky's three ships (R4-7). The pirates surrender and offer to join.
+- **The Tournament (Friggliarchy).** The King's fury at court; Biggle speaks up for Tiggle; the King orders the Royal
+  Tournament. Seven rounds, all training fights (`spar`): the Grand Melee (rout), the Gauntlet (escape to the bell),
+  Tilly Tealbottom in the lists (a mounted lance boss), the Ribbon Hunt (intercept), the Siege Game (survive in a mock
+  fort), Princess in the semi-final (a tome boss) and Biggle Baggle in the final (`ban`, enemy boss with Hold the Line).
+  Afterwards: the test of worthiness, the King's army already marching, and the brothers set out to take it over.
+
+New: the `pirate` faction (`FACTIONS.pirate`; Cutlass, Boarder, Harpooner, Cork Gunner, Shanty Singer, Sawbones and
+Ducky's Pirate Captain class with an anchor), the classes Lily Jouster (Tilly) and Royal Heiress (Princess), and the
+map themes `shore`, `arena` and `ship` (drawn in `45-render.js`). Placeholders (no art yet, no abilities): Tilly
+Tealbottom, Princess, Ducky (a plush hammerhead) and the pirate crew (plush sharks, `sp: 'shark'` in `15-plush.js`).
+Scenes `shore`, `arena` and `ships` have drawn placeholder backdrops in `style.css` until their paintings arrive; the
+capital's throne room reuses `court`.
 
 ## Progression and unlocks
 

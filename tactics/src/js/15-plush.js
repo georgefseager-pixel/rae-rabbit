@@ -155,6 +155,13 @@ function frog(g, cx, cy, s, L){
       g.strokeStyle = '#3b2a1e'; g.lineWidth = s*.07; g.beginPath(); g.moveTo(cx + .95*s, by + .1*s); g.quadraticCurveTo(cx + 1.4*s, by - .4*s, cx + 1.15*s, by - .95*s); g.stroke();
       break;
     }
+    case 'tiara':   // Princess: a little gold tiara with a pink jewel
+      g.fillStyle = '#e6be55'; g.strokeStyle = '#8a6418'; g.lineWidth = Math.max(.8, s*.03);
+      g.beginPath(); g.moveTo(cx - .42*s, cy - .62*s);
+      for (let i = 0; i <= 4; i++){ const x = cx - .42*s + i*.21*s; g.lineTo(x - .05*s, cy - .7*s); g.lineTo(x, cy - (i === 2 ? 1.02 : i % 2 ? .86 : .92)*s); g.lineTo(x + .05*s, cy - .7*s); }
+      g.lineTo(cx + .42*s, cy - .62*s); g.closePath(); g.fill(); g.stroke();
+      g.fillStyle = '#e04a8a'; ell(g, cx, cy - .8*s, .07*s, .07*s); g.fill();
+      break;
     case 'kettle': {
       const hg = g.createLinearGradient(cx, cy - 1.15*s, cx, cy - .7*s); hg.addColorStop(0, '#d6dbe2'); hg.addColorStop(1, '#7c838e');
       g.fillStyle = hg; g.beginPath(); g.ellipse(cx, cy - .76*s, .42*s, .36*s, 0, Math.PI, 0); g.closePath(); g.fill();
@@ -229,9 +236,40 @@ function monkey(g, cx, cy, s, L){
   g.restore();
 }
 
+// Chapter Four placeholder: a plush shark (pirates). hammer:true gives a hammerhead (Ducky).
+function shark(g, cx, cy, s, L){
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  const by = cy + .1*s;
+  // dorsal fin and tail fin, behind the body
+  g.fillStyle = L.skin; g.beginPath(); g.moveTo(cx - .25*s, by - .55*s); g.quadraticCurveTo(cx + .05*s, by - 1.45*s, cx + .45*s, by - 1.2*s); g.quadraticCurveTo(cx + .3*s, by - .85*s, cx + .35*s, by - .5*s); g.closePath(); g.fill(); stitchStroke(g, L.dark, s);
+  for (const side of [-1, 1]){ g.fillStyle = L.dark; g.beginPath(); g.moveTo(cx + side*.85*s, by + .25*s); g.quadraticCurveTo(cx + side*1.35*s, by + .55*s, cx + side*1.25*s, by + .85*s); g.quadraticCurveTo(cx + side*1.0*s, by + .55*s, cx + side*.7*s, by + .5*s); g.closePath(); g.fill(); }
+  const gr = g.createRadialGradient(cx - .3*s, by - .4*s, s*.1, cx, by, s*1.3);
+  gr.addColorStop(0, L.light); gr.addColorStop(1, L.skin);
+  g.fillStyle = gr; ell(g, cx, by, 1.0*s, .82*s); g.fill(); stitchStroke(g, L.dark, s);
+  g.fillStyle = L.belly; ell(g, cx, by + .34*s, .7*s, .42*s); g.fill(); g.beginPath(); g.ellipse(cx, by + .34*s, .7*s, .42*s, 0, 0, Math.PI*2); stitchStroke(g, L.dark, s, .7);
+  if (L.hammer){   // the hammer: a wide flat head with an eye at each end
+    g.fillStyle = L.skin; g.beginPath(); g.ellipse(cx, by - .5*s, 1.42*s, .3*s, 0, 0, Math.PI*2); g.fill(); g.beginPath(); g.ellipse(cx, by - .5*s, 1.42*s, .3*s, 0, 0, Math.PI*2); stitchStroke(g, L.dark, s);
+    for (const side of [-1, 1]){ g.fillStyle = '#f4f0dd'; ell(g, cx + side*1.22*s, by - .52*s, .17*s, .17*s); g.fill(); button(g, cx + side*1.22*s, by - .52*s, .1*s); }
+  } else for (const side of [-1, 1]){ g.fillStyle = '#f4f0dd'; ell(g, cx + side*.42*s, by - .3*s, .17*s, .17*s); g.fill(); button(g, cx + side*.42*s, by - .29*s, .1*s); }
+  // the grin: a felt mouth with a row of white teeth
+  g.fillStyle = '#5a2a30'; g.beginPath(); g.moveTo(cx - .5*s, by + .08*s); g.quadraticCurveTo(cx, by + .42*s, cx + .5*s, by + .08*s); g.quadraticCurveTo(cx, by + .22*s, cx - .5*s, by + .08*s); g.fill();
+  g.fillStyle = '#fbf8ef'; for (let i = 0; i < 6; i++){ const x = cx - .38*s + i*.152*s, y = by + .1*s + Math.sin((i + .5)/6*Math.PI)*.11*s; g.beginPath(); g.moveTo(x - .05*s, y); g.lineTo(x + .05*s, y); g.lineTo(x, y + .09*s); g.closePath(); g.fill(); }
+  g.strokeStyle = L.dark; g.lineWidth = s*.03; for (const k of [.62, .72, .82]){ g.beginPath(); g.moveTo(cx + k*s, by - .1*s); g.lineTo(cx + (k - .05)*s, by + .12*s); g.stroke(); }   // gills
+  if (L.gear === 'bandana') bandana(g, cx, by - .22*s, s, L.band || '#b5302a', s*.95, s*.66, 1);
+  if (L.gear === 'eyepatch'){ bandana(g, cx, by - .22*s, s, '#2c3559', s*.95, s*.66, 1); g.fillStyle = '#111'; ell(g, cx - .42*s, by - .3*s, .2*s, .2*s); g.fill();
+    g.strokeStyle = '#111'; g.lineWidth = s*.04; g.beginPath(); g.moveTo(cx - .8*s, by - .5*s); g.lineTo(cx + .1*s, by - .48*s); g.stroke(); }
+  if (L.gear === 'tricorn'){   // the captain's three-cornered hat, with a skull-ish button
+    const ty = by - (L.hammer ? .72 : .62)*s;
+    g.fillStyle = '#1e1a22'; g.beginPath(); g.moveTo(cx - .95*s, ty + .1*s); g.quadraticCurveTo(cx - .5*s, ty - .5*s, cx, ty - .55*s); g.quadraticCurveTo(cx + .5*s, ty - .5*s, cx + .95*s, ty + .1*s); g.quadraticCurveTo(cx, ty - .08*s, cx - .95*s, ty + .1*s); g.fill();
+    g.strokeStyle = '#d9b04a'; g.lineWidth = s*.05; g.beginPath(); g.moveTo(cx - .9*s, ty + .06*s); g.quadraticCurveTo(cx, ty - .12*s, cx + .9*s, ty + .06*s); g.stroke();
+    g.fillStyle = '#f4f0e2'; ell(g, cx, ty - .25*s, .1*s, .1*s); g.fill(); g.fillStyle = '#1e1a22'; ell(g, cx - .035*s, ty - .26*s, .02*s, .025*s); g.fill(); ell(g, cx + .035*s, ty - .26*s, .02*s, .025*s); g.fill();
+  }
+  g.restore();
+}
+
 function drawPlush(g, look, cx, cy, s){
   const L = LOOKS[look] || LOOKS.worker;
-  ({bun: bunny, frog, mouse, monkey})[L.sp](g, cx, cy, s, L);
+  ({bun: bunny, frog, mouse, monkey, shark})[L.sp](g, cx, cy, s, L);
 }
 const portraitCache = {};
 function plushPortrait(look){

@@ -898,6 +898,30 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .dbggrid .btn{font-size:12px;min-height:38px;padding:6px 8px;white-space:normal;line-height:1.1}
 .dbg .btn{font-size:13px}
 
+/* Chapter Four: placeholder backdrops until art/bg-shore.jpg, bg-arena.jpg and bg-ships.jpg arrive */
+.sbg[data-bg=shore]{background:
+  radial-gradient(ellipse 30% 14% at 72% 22%, rgba(255,236,190,.55), transparent 70%),
+  linear-gradient(180deg, transparent 47%, rgba(255,255,255,.5) 47.4%, transparent 48.6%),
+  linear-gradient(180deg, transparent 58%, rgba(255,255,255,.35) 58.3%, transparent 59.5%),
+  linear-gradient(180deg,#8fb4d0 0%,#cfe0e6 30%,#3f8aa0 36%,#2c6a84 52%,#e6cf98 62%,#d2b47a 80%,#a88a58 100%)}
+.sbg[data-bg=arena]{background:
+  repeating-linear-gradient(90deg, #c0392b 0 18px, #e9dcc0 18px 36px, #2e5f9a 36px 54px, #e9dcc0 54px 72px) 0 18%/100% 7% no-repeat,
+  repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 3px, transparent 3px 24px) 0 26%/100% 26% no-repeat,
+  linear-gradient(180deg,#6aa6d8 0%,#a8cce8 16%,#6a4a30 25%,#8a6440 52%,#e6d6aa 53%,#cfbb88 100%)}
+.sbg[data-bg=ships]{background:
+  linear-gradient(90deg, transparent 22%, #3a2414 22% 23.5%, transparent 23.5% 70%, #3a2414 70% 71.5%, transparent 71.5%) 0 0/100% 62% no-repeat,
+  linear-gradient(180deg, transparent 20%, #f2ead8 20% 38%, transparent 38%) 12% 0/24% 100% no-repeat,
+  linear-gradient(180deg, transparent 14%, #f2ead8 14% 34%, transparent 34%) 60% 0/22% 100% no-repeat,
+  linear-gradient(180deg, transparent 58%, #5a3a22 58% 72%, transparent 72%),
+  linear-gradient(180deg,#5a7a9a 0%,#9ab6cc 40%,#2c6a84 58%,#1e4a62 100%)}
+
+/* the pirates (Chapter Four) */
+#phase.f-pirate{color:#8fd8d0}
+.por.f-pirate{background-image:radial-gradient(circle at 50% 30%, #2e5a68, #0c1c24 75%);box-shadow:0 0 0 2px #9fd3cf, 0 0 0 4px #141010}
+.tpor.f-pirate{box-shadow:0 0 0 2px #9fd3cf, 0 0 0 5px #0a1014, 0 16px 30px rgba(0,0,0,.6);background-image:radial-gradient(circle at 50% 35%, #2e5a68, #0c1c24 75%)}
+.tname.f-pirate{background:#1f4a5a;color:#e2f2f0}
+.plate.f-pirate{background:linear-gradient(180deg,#24505e,#0e2630)}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -1703,6 +1727,10 @@ const FACTIONS = {
   monkey: {name: 'Monkeyland',   currency: 'Petals', playerLine: 'MONKEYLAND RALLIES',       enemyLine: 'THE MONKEYS SWARM',
           band: '#8a4a2a', text: '#f6e2c4', sub: '#f2b8c6', coaster: 'rgba(150,84,40,.82)', stitch: 'rgba(250,225,190,.65)',
           fort: ['#c0763a', '#e0a0b8'], letter: 'M'},
+  // Chapter Four: pirates from beyond the shore (placeholder art: plush sharks)
+  pirate: {name: 'The Pirates',  currency: 'Doubloons', playerLine: 'THE CREW SWAGGERS',     enemyLine: 'THE PIRATES BOARD',
+          band: '#1f4a5a', text: '#e2f2f0', sub: '#9fd3cf', coaster: 'rgba(22,62,78,.85)', stitch: 'rgba(200,236,232,.6)',
+          fort: ['#2a6a7a', '#c9a24a'], letter: 'P'},
   mouse: {name: 'Scrumbly Mischief', currency: 'Crumbs', playerLine: 'THE MISCHIEF SCURRIES', enemyLine: 'THE MISCHIEF SCURRIES',
           band: '#4a3c34', text: '#f1e2d0', sub: '#d7b9a0', coaster: 'rgba(70,56,48,.8)', stitch: 'rgba(240,220,200,.6)',
           fort: ['#8a6a50', '#d8c8b0'], letter: 'S'},
@@ -1772,6 +1800,17 @@ const CLASSES = {
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
+  // Chapter Four. The tournament's champions (placeholder art): Tilly Tealbottom rides; Princess reads her grievances aloud.
+  jouster:   {name: 'Lily Jouster',   w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Tealbottom Lance',  base: {mhp:24,atk:13,def:7, spd:8,skl:9,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:50}},   // Tilly Tealbottom
+  heiress:   {name: 'Royal Heiress',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Grievances', base: {mhp:22,atk:13,def:4, spd:9,skl:10,mov:5}, g: {mhp:60,atk:50,def:20,spd:50,skl:55}},   // Princess
+  // Pirates (placeholder art: plush sharks). Ducky captains them with an anchor.
+  pcutlass:  {name: 'Cutlass',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Cutlass',           base: {mhp:20,atk:11,def:4, spd:9,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:50,skl:50}},
+  pboarder:  {name: 'Boarder',        w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Boarding Axe',      base: {mhp:24,atk:13,def:5, spd:5,skl:5,mov:5}, g: {mhp:80,atk:55,def:30,spd:30,skl:35}},
+  pharpoon:  {name: 'Harpooner',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Harpoon',           base: {mhp:22,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:75,atk:45,def:40,spd:35,skl:45}},
+  pgunner:   {name: 'Cork Gunner',    w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Cork Musket',       base: {mhp:18,atk:11,def:3, spd:7,skl:9,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  pshanty:   {name: 'Shanty Singer',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Shanties',  base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:50}},
+  psawbones: {name: 'Sawbones',       w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Bilge Mop',         base: {mhp:17,atk:5, def:3, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  sharkcapt: {name: 'Pirate Captain', w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Ship\'s Anchor',     base: {mhp:30,atk:15,def:8, spd:6,skl:8,mov:5}, g: {mhp:90,atk:55,def:40,spd:30,skl:40}},   // Ducky
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -1834,6 +1873,13 @@ const LOOKS = {
   speshul:   {sp:'monkey', fur:'#7ea23a', light:'#a2c45c', dark:'#46601c', face:'#f6e0be', gear:'tiara', small:true},   // art/speshul-*.png
   chansey:     {sp:'monkey', fur:'#e48aa0', light:'#f6b4c4', dark:'#9a4a5c', face:'#f6e0be', gear:'tiara'},   // art/chansey-*.png
   cornelius: {sp:'monkey', fur:'#d0642a', light:'#ee8a4e', dark:'#7a3412', face:'#b08a70', gear:'helm', big:true},   // art/cornelius-*.png (an orangutan)
+  // Chapter Four placeholders (no art yet)
+  tilly:     {sp:'frog', skin:'#3a9a92', light:'#62c2b8', dark:'#1a524c', belly:'#d6f0ea', gear:'lilypad'},   // Tilly Tealbottom, a teal aristocrat
+  princess:  {sp:'frog', skin:'#f08ab4', light:'#fbb8d4', dark:'#a04470', belly:'#fde2ee', gear:'tiara'},     // Princess, Tiggle's cousin
+  herald:    {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'bandana', band:'#d9b04a'},
+  pirate:    {sp:'shark', skin:'#7a8c9a', light:'#a6b6c2', dark:'#3e4c58', belly:'#eef2f4', gear:'bandana', band:'#b5302a'},
+  pirateBig: {sp:'shark', skin:'#5e6e7c', light:'#8696a4', dark:'#2c3844', belly:'#e4eaee', gear:'eyepatch', big:true},
+  ducky:     {sp:'shark', hammer:true, skin:'#8a96a2', light:'#b4c0ca', dark:'#46525e', belly:'#f2f4f6', gear:'tricorn', big:true},   // Ducky, a hammerhead
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -1856,6 +1902,7 @@ const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
+  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', sharkcapt:'ducky',
 };
 
 // ================= Named characters =================
@@ -1969,6 +2016,18 @@ const SPEAKERS = Object.assign({
   gloamjaw:    {name:'Gloamjaw', faction:'frog', look:'blackguard'},             // Fraggle's outlaw guard captain
   burdock:     {name:'Captain Burdock', faction:'rae', look:'soldier'},
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
+  // Chapter Four
+  herald:      {name:'The Herald', faction:'frog', look:'herald'},
+  crowd:       {name:'The Crowd', faction:'frog', look:'guard'},
+  tilly:       {name:'Tilly Tealbottom', faction:'frog', look:'tilly'},
+  princess:    {name:'Princess', faction:'frog', look:'princess'},
+  brine:       {name:'Warden Brine', faction:'frog', look:'toadknight'},   // the lighthouse garrison
+  sedge:       {name:'Captain Sedge', faction:'frog', look:'duelist'},     // the rearguard on the coast road
+  ducky:       {name:'Ducky', faction:'pirate', look:'ducky'},
+  barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'pirateBig'},
+  pirate:      {name:'A Pirate', faction:'pirate', look:'pirate'},
+  pirates:     {name:'The Pirates', faction:'pirate', look:'pirate'},
+  banyan:      {name:'Guard Banyan', faction:'monkey', look:'monkey'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Fur colours for the generic mine-rabbit art (art/miner-*.png): [hue shift°, saturation ×, lightness shift].
@@ -2505,6 +2564,13 @@ function frog(g, cx, cy, s, L){
       g.strokeStyle = '#3b2a1e'; g.lineWidth = s*.07; g.beginPath(); g.moveTo(cx + .95*s, by + .1*s); g.quadraticCurveTo(cx + 1.4*s, by - .4*s, cx + 1.15*s, by - .95*s); g.stroke();
       break;
     }
+    case 'tiara':   // Princess: a little gold tiara with a pink jewel
+      g.fillStyle = '#e6be55'; g.strokeStyle = '#8a6418'; g.lineWidth = Math.max(.8, s*.03);
+      g.beginPath(); g.moveTo(cx - .42*s, cy - .62*s);
+      for (let i = 0; i <= 4; i++){ const x = cx - .42*s + i*.21*s; g.lineTo(x - .05*s, cy - .7*s); g.lineTo(x, cy - (i === 2 ? 1.02 : i % 2 ? .86 : .92)*s); g.lineTo(x + .05*s, cy - .7*s); }
+      g.lineTo(cx + .42*s, cy - .62*s); g.closePath(); g.fill(); g.stroke();
+      g.fillStyle = '#e04a8a'; ell(g, cx, cy - .8*s, .07*s, .07*s); g.fill();
+      break;
     case 'kettle': {
       const hg = g.createLinearGradient(cx, cy - 1.15*s, cx, cy - .7*s); hg.addColorStop(0, '#d6dbe2'); hg.addColorStop(1, '#7c838e');
       g.fillStyle = hg; g.beginPath(); g.ellipse(cx, cy - .76*s, .42*s, .36*s, 0, Math.PI, 0); g.closePath(); g.fill();
@@ -2579,9 +2645,40 @@ function monkey(g, cx, cy, s, L){
   g.restore();
 }
 
+// Chapter Four placeholder: a plush shark (pirates). hammer:true gives a hammerhead (Ducky).
+function shark(g, cx, cy, s, L){
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  const by = cy + .1*s;
+  // dorsal fin and tail fin, behind the body
+  g.fillStyle = L.skin; g.beginPath(); g.moveTo(cx - .25*s, by - .55*s); g.quadraticCurveTo(cx + .05*s, by - 1.45*s, cx + .45*s, by - 1.2*s); g.quadraticCurveTo(cx + .3*s, by - .85*s, cx + .35*s, by - .5*s); g.closePath(); g.fill(); stitchStroke(g, L.dark, s);
+  for (const side of [-1, 1]){ g.fillStyle = L.dark; g.beginPath(); g.moveTo(cx + side*.85*s, by + .25*s); g.quadraticCurveTo(cx + side*1.35*s, by + .55*s, cx + side*1.25*s, by + .85*s); g.quadraticCurveTo(cx + side*1.0*s, by + .55*s, cx + side*.7*s, by + .5*s); g.closePath(); g.fill(); }
+  const gr = g.createRadialGradient(cx - .3*s, by - .4*s, s*.1, cx, by, s*1.3);
+  gr.addColorStop(0, L.light); gr.addColorStop(1, L.skin);
+  g.fillStyle = gr; ell(g, cx, by, 1.0*s, .82*s); g.fill(); stitchStroke(g, L.dark, s);
+  g.fillStyle = L.belly; ell(g, cx, by + .34*s, .7*s, .42*s); g.fill(); g.beginPath(); g.ellipse(cx, by + .34*s, .7*s, .42*s, 0, 0, Math.PI*2); stitchStroke(g, L.dark, s, .7);
+  if (L.hammer){   // the hammer: a wide flat head with an eye at each end
+    g.fillStyle = L.skin; g.beginPath(); g.ellipse(cx, by - .5*s, 1.42*s, .3*s, 0, 0, Math.PI*2); g.fill(); g.beginPath(); g.ellipse(cx, by - .5*s, 1.42*s, .3*s, 0, 0, Math.PI*2); stitchStroke(g, L.dark, s);
+    for (const side of [-1, 1]){ g.fillStyle = '#f4f0dd'; ell(g, cx + side*1.22*s, by - .52*s, .17*s, .17*s); g.fill(); button(g, cx + side*1.22*s, by - .52*s, .1*s); }
+  } else for (const side of [-1, 1]){ g.fillStyle = '#f4f0dd'; ell(g, cx + side*.42*s, by - .3*s, .17*s, .17*s); g.fill(); button(g, cx + side*.42*s, by - .29*s, .1*s); }
+  // the grin: a felt mouth with a row of white teeth
+  g.fillStyle = '#5a2a30'; g.beginPath(); g.moveTo(cx - .5*s, by + .08*s); g.quadraticCurveTo(cx, by + .42*s, cx + .5*s, by + .08*s); g.quadraticCurveTo(cx, by + .22*s, cx - .5*s, by + .08*s); g.fill();
+  g.fillStyle = '#fbf8ef'; for (let i = 0; i < 6; i++){ const x = cx - .38*s + i*.152*s, y = by + .1*s + Math.sin((i + .5)/6*Math.PI)*.11*s; g.beginPath(); g.moveTo(x - .05*s, y); g.lineTo(x + .05*s, y); g.lineTo(x, y + .09*s); g.closePath(); g.fill(); }
+  g.strokeStyle = L.dark; g.lineWidth = s*.03; for (const k of [.62, .72, .82]){ g.beginPath(); g.moveTo(cx + k*s, by - .1*s); g.lineTo(cx + (k - .05)*s, by + .12*s); g.stroke(); }   // gills
+  if (L.gear === 'bandana') bandana(g, cx, by - .22*s, s, L.band || '#b5302a', s*.95, s*.66, 1);
+  if (L.gear === 'eyepatch'){ bandana(g, cx, by - .22*s, s, '#2c3559', s*.95, s*.66, 1); g.fillStyle = '#111'; ell(g, cx - .42*s, by - .3*s, .2*s, .2*s); g.fill();
+    g.strokeStyle = '#111'; g.lineWidth = s*.04; g.beginPath(); g.moveTo(cx - .8*s, by - .5*s); g.lineTo(cx + .1*s, by - .48*s); g.stroke(); }
+  if (L.gear === 'tricorn'){   // the captain's three-cornered hat, with a skull-ish button
+    const ty = by - (L.hammer ? .72 : .62)*s;
+    g.fillStyle = '#1e1a22'; g.beginPath(); g.moveTo(cx - .95*s, ty + .1*s); g.quadraticCurveTo(cx - .5*s, ty - .5*s, cx, ty - .55*s); g.quadraticCurveTo(cx + .5*s, ty - .5*s, cx + .95*s, ty + .1*s); g.quadraticCurveTo(cx, ty - .08*s, cx - .95*s, ty + .1*s); g.fill();
+    g.strokeStyle = '#d9b04a'; g.lineWidth = s*.05; g.beginPath(); g.moveTo(cx - .9*s, ty + .06*s); g.quadraticCurveTo(cx, ty - .12*s, cx + .9*s, ty + .06*s); g.stroke();
+    g.fillStyle = '#f4f0e2'; ell(g, cx, ty - .25*s, .1*s, .1*s); g.fill(); g.fillStyle = '#1e1a22'; ell(g, cx - .035*s, ty - .26*s, .02*s, .025*s); g.fill(); ell(g, cx + .035*s, ty - .26*s, .02*s, .025*s); g.fill();
+  }
+  g.restore();
+}
+
 function drawPlush(g, look, cx, cy, s){
   const L = LOOKS[look] || LOOKS.worker;
-  ({bun: bunny, frog, mouse, monkey})[L.sp](g, cx, cy, s, L);
+  ({bun: bunny, frog, mouse, monkey, shark})[L.sp](g, cx, cy, s, L);
 }
 const portraitCache = {};
 function plushPortrait(look){
@@ -2675,6 +2772,33 @@ const THEMES = {
     'B': ['Icy Bridge', 'Planks with a glaze of frost.'],
     'T': ['Present Depot', 'Stacked crates of presents. Restores 20% HP at the start of each phase.'],
     'X': ['Snow Wall', 'Packed snow, taller than a frog.'],
+  },
+  shore: {   // Chapter Four (Raepublic): the coast. Drawn like the meadow, under sand.
+    '.': ['Felt Sand', 'Soft, pale felt sand. Gets into every seam.'],
+    'F': ['Dune Grass', 'Tall tufts of felt grass on the dunes. Good cover.'],
+    'M': ['Sea Rocks', 'Big stuffed boulders, slick with felt weed. Hard going, harder to hit.'],
+    'W': ['The Sea', 'Blue satin waves, as far as anyone can see. No one swims in satin.'],
+    'B': ['Jetty', 'Driftwood planks over the water.'],
+    'T': ['Fisher\'s Hut', 'A driftwood hut with a roof of sailcloth. Restores 20% HP at the start of each phase.'],
+    'X': ['Cliff', 'Sheer felt rock. Nothing gets past.'],
+  },
+  arena: {   // Chapter Four (Friggliarchy): the royal tournament in the capital
+    '.': ['Tourney Sand', 'Raked sand, perfectly level. The crowd sees everything.'],
+    'F': ['Pennants', 'Rows of striped pennants on poles. Something to hide behind.'],
+    'M': ['Grandstand', 'Tiers of benches packed with frogs. Hard going, harder to hit.'],
+    'W': ['Lily Pond', 'An ornamental pond. Nobody is that keen to win.'],
+    'B': ['Plank Bridge', 'A painted plank over the pond.'],
+    'T': ['Pavilion', 'A striped champion\'s tent with water and bandages. Restores 20% HP at the start of each phase.'],
+    'X': ['Tilt Barrier', 'A painted wooden barrier. Nothing gets through.'],
+  },
+  ship: {   // Chapter Four (Raepublic): the pirates' ships, lashed together
+    '.': ['Deck', 'Scrubbed felt planks. They roll under your feet.'],
+    'F': ['Barrels', 'Rum barrels (cordial, mostly). Good cover.'],
+    'M': ['Mast', 'A great mast and its tangle of ropes. Hard going, harder to hit.'],
+    'W': ['Open Sea', 'Deep blue satin between the hulls. Don\'t fall in.'],
+    'B': ['Gangplank', 'A plank thrown across from ship to ship. One at a time.'],
+    'T': ['Quarterdeck', 'The captain\'s raised deck by the wheel. Restores 20% HP at the start of each phase.'],
+    'X': ['Ship\'s Rail', 'The side of the ship. Nothing gets over it.'],
   },
   camp: {
     '.': ['Camp Yard', 'Bare dirt, stamped flat by roll calls.'],
@@ -3023,6 +3147,234 @@ const MAPS = {
     'F........F',
     'FF.F..F.FF',
   ]},
+  // Chapter Four (Raepublic): the coast road along the cliffs, the sea on the left
+  coastRoad: {theme: 'shore', names: {'T': ['Frog Watch Hut', 'A coastguard hut the frogs left behind. Restores 20% HP at the start of each phase.']}, rows: [
+    'WW..F..F..',
+    'WW.M...M.F',
+    'W..F.T..F.',
+    'W.......M.',
+    'WXX..F....',
+    'W...F..XX.',
+    'W.M.....F.',
+    'WW..F.M...',
+    'W.......F.',
+    'W.F..XX...',
+    'W.M.....M.',
+    'WW...F....',
+    'W..F...F..',
+    'W.........',
+    'W...F..M..',
+    'WW........',
+  ]},
+  // the Raepublic's new settlement on the beach: jetties into the sea at the top, a driftwood fence, huts
+  beachCamp: {theme: 'shore', rows: [
+    'WWWWWWWWWW',
+    'WWBWWWWBWW',
+    'WWBWWWWBWW',
+    '..........',
+    '.F..M...F.',
+    '...F..F...',
+    'F.XX..XX.F',
+    '..........',
+    '.T..F...T.',
+    '...M..M...',
+    'F........F',
+    '..F.TT.F..',
+    '..........',
+    '.F..F..F..',
+    '..........',
+    '.F......F.',
+  ]},
+  // the old lighthouse on its island, joined to the shore by a narrow causeway
+  lighthouse: {theme: 'shore', names: {'T': ['The Lighthouse', 'An old stone lighthouse, its lamp long dark. Restores 20% HP at the start of each phase.'], 'B': ['Causeway', 'A narrow path of stones across the water.']}, rows: [
+    'WWWW..WWWW',
+    'WWW.TT.WWW',
+    'WWM....MWW',
+    'WW..F...WW',
+    'WWW.BB.WWW',
+    'WWWWBBWWWW',
+    'WM..F...MW',
+    '....M..F..',
+    '.F......F.',
+    'XX..F.M.XX',
+    '.........F',
+    '.M.F..F...',
+    '..........',
+    'F..M...F..',
+    '..........',
+    '.F..F...F.',
+  ]},
+  // the far beach at low tide: rock pools, and the pirates' longboats drawn up on the sand
+  tidePools: {theme: 'shore', names: {'W': ['Rock Pool', 'A deep pool left by the tide. Nobody goes in.'], 'T': ['Longboat', 'A pirate longboat drawn up on the sand. Restores 20% HP at the start of each phase.']}, rows: [
+    'WWWWWWWWWW',
+    'WWWW..WWWW',
+    'W..T..T..W',
+    '..M....M..',
+    '.F..MM..F.',
+    '....F.....',
+    'M..W..W..M',
+    '..F....F..',
+    '.W..M...W.',
+    '....F.....',
+    'F..M..M..F',
+    '..........',
+    '.F......F.',
+    '...W..W...',
+    '..........',
+    'MM..F...MM',
+  ]},
+  // the pirates' cove: cliffs all round, their camp on the sand, a pier where the ship is moored
+  cove: {theme: 'shore', names: {'T': ['Pirate Tent', 'Sailcloth and stolen blankets. Restores 20% HP at the start of each phase.'], 'B': ['Pier', 'A rickety pier where the pirate ship is moored.']}, rows: [
+    'XXWWWWWWXX',
+    'XWWWBBWWWX',
+    'X..WBBW..X',
+    'X........X',
+    'XF.T..T.FX',
+    '..M....M..',
+    'X...FF...X',
+    'XX......XX',
+    '...F..F...',
+    '.M..XX..M.',
+    '..........',
+    'F..F..F..F',
+    '..........',
+    '.M..F...M.',
+    '..........',
+    'F........F',
+  ]},
+  // three ships lashed together, gangplanks across the gaps: Ducky's flagship at the top
+  gangplanks: {theme: 'ship', rows: [
+    'WWXXXXXXWW',
+    'WX..TT..XW',
+    'X..M..M..X',
+    'X.F....F.X',
+    'WXX.XX.XXW',
+    'WWWBWWBWWW',
+    'WXX.XX.XXW',
+    'X..F..F..X',
+    'X..M..M..X',
+    'X........X',
+    'WXX.XX.XXW',
+    'WWWBWWBWWW',
+    'WXX.XX.XXW',
+    'X...F....X',
+    'X........X',
+    'WX......XW',
+  ]},
+  // Chapter Four (Friggliarchy): the royal tournament ground, the King's box at the top
+  grandArena: {theme: 'arena', rows: [
+    'MMMMTTMMMM',
+    'M........M',
+    'M.F....F.M',
+    '...F..F...',
+    '..........',
+    '.M..FF..M.',
+    '..........',
+    'F..M..M..F',
+    '..........',
+    '.M..FF..M.',
+    '..........',
+    '...F..F...',
+    'M.F....F.M',
+    'M........M',
+    'M........M',
+    'MMMM..MMMM',
+  ]},
+  // the Gauntlet: a winding course of barriers, the finishing bell at the top
+  gauntlet: {theme: 'arena', rows: [
+    'XXXX..XXXX',
+    '....F.....',
+    '.M......M.',
+    'XXXXXXX..X',
+    '...F......',
+    '.....M..F.',
+    'X..XXXXXXX',
+    '.....F....',
+    '.M.....M..',
+    'XXXXXX...X',
+    '..F.......',
+    '.....M..F.',
+    'X...XXXXXX',
+    '..........',
+    '.F......F.',
+    '..........',
+  ]},
+  // the lists: a long jousting field split by the tilt barrier, Tilly's pavilion at the top
+  lists: {theme: 'arena', names: {'X': ['Tilt Barrier', 'The long barrier the jousters ride along. Nothing gets through.']}, rows: [
+    'MM..TT..MM',
+    '..........',
+    '....X.....',
+    '.F..X...F.',
+    '....X.....',
+    '..........',
+    '....X.....',
+    'F...X....F',
+    '....X.....',
+    '..........',
+    '....X.....',
+    '.F..X...F.',
+    '....X.....',
+    '..........',
+    'M........M',
+    'MM......MM',
+  ]},
+  // the royal park: lawns and hedges for the Ribbon Hunt; the gates are along the bottom
+  royalPark: {theme: 'meadow', names: {'.': ['Royal Lawn', 'Clipped felt grass, very green, very expensive.'], 'F': ['Topiary', 'Felt bushes clipped into the shapes of frogs. Good cover.'], 'M': ['Fountain', 'A stone fountain of a frog spitting water. Hard going, harder to hit.'], 'X': ['Hedge', 'A tall clipped hedge. Nothing gets through.']}, rows: [
+    '..F....F..',
+    '.F..M...F.',
+    '....F.....',
+    'XX..F..XXX',
+    '.....M....',
+    '.F.......F',
+    '...XX.XX..',
+    'F........F',
+    '..M..F..M.',
+    '..........',
+    'XXX..F..XX',
+    '.F.......F',
+    '....M.....',
+    '..F....F..',
+    '.F..F...F.',
+    '..........',
+  ]},
+  // the Siege Game: a mock fort of tilt barriers in the middle of the ground, with gaps on every side
+  siegeGame: {theme: 'arena', rows: [
+    '..........',
+    '.F..M...F.',
+    '..........',
+    '.M..F..M..',
+    '..........',
+    '.XXX..XXX.',
+    '.X......X.',
+    '...T..T...',
+    '.X......X.',
+    '.X..TT..X.',
+    '.XXX..XXX.',
+    '..........',
+    '.F..M..F..',
+    '..........',
+    '.M......M.',
+    '..F....F..',
+  ]},
+  // the final: the great arena, a champion's dais in the middle
+  royalArena: {theme: 'arena', names: {'T': ['Champion\'s Dais', 'The raised platform where champions are crowned. Restores 20% HP at the start of each phase.']}, rows: [
+    'MMMMTTMMMM',
+    'M........M',
+    'M..F..F..M',
+    '..........',
+    '.M......M.',
+    '...F..F...',
+    '..........',
+    '....TT....',
+    '..........',
+    '...F..F...',
+    '.M......M.',
+    '..........',
+    'M..F..F..M',
+    'M........M',
+    'M........M',
+    'MMMM..MMMM',
+  ]},
 };
 let mapDef = null;   // the map being played (set by the battle engine)
 const tileInfo = ch => (mapDef?.names?.[ch]) || THEMES[mapDef?.theme || 'meadow'][ch];
@@ -3078,7 +3430,7 @@ function validateMaps(){
 // Scene lines
 //   {card:'Chapter One', sub:'Rabbit'}          full-screen title card
 //   {scene:'mine', place:'The Lower Seam'}      change the backdrop (legend, yard, mine, quarters, block, woods, court, ridge, republic, warcamp, snow,
-//                                              monkeyland, castlegate, castle)
+//                                              monkeyland, castlegate, castle, shore, arena, ships)
 //   {who:'rae', text:'…'}                       a speaker; their name comes from the roster, so it changes when they do
 //   {who:'rae', text:'…', thought:true}         inner thoughts, shown in italics
 //   {who:'narr', text:'…'}                      narration
@@ -3866,7 +4218,348 @@ const CAMPAIGNS = {
           reward: {res: 700, tokens: 6},
         },
       ]},
-      {id: 'RC4', title: 'Chapter Four', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
+      {id: 'RC4', title: 'Chapter Four', name: 'The Shore', enemyMods: {mhp: -1},
+       stages: [
+
+        // ---------------- Stage 1: the frogs' rearguard on the coast road ----------------
+        {
+          id: 'R4-1', title: 'The Coast Road', map: 'coastRoad', enemyFaction: 'frog',
+          star: {type: 'turns', n: 7, text: 'Win by the end of turn VII'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'A frog rearguard holds the coast road, between the Raepublic and the sea. Drive off its captain.',
+          enemies: () => [
+            E('blade',9,5,2,'hold',{boss: true, elite: true, flees: true, key: 'sedge', name: 'Captain Sedge', look: 'duelist'}),
+            E('croaker',7,6,1,'guard'), E('lily',7,3,3,'guard'), E('reed',7,8,1,'guard'), E('toadknight',8,6,4,'guard'),
+            E('bruiser',7,2,6), E('blade',7,6,7), E('reed',7,8,9,'guard'), E('lily',7,4,9), E('blade',7,1,11),
+          ],
+          reinforce: () => [{turn: 3, units: [E('blade',7,3,0), E('bruiser',7,8,0)]}],
+          bossTalk: [
+            {who: "sedge", text: "Rebels! Hold the road! Hold it until the column's clear!"},
+            {who: "rae", text: "The column? Where's your army going, Captain?"},
+            {who: "sedge", text: "Home, rabbit. Which is more than you'll ever have."},
+          ],
+          pre: [
+            {card: "Chapter Four", sub: "The Shore"},
+            {scene: "ridge", place: "The Hills Beyond Monkeyland · Night"},
+            {who: "narr", text: "Three days past the stream. Hills, then more hills. Then, one evening, a smell that nobody in the Raepublic has ever smelled before."},
+            {who: "sister", text: "What is that? It smells like salt. And rain. And something enormous."},
+            {who: "willow", text: "The sea."},
+            {who: "rae", text: "The what?"},
+            {who: "willow", text: "The edge of everything, Rae. Where the land stops. There's nowhere left to run after that."},
+            {who: "speshul", text: "I've read about the sea! It's blue, and it never stops moving, and there are fish in it as big as castles!"},
+            {who: "patch", text: "Commander. Frogs on the coast road. A rearguard, dug in round an old watch hut. They're between us and the beach."},
+            {who: "froggle", text: "Strange. A rearguard faces the enemy behind the army. These ones are facing north. They're facing home."},
+            {who: "rae", text: "Then let's give them a reason to go there."},
+          ],
+          post: [
+            {who: "narr", text: "Captain Sedge's rearguard breaks, and runs north up the coast road. Nobody goes after them."},
+            {who: "patch", text: "They're not regrouping, Commander. They're not even looking back. The whole army's heading north. Every last frog."},
+            {who: "froggle", text: "Called home. Something's happened at the capital."},
+            {who: "willow", text: "Or someone has."},
+            {who: "rae", text: "Willow. If the frogs are gone… if they're really gone…"},
+            {who: "narr", text: "Below them, the road drops away to a long pale beach. Beyond it lies the sea, blue satin from one side of the world to the other."},
+            {who: "sister", text: "Rae. Could we stop? Just stop, here? And not run anywhere?"},
+            {who: "rae", text: "I don't know. But I'd like to find out."},
+          ],
+          reward: {res: 750},
+        },
+
+        // ---------------- Stage 2: who builds where (a training match, mixed teams) ----------------
+        {
+          id: 'R4-2', title: 'Who Builds Where', map: 'beachCamp', enemyFaction: 'monkey', spar: true,
+          star: {type: 'bossBy', key: 'speshul', text: 'Speshul wins the match'},
+          objective: {type: 'boss'}, maxDeploy: 7, enemyLine: 'BANYAN\'S TEAM ADVANCES',
+          deploy: [[4,13],[5,13],[3,14],[6,14],[2,13],[7,13],[4,14],[5,14]],
+          brief: 'Rabbits and monkeys can\'t agree who gets the huts by the dunes. Settle it with a training match, mixed teams, against Guard Banyan\'s side.',
+          prepNote: 'A training match: nobody is unstitched for good, and Guard Banyan yields when he\'s beaten. His team is rabbits and monkeys together.',
+          enemies: () => [
+            E('mkguard',9,4,4,'hold',{boss: true, flees: true, key: 'banyan', name: 'Guard Banyan', look: 'monkey'}),
+            E('mkacro',7,2,3), E('mkacro',7,7,3), E('mkthrow',7,8,4,'guard'), E('mkbrute',8,5,7),
+            E('rfencer',7,1,5,'charge',{faction: 'rae'}), E('rlancer',7,6,5,'guard',{faction: 'rae'}), E('rarcher',7,3,6,'guard',{faction: 'rae'}),
+            E('rfighter',7,0,7,'charge',{faction: 'rae'}), E('radept',7,5,3,'guard',{faction: 'rae'}),
+          ],
+          bossTalk: [
+            {who: "banyan", text: "No hard feelings, Commander! But those huts are ours!"},
+            {who: "rae", text: "Nobody's huts are anybody's until we've finished!"},
+          ],
+          pre: [
+            {scene: "shore", place: "The Beach · Morning"},
+            {who: "narr", text: "For the first time since the mines, the Raepublic unpacks."},
+            {who: "narr", text: "Tents go up on the sand. Somebody finds an old fishing hut. Somebody else finds out what happens when you sleep below the tide line."},
+            {who: "froggle", text: "Driftwood. Sailcloth. Rope. Fresh water up in the dunes. And fish, Speshul swears, although nobody has caught one yet."},
+            {who: "speshul", text: "They're very fast. I nearly had one."},
+            {who: "narr", text: "By noon, there is an argument. By the afternoon, there are two sides to it."},
+            {who: "patch", text: "The rabbits want the huts by the dunes. Out of the wind."},
+            {who: "banyan", text: "The monkeys want the huts by the dunes. Out of the wind. And we got there first."},
+            {who: "patch", text: "You got there first because you climbed over our tents!"},
+            {who: "banyan", text: "They were in the way!"},
+            {who: "sister", text: "Rae, everyone's shouting again. I thought we'd stopped shouting."},
+            {who: "rae", thought: true, text: "Four hundred monkeys. Twice as many rabbits. Everyone tired, everyone scared, and nobody's ever had a home to argue about before."},
+            {who: "rae", text: "Right! Everybody listen! We settle this the way Willow taught me. A training match, on the beach. Nobody gets unstitched."},
+            {who: "willow", text: "And the teams?"},
+            {who: "rae", text: "Mixed. Rabbits and monkeys on both sides. Banyan, pick yours. I'll take the rest."},
+            {who: "banyan", text: "Mixed? That's… actually, that's very annoying. Fine."},
+          ],
+          post: [
+            {who: "narr", text: "Guard Banyan sits down hard in the wet sand, laughing, with a rabbit on one side of him and a monkey on the other."},
+            {who: "banyan", text: "All right! All right. I yield. You lot can have the huts."},
+            {who: "patch", text: "Keep them. We'll build more. Bigger ones. With a view."},
+            {who: "banyan", text: "A view of what?"},
+            {who: "patch", text: "Of your lot, losing the next one."},
+            {who: "narr", text: "That night, rabbits and monkeys share the fires. Nobody agrees about anything. But nobody leaves."},
+            {who: "froggle", text: "Rae. If we're staying, we need more than huts. We need somewhere we can hold. And a way out, if the frogs ever come back."},
+            {who: "willow", text: "There's an old lighthouse out on the point. Stone walls, one way in, and the sea all round it. Boats could tie up below it."},
+            {who: "rae", text: "Then that's next."},
+          ],
+          reward: {res: 750},
+        },
+
+        // ---------------- Stage 3: the lighthouse (a choke point: the causeway) ----------------
+        {
+          id: 'R4-3', title: 'The Lighthouse', map: 'lighthouse', enemyFaction: 'frog',
+          star: {type: 'fewer', n: 6, text: 'Win with six units or fewer'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'A frog garrison still holds the old lighthouse on the point. Cross the causeway and send its warden home.',
+          prepNote: 'The causeway to the lighthouse is two squares wide, and the garrison\'s archers can shoot across the water.',
+          enemies: () => [
+            E('toadknight',10,4,1,'hold',{boss: true, flees: true, key: 'brine', name: 'Warden Brine', look: 'toadknight'}),
+            E('reed',8,3,2,'guard'), E('reed',8,6,2,'guard'), E('croaker',8,5,1,'guard'), E('lily',8,4,3,'guard'), E('lily',8,5,3,'guard',{elite: true}),
+            E('blade',8,1,7), E('bruiser',8,7,7), E('reed',8,8,8,'guard'), E('blade',8,3,10), E('reed',8,0,6,'guard'),
+          ],
+          bossTalk: [
+            {who: "brine", text: "This lighthouse belongs to the King! I've had no orders to leave it!"},
+            {who: "rae", text: "Your King's gone home. You can go too. Nobody has to get hurt."},
+            {who: "brine", text: "No orders, rabbit. No orders, no leaving."},
+          ],
+          pre: [
+            {scene: "shore", place: "The Point · Dusk"},
+            {who: "narr", text: "The lighthouse stands on a little island off the point, joined to the shore by a causeway of stones. Its lamp has been dark for years."},
+            {who: "narr", text: "But there are lamps in the windows tonight. And frog flags on the walls."},
+            {who: "patch", text: "Coastguard. A garrison the army left behind. Or forgot about."},
+            {who: "froggle", text: "Nobody's told them the war has gone home."},
+            {who: "rae", text: "Then we'll tell them. Politely, first."},
+            {who: "patch", text: "And second?"},
+            {who: "rae", text: "Less politely."},
+          ],
+          post: [
+            {who: "narr", text: "Warden Brine and his frogs row away north in the last of the light, with all their kit, and a great deal of grumbling."},
+            {who: "narr", text: "At the top of the lighthouse, Speshul finds the old lamp, and the oil, and, after several attempts, the matches."},
+            {who: "narr", text: "For the first time in years, the light on the point comes on."},
+            {who: "speshul", text: "Look! You can see it for miles!"},
+            {who: "willow", text: "Yes. Everyone can."},
+            {who: "rae", text: "Let them. We're not hiding any more."},
+          ],
+          reward: {res: 800},
+        },
+
+        // ---------------- Stage 4: sails (pirates raid the settlement) ----------------
+        {
+          id: 'R4-4', title: 'Sails', map: 'beachCamp', enemyFaction: 'pirate',
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'survive', turns: 5}, maxDeploy: 7,
+          deploy: [[4,9],[5,9],[3,10],[6,10],[2,9],[7,9],[4,10],[5,10]],
+          brief: 'Ships at the jetties, and pirates on the beach. Hold the settlement until they give up.',
+          prepNote: 'Pirates keep landing at the two jetties at the top of the beach. Hold out for five turns.',
+          enemies: () => [
+            E('pcutlass',8,2,3), E('pcutlass',8,7,3), E('pboarder',8,4,4), E('pgunner',8,8,4,'guard'), E('pharpoon',8,1,4),
+          ],
+          reinforce: () => [
+            {turn: 1, units: [E('pcutlass',8,2,2), E('pboarder',8,7,2)]},
+            {turn: 2, units: [E('psawbones',8,7,2,'guard'), E('pharpoon',8,2,2), E('pcutlass',8,7,1)]},
+            {turn: 3, units: [E('pboarder',9,2,2,'charge',{elite: true}), E('pgunner',8,7,2), E('pshanty',8,2,1)]},
+            {turn: 4, units: [E('pboarder',10,7,2,'charge',{key: 'barnacle', name: 'Bosun Barnacle', look: 'pirateBig', elite: true, flees: true, talk: [
+            {who: "barnacle", text: "Which one of you's the rabbit with the price on her head? Speak up!"},
+            {who: "rae", text: "The what?"},
+          ]}), E('pcutlass',8,2,2)]},
+          ],
+          pre: [
+            {scene: "shore", place: "The Settlement · Two Weeks Later"},
+            {who: "narr", text: "A week on the beach. Then two. The huts have doors now, and the doors have names painted on them."},
+            {who: "narr", text: "Flopsy has started a school in the longhouse. Nobody is quite sure what she teaches, but everyone goes."},
+            {who: "sister", text: "Today's lesson is knots! You need knots for everything here. Boats, nets, washing lines…"},
+            {who: "old", text: "In the mines, the only knot we knew was the one at the end of the rope down the shaft."},
+            {who: "sister", text: "Well, now you know eleven."},
+            {who: "narr", text: "Out on the water, something white. Then three white things. Sails."},
+            {who: "speshul", text: "Ships! Real ships! Rae, look, they're coming in to the jetties! Maybe they want to trade!"},
+            {who: "patch", text: "Speshul. Get down off that roof. They're not traders. Look at the flag."},
+            {who: "narr", text: "Black cloth. A white grin, full of teeth."},
+            {who: "rae", text: "Everyone into the longhouse! Everyone who can fight, with me!"},
+          ],
+          post: [
+            {who: "narr", text: "The last longboat pulls away from the jetty, half its crew splashing after it, which nobody thought was possible in satin."},
+            {who: "narr", text: "One pirate didn't make it to the boats. He sits in the sand, very wet and very sulky, with a roll of paper tucked into his belt."},
+            {who: "patch", text: "What's that?"},
+            {who: "pirate", text: "Nothin'. A poster. Everyone's got one."},
+            {who: "narr", text: "Rae unrolls it. Her own face glares back at her, badly painted and very fierce."},
+            {who: "rae", text: "\"WANTED. RAE RABBIT, rebel and runaway. Ten thousand Crowns, by order of His Majesty King Friggle Fraggle. To be delivered whole, and stitched.\""},
+            {who: "froggle", text: "Ten thousand. That's more than the mines make in a year."},
+            {who: "pirate", text: "Every crew from here to the edge of the Satin Sea has one. The cap'n's got three, pinned up in the cabin."},
+            {who: "rae", text: "The captain?"},
+            {who: "pirate", text: "Cap'n Ducky. Of the Grinning Mary. You'll meet the cap'n soon enough. We'll be back, with every boat we've got."},
+          ],
+          reward: {res: 800},
+        },
+
+        // ---------------- Stage 5: the bounty (Rae goes alone; her friends come after her) ----------------
+        {
+          id: 'R4-5', title: 'The Bounty', map: 'tidePools', enemyFaction: 'pirate', solo: true,
+          star: {type: 'noLosses', text: 'No one is unstitched'},
+          objective: {type: 'survive', turns: 2}, maxDeploy: 7,
+          deploy: [[4,11],[4,13],[5,13],[2,14],[7,14],[3,14],[6,14],[4,15]],
+          brief: 'Before dawn, Rae walks down the beach alone, to give herself up to the pirates.',
+          prepNote: 'Rae goes alone. The friends you pick come after her, at the end of turn II. Keep her standing until they arrive.',
+          enemies: () => [
+            E('pboarder',10,4,2,'hold',{boss: true, flees: true, elite: true, key: 'barnacle', name: 'Bosun Barnacle', look: 'pirateBig'}),
+            E('pcutlass',8,3,7), E('pharpoon',8,6,7),
+            E('pgunner',8,2,4,'guard'), E('pgunner',8,7,4,'guard'), E('pboarder',8,4,5,'guard'), E('pcutlass',8,1,3,'guard'),
+            E('psawbones',8,5,3,'guard'), E('pcutlass',9,8,3,'guard',{elite: true}), E('pshanty',8,3,1,'guard'),
+          ],
+          twist: {arrive: true, objective: {type: 'boss'}, popup: 'More pirates!', units: [E('pcutlass',8,0,1), E('pboarder',8,9,1)], talk: [
+            {who: "narr", text: "Footsteps on the sand behind her. Running."},
+            {who: "sister", text: "RAE RABBIT! What do you think you're doing?"},
+            {who: "rae", text: "Flopsy, go back! They only want me. If I go with them, they'll leave the rest of you alone!"},
+            {who: "willow", text: "They won't. Pirates who'll sell one rabbit for ten thousand Crowns will come back for the next one."},
+            {who: "speshul", text: "And you don't get to do this anyway. You walked into my mother's hall and asked us all to stand up. You don't get to kneel now."},
+            {who: "patch", text: "You've had our backs since the mines, Commander. Every fight. Every time."},
+            {who: "sister", text: "So it's our turn. We've got yours."},
+            {who: "rae", text: "…All right. All right. Together, then."},
+          ]},
+          pre: [
+            {scene: "shore", place: "The Settlement · Before Dawn"},
+            {who: "narr", text: "Nobody sleeps. All night, the light on the point turns, and out at sea, other lights answer it. A lot of other lights."},
+            {who: "rae", thought: true, text: "Ten thousand Crowns. That's what I'm worth to them. Not the Raepublic. Not Flopsy, or Willow, or the monkeys. Just me."},
+            {who: "rae", thought: true, text: "If I go to them, they sail away. Everyone else gets to stay. Flopsy gets to keep her school."},
+            {who: "narr", text: "Before the sun is up, Rae slips out past the last hut, and walks down the beach alone, towards the pirates' boats."},
+            {who: "barnacle", text: "Well, well. Look what's come walking up the beach. All on its own."},
+            {who: "rae", text: "I'm the one you want. Take me, and leave the others alone."},
+            {who: "barnacle", text: "Leave 'em alone? Rabbit, there's a bounty on every one of your friends too. Just smaller. Lads, grab her!"},
+          ],
+          post: [
+            {who: "narr", text: "Bosun Barnacle crashes into the surf, and scrambles for the longboats with the rest of the crew."},
+            {who: "barnacle", text: "You'll be sorry! The cap'n will have the lot of you! Every ear and every whisker!"},
+            {who: "narr", text: "The pirates row hard for open water, back towards the lights out at sea."},
+            {who: "rae", text: "I nearly did it. I nearly walked onto their boat."},
+            {who: "sister", text: "I know. I'm still cross about it."},
+            {who: "froggle", text: "They'll be back, Rae. And next time with everything they have."},
+            {who: "rae", text: "No. Next time, we go to them."},
+            {who: "rae", text: "Every time somebody comes for us, we wait for them. Behind walls, on hills, in the trees. I'm done waiting. Speshul, you said the pirates have a cove up the coast?"},
+            {who: "speshul", text: "The one with the grinning flag on the cliff. I saw it from the lighthouse."},
+            {who: "rae", text: "Then that's where we're going. It's time we took the fight to them."},
+          ],
+          reward: {res: 850},
+        },
+
+        // ---------------- Stage 6: the pirates' cove (Ducky first appears, and gets away to sea) ----------------
+        {
+          id: 'R4-6', title: 'Pirates\' Cove', map: 'cove', enemyFaction: 'pirate',
+          star: {type: 'turns', n: 8, text: 'Win by the end of turn VIII'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'The pirates\' camp lies in a cove up the coast, their ship moored at the pier. Fight through the camp, and drive back their captain.',
+          enemies: () => [
+            E('sharkcapt',11,4,2,'hold',{boss: true, flees: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
+            E('pgunner',9,3,4,'guard'), E('pgunner',9,6,4,'guard'), E('psawbones',9,5,3,'guard'), E('pshanty',9,2,3,'guard'),
+            E('pharpoon',9,3,7,'guard'), E('pharpoon',9,6,7,'guard'), E('pboarder',10,4,6,'charge',{elite: true}),
+            E('pcutlass',9,1,9), E('pcutlass',9,8,9), E('pboarder',9,4,10), E('pgunner',9,0,8,'guard'),
+          ],
+          reinforce: () => [{turn: 3, units: [E('pcutlass',9,1,3), E('pcutlass',9,8,3)]}],
+          bossTalk: [
+            {who: "ducky", text: "So YOU'RE the ten thousand Crowns. Huh. I thought you'd be taller."},
+            {who: "rae", text: "Everybody says that."},
+            {who: "ducky", text: "Name's Ducky. Captain of the Grinning Mary, terror of the Satin Sea. Go on. Laugh at the name. Everybody does. Once."},
+            {who: "rae", text: "I wasn't going to laugh."},
+            {who: "ducky", text: "…You weren't? Huh. Well. I'm still going to sell you."},
+          ],
+          pre: [
+            {scene: "shore", place: "Up the Coast · Morning"},
+            {who: "narr", text: "The Raepublic marches north along the cliffs: every rabbit and monkey who can hold a weapon, and a few who can only hold a frying pan."},
+            {who: "narr", text: "The cove is easy to find. A great grinning flag hangs off the cliff above it, and you can hear the singing a mile away."},
+            {who: "willow", text: "Pirates. They take what they want, and they answer to nobody."},
+            {who: "rae", text: "Sounds familiar."},
+            {who: "willow", text: "Rae."},
+            {who: "rae", text: "I know, I know. We answer to each other. That's the difference."},
+            {who: "froggle", text: "Their ship is moored at the pier. If we take the camp, their captain is cut off from the crew ashore."},
+          ],
+          post: [
+            {who: "narr", text: "Ducky backs down the pier, roaring orders, and leaps aboard a great black ship as it casts off. Out across the water, two more ships are waiting."},
+            {who: "ducky", text: "Not bad, rabbit! Not bad at all! But you can't fight at sea! Come and get me, if you can swim!"},
+            {who: "patch", text: "Can we swim?"},
+            {who: "willow", text: "In satin? Nobody can swim in satin."},
+            {who: "speshul", text: "We don't need to swim. Look, they've left a ship behind. The little one at the end of the pier. It's still tied up."},
+            {who: "sister", text: "Rae. Do you know how to sail a ship?"},
+            {who: "rae", text: "No. But I know somebody who knows eleven knots."},
+          ],
+          reward: {res: 850},
+        },
+
+        // ---------------- Stage 7: the finale on the ships, gangplanks across the gaps ----------------
+        {
+          id: 'R4-7', title: 'The Grinning Mary', map: 'gangplanks', enemyFaction: 'pirate',
+          star: {type: 'bossBy', key: 'rae', text: '{lord} defeats Ducky herself'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,14],[5,14],[3,14],[6,14],[2,14],[7,14],[4,13],[5,13]],
+          brief: 'Ducky\'s three ships are lashed together, with gangplanks across the gaps. Board them, ship by ship, and defeat Ducky.',
+          prepNote: 'The gangplanks are one square wide. Only one unit can cross at a time.',
+          enemies: () => [
+            E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
+            E('pboarder',11,5,1,'guard',{key: 'barnacle', name: 'Bosun Barnacle', look: 'pirateBig', elite: true}),
+            E('psawbones',9,6,2,'guard'), E('pgunner',9,2,2,'guard'), E('pgunner',9,7,2,'guard'), E('pcutlass',9,3,3), E('pcutlass',9,6,3),
+            E('pcutlass',9,3,7), E('pharpoon',9,6,7,'guard'), E('pboarder',9,4,9), E('pgunner',9,1,8,'guard'), E('pgunner',9,8,8,'guard'),
+            E('pshanty',9,5,8,'guard'), E('pboarder',10,6,9,'charge',{elite: true}),
+          ],
+          reinforce: () => [{turn: 3, units: [E('pcutlass',9,2,3), E('pharpoon',9,7,3)]}],
+          bossTalk: [
+            {who: "ducky", text: "Ten thousand Crowns, rabbit! Do you know what I could buy with ten thousand Crowns?"},
+            {who: "rae", text: "What?"},
+            {who: "ducky", text: "…I never actually decided. A bigger anchor, probably."},
+          ],
+          pre: [
+            {scene: "ships", place: "The Satin Sea · Morning"},
+            {who: "narr", text: "The little ship is called the Hopeful. Nobody knows who named it. Nobody wants to change it."},
+            {who: "narr", text: "Flopsy ties every knot. Speshul climbs the mast and won't come down. Froggle steers, because she's the only one who can read the old charts, and because nobody else will touch the wheel."},
+            {who: "froggle", text: "I kept ledgers for twenty years. I never once thought I'd be steering a ship."},
+            {who: "patch", text: "Steering it straight at three pirate ships."},
+            {who: "froggle", text: "Thank you, Patch. I had noticed."},
+            {who: "narr", text: "Ahead, Ducky's ships have lashed themselves together into one great floating fortress, with gangplanks thrown across the gaps."},
+            {who: "ducky", text: "Ahoy, the ten thousand Crowns! Come aboard! Mind the plank, it's ever so wobbly!"},
+            {who: "rae", text: "Everybody ready?"},
+            {who: "sister", text: "No."},
+            {who: "speshul", text: "Yes!"},
+            {who: "willow", text: "Does it matter?"},
+            {who: "rae", text: "Not really. Bring us alongside! Raepublic, BOARD!"},
+          ],
+          post: [
+            {who: "narr", text: "Ducky's anchor thumps down on the deck. Then Ducky does too, sitting down hard among the barrels."},
+            {who: "narr", text: "All across the three ships, the pirates stop fighting, one by one, and look at their captain."},
+            {who: "ducky", text: "Well. That's never happened before."},
+            {who: "rae", text: "Are you hurt?"},
+            {who: "ducky", text: "Only my pride. And my tail. Mostly my pride."},
+            {who: "ducky", text: "Go on, then. The ships are yours. That's the rule out here. Winner takes the lot."},
+            {who: "rae", text: "I don't want your ships. I want you to leave us alone."},
+            {who: "ducky", text: "Leave you alone? That's it? Not the ships? Not the treasure? We've got treasure, you know. Some of it's even real."},
+            {who: "rae", text: "That's it."},
+            {who: "narr", text: "Ducky looks at Rae for a very long time. Then at the Raepublic: rabbits and monkeys, soaked and bruised, standing together on a pirate deck as if they'd been doing it all their lives."},
+            {who: "ducky", text: "Bosun! What do you reckon?"},
+            {who: "barnacle", text: "I reckon a rabbit the King of the frogs wants that badly is going places, Cap'n."},
+            {who: "ducky", text: "And places have treasure. Lots of treasure. Frog treasure, I shouldn't wonder."},
+            {who: "ducky", text: "Here's an offer, Rae Rabbit. You beat us fair. So we sail with you. Three ships, and every pirate on them. You point, we plunder."},
+            {who: "rae", text: "We don't plunder."},
+            {who: "ducky", text: "We'll talk about it."},
+            {scene: "shore", place: "The Settlement · That Night"},
+            {who: "narr", text: "That night the beach is loud with music. The pirates teach the monkeys their songs. The monkeys teach the pirates theirs. Flopsy's school gets thirty new pupils, most of them very large and very bad at knots."},
+            {who: "sister", text: "Rae. We've got a home. And ships. And a lighthouse. We've got a whole country."},
+            {who: "rae", text: "We've got each other. That was always the country."},
+            {who: "rae", thought: true, text: "For the first time since the mines, nobody is coming for us."},
+            {who: "narr", text: "Up on the point, the light goes round, and round."},
+            {who: "narr", text: "And far to the north, on the King's road, drums."},
+            {card: "End of Chapter Four", sub: "The Shore"},
+          ],
+          reward: {res: 900, tokens: 6},
+        },
+      ]},
+      {id: 'RC5', title: 'Chapter Five', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
     ],
   },
 
@@ -4500,7 +5193,331 @@ const CAMPAIGNS = {
           reward: {res: 700, tokens: 6, joins: ['aurora']},
         },
       ]},
-      {id: 'FC4', title: 'Chapter Four', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
+      {id: 'FC4', title: 'Chapter Four', name: 'The Tournament', enemyMods: {mhp: -1},
+       stages: [
+
+        // ---------------- Stage 1: the King's fury; round one, the Grand Melee ----------------
+        {
+          id: 'F4-1', title: 'The Grand Melee', map: 'grandArena', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE',
+          star: {type: 'turns', n: 6, text: 'Win by the end of turn VI'},
+          objective: {type: 'rout'}, maxDeploy: 7,
+          deploy: [[4,13],[5,13],[3,14],[6,14],[2,13],[7,13],[4,14],[5,14]],
+          brief: 'Round one of the Royal Tournament: every team in the ring at once, last team standing.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield.",
+          enemies: () => [
+            E('bruiser',7,2,3), E('bruiser',7,7,3), E('blade',7,4,4), E('blade',7,5,6), E('lily',7,1,6), E('lily',7,8,6),
+            E('reed',7,2,1,'guard'), E('reed',7,7,1,'guard'), E('croaker',7,4,1,'guard'), E('toadknight',8,5,2,'guard'),
+          ],
+          pre: [
+            {card: "Chapter Four", sub: "The Tournament"},
+            {scene: "court", place: "The Lily Court · The Capital"},
+            {who: "narr", text: "The capital. Tiggle has been home for one hour. He has not been allowed to sit down."},
+            {who: "king", text: "Half of Monkeyland. HALF. Gone over to the rebels in a single morning."},
+            {who: "king", text: "Four hundred monkeys, little brother. Four hundred spears, marching with the rabbit from the mines."},
+            {who: "tiggle", text: "Your Majesty, the monkeys were never—"},
+            {who: "king", text: "And you made a PROMISE. To a governess. Mercy for a traitor. In my name."},
+            {who: "aurora", text: "In his own name, Your Majesty. He made it to me. I asked him for it."},
+            {who: "king", text: "You will speak when the King speaks to you, Governess."},
+            {who: "narr", text: "Aurora kneels. She has had a great deal of practice."},
+            {who: "biggle", text: "Brother. Enough."},
+            {who: "narr", text: "The whole court goes very quiet. Nobody tells the King “enough”."},
+            {who: "biggle", text: "The boy took the mines back. He found Fraggle Friggle's treason when none of us could. He held the Governess's castle with half its guard turned against him. Give him the army again and he'll bring you the rabbit."},
+            {who: "king", text: "Give him the army. The army all of frogkind has just watched him lose?"},
+            {who: "king", text: "Do you know what they say in the taverns, Biggle? They say the King's youngest brother can't keep hold of a monkey."},
+            {who: "king", text: "A prince who leads frogs must be a prince frogs will follow. Reputation is everything. Without it there is no crown. There is only a hat."},
+            {who: "king", text: "Very well. If Tiggle Taggle wants to lead an army again, he will earn back his honour in the eyes of frogkind. The same way you earned yours, Biggle."},
+            {who: "biggle", text: "…The Royal Tournament."},
+            {who: "king", text: "The Royal Tournament. Every champion in the Friggliarchy, in front of every frog in the capital. Win it, little brother, and the army is yours. Lose, and you will never command so much as a tadpole again."},
+            {who: "narr", text: "The King sweeps out. The court breathes out."},
+            {who: "tiggle", text: "Biggle. What's the Royal Tournament?"},
+            {who: "biggle", text: "Seven rounds. Seven fights, in front of the whole city. I won it when I was younger than you."},
+            {who: "biggle", text: "Don't worry, little brother. I'll be with you every step of the way."},
+            {scene: "arena", place: "The Royal Tournament · Round One"},
+            {who: "herald", text: "FROGS OF THE CAPITAL! Welcome to the ROYAL TOURNAMENT!"},
+            {who: "herald", text: "Round one: the GRAND MELEE! Every team in the ring! Last team standing!"},
+            {who: "crowd", text: "Oi, little prince! Where are all your monkeys?"},
+            {who: "tiggle", thought: true, text: "They're laughing at me. All of them."},
+            {who: "biggle", text: "Let them laugh. Fight. They stop laughing when you win."},
+          ],
+          post: [
+            {who: "narr", text: "The last of the hopefuls limp out of the ring. The crowd is not quite so loud."},
+            {who: "herald", text: "The prince's team goes through!"},
+            {who: "aurora", text: "You fought well, Your Highness."},
+            {who: "tiggle", text: "They're still laughing."},
+            {who: "biggle", text: "Fewer of them."},
+          ],
+          reward: {res: 750},
+        },
+
+        // ---------------- Stage 2: the Gauntlet (get Tiggle to the bell) ----------------
+        {
+          id: 'F4-2', title: 'The Gauntlet', map: 'gauntlet', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE',
+          star: {type: 'turns', n: 7, text: 'Ring the bell by the end of turn VII'},
+          objective: {type: 'escape', dest: 'the bell'}, maxDeploy: 7,
+          exits: [[4,0],[5,0]],
+          deploy: [[4,14],[5,14],[3,15],[6,15],[2,14],[7,14],[4,15],[5,15]],
+          brief: 'Round two: run the course to the finishing bell, past the champions of the Lily Court. You win when Tiggle reaches the bell.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. You don't have to beat everyone: get Tiggle to the gold squares.",
+          enemies: () => [
+            E('lily',8,2,11,'guard'), E('reed',8,6,11,'guard'), E('bruiser',8,7,8,'guard'), E('blade',8,2,8),
+            E('toadknight',8,1,5,'guard'), E('reed',8,4,7,'guard'), E('lily',8,7,2,'guard'), E('croaker',8,5,1,'guard'),
+            E('blade',9,4,1,'hold',{elite: true}), E('reed',8,8,4,'guard'),
+          ],
+          pre: [
+            {scene: "arena", place: "The Royal Tournament · Round Two"},
+            {who: "herald", text: "Round two: THE GAUNTLET! Run the course! Ring the bell! And the champions of the Lily Court will try to stop you!"},
+            {who: "biggle", text: "Don't fight them all. You don't have to. Get to the bell."},
+            {who: "tiggle", text: "Isn't that… running away?"},
+            {who: "biggle", text: "It's running TOWARDS something. Big difference. The crowd loves it."},
+            {who: "aurora", text: "Your Highness. While you were dressing, a messenger came from the south. The rebels have reached the sea."},
+            {who: "tiggle", text: "The sea? Then they're trapped. If I had the army now, I could—"},
+            {who: "herald", text: "CONTESTANTS! TO YOUR MARKS!"},
+            {who: "tiggle", thought: true, text: "I could end the war. And instead I'm here, running round a field for a bell."},
+          ],
+          post: [
+            {who: "narr", text: "The bell rings out over the arena, and for the first time, the crowd cheers for the prince."},
+            {who: "crowd", text: "TIG-GLE! TIG-GLE!"},
+            {who: "biggle", text: "Hear that? That's what the King wants. That sound."},
+            {who: "tiggle", text: "It's just noise, Biggle."},
+            {who: "biggle", text: "In this city, little brother, noise is everything."},
+          ],
+          reward: {res: 750},
+        },
+
+        // ---------------- Stage 3: the lists (Tilly Tealbottom, mounted) ----------------
+        {
+          id: 'F4-3', title: 'Tilly Tealbottom', map: 'lists', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE',
+          star: {type: 'bossBy', key: 'tiggle', text: '{lord} unseats Tilly Tealbottom himself'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,13],[5,13],[3,14],[6,14],[2,13],[7,13],[4,14],[5,14]],
+          brief: 'Round three: the lists. Unseat Tilly Tealbottom, the pride of the Lily Court.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Tilly rides: fast on open sand, slow in the pennants, and unable to cross the tilt barrier.",
+          enemies: () => [
+            E('jouster',11,4,1,'guard',{boss: true, flees: true, key: 'tilly', name: 'Tilly Tealbottom', look: 'tilly'}),
+            E('lily',8,3,2,'guard'), E('lily',8,6,2,'guard'), E('reed',8,1,3,'guard'), E('reed',8,8,3,'guard'),
+            E('blade',8,2,6), E('blade',8,7,6), E('croaker',8,5,1,'guard'), E('bruiser',8,6,9), E('blade',8,1,9),
+          ],
+          bossTalk: [
+            {who: "tilly", text: "Tally-ho, darling!"},
+            {who: "tiggle", text: "Does she ever stop talking?"},
+            {who: "biggle", text: "Never. It's a family tradition."},
+          ],
+          pre: [
+            {scene: "arena", place: "The Royal Tournament · Round Three"},
+            {who: "herald", text: "Round three: THE LISTS! Facing the prince: the pride of the Lily Court! Never unseated in eleven tournaments! The most elegant frog in all the Friggliarchy… TILLY TEALBOTTOM!"},
+            {who: "narr", text: "A teal frog rides out on a great white felt horse, lance high, waving to the stands. The stands wave back."},
+            {who: "tilly", text: "Darling prince! How wonderful. I did so hope we'd meet. Mother says you lost Monkeyland. Is it true? Did you just… put it down somewhere?"},
+            {who: "tiggle", text: "It wasn't like that."},
+            {who: "tilly", text: "It never is, darling. Now, I shan't go easy on you. It would be terribly rude."},
+            {who: "biggle", text: "Tealbottom rides like the wind and turns like a barn door. Draw that horse round the barrier, and strike from the side."},
+          ],
+          post: [
+            {who: "narr", text: "Tilly Tealbottom tumbles off the horse into the sand, in a heap of teal silk."},
+            {who: "tilly", text: "Oh! Oh, well done, darling. Eleven tournaments, and you're the first to unseat me. Mother will be furious. How marvellous."},
+            {who: "tilly", text: "A word of advice, little prince, from one aristocrat to another. Watch your cousin."},
+            {who: "tiggle", text: "My cousin?"},
+            {who: "tilly", text: "Princess. She's in the other half of the draw, darling. And she wants exactly what you want. Only more."},
+          ],
+          reward: {res: 800},
+        },
+
+        // ---------------- Stage 4: the Ribbon Hunt (intercept the squires) ----------------
+        {
+          id: 'F4-4', title: 'The Ribbon Hunt', map: 'royalPark', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE',
+          star: {type: 'catch', n: 6, text: 'Catch at least six squires'},
+          objective: {type: 'intercept', who: 'squires', dest: 'the park gates'}, maxDeploy: 7,
+          exits: [[0,15],[2,15],[4,15],[6,15],[8,15]],
+          deploy: [[4,7],[5,7],[3,8],[6,8],[1,8],[8,8],[4,9],[5,9]],
+          brief: 'Round four: eight squires carry the royal ribbons through the park. Catch them before they reach the gates.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. The squires don't stop to fight: they run for the gold squares. Eight in all. The round ends once they're all caught or gone.",
+          enemies: () => [
+            ...[[2,0],[5,1],[7,0]].map(([x, y]) => E('blade',8,x,y,'courier',{courier: true, name: 'Squire', look: 'scout', bonus: {mov: -1}})),
+            E('lily',8,3,11,'guard'), E('lily',8,6,11,'guard'), E('blade',8,1,12), E('reed',8,8,12,'guard'),
+          ],
+          reinforce: () => [
+            {turn: 1, units: [[1,0],[4,0],[8,1]].map(([x, y]) => E('blade',8,x,y,'courier',{courier: true, name: 'Squire', look: 'scout', bonus: {mov: -1}}))},
+            {turn: 2, units: [E('blade',8,3,0,'courier',{courier: true, name: 'Squire', look: 'scout', bonus: {mov: -1}}), E('blade',8,6,0,'courier',{courier: true, name: 'Squire', look: 'scout', bonus: {mov: -1}}), E('bruiser',8,5,0)]},
+          ],
+          pre: [
+            {scene: "arena", place: "The Royal Park · Round Four"},
+            {who: "herald", text: "Round four: THE RIBBON HUNT! Eight squires! Eight royal ribbons! Catch them before they reach the gates! Every ribbon is a point!"},
+            {who: "tiggle", text: "We're chasing squires. Round a park."},
+            {who: "biggle", text: "It's tradition."},
+            {who: "narr", text: "As the teams gather, a pink frog in a gold tiara sweeps past with her own team, and doesn't look at Tiggle at all."},
+            {who: "princess", text: "Cousin."},
+            {who: "tiggle", text: "Princess."},
+            {who: "princess", text: "Do try to catch something this time."},
+            {who: "tiggle", thought: true, text: "Rae is out there building a country on a beach. And I'm about to chase a squire round a fountain."},
+          ],
+          post: [
+            {who: "narr", text: "A heap of squires sits on the lawn, out of breath, their ribbons gone."},
+            {who: "aurora", text: "Your Highness. You looked unhappy out there. Even while you were winning."},
+            {who: "tiggle", text: "Aurora, why are we doing this? The rabbits are on the coast. Every day we spend here, they get stronger. And the King wants me chasing ribbons."},
+            {who: "aurora", text: "The King wants the city to love you."},
+            {who: "tiggle", text: "The city doesn't need to love me! It needs the war to end! I could be doing real good out there. Stopping Rae, before anyone else gets hurt. Instead I'm… performing."},
+            {who: "aurora", text: "I spent twenty years performing for the King, Your Highness. Kneeling so that my people could stand. Sometimes the performance IS the good you can do."},
+            {who: "tiggle", text: "And sometimes it's just kneeling."},
+            {who: "aurora", text: "…Yes. Sometimes it is."},
+            {who: "aurora", text: "And forgive me. My son is out there with them. Every day you spend here is a day nobody is hunting him. You must not expect me to hurry you."},
+          ],
+          reward: {res: 800},
+        },
+
+        // ---------------- Stage 5: the Siege Game (hold the mock fort) ----------------
+        {
+          id: 'F4-5', title: 'The Siege Game', map: 'siegeGame', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE',
+          star: {type: 'noLosses', text: 'No one is knocked out'},
+          objective: {type: 'survive', turns: 5}, maxDeploy: 7,
+          deploy: [[4,8],[5,8],[3,7],[6,7],[2,8],[7,8],[4,9],[5,9]],
+          brief: 'Round five: hold the mock fort until the fifth bell, while every other team still in the tournament attacks it.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Attackers come from both ends of the ground. The fort's barriers have gaps on every side.",
+          enemies: () => [
+            E('blade',8,2,1), E('blade',8,7,1), E('lily',8,4,2), E('reed',8,1,3,'guard'), E('bruiser',8,8,3),
+            E('blade',8,2,13), E('lily',8,6,13), E('reed',8,8,14,'guard'), E('bruiser',8,4,14),
+          ],
+          reinforce: () => [
+            {turn: 1, units: [E('blade',8,0,0), E('toadknight',8,9,15)]},
+            {turn: 2, units: [E('croaker',8,4,0,'guard'), E('bruiser',8,0,15), E('blade',8,9,0)]},
+            {turn: 3, units: [E('blade',9,5,0,'charge',{elite: true}), E('lily',8,5,15), E('reed',8,0,8)]},
+            {turn: 4, units: [E('bruiser',9,9,8,'charge',{elite: true}), E('blade',8,4,15)]},
+          ],
+          pre: [
+            {scene: "arena", place: "The Royal Tournament · Round Five"},
+            {who: "herald", text: "Round five: THE SIEGE GAME! The prince holds the fort! Every other team in the tournament attacks it! Hold out until the fifth bell!"},
+            {who: "tiggle", text: "Every other team? All at once?"},
+            {who: "biggle", text: "That's the Siege Game. I held it for six bells, the year I won."},
+            {who: "tiggle", text: "Of course you did."},
+            {who: "scout", text: "Your Highness! Your Highness, news from the coast! Pirates have landed on the rebels' beach. Whole ships of them."},
+            {who: "tiggle", text: "Pirates? Why would pirates go after Rae?"},
+            {who: "scout", text: "The bounty, Your Highness. The King put ten thousand Crowns on her head, the day you came home. Every crew on the Satin Sea is after it."},
+            {who: "tiggle", text: "He's paying pirates to do my job. While I'm stuck in here, ringing bells."},
+            {who: "biggle", text: "Later, little brother. The first bell's going."},
+          ],
+          post: [
+            {who: "narr", text: "The fifth bell rings. The attackers fall back, and the prince's banner is still flying over the fort."},
+            {who: "crowd", text: "TIG-GLE! TIG-GLE! TIG-GLE!"},
+            {who: "tiggle", text: "Pirates, Biggle. Pirates. If Rae gets hold of ships, we'll never catch her."},
+            {who: "biggle", text: "One thing at a time. You've got a semi-final."},
+          ],
+          reward: {res: 850},
+        },
+
+        // ---------------- Stage 6: the semi-final (Princess) ----------------
+        {
+          id: 'F4-6', title: 'Princess', map: 'grandArena', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE',
+          star: {type: 'noLosses', text: 'No one is knocked out'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,13],[5,13],[3,14],[6,14],[2,13],[7,13],[4,14],[5,14]],
+          brief: 'The semi-final: Tiggle against his own cousin, Princess, who means to be the King\'s heir.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Princess fights with a tome, so she can strike from two squares away.",
+          enemies: () => [
+            E('heiress',12,4,1,'guard',{boss: true, flees: true, key: 'princess', name: 'Princess', look: 'princess'}),
+            E('lilyknight',10,3,2,'guard'), E('lilyknight',10,6,2,'guard'), E('croaker',9,5,1,'guard'),
+            E('reed',9,1,3,'guard'), E('reed',9,8,3,'guard'), E('blade',10,2,6,'charge',{elite: true}), E('blade',9,7,6),
+            E('bruiser',9,4,7), E('lily',9,1,9), E('lily',9,8,9),
+          ],
+          reinforce: () => [{turn: 3, units: [E('blade',9,0,4), E('blade',9,9,4)]}],
+          bossTalk: [
+            {who: "princess", text: "Read it and weep, cousin! Every grievance I've ever had, and you're on most of the pages!"},
+            {who: "tiggle", text: "What did I ever do to you?"},
+            {who: "princess", text: "You were born the King's brother!"},
+          ],
+          pre: [
+            {scene: "arena", place: "The Royal Tournament · The Semi-Final"},
+            {who: "herald", text: "The SEMI-FINAL! Prince Tiggle Taggle… against his own cousin… PRINCESS!"},
+            {who: "narr", text: "Princess's team marches in under a pink banner with her own face on it."},
+            {who: "princess", text: "Do you know why I'm here, cousin?"},
+            {who: "tiggle", text: "To win?"},
+            {who: "princess", text: "To be SEEN. The King has no children. One day, he will need an heir. And when he looks around his court for one, I intend to be the only frog standing."},
+            {who: "princess", text: "Not you, with your lost monkeys. Not Biggle, who only knows how to do as he's told. Me."},
+            {who: "biggle", text: "She's been practising that speech since she was a tadpole."},
+            {who: "princess", text: "I can hear you, Biggle."},
+            {who: "tiggle", text: "Princess, I don't want the crown. I only want the army back."},
+            {who: "princess", text: "Everyone wants the crown, cousin. Some of us are just honest about it."},
+          ],
+          post: [
+            {who: "narr", text: "Princess's grievances scatter across the sand, pages everywhere."},
+            {who: "princess", text: "This isn't over, cousin. The King saw me today. He saw me fight."},
+            {who: "tiggle", text: "He saw you lose."},
+            {who: "princess", text: "He SAW me. That's the part that matters."},
+            {who: "narr", text: "She stalks out of the arena. Up in the royal box, the King's seat is already empty."},
+            {who: "herald", text: "The prince goes through to the FINAL!"},
+            {who: "biggle", text: "One more round, little brother. Just one."},
+          ],
+          reward: {res: 850},
+        },
+
+        // ---------------- Stage 7: the final (Biggle Baggle, who can't fight for you today) ----------------
+        {
+          id: 'F4-7', title: 'Biggle Baggle', map: 'royalArena', enemyFaction: 'frog', spar: true, enemyLine: 'THE CHALLENGERS ADVANCE', ban: ['biggle'],
+          star: {type: 'bossBy', key: 'tiggle', text: '{lord} beats Biggle Baggle himself'},
+          objective: {type: 'boss'}, maxDeploy: 7,
+          deploy: [[4,13],[5,13],[3,14],[6,14],[2,13],[7,13],[4,14],[5,14]],
+          brief: 'The final of the Royal Tournament. The champion waiting on the dais is Biggle Baggle.',
+          prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Biggle Baggle is on the other side today, and can't fight for you. His Hold the Line works against you: your units stop when they reach a square next to him.",
+          enemies: () => [
+            E('lilyknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
+            E('toadknight',10,3,6,'guard'), E('toadknight',10,6,6,'guard'), E('croaker',10,5,8,'guard'),
+            E('reed',10,1,4,'guard'), E('reed',10,8,4,'guard'), E('lilyknight',10,2,9,'guard',{elite: true}), E('lilyknight',10,7,9,'guard',{elite: true}),
+            E('blade',10,3,2), E('blade',10,6,2), E('bruiser',10,1,11), E('bruiser',10,8,11),
+          ],
+          bossTalk: [
+            {who: "biggle", text: "Come on, then! Show them! Show ME!"},
+            {who: "tiggle", text: "I don't want to fight you!"},
+            {who: "biggle", text: "I know. That's why you have to."},
+          ],
+          pre: [
+            {scene: "court", place: "The Palace · The Night Before the Final"},
+            {who: "narr", text: "The night before the final, Tiggle can't sleep. He finds Biggle on the palace roof, looking south."},
+            {who: "tiggle", text: "Who's in the other half of the draw? Nobody will tell me."},
+            {who: "biggle", text: "You'll find out tomorrow."},
+            {who: "tiggle", text: "Biggle. Thank you. For speaking up for me. For all of it. I couldn't have got this far without you."},
+            {who: "biggle", text: "Get some sleep, little brother."},
+            {scene: "arena", place: "The Royal Tournament · The Final"},
+            {who: "herald", text: "The FINAL! In the royal colours: Prince Tiggle Taggle! And facing him… a champion of this very tournament… the King's own brother… the Wall of the Lily Court… BIGGLE BAGGLE!"},
+            {who: "narr", text: "The crowd goes wild. Tiggle doesn't move."},
+            {who: "tiggle", text: "Biggle? You? You're fighting me?"},
+            {who: "biggle", text: "Pick up your sword, Tiggle."},
+            {who: "tiggle", text: "You said you'd be with me every step of the way!"},
+            {who: "biggle", text: "I have been. This is the last step."},
+            {who: "aurora", text: "Your Highness…"},
+            {who: "tiggle", text: "Why? Did the King put you up to this? Did you want the army for yourself, all along?"},
+            {who: "biggle", text: "Pick. Up. Your sword."},
+          ],
+          post: [
+            {who: "narr", text: "Biggle Baggle goes down on one knee in the middle of the arena. For a long moment, nobody in the whole city makes a sound."},
+            {who: "narr", text: "Then the crowd erupts."},
+            {who: "herald", text: "THE CHAMPION! TIGGLE TAGGLE, CHAMPION OF THE ROYAL TOURNAMENT!"},
+            {scene: "court", place: "The Palace · That Night"},
+            {who: "tiggle", text: "You could have told me."},
+            {who: "biggle", text: "And you'd have fought me with half your heart. The whole city would have seen it. The King would have seen it."},
+            {who: "biggle", text: "I had to know, little brother. Not whether you could beat me. Whether you would. Whether you'd stand in front of somebody you love, and still do what had to be done."},
+            {who: "tiggle", text: "That's a horrible thing to test."},
+            {who: "biggle", text: "It's what a crown tests. Every day."},
+            {who: "tiggle", text: "Well, I passed. So the army's mine. We can march tonight, Biggle. The pirates, the ships… Rae's getting away while we stand here!"},
+            {who: "biggle", text: "The army's gone, Tiggle."},
+            {who: "tiggle", text: "…What?"},
+            {who: "biggle", text: "The King sent it south three days ago, under his own marshal. Every regiment in the capital. While the whole city was watching you play the Siege Game."},
+            {who: "biggle", text: "The tournament was never about giving you the army. It was about the King's reputation. Win or lose, he'd already decided."},
+            {who: "tiggle", text: "Then all of this… the bells, the ribbons… it was for nothing."},
+            {who: "biggle", text: "Not for nothing. Frogkind just watched you win the Royal Tournament. Every soldier in that army will have heard about it by morning."},
+            {who: "biggle", text: "An army on the march needs a commander, little brother. What if they had one they actually wanted to follow?"},
+            {who: "tiggle", text: "Biggle. You're talking about taking the King's army. That's mutiny."},
+            {who: "biggle", text: "It's only mutiny if we lose. If we bring him Rae Rabbit, he'll tell everyone we were acting on his orders all along. He'll have to. His reputation, remember?"},
+            {who: "tiggle", text: "And if we don't bring her?"},
+            {who: "biggle", text: "Then they'll hang us both from the palace walls, and the crowd will cheer for that too."},
+            {who: "tiggle", text: "You'd risk that? For me?"},
+            {who: "biggle", text: "I told you. Every step of the way."},
+            {who: "aurora", text: "If you take that army, Your Highness, remember your promise."},
+            {who: "tiggle", text: "I remember, Aurora. Speshul will be spared. Whatever happens."},
+            {who: "narr", text: "Before dawn, two riders leave the capital by the south gate. Behind them come Aurora, and the monkeys who stayed. Ahead of them, three days south, the King's army is marching for the sea."},
+            {who: "tiggle", text: "Hold on, Rae Rabbit. We're coming."},
+            {card: "End of Chapter Four", sub: "The Tournament"},
+          ],
+          reward: {res: 900, tokens: 6},
+        },
+      ]},
+      {id: 'FC5', title: 'Chapter Five', name: 'Still to be written', stub: true, brief: 'Still to be written.'},
     ],
   },
 };
@@ -8263,7 +9280,7 @@ function resize(){
   cvs.style.width = COLS*T + 'px'; cvs.style.height = ROWS*T + 'px';
   terrCv.width = cvs.width; terrCv.height = cvs.height; tokenCache.clear();
   const g = terrCv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'blossom') blossomOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'castle') castleOver(g, x, y, MAP[y][x]); }
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){ drawTile(g, x, y, MAP[y][x]); if (mapDef?.theme === 'snow') snowOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'blossom') blossomOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'castle') castleOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'shore') shoreOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'arena') arenaOver(g, x, y, MAP[y][x]); if (mapDef?.theme === 'ship') deckOver(g, x, y, MAP[y][x]); }
   if (!noisePat){
     const n = document.createElement('canvas'); n.width = n.height = 96; const ng = n.getContext('2d');
     for (let i = 0; i < 1400; i++){ ng.fillStyle = Math.random() < .5 ? 'rgba(0,0,0,.18)' : 'rgba(255,245,220,.12)'; ng.fillRect(Math.random()*96, Math.random()*96, 1, Math.random()*2 + .5); }
@@ -8315,7 +9332,7 @@ function drawTile(g, x, y, ch){
     return;
   }
   const theme = mapDef?.theme || 'meadow';
-  if (theme !== 'meadow' && theme !== 'snow' && theme !== 'blossom') return drawThemedTile(g, x, y, ch, theme === 'castle' ? 'camp' : theme);
+  if (theme !== 'meadow' && theme !== 'snow' && theme !== 'blossom' && theme !== 'shore') return drawThemedTile(g, x, y, ch, ['castle', 'arena', 'ship'].includes(theme) ? 'camp' : theme);
   const base = ch === 'F' ? '#4a7838' : ch === 'M' ? '#6d7550' : ch === 'X' ? '#4a3b2c' : greens[Math.floor(hash(x, y)*4)];
   patch(g, X, Y, base, x, y);
   if (ch === 'F'){
@@ -8413,6 +9430,57 @@ function castleOver(g, x, y, ch){
   if (ch === 'X' || ch === 'M'){ g.fillStyle = 'rgba(140,140,155,.62)'; g.fillRect(X, Y, T, T); g.strokeStyle = 'rgba(50,50,60,.4)'; g.lineWidth = 1;
     for (let r = 0; r < 3; r++){ const yy = Y + T*(r + 1)/3; g.beginPath(); g.moveTo(X, yy); g.lineTo(X + T, yy); g.stroke(); const xx = X + T*(r % 2 ? .25 : .65); g.beginPath(); g.moveTo(xx, yy - T/3); g.lineTo(xx, yy); g.stroke(); } }
   if (ch === 'F') for (let i = 0; i < 5; i++){ g.fillStyle = i % 2 ? '#f4a6c4' : '#ffe58a'; ell(g, X + T*(.3 + .4*hash(x, y, i + 30)), Y + T*(.2 + .3*hash(x, y, i + 40)), T*.06, T*.06); g.fill(); }
+}
+// the shore: pale sand over the meadow; dune grass stays green, rocks go grey-blue, cliffs go dark
+function shoreOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  if (ch === 'W' || ch === 'B'){ g.fillStyle = 'rgba(40,150,160,.22)'; g.fillRect(X, Y, T, T);   // a greener, seaside blue
+    if (ch === 'W' && hash(x, y, 3) < .5){ g.fillStyle = 'rgba(255,255,255,.55)'; ell(g, X + T*(.2 + .6*hash(x, y, 4)), Y + T*(.25 + .5*hash(x, y, 5)), T*.08, T*.025); g.fill(); }
+    return; }
+  if (ch === '.' || ch === 'T'){ g.fillStyle = 'rgba(232,208,150,.78)'; g.fillRect(X, Y, T, T);
+    g.fillStyle = 'rgba(160,128,80,.35)'; for (let i = 0; i < 3; i++){ ell(g, X + T*hash(x, y, i + 20), Y + T*hash(x, y, i + 30), T*.02, T*.02); g.fill(); }
+    if (hash(x, y, 9) < .12){ g.fillStyle = '#f2c2c8'; g.beginPath(); g.moveTo(X + T*.6, Y + T*.6); g.arc(X + T*.6, Y + T*.6, T*.07, Math.PI, 0); g.closePath(); g.fill(); }   // a shell
+    if (ch === 'T') drawFort(g, X, Y, x, y);
+  }
+  if (ch === 'F'){ g.fillStyle = 'rgba(232,208,150,.45)'; g.fillRect(X, Y, T, T); }
+  if (ch === 'M'){ g.fillStyle = 'rgba(214,196,150,.55)'; g.fillRect(X, Y, T, T); hump(g, X + T*.58, Y + T*.84, T*.36, T*.5, '#7c8a92', 'rgba(40,50,56,.6)'); hump(g, X + T*.32, Y + T*.9, T*.26, T*.34, '#96a2a8', 'rgba(40,50,56,.5)');
+    g.fillStyle = '#3e7a4a'; ell(g, X + T*.6, Y + T*.45, T*.12, T*.04); g.fill(); }
+  if (ch === 'X'){ g.fillStyle = '#5a4e46'; g.fillRect(X, Y, T, T); g.strokeStyle = 'rgba(30,24,20,.6)'; g.lineWidth = Math.max(1, T*.03);
+    for (let i = 0; i < 3; i++){ g.beginPath(); g.moveTo(X + T*(.1 + .3*i), Y); g.lineTo(X + T*(.2 + .3*i), Y + T*.5); g.lineTo(X + T*(.12 + .3*i), Y + T); g.stroke(); }
+    g.fillStyle = 'rgba(255,255,255,.12)'; g.fillRect(X, Y, T, T*.08); }
+}
+// the tournament: raked pale sand, striped pennants, grandstands of benches
+function arenaOver(g, x, y, ch){
+  const X = x*T, Y = y*T, stripes = ['#c0392b', '#2e5f9a', '#d9b04a', '#4c8a3a'];
+  if (ch === '.' || ch === 'F' || ch === 'T'){ g.fillStyle = 'rgba(230,214,170,.7)'; g.fillRect(X, Y, T, T);
+    g.strokeStyle = 'rgba(150,120,80,.25)'; g.lineWidth = 1; for (let i = 1; i < 4; i++){ g.beginPath(); g.moveTo(X, Y + T*i/4); g.lineTo(X + T, Y + T*i/4); g.stroke(); } }
+  if (ch === 'F') for (const [a, b] of [[.28, .25], [.7, .4]]){   // pennants on poles
+    g.strokeStyle = '#5a3e24'; g.lineWidth = Math.max(1, T*.04); g.beginPath(); g.moveTo(X + T*a, Y + T*(b + .55)); g.lineTo(X + T*a, Y + T*b); g.stroke();
+    g.fillStyle = stripes[Math.floor(hash(x, y, a*10)*4)]; g.beginPath(); g.moveTo(X + T*a, Y + T*b); g.lineTo(X + T*(a + .24), Y + T*(b + .08)); g.lineTo(X + T*a, Y + T*(b + .18)); g.closePath(); g.fill();
+  }
+  if (ch === 'M'){ g.fillStyle = '#6a4a30'; g.fillRect(X, Y, T, T);   // benches, with frogs watching
+    for (let r = 0; r < 3; r++){ g.fillStyle = r % 2 ? '#8a6440' : '#9a7048'; g.fillRect(X, Y + T*(r/3 + .2), T, T*.1);
+      for (let i = 0; i < 3; i++){ if (hash(x, y, r*3 + i) < .55){ g.fillStyle = ['#6aa040', '#7bc043', '#5e8a3c', '#d9779a'][Math.floor(hash(x, y, r*3 + i + 9)*4)]; ell(g, X + T*(.18 + i*.32), Y + T*(r/3 + .17), T*.09, T*.07); g.fill(); } } } }
+  if (ch === 'X'){ g.fillStyle = '#e9dcc0'; g.fillRect(X + T*.08, Y, T*.84, T); for (let i = 0; i < 4; i++){ g.fillStyle = i % 2 ? '#c0392b' : '#2e5f9a'; g.fillRect(X + T*.08, Y + T*i/4, T*.84, T*.12); }
+    g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(X + T*.82, Y, T*.1, T); }
+  if (ch === 'T') drawFort(g, X, Y, x, y);
+}
+// the ships: planked decks, barrels, masts and rails
+function deckOver(g, x, y, ch){
+  const X = x*T, Y = y*T;
+  if (ch === 'W' || ch === 'B') return;
+  g.fillStyle = ch === 'X' ? '#4a2e1c' : '#9a6a40'; g.fillRect(X, Y, T, T);
+  if (ch !== 'X'){ g.strokeStyle = 'rgba(60,36,20,.5)'; g.lineWidth = 1; for (let i = 1; i < 5; i++){ g.beginPath(); g.moveTo(X + T*i/5, Y); g.lineTo(X + T*i/5, Y + T); g.stroke(); }
+    g.fillStyle = 'rgba(30,18,10,.5)'; for (let i = 0; i < 5; i++){ ell(g, X + T*(i/5 + .1), Y + T*(hash(x, y, i) < .5 ? .15 : .85), T*.015, T*.015); g.fill(); } }
+  else { g.fillStyle = '#6a4228'; g.fillRect(X, Y + T*.3, T, T*.4); g.fillStyle = '#c9a24a'; g.fillRect(X, Y + T*.46, T, T*.06); }
+  if (ch === 'F') for (const [a, b] of [[.3, .6], [.68, .5]]){ const cx = X + T*a, cy = Y + T*b;
+    g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, cx + T*.03, cy + T*.2, T*.16, T*.06); g.fill();
+    g.fillStyle = '#7a4a26'; g.beginPath(); g.ellipse(cx, cy, T*.15, T*.22, 0, 0, Math.PI*2); g.fill();
+    g.strokeStyle = '#3a3a3e'; g.lineWidth = Math.max(1, T*.03); for (const k of [-.1, .1]){ g.beginPath(); g.moveTo(cx - T*.15, cy + T*k); g.lineTo(cx + T*.15, cy + T*k); g.stroke(); } }
+  if (ch === 'M'){ g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, X + T*.52, Y + T*.56, T*.22, T*.1); g.fill();
+    g.fillStyle = '#5a3a22'; ell(g, X + T*.5, Y + T*.5, T*.17, T*.17); g.fill(); g.fillStyle = '#7a5232'; ell(g, X + T*.47, Y + T*.47, T*.11, T*.11); g.fill();
+    g.strokeStyle = '#e0d2b0'; g.lineWidth = Math.max(1, T*.025); for (const [a, b] of [[.05, .1], [.95, .1], [.05, .9], [.95, .9]]){ g.beginPath(); g.moveTo(X + T*.5, Y + T*.5); g.lineTo(X + T*a, Y + T*b); g.stroke(); } }
+  if (ch === 'T') drawFort(g, X, Y, x, y);
 }
 function snowOver(g, x, y, ch){
   const X = x*T, Y = y*T;
@@ -9877,7 +10945,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'a2be3cf02a77';
+const BUILD_ID = '1a51354b8c3c';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

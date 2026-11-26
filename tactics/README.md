@@ -94,6 +94,17 @@ Every ranged rabbit (any bow-type class) uses the slinger battle pose
 portrait, battle sprite and icon always match. A character can be held to the first
 generic look with `generic: 'standard'` (Tall Rabbit).
 
+### Art still to come (Chapter Four)
+
+Placeholders until their art arrives (each picks it up automatically once the files are in `art/`):
+
+- **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `tilly` (Tilly Tealbottom, a teal frog aristocrat,
+  mounted lance), `princess` (Princess, a pink frog, tome) and `ducky` (Ducky, a hammerhead shark pirate captain with an anchor).
+- **Pirate crew**: the generic pirates are drawn plush sharks (`LOOKS.pirate`, `pirateBig`). Generic art for them would
+  follow the monkey soldiers' pattern: a battle pose per weapon (sword, axe, lance, bow, book) plus masks for recolouring.
+- **Scene paintings**: `art/bg-shore.jpg` (the beach settlement), `art/bg-arena.jpg` (the tournament ground) and
+  `art/bg-ships.jpg` (the pirate ships at sea). Until then `style.css` draws simple stand-ins.
+
 ### Generic frog soldiers
 
 `art/grunt-portrait.png`, `grunt-battle.png` and `grunt-token.png` are the shared art for

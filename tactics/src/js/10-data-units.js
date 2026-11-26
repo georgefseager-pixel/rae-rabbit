@@ -11,6 +11,10 @@ const FACTIONS = {
   monkey: {name: 'Monkeyland',   currency: 'Petals', playerLine: 'MONKEYLAND RALLIES',       enemyLine: 'THE MONKEYS SWARM',
           band: '#8a4a2a', text: '#f6e2c4', sub: '#f2b8c6', coaster: 'rgba(150,84,40,.82)', stitch: 'rgba(250,225,190,.65)',
           fort: ['#c0763a', '#e0a0b8'], letter: 'M'},
+  // Chapter Four: pirates from beyond the shore (placeholder art: plush sharks)
+  pirate: {name: 'The Pirates',  currency: 'Doubloons', playerLine: 'THE CREW SWAGGERS',     enemyLine: 'THE PIRATES BOARD',
+          band: '#1f4a5a', text: '#e2f2f0', sub: '#9fd3cf', coaster: 'rgba(22,62,78,.85)', stitch: 'rgba(200,236,232,.6)',
+          fort: ['#2a6a7a', '#c9a24a'], letter: 'P'},
   mouse: {name: 'Scrumbly Mischief', currency: 'Crumbs', playerLine: 'THE MISCHIEF SCURRIES', enemyLine: 'THE MISCHIEF SCURRIES',
           band: '#4a3c34', text: '#f1e2d0', sub: '#d7b9a0', coaster: 'rgba(70,56,48,.8)', stitch: 'rgba(240,220,200,.6)',
           fort: ['#8a6a50', '#d8c8b0'], letter: 'S'},
@@ -80,6 +84,17 @@ const CLASSES = {
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
+  // Chapter Four. The tournament's champions (placeholder art): Tilly Tealbottom rides; Princess reads her grievances aloud.
+  jouster:   {name: 'Lily Jouster',   w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Tealbottom Lance',  base: {mhp:24,atk:13,def:7, spd:8,skl:9,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:50}},   // Tilly Tealbottom
+  heiress:   {name: 'Royal Heiress',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Grievances', base: {mhp:22,atk:13,def:4, spd:9,skl:10,mov:5}, g: {mhp:60,atk:50,def:20,spd:50,skl:55}},   // Princess
+  // Pirates (placeholder art: plush sharks). Ducky captains them with an anchor.
+  pcutlass:  {name: 'Cutlass',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Cutlass',           base: {mhp:20,atk:11,def:4, spd:9,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:50,skl:50}},
+  pboarder:  {name: 'Boarder',        w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Boarding Axe',      base: {mhp:24,atk:13,def:5, spd:5,skl:5,mov:5}, g: {mhp:80,atk:55,def:30,spd:30,skl:35}},
+  pharpoon:  {name: 'Harpooner',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Harpoon',           base: {mhp:22,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:75,atk:45,def:40,spd:35,skl:45}},
+  pgunner:   {name: 'Cork Gunner',    w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Cork Musket',       base: {mhp:18,atk:11,def:3, spd:7,skl:9,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
+  pshanty:   {name: 'Shanty Singer',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Shanties',  base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:50}},
+  psawbones: {name: 'Sawbones',       w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Bilge Mop',         base: {mhp:17,atk:5, def:3, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  sharkcapt: {name: 'Pirate Captain', w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Ship\'s Anchor',     base: {mhp:30,atk:15,def:8, spd:6,skl:8,mov:5}, g: {mhp:90,atk:55,def:40,spd:30,skl:40}},   // Ducky
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -142,6 +157,13 @@ const LOOKS = {
   speshul:   {sp:'monkey', fur:'#7ea23a', light:'#a2c45c', dark:'#46601c', face:'#f6e0be', gear:'tiara', small:true},   // art/speshul-*.png
   chansey:     {sp:'monkey', fur:'#e48aa0', light:'#f6b4c4', dark:'#9a4a5c', face:'#f6e0be', gear:'tiara'},   // art/chansey-*.png
   cornelius: {sp:'monkey', fur:'#d0642a', light:'#ee8a4e', dark:'#7a3412', face:'#b08a70', gear:'helm', big:true},   // art/cornelius-*.png (an orangutan)
+  // Chapter Four placeholders (no art yet)
+  tilly:     {sp:'frog', skin:'#3a9a92', light:'#62c2b8', dark:'#1a524c', belly:'#d6f0ea', gear:'lilypad'},   // Tilly Tealbottom, a teal aristocrat
+  princess:  {sp:'frog', skin:'#f08ab4', light:'#fbb8d4', dark:'#a04470', belly:'#fde2ee', gear:'tiara'},     // Princess, Tiggle's cousin
+  herald:    {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'bandana', band:'#d9b04a'},
+  pirate:    {sp:'shark', skin:'#7a8c9a', light:'#a6b6c2', dark:'#3e4c58', belly:'#eef2f4', gear:'bandana', band:'#b5302a'},
+  pirateBig: {sp:'shark', skin:'#5e6e7c', light:'#8696a4', dark:'#2c3844', belly:'#e4eaee', gear:'eyepatch', big:true},
+  ducky:     {sp:'shark', hammer:true, skin:'#8a96a2', light:'#b4c0ca', dark:'#46525e', belly:'#f2f4f6', gear:'tricorn', big:true},   // Ducky, a hammerhead
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
   chriggle:  {sp:'frog', skin:'#2f7a68', light:'#55a08c', dark:'#16443a', belly:'#f2ead8', gear:'crown', big:true},   // art/chriggle-*.png
@@ -164,6 +186,7 @@ const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
+  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', sharkcapt:'ducky',
 };
 
 // ================= Named characters =================
@@ -277,6 +300,18 @@ const SPEAKERS = Object.assign({
   gloamjaw:    {name:'Gloamjaw', faction:'frog', look:'blackguard'},             // Fraggle's outlaw guard captain
   burdock:     {name:'Captain Burdock', faction:'rae', look:'soldier'},
   elder:       {name:'An Old Rabbit', faction:'rae', look:'workerLop', fur:'grey', elderly:true},
+  // Chapter Four
+  herald:      {name:'The Herald', faction:'frog', look:'herald'},
+  crowd:       {name:'The Crowd', faction:'frog', look:'guard'},
+  tilly:       {name:'Tilly Tealbottom', faction:'frog', look:'tilly'},
+  princess:    {name:'Princess', faction:'frog', look:'princess'},
+  brine:       {name:'Warden Brine', faction:'frog', look:'toadknight'},   // the lighthouse garrison
+  sedge:       {name:'Captain Sedge', faction:'frog', look:'duelist'},     // the rearguard on the coast road
+  ducky:       {name:'Ducky', faction:'pirate', look:'ducky'},
+  barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'pirateBig'},
+  pirate:      {name:'A Pirate', faction:'pirate', look:'pirate'},
+  pirates:     {name:'The Pirates', faction:'pirate', look:'pirate'},
+  banyan:      {name:'Guard Banyan', faction:'monkey', look:'monkey'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Fur colours for the generic mine-rabbit art (art/miner-*.png): [hue shift°, saturation ×, lightness shift].
