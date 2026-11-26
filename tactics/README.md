@@ -100,8 +100,8 @@ Placeholders until their art arrives (each picks it up automatically once the fi
 
 - **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `tilly` (Tilly Tealbottom, a teal frog aristocrat,
   mounted lance) and `princess` (Princess, a pink frog, tome). Ducky has his art (`art/ducky-*.png`).
-- **Pirate crew**: the generic pirates are drawn plush sharks (`LOOKS.pirate`, `pirateBig`). Generic art for them would
-  follow the monkey soldiers' pattern: a battle pose per weapon (sword, axe, lance, bow, book) plus masks for recolouring.
+- **Pirate crew**: done (`art/fish*-*.png`, recoloured from the `fish*skin` masks). A ★★ (elite) pirate look could follow,
+  as the monkeys have.
 - **Scene paintings**: `art/bg-shore.jpg` (the beach settlement), `art/bg-arena.jpg` (the tournament ground) and
   `art/bg-ships.jpg` (the pirate ships at sea). Until then `style.css` draws simple stand-ins.
 

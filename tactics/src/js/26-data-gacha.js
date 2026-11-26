@@ -45,6 +45,9 @@ const GACHA_ARMY = {
       monkeys: {stars: [1, 2], generic: ['mkacro', 'mkguard', 'mkbrute', 'mkthrow', 'mkchant'],
         names: ['Loquat', 'Guava', 'Lychee', 'Papaya', 'Pomelo', 'Durian', 'Sapote', 'Longan', 'Rambutan', 'Medlar',
                 'Jujube', 'Carambola', 'Mangosteen', 'Cherimoya', 'Feijoa']},
+      // the crew of the Grinning Mary (Chapter Four): ★ pirate fish in every colour of the Satin Sea
+      pirates: {stars: [1], generic: ['pcutlass', 'pboarder', 'pharpoon', 'pgunner', 'pshanty', 'psawbones'],
+        names: ['Mackerel', 'Haddock', 'Pollock', 'Kipper', 'Sprat', 'Herring', 'Bream', 'Gurnard', 'Pilchard', 'Turbot', 'Halibut', 'Brill']},
       republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
       // the ten ★ soldiers take the first ten names, the five ★★ veterans the last five
       names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy',
@@ -56,8 +59,8 @@ const GACHA_ARMY = {
        blurb: 'Out of hiding at last: the frog who built the Republic and gave it away, and the one-eyed corporal who always marches at the front. The ★ soldiers who answer are trained troops of the Republic, and the ★★ are its helmeted veterans.'},
       {id: 'rae-monkeys', name: 'Across the Stream', kind: 'featured', featured: [], attires: ['raeMilitia', 'floraSorcerer'], after: 'R3-6', bg: 'monkeyland', troops: 'monkeys',
        blurb: 'The monkeys who crossed the stream with Speshul take up the Raepublic\'s colours, and have made Rae a suit of their militia\'s armour, and Flopsy Flora a hat she refuses to take off. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
-      {id: 'rae-pirates', name: 'Pirates of the Satin Sea', kind: 'featured', featured: ['ducky'], after: 'R4-7', bg: 'shore',
-       blurb: 'The crew of the Grinning Mary have hung up their ten-thousand-Crown posters (on the longhouse wall, for a laugh), and their captain is asking for a proper job. He swears it\'s only for the treasure.'},
+      {id: 'rae-pirates', name: 'Pirates of the Satin Sea', kind: 'featured', featured: ['ducky'], after: 'R4-7', bg: 'shore', troops: 'pirates',
+       blurb: 'The crew of the Grinning Mary have hung up their ten-thousand-Crown posters (on the longhouse wall, for a laugh), and their captain is asking for a proper job. He swears it\'s only for the treasure. The ★ soldiers who answer are his crew: pirate fish in every colour of the Satin Sea.'},
     ],
   },
   frog: {

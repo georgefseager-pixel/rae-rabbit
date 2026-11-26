@@ -51,7 +51,8 @@ const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'gr
                      troopxm: {base: 'troop', palette: () => FESTIVE_FURS},   // December: Republic soldiers with festive fur
                      black: {base: 'black', palette: () => SKINS},   // Fraggle's Black Guard (art/black-*.png)
                      elf: {base: 'elf', palette: () => SKINS},
-                     mk: {base: 'mk', palette: () => MONKEY_FURS}};   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
+                     mk: {base: 'mk', palette: () => MONKEY_FURS},
+                     fish: {base: 'fish', palette: () => FISH_COLOURS}};   // the pirate crew (art/fish-*.png)   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
@@ -111,6 +112,12 @@ function artResolve(ent, kind){
     if (ART['mk' + e + fur]?.[kind]) return 'mk' + e + fur;
     if (ART['mk' + pose + fur]?.[kind]) return 'mk' + pose + fur;
     if (ART['mk' + fur]?.[kind]) return 'mk' + fur;
+  }
+  if (sp.base === 'fish'){
+    // the pirate crew: one portrait and map icon, and a battle pose for each weapon (art/fish<weapon>-battle.png; swords use fish-battle.png)
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w] || '';
+    if (ART['fish' + pose + fur]?.[kind]) return 'fish' + pose + fur;
+    if (ART['fish' + fur]?.[kind]) return 'fish' + fur;
   }
   if (sp.base === 'elf'){
     // December frog scouts (the couriers, and the festive banner's soldiers): a battle pose for each weapon
@@ -189,11 +196,12 @@ async function buildVariants(base, palette, weightOf){
       for (const [name, f] of Object.entries(palette)){
         ART[base + name] = ART[base + name] || {};
         if (!f){ ART[base + name][kind] = ART[base][kind]; continue; }
-        const [dh, sm, dl] = f, out = new ImageData(new Uint8ClampedArray(px), W, H), o = out.data;
+        // [hue shift, saturation ×, lightness shift], or {h, s, l}: set the hue and saturation outright (for near-grey felt)
+        const set = !Array.isArray(f), [dh, sm, dl] = set ? [0, 1, f.l || 0] : f, out = new ImageData(new Uint8ClampedArray(px), W, H), o = out.data;
         for (let i = 0; i < n; i++){
           if (w[i] <= 0) continue;
           const l = hsl[i*3 + 2], nl = dl >= 0 ? l + dl*(1 - l) : l*(1 + dl);
-          const [r, gg, b] = hslToRgb((hsl[i*3] + dh + 360) % 360, clamp(hsl[i*3 + 1]*sm, 0, 1), nl);
+          const [r, gg, b] = set ? hslToRgb(f.h, f.s, nl) : hslToRgb((hsl[i*3] + dh + 360) % 360, clamp(hsl[i*3 + 1]*sm, 0, 1), nl);
           o[i*4] += (r*255 - o[i*4])*w[i]; o[i*4 + 1] += (gg*255 - o[i*4 + 1])*w[i]; o[i*4 + 2] += (b*255 - o[i*4 + 2])*w[i];
         }
         g.putImageData(out, 0, 0);
@@ -249,6 +257,12 @@ const skinWeight = (base) => async (kind, px, W, H) => {
   }
   return w;
 };
+// the pirate fish: the mask alone (their felt is nearly grey, so there is no colourfulness test), keeping near-black ink
+const fishWeight = (base) => async (kind, px, W, H) => {
+  const skin = await maskAlpha(ART[base + 'skin']?.[kind], W, H), w = new Float32Array(W*H);
+  for (let i = 0; i < w.length; i++){ const mx = Math.max(px[i*4], px[i*4 + 1], px[i*4 + 2]); w[i] = skin[i]*clamp((mx/255 - .12)/.1, 0, 1); }
+  return w;
+};
 const TROOP_BASES = ['troop', 'troopaxe', 'trooplance', 'troopbow', 'troopbook', 'troopelite', 'troopeliteaxe', 'troopelitelance', 'troopelitebook', 'troopelitestaff'];
 // December soldiers (festive-furred Republic troops, and the frog elf scouts elf*) are only dyed when they can be seen: in December, or once you have recruited some.
 // Turning on Debug: December dyes them then.
@@ -277,6 +291,8 @@ async function buildFurVariants(){
   // Monkeyland soldiers (Chapter Three on): their fur colours (art/mk*skin-<kind>.png) are made after the loading
   // screen, in the background, so they don't slow the start. Until then they show as felt plush.
   (async () => { for (const base of ['mk', 'mkaxe', 'mklance', 'mkbow', 'mkbook', 'mkelite', 'mkeliteaxe', 'mkelitelance', 'mkelitebow', 'mkelitebook']) await buildVariants(base, MONKEY_FURS, skinWeight(base));
+    // the pirate fish (Chapter Four): the skin, fins and tail from art/fish*skin-<kind>.png
+    for (const base of ['fish', 'fishaxe', 'fishlance', 'fishbow', 'fishbook', 'fishstaff']) await buildVariants(base, FISH_COLOURS, fishWeight(base));
     if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 
