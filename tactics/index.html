@@ -872,7 +872,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 /* ---------- Debug menu (69-debug.js) ---------- */
 #dbgsheet{z-index:9500;align-items:flex-start;overflow-y:auto;padding:max(12px, env(safe-area-inset-top)) 10px 24px}
 #dbgsheet .card{width:min(520px,100%);margin:0 auto}
-.dbgpw input,.dbgcard input,.dbgcard select,.dbgcard textarea{width:100%;font:15px var(--body);color:#f3e7cb;background:rgba(0,0,0,.35);border:1.5px solid rgba(236,198,115,.45);border-radius:8px;padding:9px 10px;margin-top:4px}
+.dbgpw input,.dbgcard input,.dbgcard select,.dbgcard textarea{display:block;width:100%;max-width:100%;box-sizing:border-box;font:16px var(--body);color:#f3e7cb;background:rgba(0,0,0,.35);border:1.5px solid rgba(236,198,115,.45);border-radius:8px;padding:9px 10px;margin-top:4px}
 .dbgpw input.bad{border-color:#e8493b}
 .dbgpw p{margin:6px 0 10px}
 .dbgrow{display:flex;gap:8px;justify-content:center;margin-top:12px}
@@ -11173,7 +11173,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'c0ac2215f678';
+const BUILD_ID = 'd2030b49dffb';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
