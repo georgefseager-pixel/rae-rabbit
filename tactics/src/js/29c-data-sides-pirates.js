@@ -14,7 +14,7 @@ Object.assign(SIDE_SETS, {
         brief: 'Captain Mako\'s crew have landed at the settlement to collect the bounty on Rae. Ducky leads the defence. Drive Mako off. Ducky must not fall.',
         prepNote: 'Ducky leads (the battle is lost if he falls). Rae is away at the lighthouse. More pirates land at the jetties.',
         enemies: () => [
-          E('sharkcapt',10,4,3,'guard',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako'}),
+          E('sharkcapt',10,4,3,'guard',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('pcutlass',8,2,3), E('pcutlass',8,7,3), E('pboarder',8,4,5), E('pgunner',8,8,4,'guard'), E('pharpoon',8,1,5),
           E('pshanty',8,5,3,'guard'), E('pboarder',8,6,6),
         ],
@@ -53,8 +53,8 @@ Object.assign(SIDE_SETS, {
         brief: 'Years ago. The King\'s navy has caught the Grinning Mary, lashed to its ships with gangplanks. Hold them off until the Mary cuts loose. Young Ducky must not fall.',
         prepNote: 'Years ago: Ducky comes alone, a cabin pup on his first voyage. The Mary\'s crew fight beside him, on their own (blue coasters). Old Captain Gullet holds the gangplank.',
         allies: () => [
-          E('sharkcapt',11,3,11,'hold',{key: 'ally', name: 'Captain Gullet', look: 'gullet', faction: 'pirate'}),
-          E('pcutlass',8,6,12,'charge',{key: 'ally', name: 'Young Barnacle', look: 'pirateBig', faction: 'pirate'}),
+          E('sharkcapt',11,3,11,'hold',{key: 'ally', name: 'Captain Gullet', look: 'gullet', fur: 'white', faction: 'pirate'}),
+          E('pcutlass',8,6,12,'charge',{key: 'ally', name: 'Young Barnacle', look: 'barnacle', fur: 'slate', faction: 'pirate'}),
           E('pgunner',8,2,13,'charge',{key: 'ally', name: 'Limpet', faction: 'pirate'}),
           E('pharpoon',8,7,14,'charge',{key: 'ally', name: 'Old Nettle', faction: 'pirate'}),
         ],

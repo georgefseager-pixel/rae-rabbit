@@ -52,7 +52,8 @@ const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'gr
                      black: {base: 'black', palette: () => SKINS},   // Fraggle's Black Guard (art/black-*.png)
                      elf: {base: 'elf', palette: () => SKINS},
                      mk: {base: 'mk', palette: () => MONKEY_FURS},
-                     fish: {base: 'fish', palette: () => FISH_COLOURS}};   // the pirate crew (art/fish-*.png)   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
+                     fish: {base: 'fish', palette: () => FISH_COLOURS},     // the pirate crew (art/fish-*.png)
+                     shark: {base: 'shark', palette: () => SHARK_COLOURS}};   // ★★ pirates and named pirates (art/shark-*.png)   // the pirate crew (art/fish-*.png)   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
@@ -113,11 +114,14 @@ function artResolve(ent, kind){
     if (ART['mk' + pose + fur]?.[kind]) return 'mk' + pose + fur;
     if (ART['mk' + fur]?.[kind]) return 'mk' + fur;
   }
-  if (sp.base === 'fish'){
-    // the pirate crew: one portrait and map icon, and a battle pose for each weapon (art/fish<weapon>-battle.png; swords use fish-battle.png)
+  if (sp.base === 'fish' || sp.base === 'shark'){
+    // the pirates: one portrait and map icon, and a battle pose for each weapon (art/fish<weapon>-battle.png; swords use
+    // fish-battle.png). ★★ (elite) pirates are sharks, in a shark colour of their own (art/shark*-*.png); so are named pirates.
+    const elite = sp.base === 'shark' || (ent.stars ?? ent.rec?.stars) === 2;
+    const base = elite ? 'shark' : 'fish', col = elite && sp.base === 'fish' ? Object.keys(SHARK_COLOURS)[strHash(ent.uid || ent.name || ent.key) % Object.keys(SHARK_COLOURS).length] : fur;
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w] || '';
-    if (ART['fish' + pose + fur]?.[kind]) return 'fish' + pose + fur;
-    if (ART['fish' + fur]?.[kind]) return 'fish' + fur;
+    if (ART[base + pose + col]?.[kind]) return base + pose + col;
+    if (ART[base + col]?.[kind]) return base + col;
   }
   if (sp.base === 'elf'){
     // December frog scouts (the couriers, and the festive banner's soldiers): a battle pose for each weapon
@@ -293,6 +297,7 @@ async function buildFurVariants(){
   (async () => { for (const base of ['mk', 'mkaxe', 'mklance', 'mkbow', 'mkbook', 'mkelite', 'mkeliteaxe', 'mkelitelance', 'mkelitebow', 'mkelitebook']) await buildVariants(base, MONKEY_FURS, skinWeight(base));
     // the pirate fish (Chapter Four): the skin, fins and tail from art/fish*skin-<kind>.png
     for (const base of ['fish', 'fishaxe', 'fishlance', 'fishbow', 'fishbook', 'fishstaff']) await buildVariants(base, FISH_COLOURS, fishWeight(base));
+    for (const base of ['shark', 'sharkaxe', 'sharklance', 'sharkbow', 'sharkbook', 'sharkstaff']) await buildVariants(base, SHARK_COLOURS, fishWeight(base));
     if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 

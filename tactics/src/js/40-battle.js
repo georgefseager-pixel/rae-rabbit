@@ -43,7 +43,7 @@ function battleUnit(rec, teamId){
 function enemyUnit(sp, faction, teamId = 'e'){
   // a spawn can belong to another side (e.g. rabbit bandits among frog soldiers); monkeys are Monkeyland's, whoever they fight for
   faction = sp.faction || (LOOKS[sp.look || CLASS_LOOK[sp.cls]]?.sp === 'monkey' ? 'monkey' : faction);
-  const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls,
+  const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls, fur: sp.fur,
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)

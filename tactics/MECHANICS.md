@@ -248,12 +248,14 @@ deploy 7. Chapter Five is a stub on both routes.
 
 New: the `pirate` faction (`FACTIONS.pirate`; Cutlass, Boarder, Harpooner, Cork Gunner, Shanty Singer, Sawbones and
 Ducky's Pirate Captain class, a scimitar), the classes Lily Jouster (Tilly) and Royal Heiress (Princess), and the
-map themes `shore`, `arena` and `ship` (drawn in `45-render.js`). Placeholders (no art yet, no abilities): Tilly Tealbottom, Princess, and the pirate captains Mako and Gullet (plush
-sharks, `sp: 'shark'` in `15-plush.js`). The pirate crew are pirate fish (`art/fish*-*.png`): one portrait and map icon,
+map themes `shore`, `arena` and `ship` (drawn in `45-render.js`). Placeholders (no art yet, no abilities): Tilly Tealbottom and Princess. Every pirate now has art. The pirate crew are pirate fish (`art/fish*-*.png`): one portrait and map icon,
 a battle pose for each weapon (sword, axe, lance, bow, book, staff), and the skin, fins and tail recoloured from the
 `fish*skin` masks into `FISH_COLOURS` (blue as drawn, gold, orange, green, teal, purple, coral, silver) in the background
 after loading. The felt is nearly grey, so these colours set the hue and saturation outright rather than shifting them.
-The ★ soldiers on the Pirates of the Satin Sea banner are pirate fish (`troops: 'pirates'`, ★ only; ★★ stay the Republic's).
+★★ (elite) pirates are pirate sharks (`art/shark*-*.png`, the same six poses), recoloured from the `shark*skin` masks
+into `SHARK_COLOURS` (grey as drawn, white, slate, tiger, lemon, mako, reef, nurse); so are the named pirates without art
+of their own (Bosun Barnacle, slate; Captain Mako, mako; old Captain Gullet, white), through the `shark` look art. The
+Pirates of the Satin Sea banner's soldiers (`troops: 'pirates'`) are ★ pirate fish and ★★ pirate sharks.
 
 Ducky (`art/ducky-*.png`, a hammerhead with a scimitar, Pirate Captain class) is the Raepublic's ★★★ on the Pirates of
 the Satin Sea banner, with supports and side stories (`29c-data-sides-pirates.js`, recommended 9 · 11 · 11): DK-1 a rival
@@ -270,7 +272,7 @@ capital's throne room reuses `court`.
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
-| Pirates of the Satin Sea (Raepublic: ★★★ Ducky; ★ pirate fish, ★★ the Republic's own) | after R4-7 |
+| Pirates of the Satin Sea (Raepublic: ★★★ Ducky; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

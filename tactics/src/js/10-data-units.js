@@ -163,8 +163,10 @@ const LOOKS = {
   herald:    {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'bandana', band:'#d9b04a'},
   // art: 'fish' draws the pirate crew with the generic pirate-fish art (art/fish*-*.png), skin recoloured into FISH_COLOURS
   pirate:    {sp:'shark', art:'fish', skin:'#7a8c9a', light:'#a6b6c2', dark:'#3e4c58', belly:'#eef2f4', gear:'bandana', band:'#b5302a'},
-  mako:      {sp:'shark', skin:'#4a6a8a', light:'#7090b0', dark:'#22344a', belly:'#e8eef4', gear:'tricorn', big:true},   // Captain Mako (side stories)
-  gullet:    {sp:'shark', skin:'#9a9a9a', light:'#c2c2c2', dark:'#5a5a5a', belly:'#f4f0e8', gear:'tricorn', big:true},   // old Captain Gullet
+  // the pirate sharks (art/shark*-*.png): ★★ pirates, and every named pirate without art of his own
+  barnacle:  {sp:'shark', art:'shark', skin:'#5e6e7c', light:'#8696a4', dark:'#2c3844', belly:'#e4eaee', gear:'eyepatch', big:true},
+  mako:      {sp:'shark', art:'shark', skin:'#4a6a8a', light:'#7090b0', dark:'#22344a', belly:'#e8eef4', gear:'tricorn', big:true},   // Captain Mako (side stories)
+  gullet:    {sp:'shark', art:'shark', skin:'#9a9a9a', light:'#c2c2c2', dark:'#5a5a5a', belly:'#f4f0e8', gear:'tricorn', big:true},   // old Captain Gullet
   pirateBig: {sp:'shark', art:'fish', skin:'#5e6e7c', light:'#8696a4', dark:'#2c3844', belly:'#e4eaee', gear:'eyepatch', big:true},
   ducky:     {sp:'shark', hammer:true, skin:'#8a96a2', light:'#b4c0ca', dark:'#46525e', belly:'#f2f4f6', gear:'tricorn', big:true},   // Ducky, a hammerhead
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
@@ -314,11 +316,11 @@ const SPEAKERS = Object.assign({
   princess:    {name:'Princess', faction:'frog', look:'princess'},
   brine:       {name:'Warden Brine', faction:'frog', look:'toadknight'},   // the lighthouse garrison
   sedge:       {name:'Captain Sedge', faction:'frog', look:'duelist'},     // the rearguard on the coast road
-  mako:        {name:'Captain Mako', faction:'pirate', look:'mako'},       // Ducky's side stories: a rival captain
-  gullet:      {name:'Captain Gullet', faction:'pirate', look:'gullet'},   // the old captain of the Grinning Mary (a flashback)
+  mako:        {name:'Captain Mako', faction:'pirate', look:'mako', fur:'mako'},       // Ducky's side stories: a rival captain
+  gullet:      {name:'Captain Gullet', faction:'pirate', look:'gullet', fur:'white'},   // the old captain of the Grinning Mary (a flashback)
   croakwell:   {name:'Admiral Croakwell', faction:'frog', look:'toadknight'},
   clerk:       {name:'A Tax Clerk', faction:'frog', look:'guard'},
-  barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'pirateBig'},
+  barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'barnacle', fur:'slate'},
   pirate:      {name:'A Pirate', faction:'pirate', look:'pirate'},
   pirates:     {name:'The Pirates', faction:'pirate', look:'pirate'},
   banyan:      {name:'Guard Banyan', faction:'monkey', look:'monkey'},
@@ -337,6 +339,9 @@ const FURS = {
 // l: lightness shift (+ toward white, − toward black)}; the felt's light and shade are kept.
 const FISH_COLOURS = {blue: null, gold: {h: 46, s: .72, l: -.02}, orange: {h: 24, s: .78, l: -.08}, green: {h: 110, s: .42, l: -.1},
   teal: {h: 174, s: .5, l: -.08}, purple: {h: 278, s: .38, l: -.1}, coral: {h: 352, s: .62, l: -.04}, silver: {h: 45, s: .05, l: .24}};
+// The pirate sharks (art/shark*-*.png, skin from art/shark*skin-*.png), set outright like the fish. 'grey' is as drawn.
+const SHARK_COLOURS = {grey: null, white: {h: 40, s: .04, l: .3}, slate: {h: 215, s: .14, l: -.3}, tiger: {h: 30, s: .45, l: -.06},
+  lemon: {h: 50, s: .5, l: -.02}, mako: {h: 222, s: .58, l: -.14}, reef: {h: 150, s: .3, l: -.12}, nurse: {h: 26, s: .35, l: -.24}};
 const MONKEY_FURS = {brown: null, golden: [10, 1.2, .14], ginger: [-8, 1.35, -.02], grey: [0, .12, .04], dark: [0, .75, -.42], snow: [6, .3, .46], chestnut: [-4, 1.1, -.2]};
 
 // December: festive fur for the Raepublic festive banner's soldiers (same format; keys become art like 'troopaxexberry').
@@ -379,6 +384,7 @@ const ART_CROP = {
   black:   {panel: ['230% auto', '42% 9%'], talk: ['165% auto', '42% 7%']},
   mk:      {panel: ['205% auto', '50% 7%'], talk: ['150% auto', '50% 5%']},   // Monkeyland soldiers, every fur
   fish:    {panel: ['200% auto', '58% 4%'], talk: ['150% auto', '58% 3%']},   // the pirate fish, every colour
+  shark:   {panel: ['200% auto', '62% 4%'], talk: ['150% auto', '62% 3%']},   // the pirate sharks, every colour
   elf:     {panel: ['200% auto', '48% 5%'], talk: ['150% auto', '48% 4%']},   // festive frog scouts, every skin   // Fraggle's Black Guard, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
