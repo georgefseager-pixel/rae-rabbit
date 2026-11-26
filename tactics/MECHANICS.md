@@ -349,6 +349,7 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
 - **Resources**: money, pull currency, event gifts, next pull is a guaranteed ★★★ on every banner, zero everything.
 - **Army**: set everyone's level, recruit everyone, revive the fallen, every weapon, every costume, reset relationships,
   set every support (or one character's) to none/C/B/A/S.
-- **Time, energy and events**: new day, +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.
+- **Time, energy and events**: new day, claim every log-in reward (the rest of the 21-day track: currency and the three
+  costumes, without using up today's log-in), +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.
 - **Tutorials and display**: replay tutorials, fast animations (4×), music off.
 - **Save**: copy the save as text, paste one back, wipe everything.

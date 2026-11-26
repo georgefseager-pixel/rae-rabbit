@@ -78,7 +78,7 @@ function renderDebug(){
       <div class="dbggrid">${b('setlv', 'Set levels')}${b('recruit', 'Recruit everyone')}${b('revive', 'Stitch up the fallen')}${b('weapons', 'Every weapon (one each)')}${b('attires', 'Every attire')}${b('clearrel', 'Release all ★ and ★★')}</div>
       <label>Supports<select id="dbgSup"><option value="*">Everyone</option>${charOpts}</select></label>
       <div class="dbggrid">${['C', 'B', 'A', 'S'].map((r, i) => b('sup' + (i + 1), 'Set to ' + r)).join('')}${b('sup0', 'Reset')}</div>`)}
-    ${sec('Time, energy and events', `<div class="dbggrid">${b('newday', 'New day')}${b('hour', '+1 hour')}${b('energy0', 'Empty energy')}${b('energy1', 'Energy −1')}${b('energyfull', 'Refill energy')}${b('december', SAVE.debugDecember ? 'December: on' : 'December: off')}${b('eventplays', 'Event stories: play again today')}</div>
+    ${sec('Time, energy and events', `<div class="dbggrid">${b('newday', 'New day')}${b('loginall', 'Claim every log-in reward')}${b('hour', '+1 hour')}${b('energy0', 'Empty energy')}${b('energy1', 'Energy −1')}${b('energyfull', 'Refill energy')}${b('december', SAVE.debugDecember ? 'December: on' : 'December: off')}${b('eventplays', 'Event stories: play again today')}</div>
       <label>Log-ins so far (${L.claimed})<input id="dbgLogin" type="number" min="0" max="200" value="${L.claimed}"></label>
       <div class="dbggrid">${b('setlogin', 'Set, and log in again today')}${b('resetlogin', 'Reset log-ins')}</div>`)}
     ${sec('Tutorials and display', `<div class="dbggrid">${b('tuts', 'Show every tutorial again')}${b('fast', SAVE.debugFast ? 'Fast animations: on' : 'Fast animations: off')}${b('nomusic', 'Sound: ' + SOUND_SHORT[Audio_.mode].replace('♪ ', ''))}</div>`)}
@@ -133,6 +133,13 @@ function debugAction(act, btn){
     }
     // time
     case 'newday': debugNewDay(); return renderDebug();
+    case 'loginall': {   // every reward left on the log-in track (currency, and the milestone costumes), without using up today's log-in
+      const L = loginState(), from = L.claimed, tok = {rae: 0, frog: 0}, costumes = [];
+      for (let n = from; n < LOGIN.track.length; n++){ const e = loginEntry(n); tok[loginCk(n)] += e.tokens; gachaState(loginCk(n)).tokens += e.tokens;
+        if (e.attire) costumes.push(...grantAttires(e.attire[0], [e.attire[1]])); }
+      L.claimed = Math.max(from, LOGIN.track.length); saveGame();
+      return done(from >= LOGIN.track.length ? 'Every log-in reward is already claimed.' : `Claimed log-ins ${from + 1}–${LOGIN.track.length}: +${tok.rae} ${GACHA_ARMY.rae.currency}, +${tok.frog} ${GACHA_ARMY.frog.currency}${costumes.length ? ', ' + costumes.join(', ') : ''}.`);
+    }
     case 'hour': SAVE.debugDays = (SAVE.debugDays || 0) + 1/24; return done('An hour passes.');
     case 'energy0': { const e = energyNow(); e.n = 0; e.t = nowMs(); return done(); }
     case 'energy1': spendEnergy(); return done();
