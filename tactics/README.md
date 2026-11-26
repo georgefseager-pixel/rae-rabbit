@@ -99,7 +99,7 @@ generic look with `generic: 'standard'` (Tall Rabbit).
 Placeholders until their art arrives (each picks it up automatically once the files are in `art/`):
 
 - **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `tilly` (Tilly Tealbottom, a teal frog aristocrat,
-  mounted lance), `princess` (Princess, a pink frog, tome) and `ducky` (Ducky, a hammerhead shark pirate captain with an anchor).
+  mounted lance) and `princess` (Princess, a pink frog, tome). Ducky has his art (`art/ducky-*.png`).
 - **Pirate crew**: the generic pirates are drawn plush sharks (`LOOKS.pirate`, `pirateBig`). Generic art for them would
   follow the monkey soldiers' pattern: a battle pose per weapon (sword, axe, lance, bow, book) plus masks for recolouring.
 - **Scene paintings**: `art/bg-shore.jpg` (the beach settlement), `art/bg-arena.jpg` (the tournament ground) and

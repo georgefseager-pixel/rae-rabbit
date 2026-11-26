@@ -127,6 +127,7 @@ and The Lesson, which only help the player.
 | Ilc the Scout | Guiding Nose | allies who start their move within 2 squares of him get +1 Mov | escorts, races, long marches |
 | Chansey | Sanctuary | whoever she mends can't be chosen as a target by enemies until her next turn | protecting a wounded front-liner |
 | Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
+| Ducky | Blood in the Water | while any enemy is below half HP he gets +2 Mov; +2 damage against enemies below half HP (also as an enemy boss, R4-6, R4-7) | finishing wounded enemies, hit-and-run |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
 ## Unit behaviour (spawn `ai`)
@@ -246,9 +247,15 @@ deploy 7. Chapter Five is a stub on both routes.
   Afterwards: the test of worthiness, the King's army already marching, and the brothers set out to take it over.
 
 New: the `pirate` faction (`FACTIONS.pirate`; Cutlass, Boarder, Harpooner, Cork Gunner, Shanty Singer, Sawbones and
-Ducky's Pirate Captain class with an anchor), the classes Lily Jouster (Tilly) and Royal Heiress (Princess), and the
+Ducky's Pirate Captain class, a scimitar), the classes Lily Jouster (Tilly) and Royal Heiress (Princess), and the
 map themes `shore`, `arena` and `ship` (drawn in `45-render.js`). Placeholders (no art yet, no abilities): Tilly
-Tealbottom, Princess, Ducky (a plush hammerhead) and the pirate crew (plush sharks, `sp: 'shark'` in `15-plush.js`).
+Tealbottom, Princess and the pirate crew (plush sharks, `sp: 'shark'` in `15-plush.js`).
+
+Ducky (`art/ducky-*.png`, a hammerhead with a scimitar, Pirate Captain class) is the Raepublic's ★★★ on the Pirates of
+the Satin Sea banner, with supports and side stories (`29c-data-sides-pirates.js`, recommended 9 · 11 · 11): DK-1 a rival
+captain comes for Rae's bounty (Ducky leads, Rae away), DK-2 a flashback to his first voyage (alone, with the old crew as
+allies, surviving until the Mary cuts loose), DK-3 an intercept of the King's tax clerks; it ends with his own scimitar,
+Old Mary's Edge.
 Scenes `shore`, `arena` and `ships` have drawn placeholder backdrops in `style.css` until their paintings arrive; the
 capital's throne room reuses `court`.
 
@@ -259,6 +266,7 @@ capital's throne room reuses `court`.
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
+| Pirates of the Satin Sea (Raepublic: ★★★ Ducky; the usual company for ★ and ★★) | after R4-7 |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

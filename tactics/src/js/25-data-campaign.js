@@ -1004,9 +1004,9 @@ const CAMPAIGNS = {
             {who: "narr", text: "Rae unrolls it. Her own face glares back at her, badly painted and very fierce."},
             {who: "rae", text: "\"WANTED. RAE RABBIT, rebel and runaway. Ten thousand Crowns, by order of His Majesty King Friggle Fraggle. To be delivered whole, and stitched.\""},
             {who: "froggle", text: "Ten thousand. That's more than the mines make in a year."},
-            {who: "pirate", text: "Every crew from here to the edge of the Satin Sea has one. The cap'n's got three, pinned up in the cabin."},
+            {who: "pirate", text: "Every crew from here to the edge of the Satin Sea has one. The cap'n's got three, pinned up in his cabin."},
             {who: "rae", text: "The captain?"},
-            {who: "pirate", text: "Cap'n Ducky. Of the Grinning Mary. You'll meet the cap'n soon enough. We'll be back, with every boat we've got."},
+            {who: "pirate", text: "Cap'n Ducky. Of the Grinning Mary. You'll meet him soon enough. We'll be back, with every boat we've got."},
           ],
           reward: {res: 800},
         },
@@ -1122,7 +1122,7 @@ const CAMPAIGNS = {
           bossTalk: [
             {who: "ducky", text: "Ten thousand Crowns, rabbit! Do you know what I could buy with ten thousand Crowns?"},
             {who: "rae", text: "What?"},
-            {who: "ducky", text: "…I never actually decided. A bigger anchor, probably."},
+            {who: "ducky", text: "…I never actually decided. A bigger hat, probably."},
           ],
           pre: [
             {scene: "ships", place: "The Satin Sea · Morning"},
@@ -1140,7 +1140,7 @@ const CAMPAIGNS = {
             {who: "rae", text: "Not really. Bring us alongside! Raepublic, BOARD!"},
           ],
           post: [
-            {who: "narr", text: "Ducky's anchor thumps down on the deck. Then Ducky does too, sitting down hard among the barrels."},
+            {who: "narr", text: "Ducky's scimitar clatters onto the deck. Then Ducky does too, sitting down hard among the barrels."},
             {who: "narr", text: "All across the three ships, the pirates stop fighting, one by one, and look at their captain."},
             {who: "ducky", text: "Well. That's never happened before."},
             {who: "rae", text: "Are you hurt?"},
@@ -1149,7 +1149,7 @@ const CAMPAIGNS = {
             {who: "rae", text: "I don't want your ships. I want you to leave us alone."},
             {who: "ducky", text: "Leave you alone? That's it? Not the ships? Not the treasure? We've got treasure, you know. Some of it's even real."},
             {who: "rae", text: "That's it."},
-            {who: "narr", text: "Ducky looks at Rae for a very long time. Then at the Raepublic: rabbits and monkeys, soaked and bruised, standing together on a pirate deck as if they'd been doing it all their lives."},
+            {who: "narr", text: "Ducky looks at Rae for a very long time. Then he looks at the Raepublic: rabbits and monkeys, soaked and bruised, standing together on a pirate deck as if they'd been doing it all their lives."},
             {who: "ducky", text: "Bosun! What do you reckon?"},
             {who: "barnacle", text: "I reckon a rabbit the King of the frogs wants that badly is going places, Cap'n."},
             {who: "ducky", text: "And places have treasure. Lots of treasure. Frog treasure, I shouldn't wonder."},

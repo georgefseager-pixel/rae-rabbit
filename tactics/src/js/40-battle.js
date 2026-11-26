@@ -101,9 +101,12 @@ function finishBattle(win, retreated = false, reason = ''){
 }
 
 // ---------- Movement & ranges ----------
+// Blood in the Water (Ducky): any enemy of his below half HP
+const smellsBlood = u => hasAb(u, 'blood') && foes(u).some(o => !o.dead && o.hp < o.mhp/2);
 function reach(u){
   const holders = foes(u).filter(o => !o.dead && hasAb(o, 'holdline'));
   const guided = alliesNear(u, u, 2).some(o => hasAb(o, 'guiding')) ? 1 : 0;   // Guiding Nose: +1 Mov near Ilc
+  const blood = smellsBlood(u) ? 2 : 0;   // Blood in the Water: Ducky hunts the wounded
   const map = new Map([[K(u.x, u.y), {d: 0, prev: -1}]]), open = [K(u.x, u.y)];
   while (open.length){
     open.sort((a, b) => map.get(a).d - map.get(b).d);
@@ -115,7 +118,7 @@ function reach(u){
       if (!inBounds(nx, ny)) continue;
       const c = moveCost(u, nx, ny); if (c >= 99) continue;
       const o = unitAt(nx, ny); if (o && sideOfTeam(o) !== sideOfTeam(u)) continue;
-      const nd = cd + c; if (nd > (u.hobbled ? 1 : u.mov + guided)) continue;
+      const nd = cd + c; if (nd > (u.hobbled ? 1 : u.mov + guided + blood)) continue;
       const nk = K(nx, ny), prev = map.get(nk);
       if (!prev || nd < prev.d){ map.set(nk, {d: nd, prev: cur}); open.push(nk); }
     }
@@ -163,6 +166,7 @@ function calc(a, d, ap, dp){
   if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
   if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
+  if (hasAb(a, 'blood') && d.hp < d.mhp/2) atk += 2;   // Blood in the Water
   if (hasAb(d, 'cantcatch') && d.ranFar) hitB -= 25;
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
@@ -422,7 +426,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }

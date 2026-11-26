@@ -87,14 +87,14 @@ const CLASSES = {
   // Chapter Four. The tournament's champions (placeholder art): Tilly Tealbottom rides; Princess reads her grievances aloud.
   jouster:   {name: 'Lily Jouster',   w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Tealbottom Lance',  base: {mhp:24,atk:13,def:7, spd:8,skl:9,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:50}},   // Tilly Tealbottom
   heiress:   {name: 'Royal Heiress',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Grievances', base: {mhp:22,atk:13,def:4, spd:9,skl:10,mov:5}, g: {mhp:60,atk:50,def:20,spd:50,skl:55}},   // Princess
-  // Pirates (placeholder art: plush sharks). Ducky captains them with an anchor.
+  // Pirates (placeholder art: plush sharks). Ducky captains them with a scimitar (art/ducky-*.png).
   pcutlass:  {name: 'Cutlass',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Cutlass',           base: {mhp:20,atk:11,def:4, spd:9,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:50,skl:50}},
   pboarder:  {name: 'Boarder',        w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Boarding Axe',      base: {mhp:24,atk:13,def:5, spd:5,skl:5,mov:5}, g: {mhp:80,atk:55,def:30,spd:30,skl:35}},
   pharpoon:  {name: 'Harpooner',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Harpoon',           base: {mhp:22,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:75,atk:45,def:40,spd:35,skl:45}},
   pgunner:   {name: 'Cork Gunner',    w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Cork Musket',       base: {mhp:18,atk:11,def:3, spd:7,skl:9,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   pshanty:   {name: 'Shanty Singer',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Shanties',  base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:50}},
   psawbones: {name: 'Sawbones',       w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Bilge Mop',         base: {mhp:17,atk:5, def:3, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
-  sharkcapt: {name: 'Pirate Captain', w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Ship\'s Anchor',     base: {mhp:30,atk:15,def:8, spd:6,skl:8,mov:5}, g: {mhp:90,atk:55,def:40,spd:30,skl:40}},   // Ducky
+  sharkcapt: {name: 'Pirate Captain', w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Grinning Scimitar', base: {mhp:26,atk:13,def:6, spd:9,skl:9,mov:5}, g: {mhp:75,atk:50,def:30,spd:50,skl:45}},   // Ducky
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
 };
@@ -162,6 +162,8 @@ const LOOKS = {
   princess:  {sp:'frog', skin:'#f08ab4', light:'#fbb8d4', dark:'#a04470', belly:'#fde2ee', gear:'tiara'},     // Princess, Tiggle's cousin
   herald:    {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'bandana', band:'#d9b04a'},
   pirate:    {sp:'shark', skin:'#7a8c9a', light:'#a6b6c2', dark:'#3e4c58', belly:'#eef2f4', gear:'bandana', band:'#b5302a'},
+  mako:      {sp:'shark', skin:'#4a6a8a', light:'#7090b0', dark:'#22344a', belly:'#e8eef4', gear:'tricorn', big:true},   // Captain Mako (side stories)
+  gullet:    {sp:'shark', skin:'#9a9a9a', light:'#c2c2c2', dark:'#5a5a5a', belly:'#f4f0e8', gear:'tricorn', big:true},   // old Captain Gullet
   pirateBig: {sp:'shark', skin:'#5e6e7c', light:'#8696a4', dark:'#2c3844', belly:'#e4eaee', gear:'eyepatch', big:true},
   ducky:     {sp:'shark', hammer:true, skin:'#8a96a2', light:'#b4c0ca', dark:'#46525e', belly:'#f2f4f6', gear:'tricorn', big:true},   // Ducky, a hammerhead
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
@@ -247,6 +249,10 @@ const CHARACTERS = {
   chriggle:    {name:'Chriggle Chraggle', faction:'frog', look:'chriggle', cls:'giftgiver', lv:3, stars:3, stats:{mhp:25,atk:13,def:5,spd:6,skl:10,mov:5},   // December banner only
                 retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
                 intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
+  // Chapter Four: the Raepublic's first ★★★ from the pirates (Pirates of the Satin Sea banner, after R4-7)
+  ducky:       {name:'Ducky', faction:'pirate', look:'ducky', cls:'sharkcapt', lv:9, stars:3, stats:{mhp:28,atk:14,def:6,spd:10,skl:9,mov:5},   // art/ducky-*.png
+                retort:'Go on. Laugh at the name. Everybody does. Once.',
+                intro:{title:'Captain of the Grinning Mary', text:'Terror of the Satin Sea, scourge of the King\'s tax ships, and the only shark afloat who gets seasick. He came to sell Rae for ten thousand Crowns, lost to her on his own deck, and decided she was the best bet he\'d ever seen. He swears he\'s only here for the treasure.'}},
   // Chapter Three: Monkeyland (placeholder art). Speshul joins the Raepublic; Aurora joins the Friggliarchy.
   cornelius:   {name:'Captain Cornelius', faction:'monkey', look:'cornelius', cls:'guardcapt', lv:6, stars:3, stats:{mhp:29,atk:14,def:9,spd:4,skl:7,mov:5},   // The Loyal Court banner
                 retort:'I swore to keep Monkeyland whole. I am still trying.',
@@ -307,7 +313,10 @@ const SPEAKERS = Object.assign({
   princess:    {name:'Princess', faction:'frog', look:'princess'},
   brine:       {name:'Warden Brine', faction:'frog', look:'toadknight'},   // the lighthouse garrison
   sedge:       {name:'Captain Sedge', faction:'frog', look:'duelist'},     // the rearguard on the coast road
-  ducky:       {name:'Ducky', faction:'pirate', look:'ducky'},
+  mako:        {name:'Captain Mako', faction:'pirate', look:'mako'},       // Ducky's side stories: a rival captain
+  gullet:      {name:'Captain Gullet', faction:'pirate', look:'gullet'},   // the old captain of the Grinning Mary (a flashback)
+  croakwell:   {name:'Admiral Croakwell', faction:'frog', look:'toadknight'},
+  clerk:       {name:'A Tax Clerk', faction:'frog', look:'guard'},
   barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'pirateBig'},
   pirate:      {name:'A Pirate', faction:'pirate', look:'pirate'},
   pirates:     {name:'The Pirates', faction:'pirate', look:'pirate'},
@@ -382,6 +391,7 @@ const ART_CROP = {
   chansey:    {panel: ['160% auto', '50% 6%'], talk: ['128% auto', '50% 4%']},
   cornelius: {panel: ['160% auto', '50% 7%'], talk: ['128% auto', '50% 5%']},
   speshul:  {panel: ['165% auto', '52% 6%'], talk: ['130% auto', '52% 4%']},
+  ducky:    {panel: ['175% auto', '45% 5%'], talk: ['150% auto', '45% 3%']},   // the hammer is wide: pull back to fit both eyes
   aurora:   {panel: ['165% auto', '50% 6%'], talk: ['130% auto', '50% 4%']},   // the Governess: her crown sits high
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's

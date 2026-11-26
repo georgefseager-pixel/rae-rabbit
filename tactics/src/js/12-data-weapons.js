@@ -75,6 +75,8 @@ const WEAPONS = {
                  desc: 'The first treaty Monkeyland ever signed, as a kingdom, with nobody. Her mother hid it under the frog seals.'},
   threesuns:    {name: 'Three Suns',       type: 'axe',   stars: 3, mt: 5, hit: 5, crit: 10, owner: 'cornelius',
                  desc: 'From the King\'s own armoury. Three suns in the blade: one for each Governess he has guarded.'},
+  oldmary:      {name: 'Old Mary\'s Edge', type: 'sword', stars: 3, mt: 4, hit: 10, crit: 15, owner: 'ducky',
+                 desc: 'Captain Gullet\'s scimitar, the first blade of the Grinning Mary. It has been dropped overboard twice. It came back both times.'},
   dawnegg:      {name: 'The Dawn Egg',     type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'chansey',
                  desc: 'The temple\'s egg. It has never hatched in three hundred years. Chansey says it is waiting for a kinder world.'},
   // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.
