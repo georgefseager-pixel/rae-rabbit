@@ -5,13 +5,16 @@ const stars = n => '★'.repeat(n || 1);
 // The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 // A banner's featured attires, as entities that show the attire's art (artResolve) and its class.
 const attireEnt = id => { const a = ATTIRES[id], c = CHARACTERS[a.char]; return {key: a.char, look: c.look || a.char, attire: id, cls: a.cls || c.cls}; };
+// Figures whose portrait art is drawn larger than the rest: shrink them on the banner poster so they stand in scale.
+const POSTER_SIZE = {fragglejr: .78};
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const items = [...keys.map(k => ({ent: k, look: CHARACTERS[k].look || k, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls})),
                  ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${charName(ATTIRES[id].char)} · attire`}))];
   const figs = items.map((x, i) => {
     const art = artFor(x.ent, 'portrait'), src = art || plushPortrait(x.look);
-    return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
+    const sz = POSTER_SIZE[typeof x.ent === 'string' ? x.ent : x.ent.key + (ATTIRES[x.ent.attire]?.outfit || '')] || 1;
+    return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i};--sz:${sz}"><img alt="" src="${src}"></div>`;
   }).join('');
   const plates = items.map(x => `<div class="bplate"><span class="bpst">★★★</span><b>${x.name}</b><small>${x.sub || CLASSES[x.cls].name}</small></div>`).join('');
   const bg = b.bg && ART.bg?.[b.bg];

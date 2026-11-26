@@ -403,11 +403,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   background:repeating-conic-gradient(rgba(255,230,170,.10) 0 7deg, transparent 7deg 18deg);
   -webkit-mask-image:radial-gradient(circle, #000 15%, transparent 60%);mask-image:radial-gradient(circle, #000 15%, transparent 60%);animation:spinray 40s linear infinite}
 .bfigs{position:absolute;left:0;right:0;top:56px;bottom:46px;display:flex;align-items:flex-end;justify-content:center}
-.bfig{position:relative;height:88%;margin:0 -9%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));animation:figin .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s)}
+.bfig{position:relative;height:calc(88% * var(--sz, 1));margin:0 -9%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));animation:figin .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s)}
 .bfig img{display:block;height:100%;width:auto}
-.bfigs.n1 .bfig{height:100%}
-.bfigs.n2 .bfig{height:96%;margin:0 -6%}
-.bfigs.n3 .bfig:nth-child(2){height:100%;z-index:2}
+.bfigs.n1 .bfig{height:calc(100% * var(--sz, 1))}
+.bfigs.n2 .bfig{height:calc(96% * var(--sz, 1));margin:0 -6%}
+.bfigs.n3 .bfig:nth-child(2){height:calc(100% * var(--sz, 1));z-index:2}
 .bfig.plush{height:62%!important;align-self:center}
 @keyframes figin{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
 .btitle{position:absolute;left:16px;right:16px;top:14px;z-index:3;text-shadow:0 2px 0 rgba(0,0,0,.6), 0 0 18px rgba(0,0,0,.8)}

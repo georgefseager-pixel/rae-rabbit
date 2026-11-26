@@ -450,11 +450,11 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
   background:repeating-conic-gradient(rgba(255,230,170,.10) 0 7deg, transparent 7deg 18deg);
   -webkit-mask-image:radial-gradient(circle, #000 15%, transparent 60%);mask-image:radial-gradient(circle, #000 15%, transparent 60%);animation:spinray 40s linear infinite}
 .bfigs{position:absolute;left:0;right:0;top:56px;bottom:46px;display:flex;align-items:flex-end;justify-content:center}
-.bfig{position:relative;height:88%;margin:0 -9%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));animation:figin .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s)}
+.bfig{position:relative;height:calc(88% * var(--sz, 1));margin:0 -9%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));animation:figin .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.09s)}
 .bfig img{display:block;height:100%;width:auto}
-.bfigs.n1 .bfig{height:100%}
-.bfigs.n2 .bfig{height:96%;margin:0 -6%}
-.bfigs.n3 .bfig:nth-child(2){height:100%;z-index:2}
+.bfigs.n1 .bfig{height:calc(100% * var(--sz, 1))}
+.bfigs.n2 .bfig{height:calc(96% * var(--sz, 1));margin:0 -6%}
+.bfigs.n3 .bfig:nth-child(2){height:calc(100% * var(--sz, 1));z-index:2}
 .bfig.plush{height:62%!important;align-self:center}
 @keyframes figin{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
 .btitle{position:absolute;left:16px;right:16px;top:14px;z-index:3;text-shadow:0 2px 0 rgba(0,0,0,.6), 0 0 18px rgba(0,0,0,.8)}
@@ -10512,13 +10512,16 @@ const stars = n => '★'.repeat(n || 1);
 // The banner poster: its ★★★ characters standing large over a painted backdrop (banner.bg).
 // A banner's featured attires, as entities that show the attire's art (artResolve) and its class.
 const attireEnt = id => { const a = ATTIRES[id], c = CHARACTERS[a.char]; return {key: a.char, look: c.look || a.char, attire: id, cls: a.cls || c.cls}; };
+// Figures whose portrait art is drawn larger than the rest: shrink them on the banner poster so they stand in scale.
+const POSTER_SIZE = {fragglejr: .78};
 function bannerArt(ck, b){
   const keys = b.featured || b.pool || GACHA_ARMY[ck].rares;
   const items = [...keys.map(k => ({ent: k, look: CHARACTERS[k].look || k, name: CHARACTERS[k].name, cls: CHARACTERS[k].cls})),
                  ...(b.attires || []).map(id => ({ent: attireEnt(id), look: attireEnt(id).look, name: ATTIRES[id].name, cls: attireEnt(id).cls, sub: `${charName(ATTIRES[id].char)} · attire`}))];
   const figs = items.map((x, i) => {
     const art = artFor(x.ent, 'portrait'), src = art || plushPortrait(x.look);
-    return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i}"><img alt="" src="${src}"></div>`;
+    const sz = POSTER_SIZE[typeof x.ent === 'string' ? x.ent : x.ent.key + (ATTIRES[x.ent.attire]?.outfit || '')] || 1;
+    return `<div class="bfig${art ? '' : ' plush'}" style="--i:${i};--sz:${sz}"><img alt="" src="${src}"></div>`;
   }).join('');
   const plates = items.map(x => `<div class="bplate"><span class="bpst">★★★</span><b>${x.name}</b><small>${x.sub || CLASSES[x.cls].name}</small></div>`).join('');
   const bg = b.bg && ART.bg?.[b.bg];
@@ -11206,7 +11209,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'a9f1ed58fbe1';
+const BUILD_ID = '5ea45e3e607a';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
