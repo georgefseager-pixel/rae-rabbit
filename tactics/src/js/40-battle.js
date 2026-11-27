@@ -554,6 +554,9 @@ async function doDrawBack(u, t){
   await moveAlong(u, [K(u.x, u.y), K(b.x, b.y)]); await moveAlong(t, [K(t.x, t.y), K(from.x, from.y)]);
   abilityPop(u, 'drawback'); Sfx.play('select'); await wait(300);
 }
+// Two Pairs of Paws: the free squares next to a unit it could step into
+const scurrySquares = u => [[1,0],[-1,0],[0,1],[0,-1]].map(([dx, dy]) => ({x: u.x + dx, y: u.y + dy}))
+  .filter(p => inBounds(p.x, p.y) && moveCost(u, p.x, p.y) < 99 && !unitAt(p.x, p.y)).map(p => K(p.x, p.y));
 async function afterAction(){
   mode = 'idle'; updateDanger();
   if (checkEnd()) return;
@@ -595,6 +598,7 @@ async function onTap(x, y){
     return;
   }
   if (mode === 'target' && u && targets.includes(u)){ if (fc === u) act('confirm'); else chooseTarget(u); }
+  if (mode === 'scurry' && !u && moveKeys.has(k)){ busy = true; moveKeys = new Set(); await moveAlong(sel, [K(sel.x, sel.y), k]); busy = false; finishUnit(sel); }
 }
 
 async function act(a){
@@ -612,6 +616,13 @@ async function act(a){
     if (kind === 'attack') await doCombat(u, t); else if (kind === 'draw') await doDrawBack(u, t); else await doHeal(u, t);
     busy = false;
     if (u.dead){ clearSel(); await afterAction(); return; }
+    // Two Pairs of Paws (Tandy & Maus): after mending, they may scurry one more square
+    if (kind === 'heal' && hasAb(u, 'scurry')){
+      const sq = scurrySquares(u);
+      if (sq.length){ mode = 'scurry'; moveKeys = new Set(sq); abilityPop(u, 'scurry'); refreshTop();
+        setPanel(unitHTML(u) + `<div class="hint">${ABILITIES.scurry.icon} <b>Two Pairs of Paws:</b> tap a blue square to scurry 1 more, or stay put.</div>
+          <div class="acts"><button class="btn" data-act="wait" type="button">Stay</button></div>`); return; }
+    }
     finishUnit(u);
   }
 }

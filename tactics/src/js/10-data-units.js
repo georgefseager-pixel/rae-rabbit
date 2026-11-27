@@ -96,6 +96,7 @@ const CLASSES = {
   pshanty:   {name: 'Shanty Singer',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Shanties',  base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:50}},
   phook:     {name: 'Grappler',       w: 'hook',  rng: [2,2], mt: 'foot',    wname: 'Grappling Hook',    base: {mhp:20,atk:11,def:5, spd:8,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:45,skl:50}},   // pulls what it hooks
   psawbones: {name: 'Sawbones',       w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Bilge Mop',         base: {mhp:17,atk:5, def:3, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  shipsurgeon:{name: 'Ship\'s Surgeons', w: 'staff', rng: [1,1], mt: 'foot',   wname: 'Seashell Staff',    base: {mhp:19,atk:7, def:4, spd:9,skl:7,mov:5}, g: {mhp:55,atk:45,def:25,spd:55,skl:45}},   // Tandy & Maus (two mice, one unit)
   sharkcapt: {name: 'Pirate Captain', w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Grinning Scimitar', base: {mhp:26,atk:13,def:6, spd:9,skl:9,mov:5}, g: {mhp:75,atk:50,def:30,spd:50,skl:45}},   // Ducky
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
   overseer:  {name: 'Overseer',       w: 'bow',   rng: [2,2], lash: true, mt: 'foot',    wname: 'Overseer\'s Whip',        base: {mhp:28,atk:14,def:6, spd:5,skl:6,mov:4}, g: {mhp:80,atk:50,def:35,spd:30,skl:40}},
@@ -172,6 +173,7 @@ const LOOKS = {
   mako:      {sp:'shark', art:'shark', skin:'#4a6a8a', light:'#7090b0', dark:'#22344a', belly:'#e8eef4', gear:'tricorn', big:true},   // Captain Mako (side stories)
   gullet:    {sp:'shark', art:'shark', skin:'#9a9a9a', light:'#c2c2c2', dark:'#5a5a5a', belly:'#f4f0e8', gear:'tricorn', big:true},   // old Captain Gullet
   pirateBig: {sp:'shark', art:'fish', skin:'#5e6e7c', light:'#8696a4', dark:'#2c3844', belly:'#e4eaee', gear:'eyepatch', big:true},
+  tandy:     {sp:'mouse', fur:'#f1ebe2', light:'#fbf8f2', dark:'#a89c8c', gear:'bandana', band:'#a8322c'},   // Tandy & Maus: art/tandy-*.png
   ducky:     {sp:'shark', hammer:true, skin:'#8a96a2', light:'#b4c0ca', dark:'#46525e', belly:'#f2f4f6', gear:'tricorn', big:true},   // Ducky, a hammerhead
   // Placeholders (art:'none' draws the felt plush, not the generic soldier art) until their art arrives
   ilc:       {sp:'frog', skin:'#9cbc5a', light:'#bcd87e', dark:'#4e6628', belly:'#e4eeb8', gear:'none', small:true},   // art/ilc-*.png
@@ -195,7 +197,7 @@ const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
-  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', sharkcapt:'ducky',
+  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', shipsurgeon:'tandy', sharkcapt:'ducky',
 };
 
 // ================= Named characters =================
@@ -256,8 +258,12 @@ const CHARACTERS = {
   chriggle:    {name:'Chriggle Chraggle', faction:'frog', look:'chriggle', cls:'giftgiver', lv:3, stars:3, stats:{mhp:25,atk:13,def:5,spd:6,skl:10,mov:5},   // December banner only
                 retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
                 intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
-  // Chapter Four: the Raepublic's first ★★★ from the pirates (Pirates of the Satin Sea banner, after R4-7)
-  ducky:       {name:'Ducky', faction:'pirate', look:'ducky', cls:'sharkcapt', lv:9, stars:3, stats:{mhp:28,atk:14,def:6,spd:10,skl:9,mov:5},   // art/ducky-*.png
+  // Chapter Four: Ducky's first mates, two white mice who fight as one unit (Pirates of the Satin Sea banner, after R4-7)
+  tandy:       {name:'Tandy & Maus', faction:'pirate', look:'tandy', cls:'shipsurgeon', lv:9, stars:3, stats:{mhp:23,atk:9,def:5,spd:11,skl:9,mov:5},   // art/tandy-*.png
+                retort:'Hold still! …No, wriggle. It\'s more fun if you wriggle.',
+                intro:{title:'First Mates of the Grinning Mary', text:'Two white mice who have never once been seen apart. They patched up the Grinning Mary\'s crew for six years, mostly while arguing about whose turn it was to hold the bandages. One mends; the other is already running to the next patient. Ducky says they are the only reason he still has a crew.'}},
+  // Chapter Four: Ducky, the pirate captain, joins the Raepublic after R4-7
+  ducky:       {name:'Ducky', faction:'pirate', look:'ducky', cls:'sharkcapt', lv:9,   // joins after R4-7 (story) stats:{mhp:28,atk:14,def:6,spd:10,skl:9,mov:5},   // art/ducky-*.png
                 retort:'Go on. Laugh at the name. Everybody does. Once.',
                 intro:{title:'Captain of the Grinning Mary', text:'Terror of the Satin Sea, scourge of the King\'s tax ships, and the only shark afloat who gets seasick. He came to sell Rae for ten thousand Crowns, lost to her on his own deck, and decided she was the best bet he\'d ever seen. He swears he\'s only here for the treasure.'}},
   // Chapter Three: Monkeyland (placeholder art). Speshul joins the Raepublic; Aurora joins the Friggliarchy.
@@ -324,6 +330,8 @@ const SPEAKERS = Object.assign({
   gullet:      {name:'Captain Gullet', faction:'pirate', look:'gullet', fur:'white'},   // the old captain of the Grinning Mary (a flashback)
   croakwell:   {name:'Admiral Croakwell', faction:'frog', look:'toadknight'},
   clerk:       {name:'A Tax Clerk', faction:'frog', look:'guard'},
+  tandyone:    {name:'Tandy', faction:'pirate', look:'tandy', artFrom:'tandy'},   // the duo, one speaking at a time
+  maus:        {name:'Maus', faction:'pirate', look:'tandy', artFrom:'tandy'},
   barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'barnacle', fur:'slate'},
   pirate:      {name:'A Pirate', faction:'pirate', look:'pirate'},
   pirates:     {name:'The Pirates', faction:'pirate', look:'pirate'},
@@ -409,7 +417,8 @@ const ART_CROP = {
   chansey:    {panel: ['160% auto', '50% 6%'], talk: ['128% auto', '50% 4%']},
   cornelius: {panel: ['160% auto', '50% 7%'], talk: ['128% auto', '50% 5%']},
   speshul:  {panel: ['165% auto', '52% 6%'], talk: ['130% auto', '52% 4%']},
-  ducky:    {panel: ['175% auto', '45% 5%'], talk: ['150% auto', '45% 3%']},   // the hammer is wide: pull back to fit both eyes
+  ducky:    {panel: ['175% auto', '45% 5%'], talk: ['150% auto', '45% 3%']},
+  tandy:    {panel: ['150% auto', '40% 4%'], talk: ['125% auto', '40% 3%']},   // two heads: pull back to fit both   // the hammer is wide: pull back to fit both eyes
   aurora:   {panel: ['165% auto', '50% 6%'], talk: ['130% auto', '50% 4%']},   // the Governess: her crown sits high
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's

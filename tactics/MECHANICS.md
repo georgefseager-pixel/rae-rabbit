@@ -132,6 +132,7 @@ and The Lesson, which only help the player.
 | Chansey | Sanctuary | whoever she mends can't be chosen as a target by enemies until her next turn | protecting a wounded front-liner |
 | Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
 | Speshul (Powder Monkey) | Lit Fuse | an enemy his hook pulls in gets a lit fuse: at the start of the next enemy turn, 5 damage to it and 2 to each of its allies beside it (it can unstitch) | pull enemies into their own crowd |
+| Tandy & Maus | Two Pairs of Paws | after mending an ally they may scurry 1 more square (tap a blue square, or Stay) | mend the front line, then step back out of reach |
 | Ducky | Blood in the Water | while any enemy is below half HP he gets +2 Mov; +2 damage against enemies below half HP (also as an enemy boss, R4-6, R4-7) | finishing wounded enemies, hit-and-run |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
@@ -264,13 +265,18 @@ into `SHARK_COLOURS` (grey as drawn, white, slate, tiger, lemon, mako, reef, nur
 of their own (Bosun Barnacle, slate; Captain Mako, mako; old Captain Gullet, white), through the `shark` look art. The
 Pirates of the Satin Sea banner's soldiers (`troops: 'pirates'`) are ★ pirate fish and ★★ pirate sharks.
 
-Ducky (`art/ducky-*.png`, a hammerhead with a scimitar, Pirate Captain class) is the Raepublic's ★★★ on the Pirates of
-the Satin Sea banner, with supports and side stories (`29c-data-sides-pirates.js`, recommended 9 · 11 · 11): DK-1 a rival
+Ducky (`art/ducky-*.png`, a hammerhead with a scimitar, Pirate Captain class) joins the Raepublic in the story after R4-7
+(`reward.joins`), with supports and side stories (`29c-data-sides-pirates.js`, recommended 9 · 11 · 11): DK-1 a rival
 captain comes for Rae's bounty (Ducky leads, Rae away), DK-2 a flashback to his first voyage (alone, with the old crew as
 allies, surviving until the Mary cuts loose), DK-3 an intercept of the King's tax clerks; it ends with his own scimitar,
 Old Mary's Edge.
 Scenes `shore`, `arena` and `ships` have drawn placeholder backdrops in `style.css` until their paintings arrive; the
 capital's throne room reuses `court`.
+
+Tandy & Maus (`art/tandy-*.png`, key `tandy`): Ducky's first mates, two white mice who are one unit, Ship's Surgeons
+(staff). The Raepublic's ★★★ on Pirates of the Satin Sea. In the story they're glimpsed after R4-5, are enemy healers
+who escape in R4-6 and R4-7, and come ashore with the crew. They speak separately as `tandyone` (Tandy) and `maus`
+(Maus), both shown with the duo's portrait (speakers can borrow art with `artFrom`).
 
 ## Progression and unlocks
 
@@ -279,7 +285,7 @@ capital's throne room reuses `court`.
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
-| Pirates of the Satin Sea (Raepublic: ★★★ Ducky and Speshul's Powder Monkey attire; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
+| Pirates of the Satin Sea (Raepublic: ★★★ Tandy & Maus and Speshul's Powder Monkey attire; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

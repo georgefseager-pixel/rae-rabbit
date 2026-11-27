@@ -26,12 +26,13 @@ const ABILITIES = {
   naughty:     {name: 'Naughty List',      icon: '📜', text: 'Any enemy Chriggle Chraggle hits goes on the Naughty List: for the rest of the battle, everyone deals it +2 damage.'},
   bend:        {name: 'Bend, Not Break',   icon: '🙇', text: 'Once a battle, a blow that would unstitch Aurora leaves her standing on 1 HP instead.'},
   wecan:       {name: 'We Can Fight!',     icon: '✊', text: 'Against an enemy of a higher level than him, Speshul gets +2 damage and +10 Hit.'},
+  scurry:      {name: 'Two Pairs of Paws', icon: '🐭', text: 'One mends while the other runs on ahead: after Tandy & Maus mend an ally, they can scurry 1 more square.'},
   fuse:        {name: 'Lit Fuse',          icon: '🧨', text: 'An enemy Speshul\'s hook pulls in is left with a lit fuse. At the start of the next enemy turn it goes off: 5 damage to that enemy, and 2 to each of its allies standing next to it.'},
   blood:       {name: 'Blood in the Water', icon: '🦈', text: 'While any enemy is below half HP, Ducky gets +2 Mov. And he deals +2 damage to any enemy below half HP.'},
   nobody:      {name: 'Nobody Comes',      icon: '🌑', text: 'With no ally within 2 squares, Fraggle Jr. gets +3 Atk and +3 Spd.'},
 };
 const CHARACTER_ABILITY = {rae: 'nextto', sister: 'seams', willow: 'lesson', brigand: 'fingers', condemned: 'walkedaway', froggle: 'drawback',
-  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty', ilc: 'guiding', aurora: 'bend', speshul: 'wecan', ducky: 'blood', cornelius: 'guardduty', chansey: 'sanctuary'};
+  patch: 'bait', tiggle: 'listen', biggle: 'holdline', rhubarb: 'digging', executioner: 'onestroke', fragglejr: 'nobody', chriggle: 'naughty', ilc: 'guiding', aurora: 'bend', speshul: 'wecan', ducky: 'blood', tandy: 'scurry', cornelius: 'guardduty', chansey: 'sanctuary'};
 // The ability of a unit or record: its attire's (if the attire brings one), else its character's.
 const abilityOf = u => u && (ATTIRES[u.attire]?.ability || CHARACTER_ABILITY[u.key]) || null;
 const hasAb = (u, id) => abilityOf(u) === id;
