@@ -34,6 +34,8 @@ function migrateSave(s){
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'persimmon');
   // the unused placeholder banner characters were removed
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => !['lantern', 'ironear', 'duckweed', 'glimmer', 'bogsworth'].includes(r.key));
+  // Biggle's Big Bow joined the log-in track at log-in 28: anyone already past it gets it anyway
+  if ((s.login?.claimed || 0) >= 28){ const r = s.camps.frog?.roster?.find(x => x.key === 'biggle'); if (r && !(r.attires ||= []).includes('biggleBow')) r.attires.push('biggleBow'); }
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
   if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying

@@ -430,6 +430,7 @@ const ART_CROP = {
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
+  bigglebow: {panel: ['185% auto', '50% 4%'], talk: ['140% auto', '50% 3%']},   // Big Bow (log-in 28)
   biggleginger: {panel: ['190% auto', '44% 9%'], talk: ['145% auto', '44% 7%']},   // Gingerbiggle attire
   bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},
   princess: {panel: ['175% auto', '50% 4%'], talk: ['140% auto', '50% 3%']},
