@@ -9809,6 +9809,18 @@ function drawThemedTile(g, x, y, ch, theme){
   }
   if (ch === 'T') drawFort(g, X, Y, x, y);
 }
+// The weapon badge: a disc in the weapon's colour (the triangle reads at a glance: swords red, axes green, lances blue;
+// bows gold, tomes purple, staves pale teal) with the weapon's symbol in white. On every map token, and large in Danger view.
+const WEAPON_COLOURS = {sword: ['#e8675a', '#9c2a20'], axe: ['#6fc25a', '#2f6e22'], lance: ['#5f9ae8', '#22508f'], bow: ['#f2cc5a', '#9a6e14'],
+                        tome: ['#b07ae0', '#5a2e8a'], staff: ['#bfe8e0', '#4f8c84'], whip: ['#f2cc5a', '#9a6e14']};
+function weaponBadge(g, u, x, y, r, ring){
+  const w = u.lash ? 'whip' : u.w, [hi, lo] = WEAPON_COLOURS[w] || WEAPON_COLOURS.sword;
+  g.fillStyle = 'rgba(0,0,0,.4)'; ell(g, x + r*.08, y + r*.12, r, r); g.fill();
+  const bg = g.createRadialGradient(x - r*.3, y - r*.3, 1, x, y, r); bg.addColorStop(0, hi); bg.addColorStop(1, lo);
+  g.fillStyle = bg; ell(g, x, y, r, r); g.fill();
+  g.strokeStyle = ring || '#1e140a'; g.lineWidth = Math.max(1.2, r*(ring ? .16 : .1)); g.stroke();
+  glyph(g, w, x, y, r*.8, w === 'staff' ? '#1e3a36' : '#fffaf0');
+}
 function tokenFor(u, variant){
   const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
@@ -9833,11 +9845,7 @@ function tokenFor(u, variant){
     const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : L.sp === 'monkey' ? .26 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
     drawPlush(g, u.look, ox + T*.5, oy + T*(L.sp === 'bun' ? .44 : .46) + (L.small ? T*.05 : 0), s);
   }
-  const bx = ox + T*.84, by = oy + T*.7, br = T*.14;
-  const bg = g.createRadialGradient(bx - br*.3, by - br*.3, 1, bx, by, br); bg.addColorStop(0, '#f6d98a'); bg.addColorStop(1, '#a07024');
-  g.fillStyle = 'rgba(0,0,0,.35)'; ell(g, bx + 1, by + 1.5, br, br); g.fill();
-  g.fillStyle = bg; ell(g, bx, by, br, br); g.fill(); g.strokeStyle = '#5a3c10'; g.lineWidth = 1; g.stroke();
-  glyph(g, u.w, bx, by, br*.78, '#3a2408');
+  weaponBadge(g, u, ox + T*.86, oy + T*.68, T*.19);
   if (variant !== 'n'){ g.globalCompositeOperation = 'source-atop'; g.fillStyle = variant === 'w' ? '#ffffff' : 'rgba(40,40,52,.58)'; g.fillRect(0, 0, S, S); }
   tokenCache.set(key, c); return c;
 }
@@ -9908,6 +9916,11 @@ function render(now){
   }
   if (cursor && phase === 'p' && !busy && mode !== 'target') brackets(cursor.x, cursor.y, 'rgba(236,198,115,.95)');
   for (const u of units.filter(u => !u.dead).sort((a, b) => a.py - b.py)) drawUnit(u, now);
+  // Danger view: each unit's weapon, large, over its token, ringed by side (enemies red, yours gold, allies blue)
+  if (showDanger && !busy) for (const u of units) if (!u.dead && u.alpha > .5){
+    const side = sideOfTeam(u), ring = u.team === 'a' ? '#8cc4ff' : side === 'p' ? '#f2d27a' : '#ff6a5a';
+    weaponBadge(ctx, u, (u.px + u.ox + .56)*T, (u.py + u.oy + .54)*T, T*.44, ring);
+  }
   for (const s of shots){
     const x = (s.x0 + (s.x1 - s.x0)*s.t)*T, y = (s.y0 + (s.y1 - s.y0)*s.t)*T - Math.sin(s.t*Math.PI)*T*.4, a = Math.atan2(s.y1 - s.y0, s.x1 - s.x0);
     ctx.strokeStyle = '#f3ead2'; ctx.lineWidth = Math.max(1.5, T*.04);
@@ -11222,7 +11235,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '422c6045bfc5';
+const BUILD_ID = 'a932489b82b5';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
