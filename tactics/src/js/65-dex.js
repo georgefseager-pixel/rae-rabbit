@@ -22,6 +22,9 @@ const DEX_COMPANIES = {
   elves:     {faction: 'frog',   names: ['Elf Scouts', 'Santa Scouts'], blurb: 'Frog scouts in elf green; the promoted ones wear Santa red.'},
 };
 const DEX_SECTION_NAMES = {costumes: 'Costumes', login: 'Daily log-in'};
+// The painted backdrop behind a full portrait: the banner it comes from, or else its faction's home (as on the title screen).
+const DEX_HOME_BG = {rae: 'mine', frog: 'court', monkey: 'monkeyland', pirate: 'ships'};
+const dexBg = (from, faction) => from.find(b => b.bg)?.bg || DEX_HOME_BG[faction] || 'mine';
 
 // Which company (and rarity) a non-unique record belongs to: from its company id, or else by its class.
 function dexCompanyOf(ck, rec){
@@ -58,7 +61,7 @@ function dexEntries(){
     if (c.rarity === 1) continue;
     const ev = eventOfChar(k), from = banners.filter(b => [...(b.pool || []), ...(b.featured || [])].includes(k));
     const army = Object.keys(CAMPAIGNS).find(ck => CAMPAIGNS[ck].start.includes(k) || CAMPAIGNS[ck].stages.some(s => (s.reward?.joins || []).includes(k) || (s.events || []).some(e => e.join === k)));
-    out.push({id: 'c:' + k, kind: 'char', key: k, section: ev || c.faction, faction: c.faction, stars: 3,
+    out.push({id: 'c:' + k, kind: 'char', key: k, section: ev || c.faction, faction: c.faction, stars: 3, bg: dexBg(from, c.faction),
               how: from.length ? `Recruited on “${from.map(b => b.name).join('” or “')}”` : army ? `Joins the ${FACTIONS[CAMPAIGNS[army].faction].name} in the story` : 'Joins in the story'});
   }
   // companies, one entry per rarity
@@ -69,7 +72,7 @@ function dexEntries(){
       const id = `t:${set}:${stars}`; if (seen.has(id)) continue; seen.add(id);
       const D_ = DEX_COMPANIES[set] || {faction: CAMPAIGNS[ck].faction, names: [set, set + ' ★★']};
       const from = banners.filter(b => set.endsWith('-base') ? b.ck === ck && !b.troops : b.troops === set);
-      out.push({id, kind: 'company', set, stars, ck, classes: T.generic, section: eventOfSet(set) || D_.faction, faction: D_.faction,
+      out.push({id, kind: 'company', set, stars, ck, classes: T.generic, section: eventOfSet(set) || D_.faction, faction: D_.faction, bg: dexBg(set.endsWith('-base') ? [] : from, D_.faction),
                 name: D_.names[stars - 1], blurb: D_.blurb,
                 how: from.length ? `Recruited on “${from.map(b => b.name).join('”, “')}”${set.endsWith('-base') && stars === 1 ? ', or in the story' : ''}` : 'In the story'});
     }
@@ -77,7 +80,7 @@ function dexEntries(){
   // costumes
   for (const [id, A] of Object.entries(ATTIRES)){
     const ev = eventOfAttire(id), n = loginOf(id), from = banners.filter(b => (b.attires || []).includes(id));
-    out.push({id: 'a:' + id, kind: 'attire', attire: id, key: A.char, section: ev || (n >= 0 ? 'login' : 'costumes'), faction: CHARACTERS[A.char]?.faction || 'rae', stars: 3, login: n,
+    out.push({id: 'a:' + id, kind: 'attire', attire: id, key: A.char, section: ev || (n >= 0 ? 'login' : 'costumes'), faction: CHARACTERS[A.char]?.faction || 'rae', stars: 3, login: n, bg: dexBg(from, CHARACTERS[A.char]?.faction || 'rae'),
               how: n >= 0 ? `Daily log-in ${n + 1}` : from.length ? `Recruited on “${from.map(b => b.name).join('” or “')}”` : 'In the story'});
   }
   // section order: factions, costumes, log-in, events
@@ -148,7 +151,7 @@ function openDexEntry(id){
     body = `<div class="dfacts">${[...new Set(e.classes.map(c => CLASSES[c].name))].map(n => `<span>${n}</span>`).join('')}</div><p>${e.blurb}</p>`;
   }
   ov.innerHTML = `<div class="card wsheet dsheet${has ? '' : ' locked'}">
-    <div class="dstage f-${e.faction}">${dexFull(ent)}</div>
+    <div class="dstage f-${e.faction}"${ART.bg?.[e.bg] ? ` style="--dbg:url(${ART.bg[e.bg]})"` : ''}>${dexFull(ent)}</div>
     <div class="dhead"><span class="ustars s${e.stars}">${'★'.repeat(e.stars)}</span><h1>${has ? dexName(e) : '???'}</h1><h2>${e.kind === 'company' ? 'Soldiers' : e.kind === 'attire' ? 'Costume' : 'Character'}</h2></div>
     ${body}<p class="dhow">${e.how}</p>
     <button class="btn" data-dex-close type="button">Close</button></div>`;

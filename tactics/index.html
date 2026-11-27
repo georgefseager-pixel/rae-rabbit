@@ -1005,8 +1005,10 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .dtile.locked b{color:var(--muted)}.dtile.locked .ustars{opacity:.45}
 .dstage{height:min(46vh,340px);flex:none;border-radius:12px;display:flex;justify-content:center;align-items:flex-end;padding:12px 8px 0;overflow:hidden;
   background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.14),rgba(0,0,0,.35) 75%),#151a2e;box-shadow:inset 0 0 0 2px var(--brass)}
-.dstage.f-frog{background:radial-gradient(circle at 50% 40%,#34501f,#141c0d 75%)}.dstage.f-monkey{background:radial-gradient(circle at 50% 40%,#7a4a2a,#24140a 75%)}
-.dstage.f-pirate{background:radial-gradient(circle at 50% 40%,#2e5a68,#0c1c24 75%)}.dstage.f-rae{background:radial-gradient(circle at 50% 40%,#34406b,#151a2e 75%)}
+.dstage.f-rae{background:radial-gradient(ellipse 90% 70% at 30% 30%,rgba(200,46,34,.5),transparent 72%),linear-gradient(160deg,rgba(78,16,12,.72),rgba(20,8,7,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#140807}
+.dstage.f-frog{background:radial-gradient(ellipse 90% 70% at 70% 30%,rgba(110,160,52,.45),transparent 72%),linear-gradient(200deg,rgba(34,58,18,.74),rgba(10,16,6,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#0a1006;box-shadow:inset 0 0 0 2px #7a8f3a}
+.dstage.f-monkey{background:radial-gradient(ellipse 90% 70% at 30% 30%,rgba(214,140,60,.45),transparent 72%),linear-gradient(160deg,rgba(96,52,22,.72),rgba(28,14,6,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#1c1006;box-shadow:inset 0 0 0 2px #d6a060}
+.dstage.f-pirate{background:radial-gradient(ellipse 90% 70% at 70% 30%,rgba(60,150,160,.45),transparent 72%),linear-gradient(200deg,rgba(18,58,70,.74),rgba(6,18,24,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#06141a;box-shadow:inset 0 0 0 2px #9fd3cf}
 .dstage .dfull{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 .dsheet.locked .dstage{background:radial-gradient(circle at 50% 40%,#e6d9bc,#a39373 85%)}.dsheet.locked .dfull{filter:brightness(0);opacity:.78}
 .dhead{display:flex;flex-direction:column;align-items:center;text-align:center}
@@ -12061,6 +12063,9 @@ const DEX_COMPANIES = {
   elves:     {faction: 'frog',   names: ['Elf Scouts', 'Santa Scouts'], blurb: 'Frog scouts in elf green; the promoted ones wear Santa red.'},
 };
 const DEX_SECTION_NAMES = {costumes: 'Costumes', login: 'Daily log-in'};
+// The painted backdrop behind a full portrait: the banner it comes from, or else its faction's home (as on the title screen).
+const DEX_HOME_BG = {rae: 'mine', frog: 'court', monkey: 'monkeyland', pirate: 'ships'};
+const dexBg = (from, faction) => from.find(b => b.bg)?.bg || DEX_HOME_BG[faction] || 'mine';
 
 // Which company (and rarity) a non-unique record belongs to: from its company id, or else by its class.
 function dexCompanyOf(ck, rec){
@@ -12097,7 +12102,7 @@ function dexEntries(){
     if (c.rarity === 1) continue;
     const ev = eventOfChar(k), from = banners.filter(b => [...(b.pool || []), ...(b.featured || [])].includes(k));
     const army = Object.keys(CAMPAIGNS).find(ck => CAMPAIGNS[ck].start.includes(k) || CAMPAIGNS[ck].stages.some(s => (s.reward?.joins || []).includes(k) || (s.events || []).some(e => e.join === k)));
-    out.push({id: 'c:' + k, kind: 'char', key: k, section: ev || c.faction, faction: c.faction, stars: 3,
+    out.push({id: 'c:' + k, kind: 'char', key: k, section: ev || c.faction, faction: c.faction, stars: 3, bg: dexBg(from, c.faction),
               how: from.length ? `Recruited on “${from.map(b => b.name).join('” or “')}”` : army ? `Joins the ${FACTIONS[CAMPAIGNS[army].faction].name} in the story` : 'Joins in the story'});
   }
   // companies, one entry per rarity
@@ -12108,7 +12113,7 @@ function dexEntries(){
       const id = `t:${set}:${stars}`; if (seen.has(id)) continue; seen.add(id);
       const D_ = DEX_COMPANIES[set] || {faction: CAMPAIGNS[ck].faction, names: [set, set + ' ★★']};
       const from = banners.filter(b => set.endsWith('-base') ? b.ck === ck && !b.troops : b.troops === set);
-      out.push({id, kind: 'company', set, stars, ck, classes: T.generic, section: eventOfSet(set) || D_.faction, faction: D_.faction,
+      out.push({id, kind: 'company', set, stars, ck, classes: T.generic, section: eventOfSet(set) || D_.faction, faction: D_.faction, bg: dexBg(set.endsWith('-base') ? [] : from, D_.faction),
                 name: D_.names[stars - 1], blurb: D_.blurb,
                 how: from.length ? `Recruited on “${from.map(b => b.name).join('”, “')}”${set.endsWith('-base') && stars === 1 ? ', or in the story' : ''}` : 'In the story'});
     }
@@ -12116,7 +12121,7 @@ function dexEntries(){
   // costumes
   for (const [id, A] of Object.entries(ATTIRES)){
     const ev = eventOfAttire(id), n = loginOf(id), from = banners.filter(b => (b.attires || []).includes(id));
-    out.push({id: 'a:' + id, kind: 'attire', attire: id, key: A.char, section: ev || (n >= 0 ? 'login' : 'costumes'), faction: CHARACTERS[A.char]?.faction || 'rae', stars: 3, login: n,
+    out.push({id: 'a:' + id, kind: 'attire', attire: id, key: A.char, section: ev || (n >= 0 ? 'login' : 'costumes'), faction: CHARACTERS[A.char]?.faction || 'rae', stars: 3, login: n, bg: dexBg(from, CHARACTERS[A.char]?.faction || 'rae'),
               how: n >= 0 ? `Daily log-in ${n + 1}` : from.length ? `Recruited on “${from.map(b => b.name).join('” or “')}”` : 'In the story'});
   }
   // section order: factions, costumes, log-in, events
@@ -12187,7 +12192,7 @@ function openDexEntry(id){
     body = `<div class="dfacts">${[...new Set(e.classes.map(c => CLASSES[c].name))].map(n => `<span>${n}</span>`).join('')}</div><p>${e.blurb}</p>`;
   }
   ov.innerHTML = `<div class="card wsheet dsheet${has ? '' : ' locked'}">
-    <div class="dstage f-${e.faction}">${dexFull(ent)}</div>
+    <div class="dstage f-${e.faction}"${ART.bg?.[e.bg] ? ` style="--dbg:url(${ART.bg[e.bg]})"` : ''}>${dexFull(ent)}</div>
     <div class="dhead"><span class="ustars s${e.stars}">${'★'.repeat(e.stars)}</span><h1>${has ? dexName(e) : '???'}</h1><h2>${e.kind === 'company' ? 'Soldiers' : e.kind === 'attire' ? 'Costume' : 'Character'}</h2></div>
     ${body}<p class="dhow">${e.how}</p>
     <button class="btn" data-dex-close type="button">Close</button></div>`;
@@ -12371,7 +12376,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '594d28335f06';
+const BUILD_ID = '49e172330ee7';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

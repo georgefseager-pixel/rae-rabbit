@@ -965,8 +965,10 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .dtile.locked b{color:var(--muted)}.dtile.locked .ustars{opacity:.45}
 .dstage{height:min(46vh,340px);flex:none;border-radius:12px;display:flex;justify-content:center;align-items:flex-end;padding:12px 8px 0;overflow:hidden;
   background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.14),rgba(0,0,0,.35) 75%),#151a2e;box-shadow:inset 0 0 0 2px var(--brass)}
-.dstage.f-frog{background:radial-gradient(circle at 50% 40%,#34501f,#141c0d 75%)}.dstage.f-monkey{background:radial-gradient(circle at 50% 40%,#7a4a2a,#24140a 75%)}
-.dstage.f-pirate{background:radial-gradient(circle at 50% 40%,#2e5a68,#0c1c24 75%)}.dstage.f-rae{background:radial-gradient(circle at 50% 40%,#34406b,#151a2e 75%)}
+.dstage.f-rae{background:radial-gradient(ellipse 90% 70% at 30% 30%,rgba(200,46,34,.5),transparent 72%),linear-gradient(160deg,rgba(78,16,12,.72),rgba(20,8,7,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#140807}
+.dstage.f-frog{background:radial-gradient(ellipse 90% 70% at 70% 30%,rgba(110,160,52,.45),transparent 72%),linear-gradient(200deg,rgba(34,58,18,.74),rgba(10,16,6,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#0a1006;box-shadow:inset 0 0 0 2px #7a8f3a}
+.dstage.f-monkey{background:radial-gradient(ellipse 90% 70% at 30% 30%,rgba(214,140,60,.45),transparent 72%),linear-gradient(160deg,rgba(96,52,22,.72),rgba(28,14,6,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#1c1006;box-shadow:inset 0 0 0 2px #d6a060}
+.dstage.f-pirate{background:radial-gradient(ellipse 90% 70% at 70% 30%,rgba(60,150,160,.45),transparent 72%),linear-gradient(200deg,rgba(18,58,70,.74),rgba(6,18,24,.88) 75%),var(--dbg, none) 50% 35%/cover no-repeat,#06141a;box-shadow:inset 0 0 0 2px #9fd3cf}
 .dstage .dfull{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 .dsheet.locked .dstage{background:radial-gradient(circle at 50% 40%,#e6d9bc,#a39373 85%)}.dsheet.locked .dfull{filter:brightness(0);opacity:.78}
 .dhead{display:flex;flex-direction:column;align-items:center;text-align:center}

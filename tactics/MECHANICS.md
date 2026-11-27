@@ -386,7 +386,7 @@ it claimable again.
 
 Collection (`65-dex.js`, the hub's Collection button): a Pokédex of everyone who has ever been in either army, and every
 costume owned (`SAVE.dex`, kept up to date on every save, so released recruits stay collected). Uncollected entries are
-silhouettes (map-icon heads in the grid, the full portrait on the card) with how to get them. Tiles always show the map icon the game uses (a costume without its own icon shows the character's); the card shows the whole portrait. One entry per unique character, one per company and rarity
+silhouettes (map-icon heads in the grid, the full portrait on the card) with how to get them. Tiles always show the map icon the game uses (a costume without its own icon shows the character's); the card shows the whole portrait over a painted backdrop tinted in its faction's colours, like the title screen (the backdrop of the banner it comes from, or its faction's home: `DEX_HOME_BG`). One entry per unique character, one per company and rarity
 (all ★ Republic soldiers are one entry, all ★★ another; Tall/Burly/Old Rabbit count as ★ Mine Rabbits), one per costume.
 Sections: each faction, Costumes, Daily log-in, and each seasonal event (its banners' characters, costumes and soldiers,
 unless an ordinary banner has them too). New characters, costumes and banners are picked up automatically; a new
