@@ -205,14 +205,15 @@ function sprite(u, side){
   if (art) return `<img alt="" src="${art}"${side === 'R' ? ' class="flip"' : ''}${sc !== 1 ? ` style="height:calc(var(--sprH, 100%)*${sc})"` : ''}>`;
   return `<img alt="" class="plush" src="${plushPortrait(u.look)}">`;
 }
-function fillFighter(side, u, f){
+function fillFighter(side, u, f, foe){
   const pf = dEl[side].querySelector('.pf');
   // clear leftover effects from the previous fight (e.g. the greyed-out defeat pose, which is held with fill:'forwards')
   for (const el of [pf, dEl[side]]) for (const a of el.getAnimations()) a.cancel();
   pf.innerHTML = sprite(u, side); pf.style.filter = ''; pf.style.transform = '';
   const pl = pEl[side]; pl.className = 'plate f-' + u.faction;
   pl.querySelector('.nm').textContent = u.name;
-  pl.querySelector('.ds').textContent = f.can ? `DMG ${f.dmg}${f.dbl ? '×2' : ''} · HIT ${f.hit} · CRIT ${f.crit}` : u.w === 'staff' ? 'Cannot strike' : 'Out of reach';
+  const pulledIn = foe?.w === 'hook' && u.w !== 'staff' && u.rng[0] <= 1;   // a melee fighter a hook is about to pull in
+  pl.querySelector('.ds').textContent = f.can ? `DMG ${f.dmg}${f.dbl ? '×2' : ''} · HIT ${f.hit} · CRIT ${f.crit}` : u.w === 'staff' ? 'Cannot strike' : pulledIn ? 'Strikes back if pulled in' : 'Out of reach';
   setDuelHp(u);
 }
 function setDuelHp(u){
@@ -223,7 +224,7 @@ function setDuelHp(u){
 }
 async function openDuel(a, d){
   duelSides = {[a.id]: 'L', [d.id]: 'R'};
-  fillFighter('L', a, calc(a, d, a, d)); fillFighter('R', d, calc(d, a, d, a));
+  fillFighter('L', a, calc(a, d, a, d), d); fillFighter('R', d, calc(d, a, d, a), a);
   const duel = duelEl(); duel.hidden = false;
   // one shared sprite height for every fight: as tall as the stage allows, but never so tall
   // that the widest pose (a weapon held out, about 1.5 times wider than tall) runs off the far side
