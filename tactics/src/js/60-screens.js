@@ -424,6 +424,8 @@ function renderSlots(){
 function playSlot(n){
   Store.use(n); SAVE = migrateSave(Store.load(n)); if (!SAVE) return;
   prep = null; $('#title').hidden = true; renderHub(); Music.want(campTrack());
+  // festive soldiers are only recoloured when needed: a slot that has some (outside December) needs them now
+  if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache.clear(); if (!$('#hub').hidden) renderHub(); });
 }
 $('#tslots').addEventListener('click', e => {
   const t = e.target.closest('[data-slot-play], [data-slot-new], [data-slot-erase]'); if (!t) return;

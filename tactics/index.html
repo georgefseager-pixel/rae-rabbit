@@ -11162,6 +11162,8 @@ function renderSlots(){
 function playSlot(n){
   Store.use(n); SAVE = migrateSave(Store.load(n)); if (!SAVE) return;
   prep = null; $('#title').hidden = true; renderHub(); Music.want(campTrack());
+  // festive soldiers are only recoloured when needed: a slot that has some (outside December) needs them now
+  if (festiveNeeded()) buildFestiveTroops().then(() => { tokenCache.clear(); if (!$('#hub').hidden) renderHub(); });
 }
 $('#tslots').addEventListener('click', e => {
   const t = e.target.closest('[data-slot-play], [data-slot-new], [data-slot-erase]'); if (!t) return;
@@ -11900,7 +11902,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '9affab0c7d22';
+const BUILD_ID = '6619303167c3';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
