@@ -328,7 +328,7 @@ Day's skipped days). It only shows on a route once that route's Camp and Side St
 with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck>`). While it's on:
 
 - the hub shows a festive strip linking to the Side Stories tab, where the event's stories sit at the top in a festive card;
-- event side stories (`event: id` in `CAMPAIGNS[ck].sides`) can be played **once a game day** (`SAVE.eventPlays`). Each
+- event side stories (`event: id` in `CAMPAIGNS[ck].sides`) can be played **once a game day** (`SAVE.eventPlays`). Nobody is unstitched for good in them: anyone who falls is only knocked out. Each
   day's run is a fresh run (full money, no "replay" penalty), but the story scenes only play the first time;
 - they pay the event's own currency by result: one gift per courier caught (XM-R) or kept safe (XM-F), up to 8. A defeat
   pays nothing and doesn't use up the day. Best result is kept in `SAVE.eventBest`;

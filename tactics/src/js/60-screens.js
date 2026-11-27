@@ -214,7 +214,7 @@ function renderArmy(){
   showScreen('army');
 }
 // Fallen units can be stitched back up for money: more for higher levels. Story departures can't.
-const STITCH = {base: 150, perLevel: 30};
+const STITCH = {base: 50, perLevel: 10};
 const stitchCost = rec => STITCH.base + STITCH.perLevel*rec.lv;
 function stitchUp(uid){
   const st = stOf(), rec = st.roster.find(r => r.uid === uid);
@@ -312,8 +312,8 @@ async function playChapter(){
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
     const m = attireOf(r)?.mods; if (m) for (const k in m) r.stats[k] -= m[k];   // the attire's changes aren't kept
   }
-  // their weapon stays in the Armoury. Training (spar) knocks nobody out for good.
-  if (!ch.spar) for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }
+  // their weapon stays in the Armoury. Training (spar) and seasonal event stories knock nobody out for good.
+  if (!ch.spar && !ch.event) for (const u of res.lost){ u.rec.dead = true; u.rec.arm = null; }
   const departed = [], joined = [];
   // bonus star: earned once, for recruiting currency
   const starNew = res.star === 'ok' && !hasStar(ch.id), starTokens = starNew ? GACHA.starTokens : 0;
@@ -351,7 +351,7 @@ function renderResult(r){
         ${r.joined.length ? `<div><span>Joined the army</span><b>${r.joined.join(', ')}</b></div>` : ''}
         ${r.armed?.length ? `<div><span>New weapons</span><b>${r.armed.join(', ')}</b></div>` : ''}
         ${ch.star ? `<div class="rstar ${r.star === 'ok' ? 'got' : ''}"><span>${r.star === 'ok' ? '★' : '☆'} Bonus: ${starText(ch, r.ck)}</span><b>${r.starTokens ? `Earned! +${r.starTokens} ${GACHA_ARMY[r.ck].currency}` : r.star === 'ok' ? 'Done (already earned)' : hasStar(ch.id) ? 'Missed (already earned)' : 'Missed: replay to try again'}</b></div>` : ''}
-        ${r.lost.length ? `<div><span>${ch.spar ? 'Knocked out in training (no harm done)' : 'Unstitched (stitch them up on the Army screen)'}</span><b>${r.lost.join(', ')}</b></div>` : ''}
+        ${r.lost.length ? `<div><span>${ch.spar ? 'Knocked out in training (no harm done)' : ch.event ? 'Knocked out (back on their feet for the next battle)' : 'Unstitched (stitch them up on the Army screen)'}</span><b>${r.lost.join(', ')}</b></div>` : ''}
         ${r.departed?.length ? `<div><span>Stayed behind</span><b>${r.departed.join(', ')}</b></div>` : ''}
       </div>
       ${!r.replay && SIDE_OPENS[r.ck] === ch.id && CAMPAIGNS[r.ck].sides.length ? `<div class="gatebox"><span><b>The Camp and Side Stories are open.</b> Each unique member of the army has supports to unlock, and side stories that open with them.</span><button class="btn" data-sidego="${r.ck}" type="button">Side Stories</button></div>` : ''}
