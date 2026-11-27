@@ -973,6 +973,16 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .ncard,.ucard,.scard,.wrow,.card,.plate{box-shadow:0 0 0 1px rgba(236,198,115,.16),0 6px 14px rgba(0,0,0,.4)}
 .btn{box-shadow:0 0 0 1px rgba(236,198,115,.14),0 2px 0 rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06)}
 .tabs .btn.on{background:linear-gradient(180deg,#5a4430,#3a2b1f)}
+/* the New Year event card: midnight blue and gold, with drifting sparks */
+.evcard.ev-newyear{background:linear-gradient(160deg,#1a2148,#0f1430 55%,#3a2a10);box-shadow:0 0 0 2px #ecc673,0 0 0 4px #1a2148,0 0 0 6px #ecc673,0 10px 26px rgba(0,0,0,.5)}
+.evcard.ev-newyear .chip.evc{background:rgba(236,198,115,.3);color:#fff1c8}
+.evspark{position:absolute;inset:0;pointer-events:none;opacity:.8;
+  background-image:radial-gradient(2px 2px at 15% 25%,#ffe08a 60%,transparent 61%),radial-gradient(1.5px 1.5px at 65% 15%,#fff 60%,transparent 61%),
+  radial-gradient(2px 2px at 40% 75%,#ffc84a 60%,transparent 61%),radial-gradient(1.5px 1.5px at 85% 55%,#fff 60%,transparent 61%),radial-gradient(2.5px 2.5px at 55% 40%,#ffd98a 60%,transparent 61%);
+  background-size:150px 150px;animation:sparkrise 7s linear infinite}
+@keyframes sparkrise{from{background-position:0 150px}to{background-position:-20px -150px}}
+@media (prefers-reduced-motion: reduce){ .evspark{animation:none} }
+.evstrip.ev-newyear{background:linear-gradient(90deg,#1a2148,#4a3a12);border-color:#ecc673}
 
 </style>
 
@@ -3537,6 +3547,44 @@ const MAPS = {
     'M........M',
     'M........M',
     'MMMM..MMMM',
+  ]},
+  // January event (Raepublic): the old mine watch-posts at the forest's edge, three shift bells (fort squares)
+  shiftBells: {theme: 'camp', names: {'T': ['Bell Post', 'A watch-post with a brass shift bell. Restores 20% HP at the start of each phase.']}, rows: [
+    'XX......XX',
+    '..F....F..',
+    '.....T....',
+    '.M..XX..M.',
+    '..........',
+    'F...F...F.',
+    '..XX..XX..',
+    '.T......T.',
+    '..XX..XX..',
+    '.F...F...F',
+    '..........',
+    '.M..XX..M.',
+    '..........',
+    '..F....F..',
+    '..........',
+    'XX......XX',
+  ]},
+  // January event (Friggliarchy): the war camp's bell game, four bells hung from the tent poles (fort squares)
+  campBells: {theme: 'meadow', names: {'T': ['Bell Pole', 'A tent pole with a bell hung from it. Restores 20% HP at the start of each phase.'], 'F': ['Felt Trees', 'The woods around the war camp. Good cover.']}, rows: [
+    'F.F....F.F',
+    '....T.....',
+    '.F..M..F..',
+    '..........',
+    'F..F..F..F',
+    '..........',
+    '.T..FF..T.',
+    '..........',
+    'F..M..M..F',
+    '..........',
+    '.....T....',
+    '.F......F.',
+    '..F.M..F..',
+    '..........',
+    '..........',
+    '.F......F.',
   ]},
 };
 let mapDef = null;   // the map being played (set by the battle engine)
@@ -8733,6 +8781,8 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  // the December debug switch became a pretend month
+  if (s.debugDecember){ s.debugMonth = 11; delete s.debugDecember; }
   // the day-7 log-in placeholders became Rae's Casual Wear (Tiggle's was dropped)
   for (const c of Object.values(s.camps)) for (const r of c.roster || []){
     if (!r.attires) continue;
@@ -8890,7 +8940,7 @@ function rollLevel(statsObj, g){
 const gameDate = () => new Date(Date.now() + ((typeof SAVE !== 'undefined' && SAVE?.debugDays) || 0)*864e5);
 const EVENTS = {
   december: {
-    name: 'The Festive Season', month: 11, icon: '🎁',
+    name: 'The Festive Season', month: 11, icon: '🎁', key: 'gifts',
     currency: {rae: {name: 'Rabbit Gifts', one: 'Rabbit Gift'}, frog: {name: 'Frog Gifts', one: 'Frog Gift'}},
     intro: {
       rae: [
@@ -8907,10 +8957,30 @@ const EVENTS = {
       ],
     },
   },
+  // January: ring in the New Year. Hold the bell posts (fort squares); first to ring twelve wins (objective 'bells').
+  newyear: {
+    name: 'Ring in the New Year', month: 0, icon: '🔔', key: 'chimes',
+    currency: {rae: {name: 'Rabbit Chimes', one: 'Rabbit Chime'}, frog: {name: 'Frog Chimes', one: 'Frog Chime'}},
+    intro: {rae: [
+      {who: "narr", text: "The year is turning. Out in the felt forest, the Raepublic is about to see its first New Year free, for the whole of January!"},
+      {who: "sister", text: "Rae! Do you remember the shift bells? The ones that rang us awake in the dark, every morning, every year?"},
+      {who: "rae", text: "I remember."},
+      {who: "narr", text: "A seasonal side story is open on the Side Stories tab: The Shift Bells. It can be played once a day, all January."},
+      {who: "narr", text: "Hold the old bell posts and ring in the New Year before the frogs do. Win by a wide margin for more Rabbit Chimes."},
+    ], frog: [
+      {who: "narr", text: "The year is turning. In Tiggle's war camp, the soldiers want a New Year's contest, for the whole of January!"},
+      {who: "biggle", text: "An old Lily Court custom, little brother. Two teams, four bells, first to ring twelve. Loser polishes everyone's boots."},
+      {who: "narr", text: "A seasonal side story is open on the Side Stories tab: The War Camp Bells. It can be played once a day, all January."},
+      {who: "narr", text: "Hold the bells and ring in the New Year before Biggle's team does. Win by a wide margin for more Frog Chimes."},
+    ]},
+  },
 };
-const eventActive = id => { const E = EVENTS[id]; return !!E && (!!SAVE?.debugDecember && id === 'december' || gameDate().getMonth() === E.month); };
+// The game's month: the real one, or the one the debug menu pretends it is (SAVE.debugMonth, 0 = January).
+const gameMonth = () => (SAVE?.debugMonth ?? gameDate().getMonth());
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const eventActive = id => { const E = EVENTS[id]; return !!E && gameMonth() === E.month; };
 const eventsOn = ck => Object.keys(EVENTS).filter(id => eventActive(id) && campOpen(ck));
-const giftName = (ck, n) => n === 1 ? EVENTS.december.currency[ck].one : EVENTS.december.currency[ck].name;
+const giftName = (ck, n, id = 'december') => n === 1 ? EVENTS[id].currency[ck].one : EVENTS[id].currency[ck].name;
 
 // ---------- December side stories ----------
 const COURIER = (x, y, extra = {}) => E('courier', 4, x, y, 'courier', {courier: true, name: 'Gift Courier', ...extra});
@@ -8983,11 +9053,68 @@ CAMPAIGNS.frog.sides.push({
   reward: {res: 200, tokens: 0},
 });
 // side story fields the list expects
+// ---------- New Year side stories (January): hold the bell posts, first to ring twelve ----------
+// Objective 'bells' (40-battle.js): every fort square is a bell; at the end of each side's turn, each bell that side is
+// standing on rings once. First to `n` wins; after `turns` turns the side with more rings wins. Pays by the margin.
+const BELL_PAY = 8;
+CAMPAIGNS.rae.sides.push({
+  id: 'NY-R', title: 'The Shift Bells', event: 'newyear', map: 'shiftBells', enemyFaction: 'frog', enemyLine: 'THE GUARDS RUN FOR THE BELLS',
+  objective: {type: 'bells', n: 12, turns: 14}, maxDeploy: 6, enemyMods: {},
+  deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14]],
+  brief: 'The old mine watch-posts each hold a shift bell. A bell rings for whoever is standing at it when their turn ends. Ring twelve before the frog guards do. The bigger your lead, the more Rabbit Chimes.',
+  prepNote: 'Once a day, all January. The bells are the three posts (fort squares). End your turn on them to ring them; the guards will try to take them back.',
+  enemies: () => [E('lily',3,5,2,'bell'), E('blade',3,4,1,'bell'), E('reed',3,6,1,'bell'), E('bruiser',3,2,3,'bell'), E('lily',3,7,3,'bell')],
+  reinforce: () => [{turn: 3, units: [E('blade',3,0,0,'bell'), E('bruiser',3,9,0,'bell')]}, {turn: 6, units: [E('lily',4,4,0,'bell'), E('reed',3,5,0,'bell')]}],
+  reward: {res: 200, tokens: 0},
+  pre: [
+    {card: 'Seasonal Side Story', sub: 'The Shift Bells'},
+    {scene: 'yard', place: 'The Old Watch-Posts · New Year\'s Eve'},
+    {who: "narr", text: "At the edge of the felt forest stand the old watch-posts of the mine camp, each with a brass shift bell. For years, those bells rang the rabbits awake in the dark."},
+    {who: "sister", text: "Every morning. Every single morning, Rae. Clang, clang, up you get, down the shaft."},
+    {who: "willow", text: "Tonight the frog guards will ring them at midnight, for their New Year. As they always have."},
+    {who: "rae", text: "Not this year. This year rabbits ring them. Twelve times, for twelve years of digging."},
+    {who: "willow", text: "Then hold the posts. A bell rings for whoever is standing at it when the turn ends. The frogs will try the same."},
+    {who: "sister", text: "First to twelve! And then we're free for a whole new year!"},
+  ],
+  post: [
+    {who: "narr", text: "Twelve chimes ring out over the treetops, and every rabbit in the camp below looks up."},
+    {who: "sister", text: "Happy New Year, Rae."},
+    {who: "rae", text: "Happy New Year, Flopsy. Our first one."},
+    {who: "willow", text: "The first of a great many, I should think."},
+  ],
+});
+CAMPAIGNS.frog.sides.push({
+  id: 'NY-F', title: 'The War Camp Bells', event: 'newyear', map: 'campBells', enemyFaction: 'frog', spar: true, ban: ['biggle'], enemyLine: 'BIGGLE\'S TEAM RUNS FOR THE BELLS',
+  objective: {type: 'bells', n: 12, turns: 14}, maxDeploy: 6, enemyMods: {},
+  deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14]],
+  brief: 'Tiggle\'s team against Biggle\'s: four bells hung from the tent poles. A bell rings for whoever is standing at it when their turn ends. Ring twelve first. The bigger your lead, the more Frog Chimes.',
+  prepNote: 'Once a day, all January. A friendly contest: nobody is unstitched for good. Biggle plays for the other team. End your turn on the bells (fort squares) to ring them.',
+  enemies: () => [E('lilyknight',3,4,2,'bell',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true}), E('blade',3,2,3,'bell'), E('blade',3,7,3,'bell'),
+                  E('lily',3,3,1,'bell'), E('reed',3,6,1,'bell'), E('bruiser',3,5,4,'bell')],
+  reinforce: () => [{turn: 4, units: [E('blade',3,0,0,'bell'), E('bruiser',3,9,0,'bell')]}],
+  reward: {res: 200, tokens: 0},
+  pre: [
+    {card: 'Seasonal Side Story', sub: 'The War Camp Bells'},
+    {scene: 'warcamp', place: 'The War Camp · New Year\'s Eve'},
+    {who: "narr", text: "New Year's Eve in the war camp. The soldiers have hung four bells from the tent poles, and the whole camp has come out to watch."},
+    {who: "biggle", text: "Lily Court rules, little brother. My team, your team, four bells. A bell rings for whoever is standing at it when the turn ends. First to twelve."},
+    {who: "tiggle", text: "And if I lose?"},
+    {who: "biggle", text: "Then you polish every boot in the camp. Including mine. Especially mine."},
+    {who: "tiggle", text: "Fine. But nobody gets hurt. It's New Year."},
+    {who: "biggle", text: "Nobody ever gets hurt in the bell game. Much."},
+  ],
+  post: [
+    {who: "narr", text: "The twelfth bell rings out, and the whole camp cheers, both teams together."},
+    {who: "biggle", text: "Not bad, little brother. Not bad at all."},
+    {who: "tiggle", text: "Happy New Year, Biggle."},
+    {who: "biggle", text: "Happy New Year. Now go and enjoy it. Somebody else can polish the boots."},
+  ],
+});
 for (const ck of ['rae', 'frog']) for (const s of CAMPAIGNS[ck].sides) if (s.event){
   const at = CAMPAIGNS[ck].stages.find(x => x.id === SIDE_OPENS[ck]); Object.assign(s, {side: true, chapter: at.chapter, ci: at.ci, si: 0, rank: 0});
 }
 const eventPlayedToday = s => (SAVE.eventPlays || {})[s.id] === todayKey();
-const eventMaxGifts = s => [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? s.allies({}) : []), ...(s.reinforce ? s.reinforce({}).flatMap(w => w.units) : [])].filter(u => u.courier).length;
+const eventMaxGifts = s => s.objective?.type === 'bells' ? BELL_PAY : [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? s.allies({}) : []), ...(s.reinforce ? s.reinforce({}).flatMap(w => w.units) : [])].filter(u => u.courier).length;
 
 // ---------- December banners (paid with Gifts) ----------
 GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
@@ -9004,7 +9131,7 @@ GACHA_ARMY.frog.troops.elves = {stars: [1, 2], generic: ['xblade', 'xaxe', 'xpik
   names: ['Jingle', 'Tinsel', 'Sprout', 'Holly', 'Pudding', 'Bauble', 'Sleet', 'Cracker', 'Nutmeg', 'Figgy', 'Wassail', 'Snowdrop', 'Mince', 'Clove', 'Ivy']};
 // what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}
 function bannerCur(ck, b){
-  if (b?.currency === 'gifts'){ const c = EVENTS[b.event].currency[ck]; return {key: 'gifts', name: c.name, one: c.one, seal: '🎁', tease: b.tease}; }
+  if (b?.currency === 'gifts'){ const E_ = EVENTS[b.event], c = E_.currency[ck]; return {key: E_.key || 'gifts', name: c.name, one: c.one, seal: E_.icon, tease: b.tease}; }
   const a = GACHA_ARMY[ck]; return {key: 'tokens', name: a.currency, one: a.one, seal: a.seal, tease: a.tease};
 }
 // event banners show only while their event is on (and the Camp is open)
@@ -9277,7 +9404,7 @@ function freeTileNear(x, y){
 function runBattle(campKey, ch, records, opts = {}){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
-       objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
+       objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null, bells: {p: 0, e: 0},
        events: opts.replay ? (ch.events || []).filter(ev => ev.defect).map(ev => ({turn: ev.turn, defect: ev.defect, popup: ev.popup})) : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
@@ -9305,7 +9432,7 @@ function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
   Music.jingle(win ? 'victory' : 'defeat');
-  B.resolve({win, retreated, reason, turn, gifts: win && B.ch.event ? giftCount() : 0, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, bells: {...B.bells}, gifts: win && B.ch.event ? giftCount() : 0, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -9614,8 +9741,8 @@ function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 
 // ---------- Event couriers (31-data-events.js) ----------
 const couriers = () => units.filter(u => u.courier);
 // gifts so far: couriers caught (stealing) or couriers safe (escorting)
-const giftCount = () => B.ch.escort ? couriers().filter(u => u.escaped || !u.dead).length : couriers().filter(u => u.dead && !u.escaped).length;
-const giftLine = () => `<b>${EVENTS[B.ch.event].icon} ${giftCount()} of ${eventMaxGifts(B.ch)} ${B.ch.escort ? 'safe' : 'caught'}</b>`;
+const giftCount = () => B.objective.type === 'bells' ? bellPay() : B.ch.escort ? couriers().filter(u => u.escaped || !u.dead).length : couriers().filter(u => u.dead && !u.escaped).length;
+const giftLine = () => B.objective.type === 'bells' ? `<b>🔔 You ${B.bells.p} · Them ${B.bells.e}</b> (first to ${B.objective.n})` : `<b>${EVENTS[B.ch.event].icon} ${giftCount()} of ${eventMaxGifts(B.ch)} ${B.ch.escort ? 'safe' : 'caught'}</b>`;
 const onExit = u => (B.ch.exits || []).some(([x, y]) => x === u.x && y === u.y);
 function exitField(u){
   const f = new Array(COLS*ROWS).fill(Infinity), open = [];
@@ -9652,7 +9779,8 @@ function objectiveText(){
   const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
     : ob.type === 'survive' ? (B.ch.escort ? `Protect the ${ob.who || 'couriers'} until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach ${ob.dest || 'the road'}.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
     : ob.type === 'intercept' ? `Catch as many ${ob.who || 'couriers'} as you can before they reach ${ob.dest || 'the road'}.${B.ch.event ? '' : ` ${couriers().filter(u => u.dead && !u.escaped).length} caught.`}`
-    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.` : 'Rout the enemy.';
+    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`
+    : ob.type === 'bells' ? `Hold the bells: each one you stand on at the end of your turn rings once. Ring ${ob.n} before they do.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
@@ -9943,6 +10071,41 @@ async function litFuses(){
   }
   return false;
 }
+// ---------- Bells (objective 'bells', the New Year event) ----------
+// Every fort square is a bell. At the end of a side's turn, each bell one of its units stands on rings once for it.
+const bellSquares = () => { const out = []; MAP.forEach((row, y) => [...row].forEach((c, x) => { if (c === 'T') out.push([x, y]); })); return out; };
+const onBell = u => MAP[u.y]?.[u.x] === 'T';
+const bellHolder = ([x, y]) => { const u = unitAt(x, y); return u ? (sideOfTeam(u) === 'p' ? 'p' : 'e') : null; };
+// pay by the margin: 12-0 pays the full 8, a 12-11 squeaker 1
+const bellPay = () => Math.max(1, Math.min(BELL_PAY, Math.round(BELL_PAY*(B.objective.n - B.bells.e)/B.objective.n)));
+async function ringBells(side){
+  const held = bellSquares().filter(b => bellHolder(b) === side); if (!held.length) return false;
+  for (const [x, y] of held){ if (B.bells[side] >= B.objective.n) break; B.bells[side]++; popup({x, y}, `🔔 ${B.bells[side]}`, side === 'p' ? '#ffd98a' : '#ffb3a6'); Sfx.play('coin'); await wait(260); }
+  refreshTop(); panelIdle(); await wait(300);
+  if (B.bells[side] >= B.objective.n){ finishBattle(side === 'p', false, 'bells'); return true; }
+  return false;
+}
+// the bell AI: hold a bell once on one (striking anything in reach); otherwise head for the nearest bell not held by its
+// own side, and strike whoever is in reach on arrival (preferring whoever is standing on a bell)
+async function bellAct(e){
+  const mine = sideOfTeam(e) === 'p' ? 'p' : 'e';
+  if (!onBell(e)){
+    const goals = bellSquares().filter(b => bellHolder(b) !== mine), f = new Array(COLS*ROWS).fill(Infinity), open = [];
+    for (const [x, y] of goals){ f[K(x, y)] = 0; open.push(K(x, y)); }
+    while (open.length){ open.sort((a, b) => f[a] - f[b]); const cur = open.shift(), cx = KX(cur), cy = KY(cur);
+      for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx = cx + dx, ny = cy + dy; if (!inBounds(nx, ny)) continue;
+        const c = moveCost(e, cx, cy); if (c >= 99) continue; const nk = K(nx, ny), nd = f[cur] + c; if (nd < f[nk]){ f[nk] = nd; open.push(nk); } } }
+    const map = reach(e); let bk = K(e.x, e.y);
+    for (const dk of destinations(e, map)) if (f[dk] < f[bk] || (f[dk] === f[bk] && map.get(dk).d < map.get(bk).d)) bk = dk;
+    if (bk !== K(e.x, e.y)){ inspect = e; await wait(150); await moveAlong(e, pathTo(map, bk)); }
+  }
+  const tgts = foes(e).filter(p => !p.sanct && man(e, p) >= e.rng[0] && man(e, p) <= e.rng[1]);
+  if (tgts.length && e.w !== 'staff'){
+    const pick = tgts.sort((a, b) => (onBell(b) - onBell(a)) || (calc(e, b, e, b).dmg - calc(e, a, e, a).dmg))[0];
+    await wait(150); inspect = null; await doCombat(e, pick);
+  }
+  inspect = null; updateDanger();
+}
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
@@ -9957,6 +10120,7 @@ async function spawnReinforcements(){
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
+  if (B.objective.type === 'bells' && await ringBells('p')) return;
   for (const u of units) if (sideOfTeam(u) !== 'p') u.sanct = false;
   for (const u of units) if (sideOfTeam(u) !== 'p') u.offbal = false;
   for (const u of units) if (sideOfTeam(u) === 'p') u.planted = (u.movedDist || 0) <= 1;   // Plant the Spear: braced if she barely moved
@@ -9983,6 +10147,10 @@ async function enemyPhase(){
     if (checkEnd()) return;
   }
   const ob = B.objective;
+  if (ob.type === 'bells'){
+    if (await ringBells('e')) return;
+    if (turn >= ob.turns){ finishBattle(B.bells.p > B.bells.e, false, 'bells'); return; }
+  }
   if (ob.type === 'survive' && turn >= ob.turns){
     if (B.twist && !B.twist.done) await runTwist();   // the story turns: a new objective
     else { finishBattle(true); return; }
@@ -10031,6 +10199,7 @@ async function aiAct(e){
     if (foes(e).some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
   }
   if (e.ai === 'courier') return courierAct(e);
+  if (e.ai === 'bell') return bellAct(e);
   if (e.w === 'staff') return aiHeal(e);
   const map = e.ai === 'hold' ? new Map([[K(e.x, e.y), {d: 0, prev: -1}]]) : reach(e);
   const dests = destinations(e, map);
@@ -10547,6 +10716,12 @@ function render(now){
     for (const [ex, ey] of B.ch.exits){ ctx.fillStyle = 'rgba(255,190,60,.42)'; ctx.fillRect(ex*T + 1, ey*T + 1, T - 2, T - 2); ctx.strokeStyle = 'rgba(190,120,20,.8)'; ctx.lineWidth = 2; ctx.strokeRect(ex*T + 2, ey*T + 2, T - 4, T - 4); ctx.fillStyle = '#8a4a10';
       ctx.font = `${Math.round(T*.42)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = .85; ctx.fillText('⬇', ex*T + T/2, ey*T + T/2); ctx.globalAlpha = 1; }
   }
+  if (B?.objective?.type === 'bells') for (const [bx, by] of bellSquares()){   // the bells: dashed gold (yours), red (theirs) or white (free)
+    const h = bellHolder([bx, by]);
+    ctx.strokeStyle = h === 'p' ? 'rgba(255,217,138,.95)' : h === 'e' ? 'rgba(255,110,90,.95)' : 'rgba(255,255,255,.55)'; ctx.lineWidth = Math.max(2, T*.07);
+    ctx.setLineDash([T*.12, T*.08]); ctx.strokeRect(bx*T + T*.08, by*T + T*.08, T*.84, T*.84); ctx.setLineDash([]);
+    ctx.font = `${Math.round(T*.34)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('🔔', bx*T + T*.82, by*T + T*.18); ctx.textBaseline = 'alphabetic';
+  }
   if (showDanger) fillKeys(dangerKeys, 'rgba(255,128,32,.26)');
   if (inspect && !inspect.dead){
     const m = inspect.ai === 'hold' ? [K(inspect.x, inspect.y)] : destinations(inspect, reach(inspect));
@@ -10792,7 +10967,7 @@ function recChip(ck, sg, team){
   const low = have < rec - .5;
   return `<span class="chip${low ? " under" : ""}" title="Your team's average: Lv ${have.toFixed(1)}">Rec. Lv ${rec}${low ? ` · yours ${have.toFixed(1)}` : ''}</span>`;
 }
-const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the ${ob.who || 'couriers'} for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? `Catch the ${ob.who || 'couriers'}` : ob.type === 'escape' ? 'Escape' : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the ${ob.who || 'couriers'} for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? `Catch the ${ob.who || 'couriers'}` : ob.type === 'escape' ? 'Escape' : ob.type === 'bells' ? `First to ring ${ob.n} bells` : 'Rout the enemy';
 function chapterRef(id){
   const f = findStage(id); if (!f) return id;
   return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
@@ -10863,13 +11038,13 @@ function sideNodeHTML(ck, s, j){
 // Seasonal event side stories: a festive card at the top of the tab, playable once a day
 function eventNodeHTML(ck, s, j){
   const st = sideState(ck, j), E_ = EVENTS[s.event], cur = E_.currency[ck], best = (SAVE.eventBest || {})[s.id];
-  return `<div class="evcard"><div class="evsnow" aria-hidden="true"></div>
-    <div class="evkick">${E_.icon} ${E_.name} · December only</div><h3>${s.title}</h3>
+  return `<div class="evcard ev-${s.event}"><div class="${s.event === 'december' ? 'evsnow' : 'evspark'}" aria-hidden="true"></div>
+    <div class="evkick">${E_.icon} ${E_.name} · ${MONTH_NAMES[E_.month]} only</div><h3>${s.title}</h3>
     <p>${s.brief}</p>
     <div class="chips">${recChip(ck, s)}<span class="chip">${objectiveLabel(s.objective)}</span><span class="chip evc">Up to ${eventMaxGifts(s)} ${cur.name} a day</span>${best != null ? `<span class="chip">Best: ${best} of ${eventMaxGifts(s)}</span>` : ''}</div>
     ${st.s === 'played' ? `<button class="btn" type="button" disabled>Played today · come back tomorrow</button>`
       : `<button class="btn primary evplay" data-play="s${j}" type="button">${E_.icon} Play today's run</button>`}
-    <div class="evbal">You have <b>${gachaState(ck).gifts || 0} ${cur.name}</b> for the festive recruiting banner.</div></div>`;
+    <div class="evbal">You have <b>${gachaState(ck)[E_.key] || 0} ${cur.name}</b>${GACHA_ARMY[ck].banners.some(b => b.event === s.event) ? ' for the seasonal recruiting banner' : ', saved for the seasonal banner to come'}.</div></div>`;
 }
 function sidesHTML(ck){
   const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
@@ -10902,7 +11077,7 @@ function renderHub(){
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
-    ${eventsOn(ck).map(id => { const s = camp.sides.find(x => x.event === id); return s ? `<button class="evstrip" data-hubtab="side" type="button"><span>${EVENTS[id].icon}</span><span><b>${EVENTS[id].name}</b><small>${s.title}${eventPlayedToday(s) ? ' · played today' : ' · ready to play'}</small></span><span>›</span></button>` : ''; }).join('')}
+    ${eventsOn(ck).map(id => { const s = camp.sides.find(x => x.event === id); return s ? `<button class="evstrip ev-${id}" data-hubtab="side" type="button"><span>${EVENTS[id].icon}</span><span><b>${EVENTS[id].name}</b><small>${s.title}${eventPlayedToday(s) ? ' · played today' : ' · ready to play'}</small></span><span>›</span></button>` : ''; }).join('')}
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
@@ -11066,12 +11241,12 @@ async function playChapter(){
   const kills = B.kills, lightFingers = B.bonusRes || 0;   // Brigand's Light Fingers
   // seasonal event: gifts by how well you did; once a (game) day
   const gifts = res.win && ch.event ? res.gifts : 0;
-  if (res.win && ch.event){ gachaState(ck).gifts = (gachaState(ck).gifts || 0) + gifts; (SAVE.eventPlays ||= {})[ch.id] = todayKey();
+  if (res.win && ch.event){ const gk = EVENTS[ch.event].key || 'gifts'; gachaState(ck)[gk] = (gachaState(ck)[gk] || 0) + gifts; (SAVE.eventPlays ||= {})[ch.id] = todayKey();
     (SAVE.eventBest ||= {})[ch.id] = Math.max(SAVE.eventBest[ch.id] || 0, gifts); }
   if (!res.win){
     B = null;
     const energyLeft = spendEnergy();   // losing or retreating costs 1 energy (winning costs none)
-    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i, energyLeft});
+    renderResult({win: false, retreated: res.retreated, reason: res.reason, bells: res.bells, ck, i, energyLeft});
     return;
   }
   // Commit the battle to the permanent army.
@@ -11101,7 +11276,7 @@ async function playChapter(){
   saveGame();
   if (!seen) await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, gifts, armed, lost: res.lost.map(u => u.name), departed});
+  renderResult({win: true, ck, i, replay, turn: res.turn, bells: res.bells, kills, spoils, tokens, starTokens, star: res.star, joined, gifts, armed, lost: res.lost.map(u => u.name), departed});
 }
 
 function renderResult(r){
@@ -11113,7 +11288,7 @@ function renderResult(r){
     html = `<div class="brief"><div class="kick">${r.replay ? 'Replay victory' : 'Victory'} · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
-        ${ch.event ? `<div class="rgift"><span>${EVENTS[ch.event].icon} ${ch.escort ? 'Couriers kept safe' : 'Couriers caught'}: ${r.gifts} of ${eventMaxGifts(ch)}${(SAVE.eventBest||{})[ch.id] != null ? ` · best ${SAVE.eventBest[ch.id]}` : ''}</span><b>+${r.gifts} ${giftName(r.ck, r.gifts)}</b></div>
+        ${ch.event ? `<div class="rgift"><span>${EVENTS[ch.event].icon} ${ch.objective.type === 'bells' ? `Bells rung ${r.bells?.p ?? 0} to ${r.bells?.e ?? 0}` : ch.escort ? 'Couriers kept safe' : 'Couriers caught'}: ${r.gifts} of ${eventMaxGifts(ch)}${(SAVE.eventBest||{})[ch.id] != null ? ` · best ${SAVE.eventBest[ch.id]}` : ''}</span><b>+${r.gifts} ${giftName(r.ck, r.gifts, ch.event)}</b></div>
         <div><span>Come back tomorrow to play again</span><b>Once a day</b></div>`
           : `<div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>`}
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
@@ -11128,7 +11303,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason === 'escaped' ? (ch.escapeFail || 'They got away.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason === 'escaped' ? (ch.escapeFail || 'They got away.') : r.reason === 'bells' ? `They rang the bells first, ${r.bells?.e ?? 0} to ${r.bells?.p ?? 0}.` : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="renergy"><span><b>−1 energy.</b> ${r.energyLeft ? `${r.energyLeft} left.` : 'You\'re out: battles wait until some comes back.'} One comes back every hour.</span>${energyHTML('big')}</div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }
@@ -11943,7 +12118,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '4a991a8554da';
+const BUILD_ID = 'a8b4f8ca0bc0';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
@@ -12085,7 +12260,7 @@ function renderDebug(){
       <div class="dbggrid">${b('setlv', 'Set levels')}${b('recruit', 'Recruit everyone')}${b('revive', 'Stitch up the fallen')}${b('weapons', 'Every weapon (one each)')}${b('attires', 'Every attire')}${b('clearrel', 'Release all ★ and ★★')}</div>
       <label>Supports<select id="dbgSup"><option value="*">Everyone</option>${charOpts}</select></label>
       <div class="dbggrid">${['C', 'B', 'A', 'S'].map((r, i) => b('sup' + (i + 1), 'Set to ' + r)).join('')}${b('sup0', 'Reset')}</div>`)}
-    ${sec('Time, energy and events', `<div class="dbggrid">${b('newday', 'New day')}${b('loginall', 'Claim every log-in reward')}${b('hour', '+1 hour')}${b('energy0', 'Empty energy')}${b('energy1', 'Energy −1')}${b('energyfull', 'Refill energy')}${b('december', SAVE.debugDecember ? 'December: on' : 'December: off')}${b('eventplays', 'Event stories: play again today')}</div>
+    ${sec('Time, energy and events', `<div class="dbggrid">${b('newday', 'New day')}${b('loginall', 'Claim every log-in reward')}${b('hour', '+1 hour')}${b('energy0', 'Empty energy')}${b('energy1', 'Energy −1')}${b('energyfull', 'Refill energy')}${b('december', SAVE.debugMonth === 11 ? 'December: on' : 'December: off')}${b('january', SAVE.debugMonth === 0 ? 'January: on' : 'January: off')}${b('eventplays', 'Event stories: play again today')}</div>
       <label>Log-ins so far (${L.claimed})<input id="dbgLogin" type="number" min="0" max="200" value="${L.claimed}"></label>
       <div class="dbggrid">${b('setlogin', 'Set, and log in again today')}${b('resetlogin', 'Reset log-ins')}</div>`)}
     ${sec('Tutorials and display', `<div class="dbggrid">${b('tuts', 'Show every tutorial again')}${b('fast', SAVE.debugFast ? 'Fast animations: on' : 'Fast animations: off')}${b('nomusic', 'Sound: ' + SOUND_SHORT[Audio_.mode].replace('♪ ', ''))}</div>`)}
@@ -12123,9 +12298,9 @@ function debugAction(act, btn){
     case 'res10': st.res += 10000; return done();
     case 'tok': g.tokens += 10; return done();
     case 'tok100': g.tokens += 100; return done();
-    case 'gifts': g.gifts = (g.gifts || 0) + 20; return done();
+    case 'gifts': for (const E_ of Object.values(EVENTS)) g[E_.key] = (g[E_.key] || 0) + 20; return done('+20 of every seasonal currency.');
     case 'pity': for (const bn of GACHA_ARMY[ck].banners) (g.pity ||= {})[bn.id] = GACHA.pity - 1; return done('The next pull on any banner is a guaranteed ★★★.');
-    case 'zero': st.res = 0; g.tokens = 0; g.gifts = 0; return done('Money and pulls set to 0.');
+    case 'zero': st.res = 0; g.tokens = 0; for (const E_ of Object.values(EVENTS)) g[E_.key] = 0; return done('Money and pulls set to 0.');
     // army
     case 'setlv': { const to = Math.max(1, Math.min(40, num('#dbgLv') || 1)); for (const r of st.roster) if (r.lv < to) dbgLevelTo(r, to); else r.lv = to; return done(`Everyone is level ${to}.`); }
     case 'recruit': { const n = debugRecruitAll(ck); if (n && festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.()); return done(`${n} recruits joined.`); }
@@ -12151,7 +12326,11 @@ function debugAction(act, btn){
     case 'energy0': { const e = energyNow(); e.n = 0; e.t = nowMs(); return done(); }
     case 'energy1': spendEnergy(); return done();
     case 'energyfull': energyNow().n = ENERGY.max; return done();
-    case 'december': SAVE.debugDecember = !SAVE.debugDecember; if (festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.()); return done(SAVE.debugDecember ? 'It is December.' : 'Back to the real date.');
+    case 'december': case 'january': {   // pretend it's that month (the seasonal events follow the game's month); again to go back
+      const m = act === 'december' ? 11 : 0; SAVE.debugMonth = SAVE.debugMonth === m ? null : m; delete SAVE.debugDecember;
+      if (festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.());
+      return done(SAVE.debugMonth == null ? 'Back to the real date.' : `It is ${MONTH_NAMES[m]}.`);
+    }
     case 'eventplays': SAVE.eventPlays = {}; return done('The seasonal stories can be played again today.');
     case 'setlogin': { const L = loginState(); L.claimed = Math.max(0, num('#dbgLogin') || 0); L.last = ''; saveGame(); $('#dbgsheet').hidden = true; refreshUnder(); checkDailyLogin(true); return; }
     case 'resetlogin': SAVE.login = {claimed: 0, last: ''}; return done('Log-ins reset.');
