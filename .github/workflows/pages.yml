@@ -3,10 +3,9 @@
 # Runs whenever a new build of tactics/web is pushed, or by hand from the Actions tab.
 name: Publish the game
 
+# Started by hand only for now: the repository's Pages site currently serves the Rae platformer from main, and
+# publishing this would replace it. See tactics/README.md, "Playing on a phone".
 on:
-  push:
-    branches: [main, claude/busy-hopper-hko7tb]
-    paths: ['tactics/web/**']
   workflow_dispatch:
 
 permissions:
