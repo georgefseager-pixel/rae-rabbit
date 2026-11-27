@@ -135,11 +135,10 @@ their own art, it replaces the generic art automatically.
   full-screen), `icon-192.png` / `icon-512.png` (Rae's face, from `art/rae-token.png`), `sw.js` (keeps a copy for playing offline)
   and `version.json` (the newest build id).
 
-It's published by GitHub Pages at **https://georgefseager-pixel.github.io/rae-rabbit/**: the workflow in
-`.github/workflows/pages.yml` uploads `tactics/web/` whenever a new build of it is pushed. (One-time setup in the
-repository's Settings → Pages: Source "GitHub Actions". GitHub only lets the `github-pages` environment deploy from the
-branches it allows, under Settings → Environments → github-pages.) The app icon is Rae's face, made from
-`art/rae-token.png`.
+It's published at **https://georgefseager-pixel.github.io/rae-rabbit/toy-wars/**, alongside the earlier Rae platformer
+(which is the repository's main Pages site, served from the root of `main`). To publish an update, copy
+`tactics/web/*` into the `toy-wars/` folder on `main` and push; GitHub Pages republishes `main` within a minute or two.
+The app icon is Rae's face, made from `art/rae-token.png`.
 
 On Android, open the site in Chrome and choose "Install app" (or "Add to Home screen"). To publish an update, rebuild
 and upload `tactics/web/` again: the installed game checks `version.json` when it opens and shows "A new version is

@@ -5,3 +5,5 @@
   stage fields, what has been taught where, and the recommended-level line. Reuse mechanics across stages.
 - **Keep `tactics/MECHANICS.md` up to date** whenever a mechanic is added or a stage starts using one.
 - Art and data conventions are in `tactics/README.md` and in the comments at the top of each `tactics/src/js/*.js` data file.
+- The installable game is hosted at https://georgefseager-pixel.github.io/rae-rabbit/toy-wars/ from the `toy-wars/` folder on
+  `main` (the root of `main` is a different game). After a build worth sharing, copy `tactics/web/*` there and push `main`.
