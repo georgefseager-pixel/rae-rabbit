@@ -132,7 +132,11 @@ function artResolve(ent, kind){
   }
   if (sp.base === 'glad'){
     // the gladiator frogs: one portrait and map icon, and a battle pose for each weapon (art/glad<weapon>-battle.png; swords use glad-battle.png)
+    // ★★ (elite) gladiators wear the scarred champion's helm and cape: the same set as art/gladelite*-*.png
+    const e = (ent.stars ?? ent.rec?.stars) === 2 ? 'elite' : '';
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff', hook: 'hook'}[ent.w || CLASSES[cls]?.w] || '';
+    if (ART['glad' + e + pose + fur]?.[kind]) return 'glad' + e + pose + fur;
+    if (ART['glad' + e + fur]?.[kind]) return 'glad' + e + fur;
     if (ART['glad' + pose + fur]?.[kind]) return 'glad' + pose + fur;
     if (ART['glad' + fur]?.[kind]) return 'glad' + fur;
   }
@@ -312,7 +316,7 @@ async function buildFurVariants(){
     for (const base of ['fish', 'fishaxe', 'fishlance', 'fishbow', 'fishbook', 'fishstaff', 'fishhook']) await buildVariants(base, FISH_COLOURS, fishWeight(base));
     for (const base of ['shark', 'sharkaxe', 'sharklance', 'sharkbow', 'sharkbook', 'sharkstaff', 'sharkhook']) await buildVariants(base, SHARK_COLOURS, fishWeight(base));
     // the tournament's gladiator frogs: frog skin colours, from art/glad*skin-<kind>.png
-    for (const base of ['glad', 'gladaxe', 'gladlance', 'gladbow', 'gladbook', 'gladstaff', 'gladhook']) await buildVariants(base, SKINS, skinWeight(base));
+    for (const base of ['', 'axe', 'lance', 'bow', 'book', 'staff', 'hook'].flatMap(p => ['glad' + p, 'gladelite' + p])) await buildVariants(base, SKINS, skinWeight(base));
     if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 

@@ -414,6 +414,7 @@ const ART_CROP = {
   fish:    {panel: ['200% auto', '58% 4%'], talk: ['150% auto', '58% 3%']},   // the pirate fish, every colour
   shark:   {panel: ['200% auto', '62% 4%'], talk: ['150% auto', '62% 3%']},   // the pirate sharks, every colour
   elf:     {panel: ['200% auto', '48% 5%'], talk: ['150% auto', '48% 4%']},   // festive frog scouts, every skin   // Fraggle's Black Guard, every skin
+  gladelite: {panel: ['215% auto', '52% 9%'], talk: ['160% auto', '52% 7%']},   // ★★ gladiators (checked before glad)
   glad:    {panel: ['215% auto', '52% 9%'], talk: ['160% auto', '52% 7%']},   // the gladiator frogs, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
