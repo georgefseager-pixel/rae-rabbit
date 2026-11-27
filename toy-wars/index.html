@@ -156,8 +156,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 /* split background */
 .tsplit{position:absolute;inset:0;pointer-events:none}
 .tside{position:absolute;inset:0;animation:fadeIn 1.2s both}
-.tside.rae{clip-path:polygon(0 0,60% 0,40% 100%,0 100%);background:radial-gradient(ellipse 90% 60% at 18% 32%, rgba(190,40,30,.62), transparent 72%),linear-gradient(160deg,#3a0f0c,#140807 70%)}
-.tside.frog{clip-path:polygon(60% 0,100% 0,100% 100%,40% 100%);background:radial-gradient(ellipse 90% 60% at 82% 32%, rgba(96,140,48,.55), transparent 72%),linear-gradient(200deg,#1c2e10,#0a1006 70%)}
+.tside.rae{clip-path:polygon(0 0,60% 0,40% 100%,0 100%);background:radial-gradient(ellipse 90% 60% at 18% 32%, rgba(200,46,34,.55), transparent 72%),linear-gradient(160deg,rgba(78,16,12,.78),rgba(20,8,7,.9) 70%),var(--tbg, none) 30% 30%/cover no-repeat,#140807}
+.tside.frog{clip-path:polygon(60% 0,100% 0,100% 100%,40% 100%);background:radial-gradient(ellipse 90% 60% at 82% 32%, rgba(110,160,52,.5), transparent 72%),linear-gradient(200deg,rgba(34,58,18,.8),rgba(10,16,6,.9) 70%),var(--tbg, none) 70% 30%/cover no-repeat,#0a1006}
 .tseam{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .tseam line{vector-effect:non-scaling-stroke}
 .tseam .sh{stroke:#070504;stroke-width:7}
@@ -924,17 +924,36 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 #gacha.f-pirate{background:radial-gradient(ellipse at 50% 40%, #16404e, #04090c 75%)}   /* a pirate recruit's reveal */
 .sintro.f-pirate{background:linear-gradient(180deg,#1f4a5a,#0a1c24);box-shadow:0 0 0 2px #9fd3cf,0 20px 50px rgba(0,0,0,.7)}   /* pirate recruits (Ducky) */
 
-/* save slots on the title screen */
+/* save slots on the title screen: felt cards with a red/green split edge and a progress bar per story */
 .tslots{display:flex;flex-direction:column;gap:8px}
-.tslot{display:flex;gap:6px;align-items:stretch}
-.tslot>.btn:first-child{flex:1;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px;font-size:13px!important;padding:8px 12px!important;line-height:1.25}
-.tslot>.btn:first-child b{font-size:15px;letter-spacing:.04em}
-.tslot>.btn:first-child span,.tslot>.btn:first-child small{font-family:var(--body);font-size:11.5px;text-transform:none;letter-spacing:0;opacity:.9}
-.tslot>.btn:first-child small{opacity:.7}
-.tslot .f-rae{color:#ffb4a6}.tslot .f-frog{color:#cfe8a0}
-.tslot .btn.primary .f-rae,.tslot .btn.primary .f-frog{color:inherit}
-.tslot>.btn.empty{opacity:.8;border-style:dashed}
-.tslot .tslotx{flex:0 0 42px;padding:0!important;font-size:15px!important;min-height:0}
+.tslot{position:relative}
+.tscard{display:flex;flex-direction:column;gap:5px;width:100%;text-align:left;cursor:pointer;color:var(--cream);font:inherit;
+  padding:9px 40px 10px 16px;border-radius:12px;border:1.5px solid rgba(236,198,115,.28);
+  background:linear-gradient(90deg,var(--red) 0 4px,var(--frog) 4px 8px,transparent 8px),linear-gradient(180deg,rgba(40,30,24,.92),rgba(18,13,10,.95));
+  box-shadow:inset 0 0 0 4px rgba(0,0,0,.25),0 8px 18px rgba(0,0,0,.5);position:relative;transition:transform .12s;background-repeat:no-repeat;background-origin:border-box}
+.tscard::after{content:"";position:absolute;inset:4px 4px 4px 12px;border:1.5px dashed rgba(236,198,115,.25);border-radius:8px;pointer-events:none}
+.tscard:active{transform:scale(.985)}
+.tslot.last .tscard{border-color:#ecc673;background:linear-gradient(90deg,var(--red) 0 4px,var(--frog) 4px 8px,transparent 8px),linear-gradient(180deg,rgba(74,52,24,.95),rgba(32,22,10,.96));box-shadow:0 0 0 1px rgba(236,198,115,.35),0 0 22px rgba(236,198,115,.22),0 8px 18px rgba(0,0,0,.5)}
+.tslot.last .tscard::after{border-color:rgba(236,198,115,.55)}
+.tslhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.tslhead b{font-family:var(--stencil);font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+.tslhead small{font-size:11px;opacity:.6}
+.tslgo{font-family:var(--stencil);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#ffd98a}
+.tslrow{display:grid;grid-template-columns:84px 1fr 44px;align-items:center;gap:8px;font-size:11.5px}
+.tslrow i{font-style:normal;letter-spacing:.04em}
+.tslrow.f-rae i{color:#ffb4a6}.tslrow.f-frog i{color:#cfe8a0}
+.tslrow small{opacity:.75;text-align:right;white-space:nowrap}
+.tslbar{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}
+.tslbar em{display:block;height:100%;border-radius:3px}
+.tslrow.f-rae em{background:linear-gradient(90deg,#8e231b,#e0604a)}.tslrow.f-frog em{background:linear-gradient(90deg,#3d6a1e,#8cc84e)}
+.tscard.empty{align-items:center;justify-content:center;flex-direction:row;gap:10px;padding:13px 16px;opacity:.72;border-style:dashed;background:rgba(18,13,10,.7);box-shadow:none}
+.tscard.empty::after{display:none}
+.tscard.empty b{font-family:var(--stencil);font-size:14px;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.tscard.empty span{font-size:13px;color:#ecc673}
+.tslotx{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(236,198,115,.3);background:rgba(0,0,0,.35);
+  color:rgba(243,231,203,.6);font-size:11px;line-height:1;padding:0;cursor:pointer;z-index:1}
+.tslotx:hover{color:#ffb4a6;border-color:#e8493b}
+#title .tbtns .btn.sound{align-self:center;min-height:30px;width:auto;padding:4px 14px;font-size:11px;opacity:.7;background:rgba(18,13,10,.7);border:1px solid rgba(236,198,115,.3);box-shadow:none}
 /* erasing a save slot: a confirmation card with a hold-to-erase button */
 .erasesheet{z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(6,4,3,.78)}
 .erasesheet .card{width:min(340px,100%);display:flex;flex-direction:column;gap:10px;text-align:center}
@@ -944,6 +963,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .erasehold{position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;background:#6e1b16;border-color:#e8493b}
 .erasehold i{position:absolute;left:0;top:0;bottom:0;width:0;background:#c0392b}
 .erasehold span{position:relative}
+.tag{text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 14px rgba(0,0,0,.8)}
 
 </style>
 
@@ -11151,14 +11171,22 @@ function slotSummary(s){
   return `<span class="f-rae">${FACTIONS.rae.name} · ${ch('rae')}</span><span class="f-frog">${FACTIONS.frog.name} · ${ch('frog')}</span>`
     + (d ? `<small>Last played ${d.getDate()} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}</small>` : '');
 }
+// A slot card's progress for one story: how many of its stages are cleared, and the chapter it's on.
+function slotStory(s, ck){
+  const st = CAMPAIGNS[ck].stages.filter(sg => !sg.stub), done = st.filter(sg => s.camps[ck]?.cleared?.includes(sg.id)).length;
+  const nx = st.find(sg => !s.camps[ck]?.cleared?.includes(sg.id));
+  return `<div class="tslrow f-${CAMPAIGNS[ck].faction}"><i>${FACTIONS[CAMPAIGNS[ck].faction].name}</i>
+    <span class="tslbar"><em style="width:${Math.round(done/st.length*100)}%"></em></span><small>${nx ? nx.chapter.title.replace('Chapter ', 'Ch. ') : 'Done'}</small></div>`;
+}
 function renderSlots(){
   const saves = [1, 2, 3].map(n => migrateSave(Store.load(n)));
   const last = saves[Store.slot - 1] ? Store.slot : (saves.findIndex(Boolean) + 1 || 0), firstEmpty = saves.findIndex(s => !s) + 1;
-  $('#tslots').innerHTML = saves.map((s, i) => { const n = i + 1;
-    return s ? `<div class="tslot${n === last ? ' last' : ''}"><button class="btn${n === last ? ' primary' : ''}" data-slot-play="${n}"${n === last ? ' id="contBtn"' : ''} type="button">
-        <b>Slot ${n}${n === last ? ' · Continue' : ''}</b>${slotSummary(s)}</button>
-        <button class="btn tslotx" data-slot-erase="${n}" type="button" aria-label="Erase slot ${n}">✕</button></div>`
-      : `<div class="tslot"><button class="btn empty" data-slot-new="${n}"${n === firstEmpty ? ' id="newBtn"' : ''} type="button"><b>Slot ${n}</b><span>New Campaign</span></button></div>`; }).join('');
+  $('#tslots').innerHTML = saves.map((s, i) => { const n = i + 1, d = s?.played ? new Date(s.played) : null;
+    return s ? `<div class="tslot${n === last ? ' last' : ''}"><button class="tscard" data-slot-play="${n}"${n === last ? ' id="contBtn"' : ''} type="button">
+        <div class="tslhead"><b>Slot ${n}</b>${n === last ? '<span class="tslgo">Continue ›</span>' : d ? `<small>${d.getDate()} ${d.toLocaleString('en-GB', {month: 'short'})}</small>` : ''}</div>
+        ${slotStory(s, 'rae')}${slotStory(s, 'frog')}</button>
+        <button class="tslotx" data-slot-erase="${n}" type="button" aria-label="Erase slot ${n}">✕</button></div>`
+      : `<div class="tslot"><button class="tscard empty" data-slot-new="${n}"${n === firstEmpty ? ' id="newBtn"' : ''} type="button"><b>Slot ${n}</b><span>＋ New Campaign</span></button></div>`; }).join('');
   for (const id of ['backupBtn', 'restoreBtn']) { const b = $('#' + id); if (b) b.textContent = `${id === 'backupBtn' ? 'Back up' : 'Restore'} slot ${Store.slot}`; }
 }
 function playSlot(n){
@@ -11904,7 +11932,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'd685db1823e0';
+const BUILD_ID = '93cae5731a22';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
@@ -12155,6 +12183,8 @@ function boot(data){
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
   $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');
   renderSlots(); soundLabels();
+  // the two halves of the title screen: each side's painted scene, washed in its colours
+  for (const [side, bg] of [['rae', 'mine'], ['frog', 'court']]) if (ART.bg?.[bg]) document.querySelector('.tside.' + side)?.style.setProperty('--tbg', `url(${ART.bg[bg]})`);
   if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update
   requestAnimationFrame(frame);
