@@ -101,8 +101,7 @@ Placeholders until their art arrives (each picks it up automatically once the fi
 - **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `princess` (Princess, a pink frog, tome). Ducky and Tilly have their art.
 - **Pirates**: done. ★ pirate fish (`art/fish*-*.png`) and ★★ / named pirate sharks (`art/shark*-*.png`), each
   recoloured from their `*skin` masks.
-- **Scene paintings**: `art/bg-shore.jpg` (the beach settlement), `art/bg-arena.jpg` (the tournament ground) and
-  `art/bg-ships.jpg` (the pirate ships at sea). Until then `style.css` draws simple stand-ins.
+- **Scene paintings**: done (`art/bg-shore.jpg`, `bg-arena.jpg`, `bg-ships.jpg`).
 
 ### Generic frog soldiers
 

@@ -271,8 +271,7 @@ Ducky (`art/ducky-*.png`, a hammerhead with a scimitar, Pirate Captain class) jo
 captain comes for Rae's bounty (Ducky leads, Rae away), DK-2 a flashback to his first voyage (alone, with the old crew as
 allies, surviving until the Mary cuts loose), DK-3 an intercept of the King's tax clerks; it ends with his own scimitar,
 Old Mary's Edge.
-Scenes `shore`, `arena` and `ships` have drawn placeholder backdrops in `style.css` until their paintings arrive; the
-capital's throne room reuses `court`.
+Scenes `shore`, `arena` and `ships` have their own paintings (`art/bg-*.jpg`); the capital's throne room reuses `court`.
 
 Tandy & Maus (`art/tandy-*.png`, key `tandy`): Ducky's first mates, two white mice who are one unit, Ship's Surgeons
 (staff). The Raepublic's ★★★ on Pirates of the Satin Sea. In the story they're glimpsed after R4-5, are enemy healers
