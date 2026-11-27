@@ -745,8 +745,10 @@ const bellHolder = ([x, y]) => { const u = unitAt(x, y); return u ? (sideOfTeam(
 const bellPay = () => Math.max(1, Math.min(BELL_PAY, Math.round(BELL_PAY*(B.objective.n - B.bells.e)/B.objective.n)));
 async function ringBells(side){
   const held = bellSquares().filter(b => bellHolder(b) === side); if (!held.length) return false;
-  for (const [x, y] of held){ if (B.bells[side] >= B.objective.n) break; B.bells[side]++; popup({x, y}, `🔔 ${B.bells[side]}`, side === 'p' ? '#ffd98a' : '#ffb3a6'); Sfx.play('coin'); await wait(260); }
-  refreshTop(); panelIdle(); await wait(300);
+  let rang = 0;
+  for (const [x, y] of held){ if (B.bells[side] >= B.objective.n) break; B.bells[side]++; rang++; popup({x, y}, '🔔 +1', side === 'p' ? '#ffd98a' : '#ffb3a6'); Sfx.play('coin'); await wait(260); }
+  toast(`🔔 ${side === 'p' ? 'Your' : 'Their'} bells ring: +${rang} · You ${B.bells.p} – Them ${B.bells.e}`);
+  refreshTop(); panelIdle(); await wait(500);
   if (B.bells[side] >= B.objective.n){ finishBattle(side === 'p', false, 'bells'); return true; }
   return false;
 }

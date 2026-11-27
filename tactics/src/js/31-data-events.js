@@ -10,7 +10,7 @@
 const gameDate = () => new Date(Date.now() + ((typeof SAVE !== 'undefined' && SAVE?.debugDays) || 0)*864e5);
 const EVENTS = {
   december: {
-    name: 'The Festive Season', month: 11, icon: '🎁', key: 'gifts',
+    name: 'The Festive Season', month: 11, icon: '🎁', key: 'gifts', scene: {rae: ['snow', 'The Snowy Woods · December'], frog: ['snow', 'The Snowy Woods · December']},
     currency: {rae: {name: 'Rabbit Gifts', one: 'Rabbit Gift'}, frog: {name: 'Frog Gifts', one: 'Frog Gift'}},
     intro: {
       rae: [
@@ -29,7 +29,7 @@ const EVENTS = {
   },
   // January: ring in the New Year. Hold the bell posts (fort squares); first to ring twelve wins (objective 'bells').
   newyear: {
-    name: 'Ring in the New Year', month: 0, icon: '🔔', key: 'chimes',
+    name: 'Ring in the New Year', month: 0, icon: '🔔', key: 'chimes', scene: {rae: ['yard', 'The Old Watch-Posts · New Year'], frog: ['warcamp', 'The War Camp · New Year']},
     currency: {rae: {name: 'Rabbit Chimes', one: 'Rabbit Chime'}, frog: {name: 'Frog Chimes', one: 'Frog Chime'}},
     intro: {rae: [
       {who: "narr", text: "The year is turning. Out in the felt forest, the Raepublic is about to see its first New Year free, for the whole of January!"},
@@ -212,5 +212,6 @@ const eventTutKey = (id, ck) => `tut-event-${id}-${gameDate().getFullYear()}-${c
 function eventTutorial(ck){
   const id = eventsOn(ck).find(id => !SAVE.flags[eventTutKey(id, ck)]); if (!id) return;
   SAVE.flags[eventTutKey(id, ck)] = true; saveGame();
-  return talk([{card: EVENTS[id].name, sub: 'Seasonal Event'}, ...EVENTS[id].intro[ck]]).then(() => { hubTab = 'side'; renderHub(); });
+  const [scene, place] = EVENTS[id].scene?.[ck] || [];
+  return talk([{card: EVENTS[id].name, sub: 'Seasonal Event'}, ...(scene ? [{scene, place}] : []), ...EVENTS[id].intro[ck]]).then(() => { hubTab = 'side'; renderHub(); });
 }
