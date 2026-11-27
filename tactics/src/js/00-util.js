@@ -119,7 +119,7 @@ function artResolve(ent, kind){
     // fish-battle.png). ★★ (elite) pirates are sharks, in a shark colour of their own (art/shark*-*.png); so are named pirates.
     const elite = sp.base === 'shark' || (ent.stars ?? ent.rec?.stars) === 2;
     const base = elite ? 'shark' : 'fish', col = elite && sp.base === 'fish' ? Object.keys(SHARK_COLOURS)[strHash(ent.uid || ent.name || ent.key) % Object.keys(SHARK_COLOURS).length] : fur;
-    // hooks: art/fishhook-battle.png; the ★★ sharks borrow the lance pose until art/sharkhook-battle.png arrives
+    // hooks: art/fishhook-battle.png and art/sharkhook-battle.png (a set without a hook pose would borrow its lance pose)
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff', hook: ART[base + 'hook'] ? 'hook' : 'lance'}[ent.w || CLASSES[cls]?.w] || '';
     if (ART[base + pose + col]?.[kind]) return base + pose + col;
     if (ART[base + col]?.[kind]) return base + col;
@@ -298,7 +298,7 @@ async function buildFurVariants(){
   (async () => { for (const base of ['mk', 'mkaxe', 'mklance', 'mkbow', 'mkbook', 'mkelite', 'mkeliteaxe', 'mkelitelance', 'mkelitebow', 'mkelitebook']) await buildVariants(base, MONKEY_FURS, skinWeight(base));
     // the pirate fish (Chapter Four): the skin, fins and tail from art/fish*skin-<kind>.png
     for (const base of ['fish', 'fishaxe', 'fishlance', 'fishbow', 'fishbook', 'fishstaff', 'fishhook']) await buildVariants(base, FISH_COLOURS, fishWeight(base));
-    for (const base of ['shark', 'sharkaxe', 'sharklance', 'sharkbow', 'sharkbook', 'sharkstaff']) await buildVariants(base, SHARK_COLOURS, fishWeight(base));
+    for (const base of ['shark', 'sharkaxe', 'sharklance', 'sharkbow', 'sharkbook', 'sharkstaff', 'sharkhook']) await buildVariants(base, SHARK_COLOURS, fishWeight(base));
     if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 

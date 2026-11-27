@@ -995,8 +995,9 @@ const CAMPAIGNS = {
             {who: "speshul", text: "Ships! Real ships! Rae, look, they're coming in to the jetties! Maybe they want to trade!"},
             {who: "patch", text: "Speshul. Get down off that roof. They're not traders. Look at the flag."},
             {who: "narr", text: "Black cloth. A white grin, full of teeth."},
-            {who: "willow", text: "And hooks. Rae, look at their hands: grappling hooks. I once told you we were unlikely to see one around here. We are not around here any more."},
-            {who: "willow", show: "triangle", text: "A hook drags whoever it catches one step closer. It beats a tome, and loses to a bow. Keep our readers out of reach, and let the archers cut the lines."},
+            {who: "willow", text: "And Grapplers. Rae, look at their hands: grappling hooks. I once told you we were unlikely to see one around here. We are not around here any more."},
+            {who: "willow", show: "triangle", text: "A quick reminder, then. A Grappler's hook reaches two squares and drags whoever it catches one step closer, unless something is in the way. Hooks beat tomes, and lose to bows."},
+            {who: "willow", text: "Pulled in, a blade can strike back. A bow or a book can't. So keep our readers out of reach, and let the archers cut the lines."},
             {who: "rae", text: "Everyone into the longhouse! Everyone who can fight, with me!"},
           ],
           post: [
