@@ -445,6 +445,7 @@ const ART_CROP = {
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
   biggleginger: {panel: ['190% auto', '44% 9%'], talk: ['145% auto', '44% 7%']},   // Gingerbiggle attire
   bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},
+  princess: {panel: ['175% auto', '50% 4%'], talk: ['140% auto', '50% 3%']},
   tilly:    {panel: ['300% auto', '47% 7%'], talk: ['215% auto', '47% 5%']},   // on horseback: the face is small and high   // Rose Knight attire: mounted, so the face is small and high
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sistersorcerer: {panel: ['170% auto', '50% 9%'], talk: ['135% auto', '50% 7%']},   // Simian Sorcerer attire

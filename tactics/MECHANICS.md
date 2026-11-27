@@ -133,6 +133,7 @@ and The Lesson, which only help the player.
 | Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
 | Speshul (Powder Monkey) | Lit Fuse | an enemy his hook pulls in gets a lit fuse: at the start of the next enemy turn, 5 damage to it and 2 to each of its allies beside it (it can unstitch) | pull enemies into their own crowd |
 | Tandy & Maus | Two Pairs of Paws | after mending an ally they may scurry 1 more square (tap a blue square, or Stay) | mend the front line, then step back out of reach |
+| Princess | Every Grievance Noted | anyone who damages her goes on her list: she deals them +3 damage for the rest of the battle (an enemy boss: F4-6, and Chapter Five) | spread the damage, or finish her fast |
 | Tilly Tealbottom | Do Come Closer | an enemy her hook pulls in is Off Balance until its next turn: no terrain cover, −20 Avoid (also as the F4-3 boss) | pull a target into your allies, then pile in |
 | Ducky | Blood in the Water | while any enemy is below half HP he gets +2 Mov; +2 damage against enemies below half HP (also as an enemy boss, R4-6, R4-7) | finishing wounded enemies, hit-and-run |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
@@ -257,7 +258,7 @@ deploy 7. Chapter Five is a stub on both routes.
 
 New: the `pirate` faction (`FACTIONS.pirate`; Cutlass, Boarder, Harpooner, Cork Gunner, Shanty Singer, Sawbones and
 Ducky's Pirate Captain class, a scimitar), the classes Lily Jouster (Tilly) and Royal Heiress (Princess), and the
-map themes `shore`, `arena` and `ship` (drawn in `45-render.js`). Placeholders (no art yet, no abilities): Tilly Tealbottom and Princess. Every pirate now has art. The pirate crew are pirate fish (`art/fish*-*.png`): one portrait and map icon,
+map themes `shore`, `arena` and `ship` (drawn in `45-render.js`). Every Chapter Four character now has art (Princess: `art/princess-*.png`). The pirate crew are pirate fish (`art/fish*-*.png`): one portrait and map icon,
 a battle pose for each weapon (sword, axe, lance, bow, book, staff), and the skin, fins and tail recoloured from the
 `fish*skin` masks into `FISH_COLOURS` (blue as drawn, gold, orange, green, teal, purple, coral, silver) in the background
 after loading. The felt is nearly grey, so these colours set the hue and saturation outright rather than shifting them.

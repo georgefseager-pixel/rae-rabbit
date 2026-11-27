@@ -167,6 +167,7 @@ function calc(a, d, ap, dp){
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
   if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
   if (hasAb(a, 'blood') && d.hp < d.mhp/2) atk += 2;   // Blood in the Water
+  if (hasAb(a, 'grievance') && a.grudges?.has(d.id)) atk += 3;   // Every Grievance Noted
   if (hasAb(d, 'cantcatch') && d.ranFar) hitB -= 25;
   if (d.offbal) hitB += 20;   // Off Balance (Tilly's Do Come Closer): −20 Avoid
   return {
@@ -270,6 +271,7 @@ async function strike(a, d, f){
     if (hasAb(a, 'verse')){   // Healing Verse: allies beside her recover a little
       for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
     }
+    if (hasAb(d, 'grievance') && dmg > 0 && d.hp > 0 && !(d.grudges ||= new Set()).has(a.id)){ d.grudges.add(a.id); a.grieved = true; setTimeout(() => popup(a, '📜 Noted!', '#f2a7c2'), 300); }   // Every Grievance Noted
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
     if (a.w === 'hook' && d.hp > 0) hookPull(a, d, scene);   // a hook drags what it catches one square closer
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
@@ -460,7 +462,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.fuse || u.offbal || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.grieved ? ' <i>📜 On Princess\'s list: she deals +3 damage</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.fuse || u.offbal || u.grieved || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.grieved ? ' <i>📜 On Princess\'s list: she deals +3 damage</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }

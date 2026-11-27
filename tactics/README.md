@@ -98,7 +98,7 @@ generic look with `generic: 'standard'` (Tall Rabbit).
 
 Placeholders until their art arrives (each picks it up automatically once the files are in `art/`):
 
-- **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `princess` (Princess, a pink frog, tome). Ducky and Tilly have their art.
+- **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): none: Ducky, Tilly and Princess have their art.
 - **Pirates**: done. ★ pirate fish (`art/fish*-*.png`) and ★★ / named pirate sharks (`art/shark*-*.png`), each
   recoloured from their `*skin` masks.
 - **Scene paintings**: done (`art/bg-shore.jpg`, `bg-arena.jpg`, `bg-ships.jpg`).
