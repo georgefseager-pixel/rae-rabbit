@@ -25,8 +25,9 @@ SIZES = {"portrait": 720, "battle": 512, "token": 256}   # max height (token: wi
 import hashlib
 CACHE = ROOT / "tools" / ".artcache"   # encoded images, by source file contents (slow WebP effort, so only redone when art changes)
 CACHE.mkdir(exist_ok=True)
+BG_Q = 62   # WebP quality for the painted backgrounds (and the loading screen)
 def embed(f, key, kind):
-    h = hashlib.sha1(f.read_bytes() + f"{key}|{kind}|v5".encode()).hexdigest()
+    h = hashlib.sha1(f.read_bytes() + f"{key}|{kind}|v5{BG_Q if f.suffix == '.jpg' else ''}".encode()).hexdigest()
     c = CACHE / h
     if c.exists(): return c.read_text()
     out = _embed(f, key, kind); c.write_text(out); return out
@@ -34,8 +35,8 @@ def embed(f, key, kind):
 def _embed(f, key, kind):
     """Character art is embedded as WebP (much smaller, keeps transparency); masks and JPEG
     backgrounds as they are. Images are capped at SIZES, plenty for a phone screen."""
-    if f.suffix == ".jpg":   # painted backgrounds: WebP at quality 80 is visually the same and about a fifth smaller
-        buf = io.BytesIO(); Image.open(f).convert("RGB").save(buf, "WEBP", quality=80, method=6)
+    if f.suffix == ".jpg":   # painted backgrounds: WebP at BG_Q (side by side with 80, the same on a phone; about a third smaller)
+        buf = io.BytesIO(); Image.open(f).convert("RGB").save(buf, "WEBP", quality=BG_Q, method=6)
         return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
     if key.endswith(MASKS):   # lossless WebP: exactly the same pixels as the PNG, about half the size
         buf = io.BytesIO(); Image.open(f).save(buf, "WEBP", lossless=True, method=6)
@@ -62,7 +63,7 @@ for f in sorted([*(ROOT / "art").glob("*.png"), *(ROOT / "art").glob("*.jpg")]):
 
 js = "\n".join(f"// ---------------- {p.name} ----------------\n{p.read_text()}" for p in sorted((SRC / "js").glob("*.js")))
 html = (SRC / "shell.html").read_text()
-_lb = io.BytesIO(); Image.open(ROOT / "art" / "loading.jpg").save(_lb, "WEBP", quality=80, method=6)
+_lb = io.BytesIO(); Image.open(ROOT / "art" / "loading.jpg").save(_lb, "WEBP", quality=BG_Q, method=6)
 load_img = "data:image/webp;base64," + base64.b64encode(_lb.getvalue()).decode()
 html = html.replace("/*@LOADIMG*/", load_img)
 for marker, value in [
