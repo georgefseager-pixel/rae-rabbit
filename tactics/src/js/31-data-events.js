@@ -10,7 +10,8 @@
 const gameDate = () => new Date(Date.now() + ((typeof SAVE !== 'undefined' && SAVE?.debugDays) || 0)*864e5);
 const EVENTS = {
   december: {
-    name: 'The Festive Season', month: 11, icon: '🎁', key: 'gifts', scene: {rae: ['snow', 'The Snowy Woods · December'], frog: ['snow', 'The Snowy Woods · December']},
+    name: 'The Festive Season', month: 11, icon: '🎁', key: 'gifts',
+    look: {cls: 'festive', kind: '❄ Festive banner · December only ❄', rate: '🎁 Festive', fx: 'bsnow', chip: 'Festive · December', until: '🎁 Festive · until 31 December', verb: '🎁 Unwrap', tap: 'Tap to unwrap'}, scene: {rae: ['snow', 'The Snowy Woods · December'], frog: ['snow', 'The Snowy Woods · December']},
     currency: {rae: {name: 'Rabbit Gifts', one: 'Rabbit Gift'}, frog: {name: 'Frog Gifts', one: 'Frog Gift'}},
     intro: {
       rae: [
@@ -29,7 +30,8 @@ const EVENTS = {
   },
   // January: ring in the New Year. Hold the bell posts (fort squares); first to ring twelve wins (objective 'bells').
   newyear: {
-    name: 'Ring in the New Year', month: 0, icon: '🔔', key: 'chimes', scene: {rae: ['yard', 'The Old Watch-Posts · New Year'], frog: ['warcamp', 'The War Camp · New Year']},
+    name: 'Ring in the New Year', month: 0, icon: '🔔', key: 'chimes',
+    look: {cls: 'nyb', kind: '🔔 New Year banner · January only 🔔', rate: '🌟 New Year', fx: 'bspark', chip: 'New Year · January', until: '🔔 New Year · until 31 January', verb: '🌟 Recruit', tap: 'Tap to break the seal'}, scene: {rae: ['yard', 'The Old Watch-Posts · New Year'], frog: ['warcamp', 'The War Camp · New Year']},
     currency: {rae: {name: 'Rabbit Chimes', one: 'Rabbit Chime'}, frog: {name: 'Frog Chimes', one: 'Frog Chime'}},
     intro: {rae: [
       {who: "narr", text: "The year is turning. Out in the felt forest, the Raepublic is about to see its first New Year free, for the whole of January!"},
@@ -37,6 +39,7 @@ const EVENTS = {
       {who: "rae", text: "I remember."},
       {who: "narr", text: "A seasonal side story is open on the Side Stories tab: The Shift Bells. It can be played once a day, all January."},
       {who: "narr", text: "Hold the old bell posts and ring in the New Year before the frogs do. Win by a wide margin for more Rabbit Chimes."},
+      {who: "narr", text: "Spend them on the New Year recruiting banner, Wishes on the First Star, before January is out."},
     ], frog: [
       {who: "narr", text: "The year is turning. In Tiggle's war camp, the soldiers want a New Year's contest, for the whole of January!"},
       {who: "biggle", text: "An old Lily Court custom, little brother. Two teams, four bells, first to ring twelve. Loser polishes everyone's boots."},
@@ -199,6 +202,15 @@ GACHA_ARMY.frog.banners.push({id: 'frog-festive', name: 'Gifts for the Capital',
   blurb: 'December only, paid for with Frog Gifts from Froggy Festivities. Chriggle Chraggle, the first Gift-Bringer and Friggle Fraggle\'s legendary ancestor, has come down from wherever he spends the rest of the year. He has a list. Featuring Gingerbiggle: Biggle in gingerbread, as he appeared in a nightmare after eating an entire gingerbread house. The ★ soldiers who answer are frog scouts in elf green; the ★★ have been promoted to Santa red.'});
 GACHA_ARMY.frog.troops.elves = {stars: [1, 2], generic: ['xblade', 'xaxe', 'xpike', 'xbow', 'xscribe'],
   names: ['Jingle', 'Tinsel', 'Sprout', 'Holly', 'Pudding', 'Bauble', 'Sleet', 'Cracker', 'Nutmeg', 'Figgy', 'Wassail', 'Snowdrop', 'Mince', 'Clove', 'Ivy']};
+// ---------- January banner (paid with Chimes) ----------
+// Raepublic: Willow's Starlight Scholar (attire only, as on Across the Stream); the ★ and ★★ are Republic soldiers.
+// Friggliarchy: none yet (Frog Chimes are saved for one).
+GACHA_ARMY.rae.banners.push({id: 'rae-newyear', name: 'Wishes on the First Star', kind: 'featured', event: 'newyear', currency: 'gifts',
+  featured: [], attires: ['willowStarlight'], bg: 'yard', troops: 'republic',
+  tease: 'A folded paper star, tied to a bell-rope. Somebody has written a wish inside and then, very carefully, crossed it out.',
+  blurb: 'January only, paid for with Rabbit Chimes from The Shift Bells. On the first clear night of the year, Willow climbs the old watch-post with a book of star charts and a cloak she has been embroidering since autumn. Featuring Starlight Scholar: Willow under the New Year stars, whose spells bring shooting stars down beside her targets. The ★ and ★★ who answer are Republic soldiers.'});
+// a banner's seasonal look (its event's), or null
+const bannerLook = b => (b?.event && EVENTS[b.event]?.look) || null;
 // what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}
 function bannerCur(ck, b){
   if (b?.currency === 'gifts'){ const E_ = EVENTS[b.event], c = E_.currency[ck]; return {key: E_.key || 'gifts', name: c.name, one: c.one, seal: E_.icon, tease: b.tease}; }

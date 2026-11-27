@@ -21,8 +21,8 @@ function bannerArt(ck, b){
   return `<div class="bhero"${bg ? ` style="--bgimg:url(${bg})"` : ''}>
       <div class="brays"></div>
       <div class="bfigs n${items.length}">${figs}</div>
-      <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${b.festive ? '❄ Festive banner · December only ❄' : b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
-      ${b.festive ? '<div class="brate fest">🎁 Festive</div><div class="bsnow" aria-hidden="true"></div>' : b.featured ? '<div class="brate">Rate up</div>' : ''}
+      <div class="btitle${b.featured ? ' rated' : ''}"><div class="bkind">${bannerLook(b) ? bannerLook(b).kind : b.kind === 'featured' ? 'Featured banner' : 'Standard banner'}</div><h2>${b.name}</h2></div>
+      ${bannerLook(b) ? `<div class="brate fest ${bannerLook(b).cls}">${bannerLook(b).rate}</div><div class="${bannerLook(b).fx}" aria-hidden="true"></div>` : b.featured ? '<div class="brate">Rate up</div>' : ''}
       <div class="bplates">${plates}</div>
     </div>`;
 }
@@ -68,12 +68,12 @@ function recruitTabHTML(ck){
                      ...(b.featured || []).filter(k => !bannerPool(b).includes(k)).map(k => `${CHARACTERS[k].name} (rate up)`),
                      ...(b.attires || []).map(id => `${ATTIRES[id].name}, an attire for ${charName(ATTIRES[id].char)} (rate up)`)].join(', ');
   return `
-    <div class="gbar"><div class="tok${b.festive ? ' festive' : ''}"><span class="seal sm">${cur.seal}</span><b>${bal}</b> ${cur.name}</div>
-      ${b.festive ? `<span class="evuntil">🎁 Festive · until 31 December</span>` : `<button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button>`}</div>
+    <div class="gbar"><div class="tok${bannerLook(b) ? ' ' + bannerLook(b).cls : ''}"><span class="seal sm">${cur.seal}</span><b>${bal}</b> ${cur.name}</div>
+      ${bannerLook(b) ? `<span class="evuntil">${bannerLook(b).until}</span>` : `<button class="btn" data-trade type="button" ${st.res < army.trade ? 'disabled' : ''}>Trade ${army.trade} ${F.currency} for 1</button>`}</div>
     <div class="bchips">${banners.map(x => `<button class="bchip${x.id === b.id ? ' on' : ''}" data-banner="${x.id}" type="button" ${bannerOpen(x) ? '' : 'disabled'}>
-      ${x.festive ? '🎁 ' : ''}${x.name}<small>${!bannerOpen(x) ? 'Locked' : x.festive ? 'Festive · December' : x.kind === 'featured' ? 'Featured' : 'Standard'}</small></button>`).join('')}</div>
+      ${bannerLook(x) ? EVENTS[x.event].icon + ' ' : ''}${x.name}<small>${!bannerOpen(x) ? 'Locked' : bannerLook(x) ? bannerLook(x).chip : x.kind === 'featured' ? 'Featured' : 'Standard'}</small></button>`).join('')}</div>
     ${banners.filter(x => !bannerOpen(x)).map(x => `<div class="hint">“${x.name}” opens after <b>${chapterRef(x.after)}</b>.</div>`).join('')}
-    <div class="gbanner f-${CAMPAIGNS[ck].faction}${b.festive ? ' festive' : ''}" data-b="${b.id}">
+    <div class="gbanner f-${CAMPAIGNS[ck].faction}${bannerLook(b) ? ' ' + bannerLook(b).cls : ''}" data-b="${b.id}">
       ${bannerArt(ck, b)}
       ${(() => { const R = bannerRoster(ck, b); return R.got === R.total ? `<div class="bdone"><b>Complete</b><span>Everyone on this banner has joined. Recruiting again gives weapons.</span></div>` : ''; })()}
       <div class="binfo"><p>${b.blurb}</p>
@@ -84,8 +84,8 @@ function recruitTabHTML(ck){
       </div>
     </div>
     <div class="pullbtns">
-      <button class="btn" data-pull="1" type="button" ${bal < 1 ? 'disabled' : ''}>${b.festive ? '🎁 Unwrap' : 'Recruit'} ×1 · 1 ${cur.one}</button>
-      <button class="btn primary" data-pull="10" type="button" ${bal < 10 ? 'disabled' : ''}>${b.festive ? '🎁 Unwrap' : 'Recruit'} ×10 · 10 ${cur.name}</button>
+      <button class="btn" data-pull="1" type="button" ${bal < 1 ? 'disabled' : ''}>${bannerLook(b)?.verb || 'Recruit'} ×1 · 1 ${cur.one}</button>
+      <button class="btn primary" data-pull="10" type="button" ${bal < 10 ? 'disabled' : ''}>${bannerLook(b)?.verb || 'Recruit'} ×10 · 10 ${cur.name}</button>
     </div>
     ${bannerRosterHTML(ck, b)}
     <details class="rates"><summary>Rates and pool</summary>
@@ -188,10 +188,10 @@ async function runPull(ck, n){
   if (!results){ toast(`Not enough ${cur.name}.`); return; }
   const best = Math.max(...results.map(r => r.stars));
   const ov = $('#gacha'), stage = $('#gstage');
-  ov.className = 'ov f-' + CAMPAIGNS[ck].faction + (B_.festive ? ' festive' : ''); ov.hidden = false;
+  ov.className = 'ov f-' + CAMPAIGNS[ck].faction + (bannerLook(B_) ? ' ' + bannerLook(B_).cls : ''); ov.hidden = false;
   // 1. The sealed message. Its seal glows in the colour of the best result.
-  stage.innerHTML = `<div class="gtease${B_.festive ? ' festive' : ''}"><div class="note" style="--glow:${GACHA.rarity[best].color}"><span class="seal big">${cur.seal}</span></div>
-    <p>${cur.tease}</p><div class="meta">${B_.festive ? 'Tap to unwrap' : 'Tap to break the seal'}</div></div>`;
+  stage.innerHTML = `<div class="gtease${bannerLook(B_) ? ' ' + bannerLook(B_).cls : ''}"><div class="note" style="--glow:${GACHA.rarity[best].color}"><span class="seal big">${cur.seal}</span></div>
+    <p>${cur.tease}</p><div class="meta">${bannerLook(B_)?.tap || 'Tap to break the seal'}</div></div>`;
   const note = stage.querySelector('.note');
   anim(note, [{transform: 'rotate(-2deg)'}, {transform: 'rotate(2deg)'}, {transform: 'rotate(-2deg)'}], 700, {iterations: Infinity});
   await new Promise(res => { ov.onclick = res; });

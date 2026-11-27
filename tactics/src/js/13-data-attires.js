@@ -42,6 +42,10 @@ const ATTIRES = {
   // cosier (Def) and a little slower (Spd), and her mending comes with presents.
   floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',
               desc: 'Knitted by Flopsy herself, over three weeks, mostly in secret. The spelling is deliberate. She will tell you so.'},
+  // New Year banner (31-data-events.js): Willow in a star-embroidered cloak. Same class and tome; her spells hit a
+  // little harder, and she is a little less careful (Def). Each spell brings down a shooting star (Shooting Star).
+  willowStarlight: {char: 'willow', outfit: 'star', name: 'Starlight Scholar', mods: {atk: 2, skl: 1, def: -1}, ability: 'starfall',
+              desc: 'She embroidered every star on it herself, from the charts, in the right places. It took all autumn. Rae asked what the crescent brooch was for. Willow said "navigation", in a voice that ended the conversation.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Court Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker

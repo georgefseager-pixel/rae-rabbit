@@ -273,6 +273,11 @@ async function strike(a, d, f){
       for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
     }
     if (hasAb(d, 'grievance') && dmg > 0 && d.hp > 0 && !(d.grudges ||= new Set()).has(a.id)){ d.grudges.add(a.id); a.grieved = true; setTimeout(() => popup(a, '📜 Noted!', '#f2a7c2'), 300); }   // Every Grievance Noted
+    if (hasAb(a, 'starfall')){   // Shooting Star: 2 damage to every other enemy beside the target (never below 1 HP)
+      let any = false;
+      for (const o of alliesNear(d, d, 1)) if (o.hp > 1){ const h = Math.min(2, o.hp - 1); o.hp -= h; o.shp = o.hp; any = true; setTimeout(() => popup(o, `🌠 ${h}`, '#ffe08a'), 250); }
+      if (any) abilityPop(a, 'starfall');
+    }
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
     if (a.w === 'hook' && d.hp > 0) hookPull(a, d, scene);   // a hook drags what it catches one square closer
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;

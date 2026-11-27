@@ -32,6 +32,7 @@ const ABILITIES = {
   scurry:      {name: 'Two Pairs of Paws', icon: '🐭', text: 'One mends while the other runs on ahead: after Tandy & Maus mend an ally, they can scurry 1 more square.'},
   fuse:        {name: 'Lit Fuse',          icon: '🧨', text: 'An enemy Speshul\'s hook pulls in is left with a lit fuse. At the start of the next enemy turn it goes off: 5 damage to that enemy, and 2 to each of its allies standing next to it.'},
   blood:       {name: 'Blood in the Water', icon: '🦈', text: 'While any enemy is below half HP, Ducky gets +2 Mov. And he deals +2 damage to any enemy below half HP.'},
+  starfall:    {name: 'Shooting Star',     icon: '🌠', text: 'Each time Willow\'s spell hits, a shooting star falls beside her target: 2 damage to every other enemy standing next to it. A shooting star never unstitches anyone: it leaves them on at least 1 HP.'},
   nobody:      {name: 'Nobody Comes',      icon: '🌑', text: 'With no ally within 2 squares, Fraggle Jr. gets +3 Atk and +3 Spd.'},
 };
 const CHARACTER_ABILITY = {rae: 'nextto', sister: 'seams', willow: 'lesson', brigand: 'fingers', condemned: 'walkedaway', froggle: 'drawback',
