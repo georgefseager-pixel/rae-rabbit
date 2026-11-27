@@ -285,6 +285,14 @@ function weaponBadge(g, u, x, y, r, ring){
   g.strokeStyle = ring || '#1e140a'; g.lineWidth = Math.max(1.2, r*(ring ? .16 : .1)); g.stroke();
   glyph(g, w, x, y, r*.8, w === 'staff' ? '#1e3a36' : '#fffaf0');
 }
+// The weapon-triangle arrow: green and pointing up for an advantage, red and pointing down for a disadvantage.
+function triangleArrow(g, x, y, r, up){
+  g.save(); g.translate(x, y); if (!up) g.scale(1, -1);
+  g.beginPath(); g.moveTo(0, -r); g.lineTo(r*.95, r*.15); g.lineTo(r*.38, r*.15); g.lineTo(r*.38, r); g.lineTo(-r*.38, r); g.lineTo(-r*.38, r*.15); g.lineTo(-r*.95, r*.15); g.closePath();
+  g.lineJoin = 'round'; g.lineWidth = Math.max(2, r*.32); g.strokeStyle = 'rgba(12,8,6,.9)'; g.stroke();
+  g.fillStyle = up ? '#4fdc6e' : '#ff4f3e'; g.fill();
+  g.restore();
+}
 function tokenFor(u, variant){
   const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
@@ -380,6 +388,12 @@ function render(now){
   }
   if (cursor && phase === 'p' && !busy && mode !== 'target') brackets(cursor.x, cursor.y, 'rgba(236,198,115,.95)');
   for (const u of units.filter(u => !u.dead).sort((a, b) => a.py - b.py)) drawUnit(u, now);
+  // With one of your units selected: on each enemy's top-left corner, a green ▲ if your weapon beats theirs, a red ▼ if theirs beats yours
+  if (sel && sideOfTeam(sel) === 'p' && sel.w !== 'staff' && !busy) for (const e of foes(sel)){
+    if (e.alpha <= .5) continue;
+    const t = triangle(sel.w, e.w); if (!t) continue;
+    triangleArrow(ctx, (e.px + e.ox + .18)*T, (e.py + e.oy + .22)*T + Math.sin(now/220)*T*.03, T*.21, t > 0);
+  }
   // Danger view: each unit's weapon, large, over its token, ringed by side (enemies red, yours gold, allies blue)
   if (showDanger && !busy) for (const u of units) if (!u.dead && u.alpha > .5){
     const side = sideOfTeam(u), ring = u.team === 'a' ? '#8cc4ff' : side === 'p' ? '#f2d27a' : '#ff6a5a';

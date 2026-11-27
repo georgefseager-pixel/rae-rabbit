@@ -17,6 +17,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | Double attack | Spd at least 4 higher than the enemy's |
 | Weapon triangle | Sword beats axe, axe beats lance, lance beats sword; tomes beat bows. A win is +1 damage, +15 hit. Shown as a diagram with `{show: 'triangle'}` |
 | Weapon badges | every map token carries its weapon's badge, coloured by weapon (swords red, axes green, lances blue, bows gold, tomes purple, staves pale teal). Danger view covers each unit with a large badge, ringed red (enemies), gold (yours) or blue (allies) |
+| Triangle arrows | with one of your units selected, each enemy shows a green ▲ (top left of its token) if your weapon beats theirs, a red ▼ if theirs beats yours (tomes over bows included) |
 | Ranges | Bows (and whips) 2 only, so no counterattack up close. Tomes 1–2. Staves heal an adjacent ally (8 + Atk/2) and can't attack |
 | Experience | Kill: 30 + 3 × level difference (+40 for a boss). Damage without a kill: 10 + level difference. Heal: 12. 100 per level |
 
