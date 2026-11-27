@@ -16,7 +16,7 @@ Object.assign(SIDE_SETS, {
         enemies: () => [
           E('sharkcapt',10,4,3,'guard',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('pcutlass',8,2,3), E('pcutlass',8,7,3), E('pboarder',8,4,5), E('pgunner',8,8,4,'guard'), E('pharpoon',8,1,5),
-          E('pshanty',8,5,3,'guard'), E('pboarder',8,6,6),
+          E('pshanty',8,5,3,'guard'), E('pboarder',8,6,6), E('phook',8,3,5,'guard'),
         ],
         reinforce: () => [{turn: 2, units: [E('pcutlass',8,2,2), E('pharpoon',8,7,2)]}, {turn: 4, units: [E('pboarder',9,2,2,'charge',{elite: true})]}],
         bossTalk: [

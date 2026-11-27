@@ -44,13 +44,13 @@ const DIAGRAMS = {
       <text x="${x}" y="${y < 90 ? y - 30 : y + 38}" text-anchor="middle">${label}</text>`;
     const arrow = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx/L, uy = dy/L, s = 30, e = 32;
       return `<path d="M${a[0] + ux*s} ${a[1] + uy*s} L${b[0] - ux*e} ${b[1] - uy*e}" marker-end="url(#dArr)"/>`; };
-    const S = [80, 52], A = [136, 138], Lc = [24, 138], Tm = [238, 52], Bw = [238, 138];
+    const S = [80, 52], A = [136, 138], Lc = [24, 138], Tm = [250, 52], Bw = [202, 138], Hk = [298, 138];
     return `<div class="dtitle">What beats what</div>
-      <svg viewBox="-8 4 296 182" role="img" aria-label="Swords beat axes, axes beat lances, lances beat swords. Tomes beat bows.">
+      <svg viewBox="-8 4 340 182" role="img" aria-label="Swords beat axes, axes beat lances, lances beat swords. Tomes beat bows, bows beat hooks, hooks beat tomes.">
         <defs><marker id="dArr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ecc673"/></marker></defs>
-        <g class="darr">${arrow(S, A)}${arrow(A, Lc)}${arrow(Lc, S)}${arrow(Tm, Bw)}</g>
-        ${ic('sword', ...S, 'Sword')}${ic('axe', ...A, 'Axe')}${ic('lance', ...Lc, 'Lance')}${ic('tome', ...Tm, 'Tome')}${ic('bow', ...Bw, 'Bow')}
-        <path d="M188 14 V178" class="dsep"/>
+        <g class="darr">${arrow(S, A)}${arrow(A, Lc)}${arrow(Lc, S)}${arrow(Tm, Bw)}${arrow(Bw, Hk)}${arrow(Hk, Tm)}</g>
+        ${ic('sword', ...S, 'Sword')}${ic('axe', ...A, 'Axe')}${ic('lance', ...Lc, 'Lance')}${ic('tome', ...Tm, 'Tome')}${ic('bow', ...Bw, 'Bow')}${ic('hook', ...Hk, 'Hook')}
+        <path d="M176 14 V178" class="dsep"/>
       </svg>
       <div class="dnote">The winner gets <b>+1 damage</b> and <b>+15 hit</b>; the loser the opposite.</div>`;
   },

@@ -330,6 +330,7 @@ const CAMPAIGNS = {
             {who: 'willow', text: 'I think you have talent. Talent without discipline gets rabbits unstitched. So: a lesson.'},
             {who: 'willow', show: 'triangle', text: 'Swords beat axes. Axes beat lances. Lances beat swords. Pick your fights by what the enemy carries.'},
             {who: 'willow', show: 'triangle', text: 'And a tome beats a bow. Words reach further than stones, and no archer can dodge an idea.'},
+            {who: 'willow', show: 'triangle', text: 'There is a third, for completeness: the hook. It drags a reader off her feet, and any archer can cut its line. But that is a sailor\'s weapon. We are unlikely to see one around here.'},
             {who: 'willow', text: 'But those of us who read are soft-stitched. A tome hits hard and from two tiles away, and that is all it does well.'},
             {who: 'willow', text: 'Keep your readers behind the line, and keep blades between us and theirs.'},
             {who: 'rae', text: '…Protect the bookworm. Got it.'},
@@ -976,7 +977,7 @@ const CAMPAIGNS = {
           ],
           reinforce: () => [
             {turn: 1, units: [E('pcutlass',8,2,2), E('pboarder',8,7,2)]},
-            {turn: 2, units: [E('psawbones',8,7,2,'guard'), E('pharpoon',8,2,2), E('pcutlass',8,7,1)]},
+            {turn: 2, units: [E('psawbones',8,7,2,'guard'), E('pharpoon',8,2,2), E('phook',8,7,1)]},
             {turn: 3, units: [E('pboarder',9,2,2,'charge',{elite: true}), E('pgunner',8,7,2), E('pshanty',8,2,1)]},
             {turn: 4, units: [E('pboarder',10,7,2,'charge',{key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle', elite: true, flees: true, talk: [
             {who: "barnacle", text: "Which one of you's the rabbit with the price on her head? Speak up!"},
@@ -994,6 +995,8 @@ const CAMPAIGNS = {
             {who: "speshul", text: "Ships! Real ships! Rae, look, they're coming in to the jetties! Maybe they want to trade!"},
             {who: "patch", text: "Speshul. Get down off that roof. They're not traders. Look at the flag."},
             {who: "narr", text: "Black cloth. A white grin, full of teeth."},
+            {who: "willow", text: "And hooks. Rae, look at their hands: grappling hooks. I once told you we were unlikely to see one around here. We are not around here any more."},
+            {who: "willow", show: "triangle", text: "A hook drags whoever it catches one step closer. It beats a tome, and loses to a bow. Keep our readers out of reach, and let the archers cut the lines."},
             {who: "rae", text: "Everyone into the longhouse! Everyone who can fight, with me!"},
           ],
           post: [
@@ -1021,7 +1024,7 @@ const CAMPAIGNS = {
           prepNote: 'Rae goes alone. The friends you pick come after her, at the end of turn II. Keep her standing until they arrive.',
           enemies: () => [
             E('pboarder',10,4,2,'hold',{boss: true, flees: true, elite: true, key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle'}),
-            E('pcutlass',8,3,7), E('pharpoon',8,6,7),
+            E('pcutlass',8,3,7), E('phook',8,6,7),
             E('pgunner',8,2,4,'guard'), E('pgunner',8,7,4,'guard'), E('pboarder',8,4,5,'guard'), E('pcutlass',8,1,3,'guard'),
             E('psawbones',8,5,3,'guard'), E('pcutlass',9,8,3,'guard',{elite: true}), E('pshanty',8,3,1,'guard'),
           ],
@@ -1070,7 +1073,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('sharkcapt',11,4,2,'hold',{boss: true, flees: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
             E('pgunner',9,3,4,'guard'), E('pgunner',9,6,4,'guard'), E('psawbones',9,5,3,'guard'), E('pshanty',9,2,3,'guard'),
-            E('pharpoon',9,3,7,'guard'), E('pharpoon',9,6,7,'guard'), E('pboarder',10,4,6,'charge',{elite: true}),
+            E('phook',9,3,7,'guard'), E('pharpoon',9,6,7,'guard'), E('pboarder',10,4,6,'charge',{elite: true}),
             E('pcutlass',9,1,9), E('pcutlass',9,8,9), E('pboarder',9,4,10), E('pgunner',9,0,8,'guard'),
           ],
           reinforce: () => [{turn: 3, units: [E('pcutlass',9,1,3), E('pcutlass',9,8,3)]}],
@@ -1115,7 +1118,7 @@ const CAMPAIGNS = {
             E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
             E('pboarder',11,5,1,'guard',{key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle', elite: true}),
             E('psawbones',9,6,2,'guard'), E('pgunner',9,2,2,'guard'), E('pgunner',9,7,2,'guard'), E('pcutlass',9,3,3), E('pcutlass',9,6,3),
-            E('pcutlass',9,3,7), E('pharpoon',9,6,7,'guard'), E('pboarder',9,4,9), E('pgunner',9,1,8,'guard'), E('pgunner',9,8,8,'guard'),
+            E('phook',9,3,7), E('pharpoon',9,6,7,'guard'), E('pboarder',9,4,9), E('phook',10,7,7,'guard',{elite: true}), E('pgunner',9,1,8,'guard'), E('pgunner',9,8,8,'guard'),
             E('pshanty',9,5,8,'guard'), E('pboarder',10,6,9,'charge',{elite: true}),
           ],
           reinforce: () => [{turn: 3, units: [E('pcutlass',9,2,3), E('pharpoon',9,7,3)]}],

@@ -252,7 +252,7 @@ async function strike(a, d, f){
   const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
   const duel = duelEl(), scene = !duel.hidden, A = dEl[sideOf(a)], D = dEl[sideOf(d)], dir = sideOf(a) === 'L' ? 1 : -1;
   if (scene) anim(A.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${dir*(ranged ? 16 : 64)}px) rotate(${dir*3}deg)`}, {transform: 'none'}], 380, {easing: 'ease-in-out'});
-  Sfx.play(a.w === 'tome' ? 'magic' : a.lash ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
+  Sfx.play(a.w === 'tome' ? 'magic' : a.lash ? 'crack' : ((a.w === 'bow' || a.w === 'hook') && ranged) ? 'twang' : 'swing');
   await tween(140, t => { a.ox = lx*t; a.oy = ly*t; });
   if (ranged){
     const s = {x0: a.x + .5, y0: a.y + .5, x1: d.x + .5, y1: d.y + .5, t: 0}; shots.push(s);
@@ -269,6 +269,7 @@ async function strike(a, d, f){
       for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
     }
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
+    if (a.w === 'hook' && d.hp > 0) hookPull(a, d, scene);   // a hook drags what it catches one square closer
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');
     Sfx.play(crit ? 'crit' : dmg === 0 ? 'nodamage' : 'hit');
@@ -302,6 +303,30 @@ async function strike(a, d, f){
   }
 }
 
+// Hooks: the square a target would be pulled into (one step closer to the hook), or null if it can't be pulled
+// (out of the hook's 2-tile reach, the way is blocked by a unit or by ground the target can't stand on).
+function pullSquare(a, d, ap = a, dp = d){
+  if (man(ap, dp) !== 2) return null;
+  for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const x = dp.x + dx, y = dp.y + dy;
+    if (!inBounds(x, y) || man({x, y}, ap) !== 1) continue;
+    const o = unitAt(x, y); if (o && o !== d) continue;
+    if (moveCost(d, x, y) >= 99) continue;
+    return {x, y};
+  }
+  return null;
+}
+function hookPull(a, d, scene){
+  const sq = pullSquare(a, d);
+  if (!sq){ popup(d, 'Holds fast', '#c5d3e3'); if (scene) duelPop(d, 'HOLDS FAST', '#c5d3e3'); return; }
+  const fx = d.x, fy = d.y; d.x = sq.x; d.y = sq.y; d.pulled = true;
+  tween(220, t => { d.px = fx + (sq.x - fx)*t; d.py = fy + (sq.y - fy)*t; });
+  popup(d, '🪝 Pulled!', '#f0965a'); Sfx.play('step');
+  if (scene) setTimeout(() => duelPop(d, 'PULLED IN', '#f0965a'), 380);
+}
+// Can x strike y right now? (Reach is checked again before every blow, because a hook can pull someone mid-fight:
+// a pulled melee fighter can now strike back from beside the hook; a pulled ranged one can't.)
+const canStrikeNow = (x, y) => !x.dead && !y.dead && calc(x, y, x, y).can && !(x.pulled && x.rng[1] > 1);
 async function doCombat(a, d){
   // First time a boss or named enemy is fought (either side attacking): they speak before the duel,
   // and a named character on the other side answers with their retort if the lines don't already include them.
@@ -315,17 +340,22 @@ async function doCombat(a, d){
   // Guard Duty: Cornelius, next to the ally under attack, lunges at an attacker within 2 squares of him first (once a turn)
   const guard = friends(d).find(g => g !== d && !g.dead && !g.guardUsed && hasAb(g, 'guardduty') && man(g, d) === 1 && man(g, a) <= 2);
   if (guard){ guard.guardUsed = true; abilityPop(guard, 'guardduty'); await wait(250); await strike(guard, a, calc(guard, a, guard, a)); await wait(200); updateDanger(); if (a.dead){ checkEnd(); return; } }
-  const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
-  if (D.can) seq.push([d, a, D]);
+  const A = calc(a, d, a, d), D = calc(d, a, d, a);
+  // who strikes, in order; whether each blow lands in reach is checked as it comes (a hook can pull mid-fight)
+  const hooked = a.w === 'hook' && d.w !== 'staff' && d.rng[0] <= 1;   // a melee target pulled in can strike back
+  const counters = D.can || hooked, seq = [a];
+  if (counters) seq.push(d);
   // Walked Away: below half HP, the defender strikes first
   if (D.can && hasAb(d, 'walkedaway') && d.hp < d.mhp/2){ seq.reverse(); abilityPop(d, 'walkedaway'); }
   else if (D.can && hasAb(d, 'plant') && d.planted){ seq.reverse(); abilityPop(d, 'plant'); }   // Plant the Spear: braced, she strikes first
-  if (A.dbl) seq.push([a, d, A]); else if (D.can && D.dbl) seq.push([d, a, D]);
+  if (A.dbl) seq.push(a); else if (counters && D.dbl) seq.push(d);
   const hp0 = {a: a.hp, d: d.hp};
+  a.pulled = d.pulled = false;
   speed = 1;
   await openDuel(a, d);
-  for (const [x, y, f] of seq){ if (a.dead || d.dead) break; await strike(x, y, f); }
+  for (const x of seq){ const y = x === a ? d : a; if (a.dead || d.dead) break; if (!canStrikeNow(x, y)) continue; await strike(x, y, calc(x, y, x, y)); }
   await closeDuel();
+  a.pulled = d.pulled = false;
   speed = 1;
   a.present = false; d.present = false;   // Stocking Filler: the present is used up in one fight
   const p = a.team === 'p' ? a : d.team === 'p' ? d : null, e = p === a ? d : a;   // allies don't gain experience
@@ -448,7 +478,14 @@ function panelActions(u){
     <button class="btn" data-act="cancel" type="button">Undo</button></div>`);
 }
 function panelForecast(a, d){
-  const A = calc(a, d, a, d), D = calc(d, a, d, a);
+  const A = calc(a, d, a, d);
+  let D = calc(d, a, d, a), note = '';
+  if (a.w === 'hook'){   // what the pull will do, if the hook lands
+    const sq = pullSquare(a, d);
+    if (!sq) note = '🪝 Something is in the way: no pull.';
+    else if (d.w === 'staff' || d.rng[1] > 1){ D = {...D, can: false}; note = '🪝 On a hit, pulls them in. Pulled, a ranged foe can\'t strike back.'; }
+    else { D = calc(d, a, sq, a); note = '🪝 On a hit, pulls them in, and they can strike back from beside you.'; }
+  } else if (d.w === 'hook' && D.can && pullSquare(d, a)) note = '🪝 Their hook will pull you in if it lands.';
   const ar = x => x > 0 ? ' <span class="adv">▲</span>' : x < 0 ? ' <span class="dis">▼</span>' : '';
   const row = (l, a1, d1) => `<div class="v pc">${a1}</div><div class="l">${l}</div><div class="v ec">${d1}</div>`;
   setPanel(`<div class="fc">
@@ -457,7 +494,7 @@ function panelForecast(a, d){
       ${row('Dmg', A.dmg + (A.dbl ? ' ×2' : ''), D.can ? D.dmg + (D.dbl ? ' ×2' : '') : '–')}
       ${row('Hit', A.hit, D.can ? D.hit : '–')}
       ${row('Crit', A.crit, D.can ? D.crit : '–')}
-    </div>
+    </div>${note ? `<div class="hint">${note}</div>` : ''}
     <div class="acts"><button class="btn primary" data-act="confirm" type="button">Strike</button>
     <button class="btn" data-act="back" type="button">Back</button></div>`);
 }

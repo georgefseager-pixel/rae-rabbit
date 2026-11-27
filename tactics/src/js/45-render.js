@@ -274,9 +274,9 @@ function drawThemedTile(g, x, y, ch, theme){
   if (ch === 'T') drawFort(g, X, Y, x, y);
 }
 // The weapon badge: a disc in the weapon's colour (the triangle reads at a glance: swords red, axes green, lances blue;
-// bows gold, tomes purple, staves pale teal) with the weapon's symbol in white. On every map token, and large in Danger view.
+// bows gold, tomes purple, hooks copper, staves pale teal) with the weapon's symbol in white. On every map token, and large in Danger view.
 const WEAPON_COLOURS = {sword: ['#e8675a', '#9c2a20'], axe: ['#6fc25a', '#2f6e22'], lance: ['#5f9ae8', '#22508f'], bow: ['#f2cc5a', '#9a6e14'],
-                        tome: ['#b07ae0', '#5a2e8a'], staff: ['#bfe8e0', '#4f8c84'], whip: ['#f2cc5a', '#9a6e14']};
+                        tome: ['#b07ae0', '#5a2e8a'], hook: ['#f0965a', '#9a4a1a'], staff: ['#bfe8e0', '#4f8c84'], whip: ['#f2cc5a', '#9a6e14']};
 function weaponBadge(g, u, x, y, r, ring){
   const w = u.lash ? 'whip' : u.w, [hi, lo] = WEAPON_COLOURS[w] || WEAPON_COLOURS.sword;
   g.fillStyle = 'rgba(0,0,0,.4)'; ell(g, x + r*.08, y + r*.12, r, r); g.fill();

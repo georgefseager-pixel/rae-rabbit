@@ -128,6 +128,13 @@ const WEAPON_ICON = {
     <path d="M22 44 C34 31 54 40 51 25 C48 12 29 16 35 7" fill="none" stroke="#8a5a34" stroke-width="2.6" stroke-linecap="round"/>
     <path d="M35 7 L39.5 3.5" stroke="${A}" stroke-width="1.8" stroke-linecap="round"/>
     <circle cx="9" cy="57" r="3.4" fill="${A}" stroke="${W_O}" stroke-width="1.3"/><circle cx="22" cy="44" r="3" fill="${A}" stroke="${W_O}" stroke-width="1.3"/>`,
+  hook: A => `<path d="M8 58 C16 50 14 44 22 40 C28 37 27 31 31 28" fill="none" stroke="${W_O}" stroke-width="4.4" stroke-linecap="round"/>
+    <path d="M8 58 C16 50 14 44 22 40 C28 37 27 31 31 28" fill="none" stroke="#d9b48a" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="3 1.6"/>
+    <rect x="29" y="11" width="6" height="22" rx="2" fill="url(#wSteel)" stroke="${W_O}" stroke-width="1.3"/>
+    <path d="M32 31 C18 31 14 20 20 12 M32 31 C46 31 50 20 44 12 M32 33 C32 44 32 46 32 46" fill="none" stroke="${W_O}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M32 31 C18 31 14 20 20 12 M32 31 C46 31 50 20 44 12" fill="none" stroke="#c7d0da" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M17 15 L20 12 L23 14 M47 15 L44 12 L41 14" fill="none" stroke="${W_O}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="32" cy="9" r="3.6" fill="${A}" stroke="${W_O}" stroke-width="1.3"/>`,
   tome: A => `<path d="M14 13 C22 9 28 10 32 14 C36 10 42 9 50 13 V52 C42 48 36 49 32 53 C28 49 22 48 14 52 Z" fill="#efe2c4" stroke="${W_O}" stroke-width="1.4"/>
     <path d="M11 16 V55 C20 51 27 52 32 56 C37 52 44 51 53 55 V16" fill="none" stroke="#6b2a22" stroke-width="3.2" stroke-linejoin="round"/>
     <path d="M32 14 V53" stroke="${W_O}" stroke-opacity=".45" stroke-width="1.2"/>

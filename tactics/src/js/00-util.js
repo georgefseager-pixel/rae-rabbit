@@ -119,7 +119,8 @@ function artResolve(ent, kind){
     // fish-battle.png). ★★ (elite) pirates are sharks, in a shark colour of their own (art/shark*-*.png); so are named pirates.
     const elite = sp.base === 'shark' || (ent.stars ?? ent.rec?.stars) === 2;
     const base = elite ? 'shark' : 'fish', col = elite && sp.base === 'fish' ? Object.keys(SHARK_COLOURS)[strHash(ent.uid || ent.name || ent.key) % Object.keys(SHARK_COLOURS).length] : fur;
-    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w] || '';
+    // hooks borrow the lance pose until the pirates' hook poses arrive (art/fishhook-battle.png, art/sharkhook-battle.png)
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff', hook: ART[base + 'hook'] ? 'hook' : 'lance'}[ent.w || CLASSES[cls]?.w] || '';
     if (ART[base + pose + col]?.[kind]) return base + pose + col;
     if (ART[base + col]?.[kind]) return base + col;
   }

@@ -46,10 +46,10 @@ const GACHA_ARMY = {
         names: ['Loquat', 'Guava', 'Lychee', 'Papaya', 'Pomelo', 'Durian', 'Sapote', 'Longan', 'Rambutan', 'Medlar',
                 'Jujube', 'Carambola', 'Mangosteen', 'Cherimoya', 'Feijoa']},
       // the crew of the Grinning Mary (Chapter Four): ★ pirate fish in every colour of the Satin Sea, ★★ pirate sharks
-      pirates: {stars: [1, 2], generic: ['pcutlass', 'pboarder', 'pharpoon', 'pgunner', 'pshanty', 'psawbones'],
-        // the twelve ★ fish take the first twelve names, the six ★★ sharks the last six
-        names: ['Mackerel', 'Haddock', 'Pollock', 'Kipper', 'Sprat', 'Herring', 'Bream', 'Gurnard', 'Pilchard', 'Turbot', 'Halibut', 'Brill',
-                'Thresher', 'Blacktip', 'Whitetip', 'Wobbegong', 'Dogfish', 'Angelshark']},
+      pirates: {stars: [1, 2], generic: ['pcutlass', 'pboarder', 'pharpoon', 'pgunner', 'pshanty', 'psawbones', 'phook'],
+        // the fourteen ★ fish take the first fourteen names, the seven ★★ sharks the last seven
+        names: ['Mackerel', 'Haddock', 'Pollock', 'Kipper', 'Sprat', 'Herring', 'Bream', 'Gurnard', 'Pilchard', 'Turbot', 'Halibut', 'Brill', 'Snapper', 'Grouper',
+                'Thresher', 'Blacktip', 'Whitetip', 'Wobbegong', 'Dogfish', 'Angelshark', 'Hammerjaw']},
       republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
       // the ten ★ soldiers take the first ten names, the five ★★ veterans the last five
       names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy',

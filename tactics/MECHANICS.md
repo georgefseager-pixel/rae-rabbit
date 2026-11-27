@@ -15,10 +15,11 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | Hit | 75 + Skl×2 + weapon hit + triangle×15 − (Spd×2 + terrain avoid) |
 | Crit | Skl/2 + weapon crit − enemy Skl/4 |
 | Double attack | Spd at least 4 higher than the enemy's |
-| Weapon triangle | Sword beats axe, axe beats lance, lance beats sword; tomes beat bows. A win is +1 damage, +15 hit. Shown as a diagram with `{show: 'triangle'}` |
+| Weapon triangle | Two triangles. Melee: sword beats axe, axe beats lance, lance beats sword. Ranged: tome beats bow, bow beats hook, hook beats tome. A win is +1 damage, +15 hit. Shown as a diagram with `{show: 'triangle'}` |
 | Weapon badges | every map token carries its weapon's badge, coloured by weapon (swords red, axes green, lances blue, bows gold, tomes purple, staves pale teal). Danger view covers each unit with a large badge, ringed red (enemies), gold (yours) or blue (allies) |
 | Triangle arrows | with one of your units selected, each enemy shows a green ▲ (top left of its token) if your weapon beats theirs, a red ▼ if theirs beats yours (tomes over bows included) |
-| Ranges | Bows (and whips) 2 only, so no counterattack up close. Tomes 1–2. Staves heal an adjacent ally (8 + Atk/2) and can't attack |
+| Ranges | Bows (and whips) 2 only, so no counterattack up close. Tomes 1–2. Hooks 2 only. Staves heal an adjacent ally (8 + Atk/2) and can't attack |
+| Hooks (Chapter Four on) | On a hit, the target is pulled one square closer (into the square beside the hook). No pull if that square is blocked by a unit or by ground the target can't stand on. A pulled melee fighter strikes back from beside the hook; a pulled ranged one (bow, tome, hook) can't. Reach is checked before every blow, so a pull can also cancel the hook's own follow-up. The forecast says what the pull will do. First used by the pirates' Grapplers (R4-4 on, DK-1); ★/★★ Grapplers on the Pirates of the Satin Sea banner |
 | Experience | Kill: 30 + 3 × level difference (+40 for a boss). Damage without a kill: 10 + level difference. Heal: 12. 100 per level |
 
 ## Terrain (same rules on every map; each theme and map just names it differently)
@@ -199,7 +200,8 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Lesson | Taught in | Good places to reuse it |
 |---|---|---|
 | Use cover; draw guards off rocks | WL-1 | any map with `M` held by `guard` enemies: ravine, thornHill, forestTrail |
-| Weapon triangle | WL-2 | stages that field one weapon type per flank or bridge; bosses with an obvious counter |
+| Lesson | Taught in | Good places to reuse it | stages that field one weapon type per flank or bridge; bosses with an obvious counter |
+| The ranged triangle and hooks | mentioned by Willow in R2-1 ("unlikely to see one around here"); hooks shown in R4-4 | pirate stages with Grapplers near your readers; pull enemies off forts and bridges |
 | Danger view, choke points, moving together | WL-3 | walls with gaps (republicCamp, flowerField), bridges (ford, riverWoods) |
 | Protect a fragile leader | FD-1 to FD-3 | escort or VIP stages |
 | Choke points at a bridge | BR-3, PT-3 | riverWoods, ford |

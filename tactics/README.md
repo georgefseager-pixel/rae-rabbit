@@ -100,6 +100,8 @@ Placeholders until their art arrives (each picks it up automatically once the fi
 
 - **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `tilly` (Tilly Tealbottom, a teal frog aristocrat,
   mounted lance) and `princess` (Princess, a pink frog, tome). Ducky has his art (`art/ducky-*.png`).
+- **Hook poses**: `art/fishhook-battle.png` and `art/sharkhook-battle.png` (plus `fishhookskin`/`sharkhookskin` masks) for the
+  Grapplers; until then they use the lance pose.
 - **Pirates**: done. ★ pirate fish (`art/fish*-*.png`) and ★★ / named pirate sharks (`art/shark*-*.png`), each
   recoloured from their `*skin` masks.
 - **Scene paintings**: `art/bg-shore.jpg` (the beach settlement), `art/bg-arena.jpg` (the tournament ground) and

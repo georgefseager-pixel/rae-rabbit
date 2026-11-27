@@ -93,6 +93,7 @@ const CLASSES = {
   pharpoon:  {name: 'Harpooner',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Harpoon',           base: {mhp:22,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:75,atk:45,def:40,spd:35,skl:45}},
   pgunner:   {name: 'Cork Gunner',    w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Cork Musket',       base: {mhp:18,atk:11,def:3, spd:7,skl:9,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   pshanty:   {name: 'Shanty Singer',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Shanties',  base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:50}},
+  phook:     {name: 'Grappler',       w: 'hook',  rng: [2,2], mt: 'foot',    wname: 'Grappling Hook',    base: {mhp:20,atk:11,def:5, spd:8,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:45,skl:50}},   // pulls what it hooks
   psawbones: {name: 'Sawbones',       w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Bilge Mop',         base: {mhp:17,atk:5, def:3, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   sharkcapt: {name: 'Pirate Captain', w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Grinning Scimitar', base: {mhp:26,atk:13,def:6, spd:9,skl:9,mov:5}, g: {mhp:75,atk:50,def:30,spd:50,skl:45}},   // Ducky
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
@@ -100,10 +101,12 @@ const CLASSES = {
 };
 const STAT_KEYS = ['mhp','atk','def','spd','skl'];
 // A whip (lash: true) counts as a bow: it reaches 2 tiles and can't strike up close.
-const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff', tome: 'Tome', whip: 'Whip'};
+const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff', tome: 'Tome', whip: 'Whip', hook: 'Hook'};
 // Mag instead of Atk: staves (mending) and tomes (offensive magic).
 const isMagic = w => w === 'staff' || w === 'tome';
-const BEATS = {sword: 'axe', axe: 'lance', lance: 'sword', tome: 'bow'};   // and tomes beat bows
+// Two triangles: swords > axes > lances > swords, and (ranged) tomes > bows > hooks > tomes.
+// A hook (Chapter Four on) reaches 2 tiles and, on a hit, pulls its target one square closer (see hookPull in 40-battle.js).
+const BEATS = {sword: 'axe', axe: 'lance', lance: 'sword', tome: 'bow', bow: 'hook', hook: 'tome'};
 const triangle = (a, b) => BEATS[a] === b ? 1 : BEATS[b] === a ? -1 : 0;
 
 // Weapon upgrades bought in the Armoury: each tier adds might (or mending power for staves).
@@ -191,7 +194,7 @@ const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
-  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', sharkcapt:'ducky',
+  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', sharkcapt:'ducky',
 };
 
 // ================= Named characters =================

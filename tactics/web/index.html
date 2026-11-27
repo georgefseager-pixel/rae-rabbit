@@ -1137,7 +1137,8 @@ function artResolve(ent, kind){
     // fish-battle.png). ★★ (elite) pirates are sharks, in a shark colour of their own (art/shark*-*.png); so are named pirates.
     const elite = sp.base === 'shark' || (ent.stars ?? ent.rec?.stars) === 2;
     const base = elite ? 'shark' : 'fish', col = elite && sp.base === 'fish' ? Object.keys(SHARK_COLOURS)[strHash(ent.uid || ent.name || ent.key) % Object.keys(SHARK_COLOURS).length] : fur;
-    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff'}[ent.w || CLASSES[cls]?.w] || '';
+    // hooks borrow the lance pose until the pirates' hook poses arrive (art/fishhook-battle.png, art/sharkhook-battle.png)
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff', hook: ART[base + 'hook'] ? 'hook' : 'lance'}[ent.w || CLASSES[cls]?.w] || '';
     if (ART[base + pose + col]?.[kind]) return base + pose + col;
     if (ART[base + col]?.[kind]) return base + col;
   }
@@ -1832,6 +1833,7 @@ const CLASSES = {
   pharpoon:  {name: 'Harpooner',      w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Harpoon',           base: {mhp:22,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:75,atk:45,def:40,spd:35,skl:45}},
   pgunner:   {name: 'Cork Gunner',    w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Cork Musket',       base: {mhp:18,atk:11,def:3, spd:7,skl:9,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:55}},
   pshanty:   {name: 'Shanty Singer',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Shanties',  base: {mhp:18,atk:10,def:3, spd:7,skl:8,mov:5}, g: {mhp:55,atk:45,def:20,spd:45,skl:50}},
+  phook:     {name: 'Grappler',       w: 'hook',  rng: [2,2], mt: 'foot',    wname: 'Grappling Hook',    base: {mhp:20,atk:11,def:5, spd:8,skl:8,mov:5}, g: {mhp:65,atk:45,def:30,spd:45,skl:50}},   // pulls what it hooks
   psawbones: {name: 'Sawbones',       w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Bilge Mop',         base: {mhp:17,atk:5, def:3, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   sharkcapt: {name: 'Pirate Captain', w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Grinning Scimitar', base: {mhp:26,atk:13,def:6, spd:9,skl:9,mov:5}, g: {mhp:75,atk:50,def:30,spd:50,skl:45}},   // Ducky
   marshlord: {name: 'Marsh Lord',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Black Cleaver',     base: {mhp:26,atk:13,def:6, spd:6,skl:7,mov:5}, g: {mhp:80,atk:50,def:30,spd:30,skl:40}},   // Fraggle Friggle
@@ -1839,10 +1841,12 @@ const CLASSES = {
 };
 const STAT_KEYS = ['mhp','atk','def','spd','skl'];
 // A whip (lash: true) counts as a bow: it reaches 2 tiles and can't strike up close.
-const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff', tome: 'Tome', whip: 'Whip'};
+const WTYPE = {sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', staff: 'Staff', tome: 'Tome', whip: 'Whip', hook: 'Hook'};
 // Mag instead of Atk: staves (mending) and tomes (offensive magic).
 const isMagic = w => w === 'staff' || w === 'tome';
-const BEATS = {sword: 'axe', axe: 'lance', lance: 'sword', tome: 'bow'};   // and tomes beat bows
+// Two triangles: swords > axes > lances > swords, and (ranged) tomes > bows > hooks > tomes.
+// A hook (Chapter Four on) reaches 2 tiles and, on a hit, pulls its target one square closer (see hookPull in 40-battle.js).
+const BEATS = {sword: 'axe', axe: 'lance', lance: 'sword', tome: 'bow', bow: 'hook', hook: 'tome'};
 const triangle = (a, b) => BEATS[a] === b ? 1 : BEATS[b] === a ? -1 : 0;
 
 // Weapon upgrades bought in the Armoury: each tier adds might (or mending power for staves).
@@ -1930,7 +1934,7 @@ const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
-  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', sharkcapt:'ducky',
+  lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', sharkcapt:'ducky',
 };
 
 // ================= Named characters =================
@@ -2297,6 +2301,13 @@ const WEAPON_ICON = {
     <path d="M22 44 C34 31 54 40 51 25 C48 12 29 16 35 7" fill="none" stroke="#8a5a34" stroke-width="2.6" stroke-linecap="round"/>
     <path d="M35 7 L39.5 3.5" stroke="${A}" stroke-width="1.8" stroke-linecap="round"/>
     <circle cx="9" cy="57" r="3.4" fill="${A}" stroke="${W_O}" stroke-width="1.3"/><circle cx="22" cy="44" r="3" fill="${A}" stroke="${W_O}" stroke-width="1.3"/>`,
+  hook: A => `<path d="M8 58 C16 50 14 44 22 40 C28 37 27 31 31 28" fill="none" stroke="${W_O}" stroke-width="4.4" stroke-linecap="round"/>
+    <path d="M8 58 C16 50 14 44 22 40 C28 37 27 31 31 28" fill="none" stroke="#d9b48a" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="3 1.6"/>
+    <rect x="29" y="11" width="6" height="22" rx="2" fill="url(#wSteel)" stroke="${W_O}" stroke-width="1.3"/>
+    <path d="M32 31 C18 31 14 20 20 12 M32 31 C46 31 50 20 44 12 M32 33 C32 44 32 46 32 46" fill="none" stroke="${W_O}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M32 31 C18 31 14 20 20 12 M32 31 C46 31 50 20 44 12" fill="none" stroke="#c7d0da" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M17 15 L20 12 L23 14 M47 15 L44 12 L41 14" fill="none" stroke="${W_O}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="32" cy="9" r="3.6" fill="${A}" stroke="${W_O}" stroke-width="1.3"/>`,
   tome: A => `<path d="M14 13 C22 9 28 10 32 14 C36 10 42 9 50 13 V52 C42 48 36 49 32 53 C28 49 22 48 14 52 Z" fill="#efe2c4" stroke="${W_O}" stroke-width="1.4"/>
     <path d="M11 16 V55 C20 51 27 52 32 56 C37 52 44 51 53 55 V16" fill="none" stroke="#6b2a22" stroke-width="3.2" stroke-linejoin="round"/>
     <path d="M32 14 V53" stroke="${W_O}" stroke-opacity=".45" stroke-width="1.2"/>
@@ -2749,6 +2760,7 @@ function glyph(g, w, cx, cy, r, col){
   if (w === 'bow'){ g.beginPath(); g.arc(-.3*r,0,.62*r,-1.05,1.05); g.stroke(); const ex = -.3*r + .62*r*Math.cos(1.05), ey = .62*r*Math.sin(1.05); g.lineWidth *= .5; L(ex,-ey,ex,ey); g.lineWidth *= 2; L(-.15*r,0,.6*r,0); }
   if (w === 'tome'){ g.fillStyle = '#7a2a24'; g.fillRect(-.35*r,-.3*r,.7*r,.6*r); g.strokeRect(-.35*r,-.3*r,.7*r,.6*r); L(0,-.3*r,0,.3*r); }
   if (w === 'whip'){ L(-.5*r,.55*r,-.1*r,.05*r); g.lineWidth *= .6; g.beginPath(); g.moveTo(-.1*r,.05*r); g.bezierCurveTo(.5*r,-.5*r,.75*r,.1*r,.35*r,.4*r); g.bezierCurveTo(.1*r,.6*r,.6*r,.75*r,.7*r,.55*r); g.stroke(); }
+  if (w === 'hook'){ L(-.55*r,.6*r,.05*r,-.1*r); g.lineWidth *= .9; g.beginPath(); g.arc(.25*r,-.3*r,.32*r,Math.PI*.75,Math.PI*2.1); g.stroke(); L(.05*r,-.1*r,.25*r,-.62*r); g.beginPath(); g.arc(-.05*r,-.48*r,.22*r,Math.PI*.1,Math.PI*1.1); g.stroke(); }
   if (w === 'staff'){ g.rotate(Math.PI/4); L(0,.68*r,0,-.45*r); g.lineWidth *= .6; g.beginPath(); g.ellipse(0,-.5*r,.1*r,.2*r,0,0,Math.PI*2); g.stroke(); g.beginPath(); g.moveTo(0,-.6*r); g.quadraticCurveTo(.6*r,-.4*r,.3*r,.1*r); g.stroke(); }
   g.restore();
 }
@@ -3770,6 +3782,7 @@ const CAMPAIGNS = {
             {who: 'willow', text: 'I think you have talent. Talent without discipline gets rabbits unstitched. So: a lesson.'},
             {who: 'willow', show: 'triangle', text: 'Swords beat axes. Axes beat lances. Lances beat swords. Pick your fights by what the enemy carries.'},
             {who: 'willow', show: 'triangle', text: 'And a tome beats a bow. Words reach further than stones, and no archer can dodge an idea.'},
+            {who: 'willow', show: 'triangle', text: 'There is a third, for completeness: the hook. It drags a reader off her feet, and any archer can cut its line. But that is a sailor\'s weapon. We are unlikely to see one around here.'},
             {who: 'willow', text: 'But those of us who read are soft-stitched. A tome hits hard and from two tiles away, and that is all it does well.'},
             {who: 'willow', text: 'Keep your readers behind the line, and keep blades between us and theirs.'},
             {who: 'rae', text: '…Protect the bookworm. Got it.'},
@@ -4416,7 +4429,7 @@ const CAMPAIGNS = {
           ],
           reinforce: () => [
             {turn: 1, units: [E('pcutlass',8,2,2), E('pboarder',8,7,2)]},
-            {turn: 2, units: [E('psawbones',8,7,2,'guard'), E('pharpoon',8,2,2), E('pcutlass',8,7,1)]},
+            {turn: 2, units: [E('psawbones',8,7,2,'guard'), E('pharpoon',8,2,2), E('phook',8,7,1)]},
             {turn: 3, units: [E('pboarder',9,2,2,'charge',{elite: true}), E('pgunner',8,7,2), E('pshanty',8,2,1)]},
             {turn: 4, units: [E('pboarder',10,7,2,'charge',{key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle', elite: true, flees: true, talk: [
             {who: "barnacle", text: "Which one of you's the rabbit with the price on her head? Speak up!"},
@@ -4434,6 +4447,8 @@ const CAMPAIGNS = {
             {who: "speshul", text: "Ships! Real ships! Rae, look, they're coming in to the jetties! Maybe they want to trade!"},
             {who: "patch", text: "Speshul. Get down off that roof. They're not traders. Look at the flag."},
             {who: "narr", text: "Black cloth. A white grin, full of teeth."},
+            {who: "willow", text: "And hooks. Rae, look at their hands: grappling hooks. I once told you we were unlikely to see one around here. We are not around here any more."},
+            {who: "willow", show: "triangle", text: "A hook drags whoever it catches one step closer. It beats a tome, and loses to a bow. Keep our readers out of reach, and let the archers cut the lines."},
             {who: "rae", text: "Everyone into the longhouse! Everyone who can fight, with me!"},
           ],
           post: [
@@ -4461,7 +4476,7 @@ const CAMPAIGNS = {
           prepNote: 'Rae goes alone. The friends you pick come after her, at the end of turn II. Keep her standing until they arrive.',
           enemies: () => [
             E('pboarder',10,4,2,'hold',{boss: true, flees: true, elite: true, key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle'}),
-            E('pcutlass',8,3,7), E('pharpoon',8,6,7),
+            E('pcutlass',8,3,7), E('phook',8,6,7),
             E('pgunner',8,2,4,'guard'), E('pgunner',8,7,4,'guard'), E('pboarder',8,4,5,'guard'), E('pcutlass',8,1,3,'guard'),
             E('psawbones',8,5,3,'guard'), E('pcutlass',9,8,3,'guard',{elite: true}), E('pshanty',8,3,1,'guard'),
           ],
@@ -4510,7 +4525,7 @@ const CAMPAIGNS = {
           enemies: () => [
             E('sharkcapt',11,4,2,'hold',{boss: true, flees: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
             E('pgunner',9,3,4,'guard'), E('pgunner',9,6,4,'guard'), E('psawbones',9,5,3,'guard'), E('pshanty',9,2,3,'guard'),
-            E('pharpoon',9,3,7,'guard'), E('pharpoon',9,6,7,'guard'), E('pboarder',10,4,6,'charge',{elite: true}),
+            E('phook',9,3,7,'guard'), E('pharpoon',9,6,7,'guard'), E('pboarder',10,4,6,'charge',{elite: true}),
             E('pcutlass',9,1,9), E('pcutlass',9,8,9), E('pboarder',9,4,10), E('pgunner',9,0,8,'guard'),
           ],
           reinforce: () => [{turn: 3, units: [E('pcutlass',9,1,3), E('pcutlass',9,8,3)]}],
@@ -4555,7 +4570,7 @@ const CAMPAIGNS = {
             E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
             E('pboarder',11,5,1,'guard',{key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle', elite: true}),
             E('psawbones',9,6,2,'guard'), E('pgunner',9,2,2,'guard'), E('pgunner',9,7,2,'guard'), E('pcutlass',9,3,3), E('pcutlass',9,6,3),
-            E('pcutlass',9,3,7), E('pharpoon',9,6,7,'guard'), E('pboarder',9,4,9), E('pgunner',9,1,8,'guard'), E('pgunner',9,8,8,'guard'),
+            E('phook',9,3,7), E('pharpoon',9,6,7,'guard'), E('pboarder',9,4,9), E('phook',10,7,7,'guard',{elite: true}), E('pgunner',9,1,8,'guard'), E('pgunner',9,8,8,'guard'),
             E('pshanty',9,5,8,'guard'), E('pboarder',10,6,9,'charge',{elite: true}),
           ],
           reinforce: () => [{turn: 3, units: [E('pcutlass',9,2,3), E('pharpoon',9,7,3)]}],
@@ -5644,10 +5659,10 @@ const GACHA_ARMY = {
         names: ['Loquat', 'Guava', 'Lychee', 'Papaya', 'Pomelo', 'Durian', 'Sapote', 'Longan', 'Rambutan', 'Medlar',
                 'Jujube', 'Carambola', 'Mangosteen', 'Cherimoya', 'Feijoa']},
       // the crew of the Grinning Mary (Chapter Four): ★ pirate fish in every colour of the Satin Sea, ★★ pirate sharks
-      pirates: {stars: [1, 2], generic: ['pcutlass', 'pboarder', 'pharpoon', 'pgunner', 'pshanty', 'psawbones'],
-        // the twelve ★ fish take the first twelve names, the six ★★ sharks the last six
-        names: ['Mackerel', 'Haddock', 'Pollock', 'Kipper', 'Sprat', 'Herring', 'Bream', 'Gurnard', 'Pilchard', 'Turbot', 'Halibut', 'Brill',
-                'Thresher', 'Blacktip', 'Whitetip', 'Wobbegong', 'Dogfish', 'Angelshark']},
+      pirates: {stars: [1, 2], generic: ['pcutlass', 'pboarder', 'pharpoon', 'pgunner', 'pshanty', 'psawbones', 'phook'],
+        // the fourteen ★ fish take the first fourteen names, the seven ★★ sharks the last seven
+        names: ['Mackerel', 'Haddock', 'Pollock', 'Kipper', 'Sprat', 'Herring', 'Bream', 'Gurnard', 'Pilchard', 'Turbot', 'Halibut', 'Brill', 'Snapper', 'Grouper',
+                'Thresher', 'Blacktip', 'Whitetip', 'Wobbegong', 'Dogfish', 'Angelshark', 'Hammerjaw']},
       republic: {stars: [1, 2], generic: ['rfencer', 'rfighter', 'rlancer', 'rarcher', 'radept'],
       // the ten ★ soldiers take the first ten names, the five ★★ veterans the last five
       names: ['Clover', 'Bramble', 'Thistle', 'Hazel', 'Sorrel', 'Juniper', 'Fennel', 'Rowan', 'Briar', 'Tansy',
@@ -8054,7 +8069,7 @@ Object.assign(SIDE_SETS, {
         enemies: () => [
           E('sharkcapt',10,4,3,'guard',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('pcutlass',8,2,3), E('pcutlass',8,7,3), E('pboarder',8,4,5), E('pgunner',8,8,4,'guard'), E('pharpoon',8,1,5),
-          E('pshanty',8,5,3,'guard'), E('pboarder',8,6,6),
+          E('pshanty',8,5,3,'guard'), E('pboarder',8,6,6), E('phook',8,3,5,'guard'),
         ],
         reinforce: () => [{turn: 2, units: [E('pcutlass',8,2,2), E('pharpoon',8,7,2)]}, {turn: 4, units: [E('pboarder',9,2,2,'charge',{elite: true})]}],
         bossTalk: [
@@ -8925,7 +8940,7 @@ async function strike(a, d, f){
   const lx = dx/len*(ranged ? .12 : .32), ly = dy/len*(ranged ? .12 : .32);
   const duel = duelEl(), scene = !duel.hidden, A = dEl[sideOf(a)], D = dEl[sideOf(d)], dir = sideOf(a) === 'L' ? 1 : -1;
   if (scene) anim(A.querySelector('.pf'), [{transform: 'none'}, {transform: `translateX(${dir*(ranged ? 16 : 64)}px) rotate(${dir*3}deg)`}, {transform: 'none'}], 380, {easing: 'ease-in-out'});
-  Sfx.play(a.w === 'tome' ? 'magic' : a.lash ? 'crack' : (a.w === 'bow' && ranged) ? 'twang' : 'swing');
+  Sfx.play(a.w === 'tome' ? 'magic' : a.lash ? 'crack' : ((a.w === 'bow' || a.w === 'hook') && ranged) ? 'twang' : 'swing');
   await tween(140, t => { a.ox = lx*t; a.oy = ly*t; });
   if (ranged){
     const s = {x0: a.x + .5, y0: a.y + .5, x1: d.x + .5, y1: d.y + .5, t: 0}; shots.push(s);
@@ -8942,6 +8957,7 @@ async function strike(a, d, f){
       for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
     }
     if (hasAb(a, 'naughty') && d.hp > 0 && !d.naughty){ d.naughty = true; abilityPop(a, 'naughty'); }   // Naughty List: +2 damage from everyone, all battle
+    if (a.w === 'hook' && d.hp > 0) hookPull(a, d, scene);   // a hook drags what it catches one square closer
     if (d.lord && d.team === 'p' && dmg > 0) B.lordHit = true;
     popup(d, crit ? `${dmg}!` : String(dmg), crit ? '#ffd166' : '#ffffff');
     Sfx.play(crit ? 'crit' : dmg === 0 ? 'nodamage' : 'hit');
@@ -8975,6 +8991,30 @@ async function strike(a, d, f){
   }
 }
 
+// Hooks: the square a target would be pulled into (one step closer to the hook), or null if it can't be pulled
+// (out of the hook's 2-tile reach, the way is blocked by a unit or by ground the target can't stand on).
+function pullSquare(a, d, ap = a, dp = d){
+  if (man(ap, dp) !== 2) return null;
+  for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const x = dp.x + dx, y = dp.y + dy;
+    if (!inBounds(x, y) || man({x, y}, ap) !== 1) continue;
+    const o = unitAt(x, y); if (o && o !== d) continue;
+    if (moveCost(d, x, y) >= 99) continue;
+    return {x, y};
+  }
+  return null;
+}
+function hookPull(a, d, scene){
+  const sq = pullSquare(a, d);
+  if (!sq){ popup(d, 'Holds fast', '#c5d3e3'); if (scene) duelPop(d, 'HOLDS FAST', '#c5d3e3'); return; }
+  const fx = d.x, fy = d.y; d.x = sq.x; d.y = sq.y; d.pulled = true;
+  tween(220, t => { d.px = fx + (sq.x - fx)*t; d.py = fy + (sq.y - fy)*t; });
+  popup(d, '🪝 Pulled!', '#f0965a'); Sfx.play('step');
+  if (scene) setTimeout(() => duelPop(d, 'PULLED IN', '#f0965a'), 380);
+}
+// Can x strike y right now? (Reach is checked again before every blow, because a hook can pull someone mid-fight:
+// a pulled melee fighter can now strike back from beside the hook; a pulled ranged one can't.)
+const canStrikeNow = (x, y) => !x.dead && !y.dead && calc(x, y, x, y).can && !(x.pulled && x.rng[1] > 1);
 async function doCombat(a, d){
   // First time a boss or named enemy is fought (either side attacking): they speak before the duel,
   // and a named character on the other side answers with their retort if the lines don't already include them.
@@ -8988,17 +9028,22 @@ async function doCombat(a, d){
   // Guard Duty: Cornelius, next to the ally under attack, lunges at an attacker within 2 squares of him first (once a turn)
   const guard = friends(d).find(g => g !== d && !g.dead && !g.guardUsed && hasAb(g, 'guardduty') && man(g, d) === 1 && man(g, a) <= 2);
   if (guard){ guard.guardUsed = true; abilityPop(guard, 'guardduty'); await wait(250); await strike(guard, a, calc(guard, a, guard, a)); await wait(200); updateDanger(); if (a.dead){ checkEnd(); return; } }
-  const A = calc(a, d, a, d), D = calc(d, a, d, a), seq = [[a, d, A]];
-  if (D.can) seq.push([d, a, D]);
+  const A = calc(a, d, a, d), D = calc(d, a, d, a);
+  // who strikes, in order; whether each blow lands in reach is checked as it comes (a hook can pull mid-fight)
+  const hooked = a.w === 'hook' && d.w !== 'staff' && d.rng[0] <= 1;   // a melee target pulled in can strike back
+  const counters = D.can || hooked, seq = [a];
+  if (counters) seq.push(d);
   // Walked Away: below half HP, the defender strikes first
   if (D.can && hasAb(d, 'walkedaway') && d.hp < d.mhp/2){ seq.reverse(); abilityPop(d, 'walkedaway'); }
   else if (D.can && hasAb(d, 'plant') && d.planted){ seq.reverse(); abilityPop(d, 'plant'); }   // Plant the Spear: braced, she strikes first
-  if (A.dbl) seq.push([a, d, A]); else if (D.can && D.dbl) seq.push([d, a, D]);
+  if (A.dbl) seq.push(a); else if (counters && D.dbl) seq.push(d);
   const hp0 = {a: a.hp, d: d.hp};
+  a.pulled = d.pulled = false;
   speed = 1;
   await openDuel(a, d);
-  for (const [x, y, f] of seq){ if (a.dead || d.dead) break; await strike(x, y, f); }
+  for (const x of seq){ const y = x === a ? d : a; if (a.dead || d.dead) break; if (!canStrikeNow(x, y)) continue; await strike(x, y, calc(x, y, x, y)); }
   await closeDuel();
+  a.pulled = d.pulled = false;
   speed = 1;
   a.present = false; d.present = false;   // Stocking Filler: the present is used up in one fight
   const p = a.team === 'p' ? a : d.team === 'p' ? d : null, e = p === a ? d : a;   // allies don't gain experience
@@ -9121,7 +9166,14 @@ function panelActions(u){
     <button class="btn" data-act="cancel" type="button">Undo</button></div>`);
 }
 function panelForecast(a, d){
-  const A = calc(a, d, a, d), D = calc(d, a, d, a);
+  const A = calc(a, d, a, d);
+  let D = calc(d, a, d, a), note = '';
+  if (a.w === 'hook'){   // what the pull will do, if the hook lands
+    const sq = pullSquare(a, d);
+    if (!sq) note = '🪝 Something is in the way: no pull.';
+    else if (d.w === 'staff' || d.rng[1] > 1){ D = {...D, can: false}; note = '🪝 On a hit, pulls them in. Pulled, a ranged foe can\'t strike back.'; }
+    else { D = calc(d, a, sq, a); note = '🪝 On a hit, pulls them in, and they can strike back from beside you.'; }
+  } else if (d.w === 'hook' && D.can && pullSquare(d, a)) note = '🪝 Their hook will pull you in if it lands.';
   const ar = x => x > 0 ? ' <span class="adv">▲</span>' : x < 0 ? ' <span class="dis">▼</span>' : '';
   const row = (l, a1, d1) => `<div class="v pc">${a1}</div><div class="l">${l}</div><div class="v ec">${d1}</div>`;
   setPanel(`<div class="fc">
@@ -9130,7 +9182,7 @@ function panelForecast(a, d){
       ${row('Dmg', A.dmg + (A.dbl ? ' ×2' : ''), D.can ? D.dmg + (D.dbl ? ' ×2' : '') : '–')}
       ${row('Hit', A.hit, D.can ? D.hit : '–')}
       ${row('Crit', A.crit, D.can ? D.crit : '–')}
-    </div>
+    </div>${note ? `<div class="hint">${note}</div>` : ''}
     <div class="acts"><button class="btn primary" data-act="confirm" type="button">Strike</button>
     <button class="btn" data-act="back" type="button">Back</button></div>`);
 }
@@ -9810,9 +9862,9 @@ function drawThemedTile(g, x, y, ch, theme){
   if (ch === 'T') drawFort(g, X, Y, x, y);
 }
 // The weapon badge: a disc in the weapon's colour (the triangle reads at a glance: swords red, axes green, lances blue;
-// bows gold, tomes purple, staves pale teal) with the weapon's symbol in white. On every map token, and large in Danger view.
+// bows gold, tomes purple, hooks copper, staves pale teal) with the weapon's symbol in white. On every map token, and large in Danger view.
 const WEAPON_COLOURS = {sword: ['#e8675a', '#9c2a20'], axe: ['#6fc25a', '#2f6e22'], lance: ['#5f9ae8', '#22508f'], bow: ['#f2cc5a', '#9a6e14'],
-                        tome: ['#b07ae0', '#5a2e8a'], staff: ['#bfe8e0', '#4f8c84'], whip: ['#f2cc5a', '#9a6e14']};
+                        tome: ['#b07ae0', '#5a2e8a'], hook: ['#f0965a', '#9a4a1a'], staff: ['#bfe8e0', '#4f8c84'], whip: ['#f2cc5a', '#9a6e14']};
 function weaponBadge(g, u, x, y, r, ring){
   const w = u.lash ? 'whip' : u.w, [hi, lo] = WEAPON_COLOURS[w] || WEAPON_COLOURS.sword;
   g.fillStyle = 'rgba(0,0,0,.4)'; ell(g, x + r*.08, y + r*.12, r, r); g.fill();
@@ -10027,13 +10079,13 @@ const DIAGRAMS = {
       <text x="${x}" y="${y < 90 ? y - 30 : y + 38}" text-anchor="middle">${label}</text>`;
     const arrow = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx/L, uy = dy/L, s = 30, e = 32;
       return `<path d="M${a[0] + ux*s} ${a[1] + uy*s} L${b[0] - ux*e} ${b[1] - uy*e}" marker-end="url(#dArr)"/>`; };
-    const S = [80, 52], A = [136, 138], Lc = [24, 138], Tm = [238, 52], Bw = [238, 138];
+    const S = [80, 52], A = [136, 138], Lc = [24, 138], Tm = [250, 52], Bw = [202, 138], Hk = [298, 138];
     return `<div class="dtitle">What beats what</div>
-      <svg viewBox="-8 4 296 182" role="img" aria-label="Swords beat axes, axes beat lances, lances beat swords. Tomes beat bows.">
+      <svg viewBox="-8 4 340 182" role="img" aria-label="Swords beat axes, axes beat lances, lances beat swords. Tomes beat bows, bows beat hooks, hooks beat tomes.">
         <defs><marker id="dArr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ecc673"/></marker></defs>
-        <g class="darr">${arrow(S, A)}${arrow(A, Lc)}${arrow(Lc, S)}${arrow(Tm, Bw)}</g>
-        ${ic('sword', ...S, 'Sword')}${ic('axe', ...A, 'Axe')}${ic('lance', ...Lc, 'Lance')}${ic('tome', ...Tm, 'Tome')}${ic('bow', ...Bw, 'Bow')}
-        <path d="M188 14 V178" class="dsep"/>
+        <g class="darr">${arrow(S, A)}${arrow(A, Lc)}${arrow(Lc, S)}${arrow(Tm, Bw)}${arrow(Bw, Hk)}${arrow(Hk, Tm)}</g>
+        ${ic('sword', ...S, 'Sword')}${ic('axe', ...A, 'Axe')}${ic('lance', ...Lc, 'Lance')}${ic('tome', ...Tm, 'Tome')}${ic('bow', ...Bw, 'Bow')}${ic('hook', ...Hk, 'Hook')}
+        <path d="M176 14 V178" class="dsep"/>
       </svg>
       <div class="dnote">The winner gets <b>+1 damage</b> and <b>+15 hit</b>; the loser the opposite.</div>`;
   },
@@ -11249,7 +11301,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'dadc44a58047';
+const BUILD_ID = 'ed876ee31eaf';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

@@ -291,6 +291,7 @@ function glyph(g, w, cx, cy, r, col){
   if (w === 'bow'){ g.beginPath(); g.arc(-.3*r,0,.62*r,-1.05,1.05); g.stroke(); const ex = -.3*r + .62*r*Math.cos(1.05), ey = .62*r*Math.sin(1.05); g.lineWidth *= .5; L(ex,-ey,ex,ey); g.lineWidth *= 2; L(-.15*r,0,.6*r,0); }
   if (w === 'tome'){ g.fillStyle = '#7a2a24'; g.fillRect(-.35*r,-.3*r,.7*r,.6*r); g.strokeRect(-.35*r,-.3*r,.7*r,.6*r); L(0,-.3*r,0,.3*r); }
   if (w === 'whip'){ L(-.5*r,.55*r,-.1*r,.05*r); g.lineWidth *= .6; g.beginPath(); g.moveTo(-.1*r,.05*r); g.bezierCurveTo(.5*r,-.5*r,.75*r,.1*r,.35*r,.4*r); g.bezierCurveTo(.1*r,.6*r,.6*r,.75*r,.7*r,.55*r); g.stroke(); }
+  if (w === 'hook'){ L(-.55*r,.6*r,.05*r,-.1*r); g.lineWidth *= .9; g.beginPath(); g.arc(.25*r,-.3*r,.32*r,Math.PI*.75,Math.PI*2.1); g.stroke(); L(.05*r,-.1*r,.25*r,-.62*r); g.beginPath(); g.arc(-.05*r,-.48*r,.22*r,Math.PI*.1,Math.PI*1.1); g.stroke(); }
   if (w === 'staff'){ g.rotate(Math.PI/4); L(0,.68*r,0,-.45*r); g.lineWidth *= .6; g.beginPath(); g.ellipse(0,-.5*r,.1*r,.2*r,0,0,Math.PI*2); g.stroke(); g.beginPath(); g.moveTo(0,-.6*r); g.quadraticCurveTo(.6*r,-.4*r,.3*r,.1*r); g.stroke(); }
   g.restore();
 }
