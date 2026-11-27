@@ -1867,6 +1867,7 @@ const CLASSES = {
   roseknight:{name: 'Rose Knight',    w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Rose Lance',        base: {mhp:24,atk:12,def:8, spd:7,skl:7,mov:7}, g: {mhp:70,atk:45,def:35,spd:40,skl:40}},   // Biggle's Rose Knight attire: on horseback
   gingerknight:{name: 'Gingerbread Knight', w: 'sword', rng: [1,1], mt: 'foot', wname: 'Candy Cane Rapier', base: {mhp:24,atk:12,def:7, spd:8,skl:9,mov:5}, g: {mhp:70,atk:45,def:30,spd:45,skl:45}},   // Biggle's Gingerbiggle attire (December)
   runaway:   {name: 'Runaway Scout',  w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Ribboned Spear',    base: {mhp:20,atk:11,def:5, spd:8,skl:7,mov:5}, g: {mhp:65,atk:45,def:30,spd:50,skl:45}},   // Ilc (Raepublic December banner)
+  courtknight:{name: 'Court Knight', w: 'sword', rng: [1,1], mt: 'armor',   wname: 'Court Rapier',      base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},   // Biggle Baggle: an armoured fencer
   lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
   lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
   bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
@@ -2018,7 +2019,7 @@ const CLASS_LOOK = {
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', courtknight:'biggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
   gladblade:'gladiator', gladspear:'gladiator', gladaxe:'gladiator', gladbow:'gladiator', gladscribe:'gladiator', gladmedic:'gladiator', gladhook:'gladiator',
   lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', shipsurgeon:'tandy', sharkcapt:'ducky',
@@ -2097,7 +2098,7 @@ const CHARACTERS = {
   speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
                 retort:'We were a kingdom once! We can be one again!',
                 intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
-  biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
+  biggle:  {name:'Biggle Baggle', faction:'frog', cls:'courtknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({
@@ -2330,8 +2331,8 @@ const WEAPONS = {
                  desc: 'Her old ledger pen, bound to the head of a spear. She still counts with it. Now she counts the right things.'},
   frontaxe:     {name: 'Front-Line Axe',   type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 5, owner: 'patch',
                  desc: 'Notched once for every column that came home.'},
-  spawnwatch:   {name: 'Spawnwatch Halberd', type: 'lance', stars: 3, mt: 4, hit: 10, crit: 5, owner: 'biggle',
-                 desc: 'A little jar hangs from the haft. He says it\'s for luck. It is not for luck.'},
+  spawnwatch:   {name: 'Spawnwatch Rapier', type: 'sword', stars: 3, mt: 4, hit: 10, crit: 5, owner: 'biggle',
+                 desc: 'A little jar hangs from the hilt. He says it\'s for luck. It is not for luck.'},
   oldstory:     {name: 'The Old Story',    type: 'bow',   stars: 3, mt: 4, hit: 10, crit: 5, lash: true, owner: 'rhubarb',
                  desc: 'The whip from the hill. She has told the story about it so many times she has nearly forgotten what really happened.'},
   unsignedaxe:  {name: 'The Unsigned Axe', type: 'axe',   stars: 3, mt: 4, hit: 10, crit: 10, owner: 'executioner',
@@ -2466,7 +2467,7 @@ const ATTIRES = {
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   floraCarrot: {char: 'sister', outfit: 'carrot', name: 'In a Carrot', desc: 'Flopsy sewed it herself, from a sack of orange felt and a great deal of enthusiasm. She says it is camouflage. Nobody has had the heart to ask for what.'},   // log-in 21: look only
-  // Daily log-in, log-in 28: look only. Biggle keeps his Lily Knight's lance and armour; the rapier is just for the pose.
+  // Daily log-in, log-in 28: look only. Biggle keeps his Court Knight's rapier and armour.
   biggleBow: {char: 'biggle', outfit: 'bow', name: 'Big Bow', desc: 'For the Court\'s spring ball, Biggle asked the tailors for "something dignified". He has worn it to every function since, and nobody has dared tell him.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
   // Across the Stream: Flopsy in the robes of a Monkeyland spell-reader. A tome instead of her needle; she still mends,
@@ -2489,10 +2490,10 @@ const ATTIRES = {
   // cosier (Def) and a little slower (Spd), and her mending comes with presents.
   floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',
               desc: 'Knitted by Flopsy herself, over three weeks, mostly in secret. The spelling is deliberate. She will tell you so.'},
-  // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
+  // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Court Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker
-  // than the Lily Knight's armour, and much easier to break.
+  // than the Court Knight's armour, and much easier to break.
   gingerbiggle: {char: 'biggle', outfit: 'ginger', name: 'Gingerbiggle', cls: 'gingerknight', mods: {def: -5, spd: 5, skl: 2, mov: 1}, ability: 'cantcatch',
               desc: 'From a nightmare Biggle had after eating an entire gingerbread house, roof and all. He woke up, had the costume made, and will not discuss it.'},
   rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3}, ability: 'lancecharge',
@@ -5706,7 +5707,7 @@ const CAMPAIGNS = {
           brief: 'The final of the Royal Tournament. The champion waiting on the dais is Biggle Baggle.',
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Biggle Baggle is on the other side today, and can't fight for you. His Hold the Line works against you: your units stop when they reach a square next to him.",
           enemies: () => [
-            E('lilyknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
+            E('courtknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
             E('toadknight',10,3,6,'guard'), E('toadknight',10,6,6,'guard'), E('gladmedic',10,5,8,'guard'),
             E('gladhook',10,1,4,'guard'), E('gladbow',10,8,4,'guard'), E('lilyknight',10,2,9,'guard',{elite: true}), E('lilyknight',10,7,9,'guard',{elite: true}),
             E('gladblade',10,3,2), E('gladblade',10,6,2), E('gladaxe',10,1,11), E('gladaxe',10,8,11),
@@ -8805,6 +8806,11 @@ function migrateSave(s){
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'persimmon');
   // the unused placeholder banner characters were removed
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => !['lantern', 'ironear', 'duckweed', 'glimmer', 'bogsworth'].includes(r.key));
+  // Biggle became a Court Knight (sword, as his art shows), not a Lily Knight (lance): a carried lance goes back to the Armoury
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'biggle' && r.cls === 'lilyknight'){
+    r.cls = 'courtknight'; if (r.wname === 'Royal Halberd') r.wname = CLASSES.courtknight.wname;
+    const it = (st.arms || []).find(a => a.uid === r.arm), w = it && WEAPONS[it.id]; if (w && w.type !== CLASSES[ATTIRES[r.attire]?.cls || 'courtknight'].w) r.arm = null;
+  }
   // Biggle's Big Bow joined the log-in track at log-in 28: anyone already past it gets it anyway
   if ((s.login?.claimed || 0) >= 28){ const r = s.camps.frog?.roster?.find(x => x.key === 'biggle'); if (r && !(r.attires ||= []).includes('biggleBow')) r.attires.push('biggleBow'); }
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
@@ -9094,7 +9100,7 @@ CAMPAIGNS.frog.sides.push({
   deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14]],
   brief: 'Tiggle\'s team against Biggle\'s: four bells hung from the tent poles. A bell rings for whoever is standing at it when their turn ends. Ring twelve first. The bigger your lead, the more Frog Chimes.',
   prepNote: 'Once a day, all January. A friendly contest: nobody is unstitched for good. Biggle plays for the other team. End your turn on the bells (fort squares) to ring them.',
-  enemies: () => [E('lilyknight',3,4,2,'bell',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true}), E('blade',3,2,3,'bell'), E('blade',3,7,3,'bell'),
+  enemies: () => [E('courtknight',3,4,2,'bell',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true}), E('blade',3,2,3,'bell'), E('blade',3,7,3,'bell'),
                   E('lily',3,3,1,'bell'), E('reed',3,6,1,'bell'), E('bruiser',3,5,4,'bell')],
   reinforce: () => [{turn: 4, units: [E('blade',3,0,0,'bell'), E('bruiser',3,9,0,'bell')]}],
   reward: {res: 200, tokens: 0},
@@ -9166,7 +9172,7 @@ function basicWeapon(rec){
 function weaponOf(rec){
   if (rec.arm){
     const ck = campOfRec(rec), it = ck && armsOf(ck).find(a => a.uid === rec.arm), w = it && WEAPONS[it.id];
-    // a weapon the current class can't use (e.g. his halberd while Biggle wears a sword-class attire) waits in the Armoury
+    // a weapon the current class can't use (e.g. his rapier while Biggle wears his Rose Knight attire) waits in the Armoury
     if (w && canCarry(rec, w)) return {...w, rng: w.rng || CLASSES[clsOf(rec)].rng, uid: it.uid, id: it.id};
   }
   return basicWeapon(rec);
@@ -12127,7 +12133,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '0d325e864f76';
+const BUILD_ID = '2df95fcb583f';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

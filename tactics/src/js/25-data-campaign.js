@@ -2101,7 +2101,7 @@ const CAMPAIGNS = {
           brief: 'The final of the Royal Tournament. The champion waiting on the dais is Biggle Baggle.',
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Biggle Baggle is on the other side today, and can't fight for you. His Hold the Line works against you: your units stop when they reach a square next to him.",
           enemies: () => [
-            E('lilyknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
+            E('courtknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
             E('toadknight',10,3,6,'guard'), E('toadknight',10,6,6,'guard'), E('gladmedic',10,5,8,'guard'),
             E('gladhook',10,1,4,'guard'), E('gladbow',10,8,4,'guard'), E('lilyknight',10,2,9,'guard',{elite: true}), E('lilyknight',10,7,9,'guard',{elite: true}),
             E('gladblade',10,3,2), E('gladblade',10,6,2), E('gladaxe',10,1,11), E('gladaxe',10,8,11),

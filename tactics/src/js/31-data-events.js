@@ -159,7 +159,7 @@ CAMPAIGNS.frog.sides.push({
   deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14]],
   brief: 'Tiggle\'s team against Biggle\'s: four bells hung from the tent poles. A bell rings for whoever is standing at it when their turn ends. Ring twelve first. The bigger your lead, the more Frog Chimes.',
   prepNote: 'Once a day, all January. A friendly contest: nobody is unstitched for good. Biggle plays for the other team. End your turn on the bells (fort squares) to ring them.',
-  enemies: () => [E('lilyknight',3,4,2,'bell',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true}), E('blade',3,2,3,'bell'), E('blade',3,7,3,'bell'),
+  enemies: () => [E('courtknight',3,4,2,'bell',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true}), E('blade',3,2,3,'bell'), E('blade',3,7,3,'bell'),
                   E('lily',3,3,1,'bell'), E('reed',3,6,1,'bell'), E('bruiser',3,5,4,'bell')],
   reinforce: () => [{turn: 4, units: [E('blade',3,0,0,'bell'), E('bruiser',3,9,0,'bell')]}],
   reward: {res: 200, tokens: 0},

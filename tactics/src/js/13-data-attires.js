@@ -17,7 +17,7 @@ const ATTIRES = {
   // Daily log-in (66-login.js), log-ins 7 and 14: look only (both stay sword users). No map icons yet: they keep their usual ones.
   raeCasual: {char: 'rae',    outfit: 'casual', name: 'Casual Wear', desc: 'A day off from the war, in a very large T-shirt. Somebody in the Republic has a sense of humour.'},
   floraCarrot: {char: 'sister', outfit: 'carrot', name: 'In a Carrot', desc: 'Flopsy sewed it herself, from a sack of orange felt and a great deal of enthusiasm. She says it is camouflage. Nobody has had the heart to ask for what.'},   // log-in 21: look only
-  // Daily log-in, log-in 28: look only. Biggle keeps his Lily Knight's lance and armour; the rapier is just for the pose.
+  // Daily log-in, log-in 28: look only. Biggle keeps his Court Knight's rapier and armour.
   biggleBow: {char: 'biggle', outfit: 'bow', name: 'Big Bow', desc: 'For the Court\'s spring ball, Biggle asked the tailors for "something dignified". He has worn it to every function since, and nobody has dared tell him.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
   // Across the Stream: Flopsy in the robes of a Monkeyland spell-reader. A tome instead of her needle; she still mends,
@@ -40,10 +40,10 @@ const ATTIRES = {
   // cosier (Def) and a little slower (Spd), and her mending comes with presents.
   floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',
               desc: 'Knitted by Flopsy herself, over three weeks, mostly in secret. The spelling is deliberate. She will tell you so.'},
-  // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Lily Knight's
+  // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Court Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker
-  // than the Lily Knight's armour, and much easier to break.
+  // than the Court Knight's armour, and much easier to break.
   gingerbiggle: {char: 'biggle', outfit: 'ginger', name: 'Gingerbiggle', cls: 'gingerknight', mods: {def: -5, spd: 5, skl: 2, mov: 1}, ability: 'cantcatch',
               desc: 'From a nightmare Biggle had after eating an entire gingerbread house, roof and all. He woke up, had the costume made, and will not discuss it.'},
   rose:      {char: 'biggle', outfit: 'rose', name: 'Rose Knight', cls: 'roseknight', mods: {def: -3, spd: 4, skl: 1, mov: 3}, ability: 'lancecharge',

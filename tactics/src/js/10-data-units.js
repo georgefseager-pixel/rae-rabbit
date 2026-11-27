@@ -50,6 +50,7 @@ const CLASSES = {
   roseknight:{name: 'Rose Knight',    w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Rose Lance',        base: {mhp:24,atk:12,def:8, spd:7,skl:7,mov:7}, g: {mhp:70,atk:45,def:35,spd:40,skl:40}},   // Biggle's Rose Knight attire: on horseback
   gingerknight:{name: 'Gingerbread Knight', w: 'sword', rng: [1,1], mt: 'foot', wname: 'Candy Cane Rapier', base: {mhp:24,atk:12,def:7, spd:8,skl:9,mov:5}, g: {mhp:70,atk:45,def:30,spd:45,skl:45}},   // Biggle's Gingerbiggle attire (December)
   runaway:   {name: 'Runaway Scout',  w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Ribboned Spear',    base: {mhp:20,atk:11,def:5, spd:8,skl:7,mov:5}, g: {mhp:65,atk:45,def:30,spd:50,skl:45}},   // Ilc (Raepublic December banner)
+  courtknight:{name: 'Court Knight', w: 'sword', rng: [1,1], mt: 'armor',   wname: 'Court Rapier',      base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},   // Biggle Baggle: an armoured fencer
   lilyknight:{name: 'Lily Knight',    w: 'lance', rng: [1,1], mt: 'armor',   wname: 'Royal Halberd',     base: {mhp:26,atk:13,def:11,spd:3,skl:6,mov:4}, g: {mhp:80,atk:45,def:50,spd:15,skl:35}},
   lily:      {name: 'Pike Guard',     w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Pike',              base: {mhp:19,atk:10,def:5, spd:4,skl:4,mov:5}, g: {mhp:70,atk:40,def:40,spd:25,skl:35}},
   bruiser:   {name: 'Club Guard',     w: 'axe',   rng: [1,1], mt: 'bog',     wname: 'Cudgel',            base: {mhp:20,atk:11,def:3, spd:4,skl:3,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
@@ -201,7 +202,7 @@ const CLASS_LOOK = {
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
-  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
+  lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', courtknight:'biggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
   gladblade:'gladiator', gladspear:'gladiator', gladaxe:'gladiator', gladbow:'gladiator', gladscribe:'gladiator', gladmedic:'gladiator', gladhook:'gladiator',
   lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', shipsurgeon:'tandy', sharkcapt:'ducky',
@@ -280,7 +281,7 @@ const CHARACTERS = {
   speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
                 retort:'We were a kingdom once! We can be one again!',
                 intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
-  biggle:  {name:'Biggle Baggle', faction:'frog', cls:'lilyknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
+  biggle:  {name:'Biggle Baggle', faction:'frog', cls:'courtknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
 const SPEAKERS = Object.assign({

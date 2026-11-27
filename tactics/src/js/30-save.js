@@ -34,6 +34,11 @@ function migrateSave(s){
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'persimmon');
   // the unused placeholder banner characters were removed
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => !['lantern', 'ironear', 'duckweed', 'glimmer', 'bogsworth'].includes(r.key));
+  // Biggle became a Court Knight (sword, as his art shows), not a Lily Knight (lance): a carried lance goes back to the Armoury
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'biggle' && r.cls === 'lilyknight'){
+    r.cls = 'courtknight'; if (r.wname === 'Royal Halberd') r.wname = CLASSES.courtknight.wname;
+    const it = (st.arms || []).find(a => a.uid === r.arm), w = it && WEAPONS[it.id]; if (w && w.type !== CLASSES[ATTIRES[r.attire]?.cls || 'courtknight'].w) r.arm = null;
+  }
   // Biggle's Big Bow joined the log-in track at log-in 28: anyone already past it gets it anyway
   if ((s.login?.claimed || 0) >= 28){ const r = s.camps.frog?.roster?.find(x => x.key === 'biggle'); if (r && !(r.attires ||= []).includes('biggleBow')) r.attires.push('biggleBow'); }
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)

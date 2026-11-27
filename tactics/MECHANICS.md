@@ -76,7 +76,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | Type | Forest `F` | Rocks `M` | Classes |
 |---|---|---|---|
 | foot | 2 | 3 | most |
-| armor | 2 | can't enter | Lily Knight, Armoured Guard |
+| armor | 2 | can't enter | Lily Knight, Armoured Guard, Court Knight (Biggle: an armoured sword) |
 | bog | 2 | 2 | Club Guard, Marsh Lord (frogs at home in the marsh) |
 | climb | 1 | 3 | monkeys: Acrobat, Nut Thrower, Canopy Heir (Speshul, a bow). Trees and flowers are open ground to them |
 | mounted | 3 | can't enter | Rose Knight (Biggle's attire), Hook Rider (Tilly Tealbottom: a hook on horseback, F4-3) |
@@ -95,13 +95,13 @@ waits in the Armoury (the class's basic weapon is used) and comes back when the 
 | Attire | Character | Change | From |
 |---|---|---|---|
 | Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
-| Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
+| Rose Knight | Biggle | Court Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
 | Monkeyland Militia | Rae | Captain → Militia Captain (lance, Militia Spear): +2 HP, +3 Def, −2 Spd | Across the Stream (after Chapter Three) |
 | Arena Champion | Tiggle | Frog Prince → Arena Champion (axe, Victor's Axe): +3 HP, +2 Atk, −2 Spd | Champions of the Lists (after Chapter Four) |
 | Powder Monkey | Speshul | Canopy Heir → Powder Monkey (hook, still climbs; Sunrise Hook): +2 HP, +2 Atk, +1 Def, −2 Spd | Pirates of the Satin Sea (after Chapter Four) |
 | Simian Sorcerer | Flopsy Flora | Mender → Simian Sorcerer (tome, 1–2): +3 Atk, −1 Def, +1 Spd | Across the Stream (after Chapter Three) |
 | Hoppy Xmas | Flopsy Flora | same class and needle: +2 Def, −1 Spd | A Sack Full of Rabbits (December) |
-| Gingerbiggle | Biggle | Lily Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
+| Gingerbiggle | Biggle | Court Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
 
 ## Unique abilities (`14-data-abilities.js`)
 
