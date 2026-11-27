@@ -79,6 +79,8 @@ const WEAPONS = {
                  desc: 'Captain Gullet\'s scimitar, the first blade of the Grinning Mary. It has been dropped overboard twice. It came back both times.'},
   tidewater:    {name: 'Tidewater Staff',  type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'tandy',
                  desc: 'Driftwood from the beach, a shell from the rock pools, and a sea-glass bead. Carved for Tandy & Maus by the rabbits they nursed through the fever.'},
+  grandmabess:  {name: 'Grandmama Bess',   type: 'hook',  stars: 3, mt: 4, hit: 10, crit: 10, owner: 'tilly',
+                 desc: 'The hook of Bess Tealbottom, scourge of the Satin Sea, who robbed so many tax ships she bought a title with the proceeds. Mother says it is a family myth. Mother is wrong.'},
   dawnegg:      {name: 'The Dawn Egg',     type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'chansey',
                  desc: 'The temple\'s egg. It has never hatched in three hundred years. Chansey says it is waiting for a kinder world.'},
   // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.

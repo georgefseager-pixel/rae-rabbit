@@ -333,6 +333,8 @@ const SPEAKERS = Object.assign({
   gullet:      {name:'Captain Gullet', faction:'pirate', look:'gullet', fur:'white'},   // the old captain of the Grinning Mary (a flashback)
   croakwell:   {name:'Admiral Croakwell', faction:'frog', look:'toadknight'},
   clerk:       {name:'A Tax Clerk', faction:'frog', look:'guard'},
+  ladyteal:    {name:'Lady Tealbottom', faction:'frog', look:'guard'},     // Tilly's mother (her side stories)
+  wrasse:      {name:'Old Wrasse', faction:'pirate', look:'mako', fur:'tiger'},   // a smuggler in Bess Tealbottom's tower
   tandyone:    {name:'Tandy', faction:'pirate', look:'tandy', artFrom:'tandy'},   // the duo, one speaking at a time
   maus:        {name:'Maus', faction:'pirate', look:'tandy', artFrom:'tandy'},
   barnacle:    {name:'Bosun Barnacle', faction:'pirate', look:'barnacle', fur:'slate'},

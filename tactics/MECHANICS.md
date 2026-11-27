@@ -283,6 +283,12 @@ Rae away: survive five turns while Captain Sedge's raiders attack the fevered se
 alone, keeping a young Captain Ducky's crew alive as allies until the Mary cuts loose), TM-3 Saltwort (drive Captain Mako
 off the rock pools holding the fever's cure); it ends with their own staff, the Tidewater Staff.
 
+Tilly Tealbottom (Champions of the Lists, Friggliarchy) has supports with Tiggle and side stories
+(`29d-data-sides-tournament.js`, recommended 9 · 11 · 11): TL-1 The Garden Party (she leads, Tiggle away: Magpie's
+bandits raid her mother's party), TL-2 Last Season (a flashback, only Tilly and ordinary soldiers: Captain Mako's
+pirates raid the Tealbottom summer house, and she takes up a Grappler's hook), TL-3 Bess Tealbottom (her pirate
+great-great-grandmother's tower, held by smugglers with hooks); it ends with Grandmama Bess, her own ★★★ hook.
+
 ## Progression and unlocks
 
 | What | Opens |
