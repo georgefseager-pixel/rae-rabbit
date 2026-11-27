@@ -430,9 +430,29 @@ $('#tslots').addEventListener('click', e => {
   const d = t.dataset;
   if (d.slotPlay) playSlot(+d.slotPlay);
   else if (d.slotNew){ Store.use(+d.slotNew); newSave(); saveGame(); playSlot(+d.slotNew); }
-  else if (d.slotErase){
-    if (!armed(t, 'Erase?')) return;
-    const n = +d.slotErase; Store.clear(n); if (Store.slot === n) SAVE = null;
-    toast(`Slot ${n} erased.`); renderSlots();
-  }
+  else if (d.slotErase) confirmErase(+d.slotErase);
 });
+// Erasing a slot is deliberate: a card showing what will be lost, and a button you have to hold down for two seconds.
+const ERASE_HOLD = 2000;
+function confirmErase(n){
+  const s = migrateSave(Store.load(n)); if (!s) return;
+  const ov = document.createElement('div'); ov.className = 'ov erasesheet'; ov.id = 'erasesheet';
+  ov.innerHTML = `<div class="card"><h1>Erase slot ${n}?</h1><div class="erasewhat">${slotSummary(s)}</div>
+    <p class="meta">Both stories in this slot, the whole army, and everything recruited, gone for good. This can't be undone.</p>
+    <button class="btn danger erasehold" type="button"><i></i><span>Hold to erase</span></button>
+    <button class="btn" data-erase-cancel type="button">Cancel</button></div>`;
+  document.body.appendChild(ov);
+  const btn = ov.querySelector('.erasehold'), bar = btn.querySelector('i'), lbl = btn.querySelector('span');
+  let timer = null, anim = null;
+  const close = () => { clearTimeout(timer); ov.remove(); };
+  const start = e => { e.preventDefault(); if (timer) return;
+    lbl.textContent = 'Keep holding…'; anim = bar.animate([{width: '0%'}, {width: '100%'}], {duration: ERASE_HOLD, fill: 'forwards'});
+    timer = setTimeout(() => { Store.clear(n); if (Store.slot === n) SAVE = null; close(); toast(`Slot ${n} erased.`); renderSlots(); }, ERASE_HOLD); };
+  const stop = () => { if (!timer) return; clearTimeout(timer); timer = null; anim?.cancel(); lbl.textContent = 'Hold to erase'; };
+  btn.addEventListener('pointerdown', start); for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) btn.addEventListener(ev, stop);
+  btn.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) start(e); });
+  btn.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') stop(); });
+  btn.addEventListener('contextmenu', e => e.preventDefault());   // a long press shouldn't open the phone's menu
+  ov.querySelector('[data-erase-cancel]').addEventListener('click', close);
+  ov.addEventListener('click', e => { if (e.target === ov) close(); });
+}
