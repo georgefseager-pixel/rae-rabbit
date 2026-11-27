@@ -935,7 +935,15 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .tslot .btn.primary .f-rae,.tslot .btn.primary .f-frog{color:inherit}
 .tslot>.btn.empty{opacity:.8;border-style:dashed}
 .tslot .tslotx{flex:0 0 42px;padding:0!important;font-size:15px!important;min-height:0}
-.tslot .tslotx.armed{flex-basis:64px}
+/* erasing a save slot: a confirmation card with a hold-to-erase button */
+.erasesheet{z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(6,4,3,.78)}
+.erasesheet .card{width:min(340px,100%);display:flex;flex-direction:column;gap:10px;text-align:center}
+.erasesheet h1{margin:0}
+.erasewhat{display:flex;flex-direction:column;gap:2px;font-size:13px}
+.erasewhat .f-rae{color:#ffb4a6}.erasewhat .f-frog{color:#cfe8a0}.erasewhat small{opacity:.7}
+.erasehold{position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;background:#6e1b16;border-color:#e8493b}
+.erasehold i{position:absolute;left:0;top:0;bottom:0;width:0;background:#c0392b}
+.erasehold span{position:relative}
 
 </style>
 
@@ -11124,12 +11132,32 @@ $('#tslots').addEventListener('click', e => {
   const d = t.dataset;
   if (d.slotPlay) playSlot(+d.slotPlay);
   else if (d.slotNew){ Store.use(+d.slotNew); newSave(); saveGame(); playSlot(+d.slotNew); }
-  else if (d.slotErase){
-    if (!armed(t, 'Erase?')) return;
-    const n = +d.slotErase; Store.clear(n); if (Store.slot === n) SAVE = null;
-    toast(`Slot ${n} erased.`); renderSlots();
-  }
+  else if (d.slotErase) confirmErase(+d.slotErase);
 });
+// Erasing a slot is deliberate: a card showing what will be lost, and a button you have to hold down for two seconds.
+const ERASE_HOLD = 2000;
+function confirmErase(n){
+  const s = migrateSave(Store.load(n)); if (!s) return;
+  const ov = document.createElement('div'); ov.className = 'ov erasesheet'; ov.id = 'erasesheet';
+  ov.innerHTML = `<div class="card"><h1>Erase slot ${n}?</h1><div class="erasewhat">${slotSummary(s)}</div>
+    <p class="meta">Both stories in this slot, the whole army, and everything recruited, gone for good. This can't be undone.</p>
+    <button class="btn danger erasehold" type="button"><i></i><span>Hold to erase</span></button>
+    <button class="btn" data-erase-cancel type="button">Cancel</button></div>`;
+  document.body.appendChild(ov);
+  const btn = ov.querySelector('.erasehold'), bar = btn.querySelector('i'), lbl = btn.querySelector('span');
+  let timer = null, anim = null;
+  const close = () => { clearTimeout(timer); ov.remove(); };
+  const start = e => { e.preventDefault(); if (timer) return;
+    lbl.textContent = 'Keep holding…'; anim = bar.animate([{width: '0%'}, {width: '100%'}], {duration: ERASE_HOLD, fill: 'forwards'});
+    timer = setTimeout(() => { Store.clear(n); if (Store.slot === n) SAVE = null; close(); toast(`Slot ${n} erased.`); renderSlots(); }, ERASE_HOLD); };
+  const stop = () => { if (!timer) return; clearTimeout(timer); timer = null; anim?.cancel(); lbl.textContent = 'Hold to erase'; };
+  btn.addEventListener('pointerdown', start); for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) btn.addEventListener(ev, stop);
+  btn.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) start(e); });
+  btn.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') stop(); });
+  btn.addEventListener('contextmenu', e => e.preventDefault());   // a long press shouldn't open the phone's menu
+  ov.querySelector('[data-erase-cancel]').addEventListener('click', close);
+  ov.addEventListener('click', e => { if (e.target === ov) close(); });
+}
 
 // ---------------- 62-gacha-ui.js ----------------
 // ================= Recruit screen & pull reveal =================
@@ -11836,7 +11864,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '191f47c01e61';
+const BUILD_ID = '298c18c1e1ce';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
