@@ -277,6 +277,10 @@ Tandy & Maus (`art/tandy-*.png`, key `tandy`): Ducky's first mates, two white mi
 (staff). The Raepublic's ★★★ on Pirates of the Satin Sea. In the story they're glimpsed after R4-5, are enemy healers
 who escape in R4-6 and R4-7, and come ashore with the crew. They speak separately as `tandyone` (Tandy) and `maus`
 (Maus), both shown with the duo's portrait (speakers can borrow art with `artFrom`).
+Their supports (with Rae) and side stories (`29c-data-sides-pirates.js`, recommended 9 · 11 · 11): TM-1 Sick Bay (they lead,
+Rae away: survive five turns while Captain Sedge's raiders attack the fevered settlement), TM-2 Stowaways (a flashback:
+alone, keeping a young Captain Ducky's crew alive as allies until the Mary cuts loose), TM-3 Saltwort (drive Captain Mako
+off the rock pools holding the fever's cure); it ends with their own staff, the Tidewater Staff.
 
 ## Progression and unlocks
 

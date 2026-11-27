@@ -1,6 +1,7 @@
 // ================= Side Stories: the pirates (Chapter Four's characters) =================
 // Same format as 28-data-sides.js. Ducky joins after Chapter Four (Pirates of the Satin Sea), so his set runs higher
-// than Chapter Three's (recommended 9 · 10 · 11). His second story is a flashback: his first voyage, years ago.
+// than Chapter Three's (recommended 9 · 11 · 11). His second story is a flashback: his first voyage, years ago.
+// Tandy & Maus (from the same banner) follow the same line; their second story is a flashback to how they joined the Mary.
 
 Object.assign(SIDE_SETS, {
   ducky: {camp: 'rae', title: 'The Terror of the Satin Sea', about: 'A pirate captain who came ashore to sell Rae, and stayed. He says it\'s for the treasure.',
@@ -138,10 +139,149 @@ Object.assign(SIDE_SETS, {
         reward: sideReward(2, 'oldmary', 'ducky'),
       },
     ]},
+  tandy: {camp: 'rae', title: 'Two Pairs of Paws', about: 'Two white mice, one sick bay, and a whole new country full of patients.',
+    quests: [
+      {
+        id: 'TM-1', title: 'Sick Bay', map: 'beachCamp', enemyFaction: 'frog', lead: 'tandy', ban: ['rae'], enemyMods: {},
+        teaser: 'The longhouse is full of feverish rabbits, Rae is up the coast, and frog raiders have seen the smoke.',
+        star: {type: 'noLosses', text: 'No one is unstitched'},
+        objective: {type: 'survive', turns: 5}, maxDeploy: 6,
+        deploy: [[4,10],[5,10],[3,11],[6,11],[4,12],[5,12]],
+        brief: 'Frog raiders have come for the settlement while it lies sick. Hold the sick bay for five turns. Tandy & Maus must not fall.',
+        prepNote: 'Tandy & Maus lead (the battle is lost if they fall). Rae is away up the coast. The raiders land at the jetties and come from both sides.',
+        enemies: () => [
+          E('blade',9,2,3), E('blade',9,7,3), E('lily',9,4,4), E('reed',9,8,4,'guard'), E('bruiser',9,1,5),
+        ],
+        reinforce: () => [
+          {turn: 1, units: [E('blade',9,2,2), E('reed',9,7,2)]},
+          {turn: 2, units: [E('bruiser',9,0,9), E('blade',9,9,9)]},
+          {turn: 3, units: [E('blade',10,2,2,'charge',{key: 'sedge', name: 'Captain Sedge', look: 'duelist', elite: true, flees: true, talk: [
+          {who: "sedge", text: "A hospital! Full of rebels too sick to stand. The King will give me a medal for this."},
+          {who: "maus", text: "He'll have to pin it on a bandage, then. Tandy!"},
+          {who: "tandyone", text: "Already holding the bandage."},
+        ]}), E('lily',9,7,2)]},
+          {turn: 4, units: [E('bruiser',9,4,2), E('croaker',9,5,2,'guard')]},
+        ],
+        pre: [
+          {scene: "shore", place: "The Longhouse Sick Bay · Side Story"},
+          {who: "narr", text: "A fever has come ashore with the latest rabbits out of the mines. Every bed in the longhouse is full, and Rae is up the coast with half the fighters."},
+          {who: "maus", text: "Tandy. Smoke. On the water. Frog sails."},
+          {who: "tandyone", text: "Captain Sedge's lot. The rearguard Rae chased off the coast road. They've been waiting for a day like today."},
+          {who: "patch", text: "There's only a handful of us here who can fight. And forty rabbits in there who can't stand up."},
+          {who: "maus", text: "Then we don't let anybody in. Simple."},
+          {who: "tandyone", text: "It's not simple, Maus."},
+          {who: "maus", text: "No. But it's what we're doing. Corporal, you're with us. Everybody who can hold something sharp, around the longhouse!"},
+        ],
+        post: [
+          {who: "narr", text: "Captain Sedge's boats pull away from the jetties, a lot lighter than they arrived."},
+          {who: "patch", text: "Not one of them got through the door. Not one."},
+          {who: "tandyone", text: "Bed four's fever broke while you were fighting. Did you hear? Bed four sat up and asked what all the noise was."},
+          {who: "maus", text: "We told bed four it was a party."},
+          {who: "patch", text: "You two never stopped mending the whole fight, did you? I saw you, running between the lines."},
+          {who: "tandyone", text: "Somebody had to."},
+          {who: "maus", text: "And somebody had to keep the first somebody company."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'TM-2', title: 'Stowaways', map: 'gangplanks', enemyFaction: 'frog', lead: 'tandy', flashback: true, enemyMods: {},
+        teaser: 'Nobody on the Grinning Mary signed Tandy & Maus on. They just turned up. Ducky tells the story.',
+        star: {type: 'allies', text: 'Captain Ducky and the whole crew survive'},
+        objective: {type: 'survive', turns: 4}, maxDeploy: 1,
+        deploy: [[4,13]],
+        brief: 'Years ago. A frog customs cutter has caught the Grinning Mary, and two stowaways have just climbed out of a medicine crate. Keep the crew standing until the Mary cuts loose. Tandy & Maus must not fall.',
+        prepNote: 'Years ago: only Tandy & Maus come. The Mary\'s crew, with a young Captain Ducky, fight beside them on their own (blue coasters). Keep them patched up.',
+        allies: () => [
+          E('sharkcapt',10,3,11,'hold',{key: 'ducky', name: 'Captain Ducky', look: 'ducky', faction: 'pirate'}),
+          E('pboarder',9,6,12,'charge',{key: 'ally', name: 'Bosun Barnacle', look: 'barnacle', fur: 'slate', faction: 'pirate'}),
+          E('pgunner',8,2,13,'charge',{key: 'ally', name: 'Limpet', faction: 'pirate'}),
+          E('pcutlass',8,7,14,'charge',{key: 'ally', name: 'Old Nettle', faction: 'pirate'}),
+        ],
+        enemies: () => [
+          E('blade',9,4,1,'hold',{boss: true, flees: true, elite: true, key: 'clerk', name: 'Customs Captain Pike', look: 'duelist'}),
+          E('blade',8,3,7), E('blade',8,6,7), E('lily',8,4,8), E('reed',8,1,8,'guard'), E('reed',8,8,8,'guard'), E('bruiser',8,5,9),
+        ],
+        reinforce: () => [{turn: 2, units: [E('blade',8,2,3), E('bruiser',8,7,3)]}, {turn: 3, units: [E('lily',9,4,9,'charge',{elite: true})]}],
+        pre: [
+          {scene: "shore", place: "The Settlement · Now"},
+          {who: "rae", text: "Ducky. How did Tandy & Maus end up on your ship?"},
+          {who: "ducky", text: "They didn't end up. They were delivered. In a crate marked MEDICINE, CUSTOMS HOUSE, REEDMOUTH. Ha! Pull up a barrel."},
+          {scene: "ships", place: "The Satin Sea · Years Ago"},
+          {who: "narr", text: "Years ago. Ducky's first season as captain. The Grinning Mary has just robbed the customs house at Reedmouth, and a frog cutter has caught her before she reached open water."},
+          {who: "ducky", text: "Grapples! They're boarding! Everybody up! Somebody find me the medicine crate, we're going to need it!"},
+          {who: "narr", text: "Somebody finds the medicine crate. The lid lifts by itself. Two small white mice look up at a great many very surprised pirates."},
+          {who: "tandyone", text: "Hello. We live here now."},
+          {who: "maus", text: "We were living in the customs house, but you stole it. So technically you stole us."},
+          {who: "ducky", text: "…Can you two do anything useful?"},
+          {who: "tandyone", text: "We can stitch."},
+          {who: "maus", text: "Fast."},
+          {who: "ducky", text: "Then stitch! Keep my crew standing until we cut loose!"},
+        ],
+        post: [
+          {who: "narr", text: "The last grapple line parts. The Grinning Mary swings free, her sails fill, and the cutter falls away into the fog."},
+          {who: "narr", text: "Every pirate on deck is bandaged somewhere. Several of them in places they didn't know could be bandaged."},
+          {who: "ducky", text: "Right. You two. Stowaways get thrown overboard. That's the rule."},
+          {who: "maus", text: "That's a terrible rule."},
+          {who: "tandyone", text: "Who would stitch you up next time?"},
+          {who: "ducky", text: "…Fine. FINE. First mates. Both of you. One job between the pair of you, and if I ever see one without the other, I'll know something's wrong."},
+          {scene: "shore", place: "The Settlement · Now"},
+          {who: "ducky", text: "And I never have. Not once in six years. Best thing I ever stole, that crate."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'TM-3', title: 'Saltwort', map: 'tidePools', enemyFaction: 'pirate', mustDeploy: ['tandy'], enemyMods: {},
+        teaser: 'The fever has come back to the sick bay. The only cure grows in the far rock pools, and somebody else got there first.',
+        star: {type: 'bossBy', key: 'tandy', text: 'Tandy & Maus drive off Captain Mako themselves'},
+        objective: {type: 'boss'}, maxDeploy: 7,
+        deploy: [[4,11],[4,13],[5,13],[2,14],[7,14],[3,14],[6,14]],
+        brief: 'Captain Mako\'s crew are camped on the far rock pools, right on top of the saltwort the sick bay needs. Drive Mako off. Tandy & Maus must come.',
+        prepNote: 'Tandy & Maus must come. Mako\'s crew are dug in around the rock pools, and Mako has his own ship\'s surgeons.',
+        enemies: () => [
+          E('sharkcapt',12,4,2,'hold',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
+          E('psawbones',11,3,1,'guard'), E('psawbones',11,6,1,'guard'),
+          E('pcutlass',11,2,5), E('pcutlass',11,7,5), E('phook',11,4,6,'guard'), E('pgunner',11,1,3,'guard'), E('pgunner',11,8,3,'guard'),
+          E('pboarder',11,5,8), E('pharpoon',11,3,9,'guard'),
+        ],
+        reinforce: () => [{turn: 3, units: [E('pcutlass',11,0,1), E('pboarder',12,9,1,'charge',{elite: true})]}],
+        bossTalk: [
+          {who: "mako", text: "Ducky's little mice! Come to beg for weeds?"},
+          {who: "maus", text: "It's not a weed, it's saltwort. And we're not begging. We're taking it."},
+          {who: "tandyone", text: "Politely. And then less politely."},
+          {who: "mako", text: "Ha! Since when do menders fight?"},
+          {who: "maus", text: "Since you sat on our medicine."},
+        ],
+        pre: [
+          {scene: "shore", place: "The Sick Bay · Side Story"},
+          {who: "tandyone", text: "Bed four again. And bed nine. And three new ones this morning. The fever's come back."},
+          {who: "maus", text: "We need saltwort. Lots of it. It only grows in the rock pools at the far end of the beach, when the tide goes right out."},
+          {who: "rae", text: "Then we'll go and get some."},
+          {who: "speshul", text: "Rae. I went up the lighthouse this morning. There's a grey ship anchored off the far rock pools. With a very large hat on the deck."},
+          {who: "ducky", text: "Mako. That flatfish. He's heard about the fever, and he's sitting on the cure until somebody pays him for it."},
+          {who: "tandyone", text: "Nobody pays for saltwort. It grows for free."},
+          {who: "maus", text: "Then he's sitting on something that isn't his. Commander, we'd like to lead the way. It's our sick bay."},
+        ],
+        post: [
+          {who: "narr", text: "Captain Mako's big hat floats away on the tide, for the second time this season."},
+          {who: "mako", text: "Keep your weeds, then! Mice! Beaten by MICE!"},
+          {who: "narr", text: "The saltwort is grey-green and smells of the sea. Tandy & Maus fill every bag they brought, and then Speshul's hat."},
+          {scene: "shore", place: "The Sick Bay · A Week Later"},
+          {who: "narr", text: "The fever is gone. Bed four is up and about. Bed twelve has stopped digging."},
+          {who: "narr", text: "That evening, the rabbits who were sick come to the longhouse together, with something long, wrapped in a sail."},
+          {who: "old", text: "We made you something. Driftwood from the beach, a shell from the rock pools, and a bead of sea-glass. A mender's staff."},
+          {who: "maus", text: "For us? Both of us?"},
+          {who: "old", text: "There's two hands' worth of grip on it. We measured."},
+          {who: "tandyone", text: "…Nobody's ever made us anything before."},
+          {who: "maus", text: "Tandy, are you crying?"},
+          {who: "tandyone", text: "No. Hold the staff."},
+        ],
+        reward: sideReward(2, 'tidewater', 'tandy'),
+      },
+    ]},
 });
 
 // Each set's quests go on its route's side story list, in the order they open (as in 29-data-sides-more.js).
-for (const key of ['ducky']){
+for (const key of ['ducky', 'tandy']){
   const set = SIDE_SETS[key], camp = CAMPAIGNS[set.camp], at = camp.stages.find(s => s.id === SIDE_OPENS[set.camp]);
   set.quests.forEach((q, k) => { Object.assign(q, {side: true, char: key, rank: k + 1, set, chapter: at.chapter, ci: at.ci, si: k}); camp.sides.push(q); });
 }

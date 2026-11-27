@@ -77,6 +77,8 @@ const WEAPONS = {
                  desc: 'From the King\'s own armoury. Three suns in the blade: one for each Governess he has guarded.'},
   oldmary:      {name: 'Old Mary\'s Edge', type: 'sword', stars: 3, mt: 4, hit: 10, crit: 15, owner: 'ducky',
                  desc: 'Captain Gullet\'s scimitar, the first blade of the Grinning Mary. It has been dropped overboard twice. It came back both times.'},
+  tidewater:    {name: 'Tidewater Staff',  type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'tandy',
+                 desc: 'Driftwood from the beach, a shell from the rock pools, and a sea-glass bead. Carved for Tandy & Maus by the rabbits they nursed through the fever.'},
   dawnegg:      {name: 'The Dawn Egg',     type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'chansey',
                  desc: 'The temple\'s egg. It has never hatched in three hundred years. Chansey says it is waiting for a kinder world.'},
   // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.
