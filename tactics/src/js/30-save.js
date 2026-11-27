@@ -39,8 +39,8 @@ function migrateSave(s){
     r.cls = 'courtknight'; if (r.wname === 'Royal Halberd') r.wname = CLASSES.courtknight.wname;
     const it = (st.arms || []).find(a => a.uid === r.arm), w = it && WEAPONS[it.id]; if (w && w.type !== CLASSES[ATTIRES[r.attire]?.cls || 'courtknight'].w) r.arm = null;
   }
-  // Biggle's Big Bow joined the log-in track at log-in 28: anyone already past it gets it anyway
-  if ((s.login?.claimed || 0) >= 28){ const r = s.camps.frog?.roster?.find(x => x.key === 'biggle'); if (r && !(r.attires ||= []).includes('biggleBow')) r.attires.push('biggleBow'); }
+  // costumes added to the log-in track later: anyone already past their log-in gets them anyway
+  for (const [n, ck, key, id] of [[28, 'frog', 'biggle', 'biggleBow'], [35, 'rae', 'willow', 'willowDoctor']]) if ((s.login?.claimed || 0) >= n){ const r = s.camps[ck]?.roster?.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
   if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying

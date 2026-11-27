@@ -19,6 +19,8 @@ const ATTIRES = {
   floraCarrot: {char: 'sister', outfit: 'carrot', name: 'In a Carrot', desc: 'Flopsy sewed it herself, from a sack of orange felt and a great deal of enthusiasm. She says it is camouflage. Nobody has had the heart to ask for what.'},   // log-in 21: look only
   // Daily log-in, log-in 28: look only. Biggle keeps his Court Knight's rapier and armour.
   biggleBow: {char: 'biggle', outfit: 'bow', name: 'Big Bow', desc: 'For the Court\'s spring ball, Biggle asked the tailors for "something dignified". He has worn it to every function since, and nobody has dared tell him.'},
+  // Daily log-in, log-in 35: look only (she keeps her tome).
+  willowDoctor: {char: 'willow', outfit: 'doctor', name: 'Dr. Willow', desc: 'Willow has read every book in the Republic on medicine, and two on veterinary science, to be thorough. She is not a doctor. The coat says otherwise, and she has found that most patients believe the coat.'},
   tiggleFormal: {char: 'tiggle', outfit: 'formal', name: 'Formal Wear', desc: 'For state dinners, peace talks, and looking terribly serious. The smiley pin was not his idea.'},   // log-in 14
   // Across the Stream: Flopsy in the robes of a Monkeyland spell-reader. A tome instead of her needle; she still mends,
   // after a fashion (Healing Verse).

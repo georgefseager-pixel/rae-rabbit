@@ -376,7 +376,7 @@ Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), 
 
 Daily log-in (`66-login.js`): every new calendar day counts as one more log-in (not necessarily consecutive). Each
 gives ONE currency, alternating: odd log-ins Whispers, even Writs. 2, 2, 3, 2, 3, 3, then the seventh is a milestone
-with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Formal Wear (+5 Writs), log-in 21 Flopsy's In a Carrot, log-in 28 Biggle's Big Bow (+5 Writs; both look only); after that the
+with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Formal Wear (+5 Writs), log-in 21 Flopsy's In a Carrot, log-in 28 Biggle's Big Bow (+5 Writs), log-in 35 Willow's Dr. Willow (+5 Whispers; all look only); after that the
 second week repeats with 10 on every seventh. About 10 of each per week. "New day" in the debug menu makes
 it claimable again.
 
@@ -393,7 +393,7 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
 - **Resources**: money, pull currency, event gifts, next pull is a guaranteed ★★★ on every banner, zero everything.
 - **Army**: set everyone's level, recruit everyone, revive the fallen, every weapon, every costume, reset relationships,
   set every support (or one character's) to none/C/B/A/S.
-- **Time, energy and events**: December / January on (pretend month), new day, claim every log-in reward (the rest of the 28-day track: currency and the four
+- **Time, energy and events**: December / January on (pretend month), new day, claim every log-in reward (the rest of the 35-day track: currency and the five
   costumes, without using up today's log-in), +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.
 - **Tutorials and display**: replay tutorials, fast animations (4×), music off.
 - **Save**: copy the save as text, paste one back, wipe everything.
