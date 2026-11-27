@@ -9,3 +9,7 @@
   `main` (the root of `main` is a different game). After a build worth sharing, copy `tactics/web/*` there and push `main`.
 - **Side stories never introduce characters that can't be drawn with existing generic art.** Their new faces (bosses,
   allies, speakers) use a generic look (`look` + `fur`/`elite` on the spawn, or a speaker's `look`), never a new plush placeholder.
+- **Seasonal events open from early Chapter Two** (with the Camp, after R2-1 / F2-1). Event stories, maps, speakers, costumes
+  and generic soldiers may only use characters, places and art a player is guaranteed to have met by then (e.g. Rae, Flopsy,
+  Willow, Tiggle, Biggle; mine rabbits, Republic troops, frog soldiers). No later-chapter characters (pirates, monkeys, Tilly,
+  Princess, gladiators…) and no banner-only characters in the story. A new event ★★★ can be a brand-new character.

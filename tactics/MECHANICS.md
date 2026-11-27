@@ -321,6 +321,7 @@ great-great-grandmother's tower, held by smugglers with hooks); it ends with Gra
 
 ## Seasonal events (`31-data-events.js`)
 
+Events are open from early Chapter Two, so they only use characters, places and art every player has met by then (see CLAUDE.md).
 An event runs for a calendar month (`EVENTS[id].month`) of the game's clock (`gameDate()`, which includes the debug menu's New
 Day's skipped days). It only shows on a route once that route's Camp and Side Stories are open, and introduces itself
 with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck>`). While it's on:
