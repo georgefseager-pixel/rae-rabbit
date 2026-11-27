@@ -411,14 +411,22 @@ function slotSummary(s){
   return `<span class="f-rae">${FACTIONS.rae.name} · ${ch('rae')}</span><span class="f-frog">${FACTIONS.frog.name} · ${ch('frog')}</span>`
     + (d ? `<small>Last played ${d.getDate()} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}</small>` : '');
 }
+// A slot card's progress for one story: how many of its stages are cleared, and the chapter it's on.
+function slotStory(s, ck){
+  const st = CAMPAIGNS[ck].stages.filter(sg => !sg.stub), done = st.filter(sg => s.camps[ck]?.cleared?.includes(sg.id)).length;
+  const nx = st.find(sg => !s.camps[ck]?.cleared?.includes(sg.id));
+  return `<div class="tslrow f-${CAMPAIGNS[ck].faction}"><i>${FACTIONS[CAMPAIGNS[ck].faction].name}</i>
+    <span class="tslbar"><em style="width:${Math.round(done/st.length*100)}%"></em></span><small>${nx ? nx.chapter.title.replace('Chapter ', 'Ch. ') : 'Done'}</small></div>`;
+}
 function renderSlots(){
   const saves = [1, 2, 3].map(n => migrateSave(Store.load(n)));
   const last = saves[Store.slot - 1] ? Store.slot : (saves.findIndex(Boolean) + 1 || 0), firstEmpty = saves.findIndex(s => !s) + 1;
-  $('#tslots').innerHTML = saves.map((s, i) => { const n = i + 1;
-    return s ? `<div class="tslot${n === last ? ' last' : ''}"><button class="btn${n === last ? ' primary' : ''}" data-slot-play="${n}"${n === last ? ' id="contBtn"' : ''} type="button">
-        <b>Slot ${n}${n === last ? ' · Continue' : ''}</b>${slotSummary(s)}</button>
-        <button class="btn tslotx" data-slot-erase="${n}" type="button" aria-label="Erase slot ${n}">✕</button></div>`
-      : `<div class="tslot"><button class="btn empty" data-slot-new="${n}"${n === firstEmpty ? ' id="newBtn"' : ''} type="button"><b>Slot ${n}</b><span>New Campaign</span></button></div>`; }).join('');
+  $('#tslots').innerHTML = saves.map((s, i) => { const n = i + 1, d = s?.played ? new Date(s.played) : null;
+    return s ? `<div class="tslot${n === last ? ' last' : ''}"><button class="tscard" data-slot-play="${n}"${n === last ? ' id="contBtn"' : ''} type="button">
+        <div class="tslhead"><b>Slot ${n}</b>${n === last ? '<span class="tslgo">Continue ›</span>' : d ? `<small>${d.getDate()} ${d.toLocaleString('en-GB', {month: 'short'})}</small>` : ''}</div>
+        ${slotStory(s, 'rae')}${slotStory(s, 'frog')}</button>
+        <button class="tslotx" data-slot-erase="${n}" type="button" aria-label="Erase slot ${n}">✕</button></div>`
+      : `<div class="tslot"><button class="tscard empty" data-slot-new="${n}"${n === firstEmpty ? ' id="newBtn"' : ''} type="button"><b>Slot ${n}</b><span>＋ New Campaign</span></button></div>`; }).join('');
   for (const id of ['backupBtn', 'restoreBtn']) { const b = $('#' + id); if (b) b.textContent = `${id === 'backupBtn' ? 'Back up' : 'Restore'} slot ${Store.slot}`; }
 }
 function playSlot(n){

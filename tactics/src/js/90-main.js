@@ -8,6 +8,8 @@ function boot(data){
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
   $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');
   renderSlots(); soundLabels();
+  // the two halves of the title screen: each side's painted scene, washed in its colours
+  for (const [side, bg] of [['rae', 'mine'], ['frog', 'court']]) if (ART.bg?.[bg]) document.querySelector('.tside.' + side)?.style.setProperty('--tbg', `url(${ART.bg[bg]})`);
   if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update
   requestAnimationFrame(frame);
