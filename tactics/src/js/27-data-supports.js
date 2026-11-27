@@ -555,8 +555,6 @@ const SUPPORTS = {
         sL("rae", "It never was. Eat your toast."),
       ],
     },
-    lantern:   {kind: 'friend', about: 'Placeholder character.'},
-    ironear:   {kind: 'friend', about: 'Placeholder character.'},
   },
   tiggle: {
     biggle: {kind: 'family', about: 'Two brothers, one crown between them, and very different ideas of order.',
@@ -818,7 +816,6 @@ const SUPPORTS = {
         sT('tiggle', "In pencil. I think that's the kindest thing anyone in my family has ever said to me."),
       ],
     },
-    duckweed:    {kind: 'friend', about: 'Placeholder character.'},
     // Aurora joins after Chapter Three (F3-6).
     aurora: {kind: 'learn', about: 'The Governess who has knelt every day for twenty years, and the prince who keeps watching her do it.',
       C: [
@@ -998,7 +995,5 @@ const SUPPORTS = {
         sL("tilly", "Darling. I carry a hook. I follow who unseats me, and you unseated me. Wherever you're going, Biscuit and I are already there."),
       ],
     },
-    glimmer:     {kind: 'friend', about: 'Placeholder character.'},
-    bogsworth:   {kind: 'friend', about: 'Placeholder character.'},
   },
 };

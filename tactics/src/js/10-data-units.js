@@ -152,12 +152,7 @@ const LOOKS = {
   thin:      {sp:'bun', ears:'lop', fur:'#cfc4b4', light:'#e6ddd0', dark:'#8a7e70', gear:'none', small:true},
   bandit:    {sp:'bun', ears:'up', fur:'#efe8de', light:'#fbf7f1', dark:'#a89c8c', scarf:'#b5302a', gear:'bandana', band:'#b5302a'},
   // Rare recruits (placeholders)
-  lantern:   {sp:'bun', ears:'up',  fur:'#d8b070', light:'#f0d098', dark:'#94743a', scarf:'#e0a030', gear:'bandana', band:'#e0a030'},
   condemned: {sp:'bun', ears:'lop', fur:'#efe8de', light:'#fbf7f1', dark:'#a89c8c', scarf:'#3a3436', gear:'mask'},
-  ironear:   {sp:'bun', ears:'up',  fur:'#8c8c90', light:'#b0b0b4', dark:'#55555a', scarf:'#3a4a66', gear:'helm', big:true},
-  duckweed:  {sp:'frog', skin:'#4f8a5a', light:'#71ac7c', dark:'#24452c', belly:'#bcd8b0', gear:'kettle', big:true},
-  glimmer:   {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'reed'},
-  bogsworth: {sp:'frog', skin:'#5a7a4a', light:'#7c9c6c', dark:'#2c3e22', belly:'#c0cc9c', gear:'hood', hood:'#6a4a2a'},
   // Frogs
   tiggle:    {sp:'frog', skin:'#7bc043', light:'#a6dc72', dark:'#3d6a1e', belly:'#dcf0a8', gear:'circlet', small:true},
   biggle:    {sp:'frog', skin:'#8cb860', light:'#a9d07c', dark:'#4a6a2c', belly:'#d6e8a8', gear:'bandana', band:'#c8506a'},
@@ -238,7 +233,7 @@ const CHARACTERS = {
   willow:  {name:'Willow', fur:'grey', faction:'rae', cls:'scholar', lv:5, stats:{mhp:19,atk:12,def:2,spd:8,skl:11,mov:5}},
   // Friggliarchy
   tiggle:  {name:'Tiggle Taggle', faction:'frog', cls:'prince', lv:1, stats:{mhp:19,atk:11,def:5,spd:9,skl:8,mov:5}, lord:true, retort:'I\'m not afraid of you.'},
-  // Rare recruits from the Recruit banners. stars:3 marks them as gacha units; placeholder:true ones have no art yet.
+  // Rare recruits from the Recruit banners. stars:3 marks them as gacha units.
   // intro: the card shown the first time you recruit them (title + a few sentences). Important for characters
   // you never meet in the main story.
   brigand:  {name:'Brigand', faction:'rae', look:'bandit', cls:'digger', lv:3, stars:3, stats:{mhp:27,atk:15,def:5,spd:7,skl:7,mov:5},
@@ -247,16 +242,6 @@ const CHARACTERS = {
   condemned:{name:'The Condemned', faction:'rae', look:'condemned', cls:'runner', wname:'Broken Shackles', lv:3, stars:3, stats:{mhp:23,atk:13,def:5,spd:12,skl:10,mov:6},
              retort:'I\'ve been closer to the axe than you\'ll ever get.',
              intro:{title:'Next for the Block', text:'He was waiting in chains for his turn at the block the morning Rae stopped the Executioner. He says he owes her his life. No one has seen his face. He has never taken off the hood, and he will not say why.'}},
-  lantern:  {name:'Lantern Rabbit', fur:'ginger', faction:'rae', cls:'runner', lv:3, stars:3, placeholder:true, stats:{mhp:22,atk:12,def:5,spd:11,skl:10,mov:6}, retort:'I\'ve seen darker tunnels than you.',
-             intro:{title:'Placeholder character', text:'A ginger rabbit who knows the deep tunnels by lamplight. Their story is still to be written.'}},
-  ironear:  {name:'Iron-Eared Rabbit', fur:'grey', faction:'rae', cls:'hauler', lv:3, stars:3, placeholder:true, stats:{mhp:26,atk:12,def:10,spd:5,skl:7,mov:5},
-             intro:{title:'Placeholder character', text:'A grey rabbit with an iron ear, and a hauler\'s strength. Their story is still to be written.'}},
-  duckweed: {name:'Dame Duckweed', faction:'frog', cls:'toadknight', lv:3, stars:3, placeholder:true, stats:{mhp:30,atk:14,def:13,spd:3,skl:7,mov:4},
-             intro:{title:'Placeholder character', text:'A toad knight of the Lily Court. Her story is still to be written.'}},
-  glimmer:  {name:'Captain Glimmer', faction:'frog', cls:'reed', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:13,def:5,spd:8,skl:11,mov:5},
-             intro:{title:'Placeholder character', text:'A captain of the reed archers. Their story is still to be written.'}},
-  bogsworth:{name:'Brother Bogsworth', faction:'frog', cls:'croaker', lv:3, stars:3, placeholder:true, stats:{mhp:21,atk:8,def:4,spd:6,skl:7,mov:5},
-             intro:{title:'Placeholder character', text:'A croaker of the Friggliarchy. His story is still to be written.'}},
   rhubarb:     {name:'Rhubarb', faction:'frog', look:'rhubarb', cls:'overseer', lv:3, stars:3, stats:{mhp:26,atk:13,def:6,spd:6,skl:7,mov:5},
                 retort:'Back down that seam wi\' you, love. And mind the lash on yer way.',
                 intro:{title:'Overseer of the Mines', text:'She keeps the crown\'s mine camp digging, with her lash and with stories. Every morning the rabbits hear about Rae the monster. Her whip reaches further than you\'d expect.'}},

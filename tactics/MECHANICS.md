@@ -200,6 +200,12 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | `allies` | no ally falls (allies who leave by an exit are safe) | R2-2, R3-1, R3-6, F3-2 |
 | `catch` (n) | catch at least n runners (intercept) | F3-3, F4-4 |
 
+## Side-story characters
+
+Side stories never introduce a character that needs new art. Anyone new in them (a boss, an ally, a speaker) is drawn
+with existing generic art: set `look` (and `fur`, `elite`) on the spawn, or a speaker's `look`/`fur`. E.g. Governess
+Marigold (CO-2) is a gilded ★★ monkey in grey; Captain Mako is a pirate shark; Lady Tealbottom a frog soldier.
+
 ## Things the player has been taught (and where to reuse them)
 
 | Lesson | Taught in | Good places to reuse it |

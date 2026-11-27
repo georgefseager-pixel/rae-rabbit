@@ -264,7 +264,7 @@ Object.assign(SIDE_SETS, {
         deploy: [[4,1],[5,1],[3,1],[6,1]],
         brief: 'Thirty years ago. Masked raiders break into the great hall at night, after the old Governess, Aurora\'s mother. Hold them off until the guard wakes. She must not fall.',
         prepNote: 'Years ago: only Cornelius and ordinary soldiers can come. Governess Marigold (blue) must not fall.',
-        allies: () => [E('governess',6,4,0,'hold',{key: 'marigold', name: 'Governess Marigold', look: 'aurora', vip: true, bonus: {mhp: 6, def: 3}})],
+        allies: () => [E('governess',6,4,0,'hold',{key: 'marigold', name: 'Governess Marigold', look: 'monkey', fur: 'grey', elite: true, vip: true, bonus: {mhp: 6, def: 3}})],
         enemies: () => [E('blade',6,2,9), E('blade',6,7,9), E('blade',6,4,11), E('reed',6,1,10,'guard'), E('reed',6,8,10,'guard')],
         reinforce: () => [
           {turn: 2, units: [E('blade',6,3,13), E('blade',6,6,13)]},

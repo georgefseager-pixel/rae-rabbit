@@ -30,6 +30,8 @@ function migrateSave(s){
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'kumquat');
   // the placeholder Persimmon was replaced by Captain Cornelius on The Loyal Court
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'persimmon');
+  // the unused placeholder banner characters were removed
+  for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => !['lantern', 'ironear', 'duckweed', 'glimmer', 'bogsworth'].includes(r.key));
   // the mine clothes became attires when Rae and Flopsy changed into Republic colours (Chapter Two, stage 1)
   if (s.camps.rae?.cleared?.includes('R2-1')) for (const [key, id] of [['rae', 'raeRags'], ['sister', 'floraRags']]){ const r = s.camps.rae.roster.find(x => x.key === key); if (r && !(r.attires ||= []).includes(id)) r.attires.push(id); }
   // Willow became a Scholar (tomes): drop any bow she was carrying

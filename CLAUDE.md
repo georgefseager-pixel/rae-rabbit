@@ -7,3 +7,5 @@
 - Art and data conventions are in `tactics/README.md` and in the comments at the top of each `tactics/src/js/*.js` data file.
 - The installable game is hosted at https://georgefseager-pixel.github.io/rae-rabbit/toy-wars/ from the `toy-wars/` folder on
   `main` (the root of `main` is a different game). After a build worth sharing, copy `tactics/web/*` there and push `main`.
+- **Side stories never introduce characters that can't be drawn with existing generic art.** Their new faces (bosses,
+  allies, speakers) use a generic look (`look` + `fur`/`elite` on the spawn, or a speaker's `look`), never a new plush placeholder.
