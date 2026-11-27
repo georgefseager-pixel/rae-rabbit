@@ -5505,7 +5505,7 @@ const CAMPAIGNS = {
             {who: "princess", text: "This isn't over, cousin. The King saw me today. He saw me fight."},
             {who: "tiggle", text: "He saw you lose."},
             {who: "princess", text: "He SAW me. That's the part that matters."},
-            {who: "narr", text: "She stalks out of the arena. Up in the royal box, the King's seat is already empty."},
+            {who: "narr", text: "She stalks out of the arena. Up in the royal box, the King's seat is already empty. A page in the royal colours hurries out after her."},
             {who: "herald", text: "The prince goes through to the FINAL!"},
             {who: "biggle", text: "One more round, little brother. Just one."},
           ],
@@ -5562,20 +5562,25 @@ const CAMPAIGNS = {
             {who: "tiggle", text: "Well, I passed. So the army's mine. We can march tonight, Biggle. The pirates, the ships… Rae's getting away while we stand here!"},
             {who: "biggle", text: "The army's gone, Tiggle."},
             {who: "tiggle", text: "…What?"},
-            {who: "biggle", text: "The King sent it south three days ago, under his own marshal. Every regiment in the capital. While the whole city was watching you play the Siege Game."},
-            {who: "biggle", text: "The tournament was never about giving you the army. It was about the King's reputation. Win or lose, he'd already decided."},
+            {who: "biggle", text: "The King gave it to Princess. Last night, after the semi-final. She marched it out of the south gate at dawn, every regiment in the capital, while the whole city sat in here watching you."},
+            {who: "tiggle", text: "Princess? She lost! I beat her!"},
+            {who: "biggle", text: "She lost to the King's brother, in front of the whole city, and never once stopped fighting. That's what he saw. And she wants a crown more than any frog alive. He likes that. It's useful."},
+            {who: "biggle", text: "The tournament was never about giving you the army. It was about the King's reputation. Win or lose, he was never going to give it to you."},
             {who: "tiggle", text: "Then all of this… the bells, the ribbons… it was for nothing."},
             {who: "biggle", text: "Not for nothing. Frogkind just watched you win the Royal Tournament. Every soldier in that army will have heard about it by morning."},
-            {who: "biggle", text: "An army on the march needs a commander, little brother. What if they had one they actually wanted to follow?"},
-            {who: "tiggle", text: "Biggle. You're talking about taking the King's army. That's mutiny."},
-            {who: "biggle", text: "It's only mutiny if we lose. If we bring him Rae Rabbit, he'll tell everyone we were acting on his orders all along. He'll have to. His reputation, remember?"},
+            {who: "biggle", text: "An army on the march needs a commander, little brother. This one has a commander it was handed. What if it had one it actually wanted to follow?"},
+            {who: "tiggle", text: "Biggle. You're talking about taking the King's army away from Princess. That's mutiny."},
+            {who: "biggle", text: "Only if we lose. Remember that."},
+            {who: "tiggle", text: "She won't just hand it over."},
+            {who: "biggle", text: "No. She'll fight for it. She fights for everything. It's the one thing I like about her."},
+            {who: "biggle", text: "And if we win, if we bring him Rae Rabbit, he'll tell everyone we were acting on his orders all along. He'll have to. His reputation, remember?"},
             {who: "tiggle", text: "And if we don't bring her?"},
             {who: "biggle", text: "Then they'll hang us both from the palace walls, and the crowd will cheer for that too."},
             {who: "tiggle", text: "You'd risk that? For me?"},
             {who: "biggle", text: "I told you. Every step of the way."},
             {who: "aurora", text: "If you take that army, Your Highness, remember your promise."},
             {who: "tiggle", text: "I remember, Aurora. Speshul will be spared. Whatever happens."},
-            {who: "narr", text: "Before dawn, two riders leave the capital by the south gate. Behind them come Aurora, and the monkeys who stayed. Ahead of them, three days south, the King's army is marching for the sea."},
+            {who: "narr", text: "That night, two riders leave the capital by the south gate. Behind them come Aurora, and the monkeys who stayed. Ahead of them, a day's march south, the King's army is heading for the sea, with Princess at its head."},
             {who: "tiggle", text: "Hold on, Rae Rabbit. We're coming."},
             {card: "End of Chapter Four", sub: "The Tournament"},
           ],
@@ -11327,7 +11332,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'e6fb2de221f9';
+const BUILD_ID = '69b8866e0f2e';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

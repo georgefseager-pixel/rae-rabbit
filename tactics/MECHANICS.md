@@ -250,7 +250,8 @@ deploy 7. Chapter Five is a stub on both routes.
   Tournament. Seven rounds, all training fights (`spar`): the Grand Melee (rout), the Gauntlet (escape to the bell),
   Tilly Tealbottom in the lists (a mounted lance boss), the Ribbon Hunt (intercept), the Siege Game (survive in a mock
   fort), Princess in the semi-final (a tome boss) and Biggle Baggle in the final (`ban`, enemy boss with Hold the Line).
-  Afterwards: the test of worthiness, the King's army already marching, and the brothers set out to take it over.
+  Afterwards: the test of worthiness; the King has given the army to Princess, who marched it south while the final was
+  being fought; and the brothers set out to take it from her (Princess returns as the enemy in Chapter Five).
 
 New: the `pirate` faction (`FACTIONS.pirate`; Cutlass, Boarder, Harpooner, Cork Gunner, Shanty Singer, Sawbones and
 Ducky's Pirate Captain class, a scimitar), the classes Lily Jouster (Tilly) and Royal Heiress (Princess), and the
