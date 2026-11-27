@@ -45,6 +45,7 @@ const EVENTS = {
       {who: "biggle", text: "An old Lily Court custom, little brother. Two teams, four bells, first to ring twelve. Loser polishes everyone's boots."},
       {who: "narr", text: "A seasonal side story is open on the Side Stories tab: The War Camp Bells. It can be played once a day, all January."},
       {who: "narr", text: "Hold the bells and ring in the New Year before Biggle's team does. Win by a wide margin for more Frog Chimes."},
+      {who: "narr", text: "Spend them on the New Year recruiting banner, The Midnight Ball, before January is out."},
     ]},
   },
 };
@@ -204,11 +205,15 @@ GACHA_ARMY.frog.troops.elves = {stars: [1, 2], generic: ['xblade', 'xaxe', 'xpik
   names: ['Jingle', 'Tinsel', 'Sprout', 'Holly', 'Pudding', 'Bauble', 'Sleet', 'Cracker', 'Nutmeg', 'Figgy', 'Wassail', 'Snowdrop', 'Mince', 'Clove', 'Ivy']};
 // ---------- January banner (paid with Chimes) ----------
 // Raepublic: Willow's Starlight Scholar (attire only, as on Across the Stream); the ★ and ★★ are Republic soldiers.
-// Friggliarchy: none yet (Frog Chimes are saved for one).
+// Friggliarchy: Tiggle's Life of the Party (attire only); the ★ and ★★ are the Court's own frog soldiers.
 GACHA_ARMY.rae.banners.push({id: 'rae-newyear', name: 'Wishes on the First Star', kind: 'featured', event: 'newyear', currency: 'gifts',
   featured: [], attires: ['willowStarlight'], bg: 'yard', troops: 'republic',
   tease: 'A folded paper star, tied to a bell-rope. Somebody has written a wish inside and then, very carefully, crossed it out.',
   blurb: 'January only, paid for with Rabbit Chimes from The Shift Bells. On the first clear night of the year, Willow climbs the old watch-post with a book of star charts and a cloak she has been embroidering since autumn. Featuring Starlight Scholar: Willow under the New Year stars, whose spells bring shooting stars down beside her targets. The ★ and ★★ who answer are Republic soldiers.'});
+GACHA_ARMY.frog.banners.push({id: 'frog-newyear', name: 'The Midnight Ball', kind: 'featured', event: 'newyear', currency: 'gifts',
+  featured: [], attires: ['tiggleParty'], bg: 'court',
+  tease: 'An invitation on thick cream card, edged in gold leaf. Dancing until midnight. Attendance is not optional.',
+  blurb: 'January only, paid for with Frog Chimes from The War Camp Bells. The Lily Court sees the year out with a ball, and the Prince is expected to dance. He does. Rather a lot. Featuring Life of the Party: Tiggle in sequins and a party hat, and every enemy he beats gets the whole party going again. The ★ and ★★ who answer are the Court\'s own soldiers.'});
 // a banner's seasonal look (its event's), or null
 const bannerLook = b => (b?.event && EVENTS[b.event]?.look) || null;
 // what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}

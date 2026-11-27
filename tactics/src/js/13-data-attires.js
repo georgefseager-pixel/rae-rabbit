@@ -46,6 +46,10 @@ const ATTIRES = {
   // little harder, and she is a little less careful (Def). Each spell brings down a shooting star (Shooting Star).
   willowStarlight: {char: 'willow', outfit: 'star', name: 'Starlight Scholar', mods: {atk: 2, skl: 1, def: -1}, ability: 'starfall',
               desc: 'She embroidered every star on it herself, from the charts, in the right places. It took all autumn. Rae asked what the crescent brooch was for. Willow said "navigation", in a voice that ended the conversation.'},
+  // New Year banner (31-data-events.js): Tiggle in sequins and a party hat. Same class and sword; lighter on his feet
+  // (Spd) and less well protected (Def). When he defeats an enemy, the party starts (Pop the Cork).
+  tiggleParty: {char: 'tiggle', outfit: 'party', name: 'Life of the Party', mods: {spd: 2, skl: 1, def: -1}, ability: 'cork',
+              desc: 'The sequins were Biggle\'s idea of a joke. Tiggle wore the whole thing without complaint, danced until three, and has now asked for it back every January. The sash was a gift from the war camp cooks. He has never taken it off before midnight.'},
   // From recruiting (a banner's `attires`): Biggle on horseback. Faster and further-moving than the Court Knight's
   // armour, but lighter (less Def), and a horse can't climb rocks.
   // December festive banner (31-data-events.js): Biggle as gingerbread, on foot with a candy-cane rapier. Much quicker

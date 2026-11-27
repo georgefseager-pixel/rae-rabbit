@@ -309,6 +309,9 @@ async function strike(a, d, f){
     }
     if (d.flees) popup(d, B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
     if (hasAb(a, 'crowd') && (a.cheers || 0) < 3){ a.cheers = (a.cheers || 0) + 1; popup(a, `🏆 The crowd roars! +${a.cheers}`, '#ffd166'); }   // Crowd Pleaser
+    if (hasAb(a, 'cork')){ let any = false;   // Pop the Cork: allies within 2 recover 4 HP
+      for (const o of alliesNear(a, a, 2)) if (o.hp < o.mhp){ const h = Math.min(4, o.mhp - o.hp); o.hp += h; o.shp = o.hp; any = true; setTimeout(() => popup(o, `🎉 +${h}`, '#9ff0b0'), 250); }
+      if (any) abilityPop(a, 'cork'); }
     await tween(380, t => { d.alpha = 1 - t; }); d.dead = true;
     if (d.team === 'e') B.kills++;
   }

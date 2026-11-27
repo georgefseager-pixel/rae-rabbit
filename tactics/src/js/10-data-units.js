@@ -429,6 +429,7 @@ const ART_CROP = {
   chriggle: {panel: ['170% auto', '42% 5%'], talk: ['132% auto', '42% 3%']},
   fragglejr: {panel: ['150% auto', '62% 0%'], talk: ['125% auto', '60% 0%']},   // own portrait; battle sprite and map icon are his father's
   willow:   {panel: ['215% auto', '44% 2%'], talk: ['160% auto', '44% 1%']},
+  tiggleparty: {panel: ['190% auto', '50% 3%'], talk: ['145% auto', '50% 2%']},   // Life of the Party (New Year banner)
   willowstar: {panel: ['200% auto', '46% 2%'], talk: ['150% auto', '46% 1%']},   // Starlight Scholar (New Year banner)
   willowdoctor: {panel: ['200% auto', '48% 2%'], talk: ['150% auto', '48% 1%']},   // Dr. Willow (log-in 35)
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},

@@ -102,6 +102,7 @@ waits in the Armoury (the class's basic weapon is used) and comes back when the 
 | Simian Sorcerer | Flopsy Flora | Mender → Simian Sorcerer (tome, 1–2): +3 Atk, −1 Def, +1 Spd | Across the Stream (after Chapter Three) |
 | Hoppy Xmas | Flopsy Flora | same class and needle: +2 Def, −1 Spd | A Sack Full of Rabbits (December) |
 | Starlight Scholar | Willow | same class and tome: +2 Atk, +1 Skl, −1 Def | Wishes on the First Star (January) |
+| Life of the Party | Tiggle | same class and sword: +2 Spd, +1 Skl, −1 Def | The Midnight Ball (January) |
 | Gingerbiggle | Biggle | Court Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
 
 ## Unique abilities (`14-data-abilities.js`)
@@ -120,6 +121,7 @@ and The Lesson, which only help the player.
 | Flopsy Flora (Hoppy Xmas) | Stocking Filler | whoever she mends gets +3 damage in their next fight (attacking or defending) | |
 | Willow | The Lesson | allies within 2 earn +20% EXP | |
 | Willow (Starlight Scholar) | Shooting Star | each spell that hits also deals 2 to every other enemy next to the target (never below 1 HP): a small, safe splash | packed enemies, chokepoints |
+| Tiggle (Life of the Party) | Pop the Cork | each enemy he defeats heals every ally within 2 of him for 4 | finishing blows in the thick of it |
 | Brigand | Light Fingers | +25 spoils per enemy he defeats | |
 | The Condemned | Walked Away | below half HP he strikes first when attacked (Vantage) | |
 | Froggle | Draw Back | action: she steps back 1, an adjacent ally takes her square | rescues, escorts |
@@ -340,7 +342,7 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 
 | Event | When | Raepublic | Friggliarchy | Currency |
 |---|---|---|---|---|
-| Ring in the New Year (`newyear`) | January | NY-R The Shift Bells (Rae, Flopsy and Willow ring the old mine watch-post bells, 3 bells; real battle) | NY-F The War Camp Bells (Tiggle's team against Biggle's, 4 bells; a training match, Biggle on the other side) | Rabbit Chimes / Frog Chimes. Raepublic banner "Wishes on the First Star" (attire Starlight Scholar for Willow, no new ★★★; Republic soldiers). Friggliarchy: no banner yet (Frog Chimes saved for one) |
+| Ring in the New Year (`newyear`) | January | NY-R The Shift Bells (Rae, Flopsy and Willow ring the old mine watch-post bells, 3 bells; real battle) | NY-F The War Camp Bells (Tiggle's team against Biggle's, 4 bells; a training match, Biggle on the other side) | Rabbit Chimes / Frog Chimes. Raepublic banner "Wishes on the First Star" (attire Starlight Scholar for Willow, no new ★★★; Republic soldiers). Friggliarchy banner "The Midnight Ball" (attire Life of the Party for Tiggle, no new ★★★; the Court's frog soldiers) |
 | The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" (★★★ Ilc the Scout, a frog defector with a spear; attire Hoppy Xmas for Flopsy) | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer; attire Gingerbiggle) | Rabbit Gifts / Frog Gifts |
 
 Debug menu, Time section: "December on/off" and "January on/off" set a pretend month (`SAVE.debugMonth`; events follow `gameMonth()`); "New day" moves
