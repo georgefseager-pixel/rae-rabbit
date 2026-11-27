@@ -960,10 +960,16 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .dtile .ustars{font-size:10px;margin-top:-3px}
 .por img.dface{inset:7%;width:86%;height:86%;object-fit:contain}
 /* not yet collected: a dark silhouette on pale felt */
-.dtile.locked .por,.dsheet.locked .dhead .por{background-image:radial-gradient(circle at 50% 35%,#e6d9bc,#a39373 85%);box-shadow:0 0 0 2px #6e604a,0 0 0 4px #141010}
+.dtile.locked .por,.dsheet.locked .dhead .por-x{background-image:radial-gradient(circle at 50% 35%,#e6d9bc,#a39373 85%);box-shadow:0 0 0 2px #6e604a,0 0 0 4px #141010}
 .dtile.locked .porart,.dtile.locked .por img,.dsheet.locked .porart,.dsheet.locked .por img{filter:brightness(0);opacity:.78}
 .dtile.locked b{color:var(--muted)}.dtile.locked .ustars{opacity:.45}
-.dhead{display:flex;gap:14px;align-items:center}.dhead .por{width:96px;height:96px;border-radius:12px}
+.dstage{height:min(46vh,340px);flex:none;border-radius:12px;display:flex;justify-content:center;align-items:flex-end;padding:12px 8px 0;overflow:hidden;
+  background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.14),rgba(0,0,0,.35) 75%),#151a2e;box-shadow:inset 0 0 0 2px var(--brass)}
+.dstage.f-frog{background:radial-gradient(circle at 50% 40%,#34501f,#141c0d 75%)}.dstage.f-monkey{background:radial-gradient(circle at 50% 40%,#7a4a2a,#24140a 75%)}
+.dstage.f-pirate{background:radial-gradient(circle at 50% 40%,#2e5a68,#0c1c24 75%)}.dstage.f-rae{background:radial-gradient(circle at 50% 40%,#34406b,#151a2e 75%)}
+.dstage .dfull{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.dsheet.locked .dstage{background:radial-gradient(circle at 50% 40%,#e6d9bc,#a39373 85%)}.dsheet.locked .dfull{filter:brightness(0);opacity:.78}
+.dhead{display:flex;flex-direction:column;align-items:center;text-align:center}
 .dhead h1{margin:2px 0 0}.dhead h2{margin:0;font-size:13px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
 .dfacts{display:flex;flex-wrap:wrap;gap:6px}.dfacts span{padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.08);font-size:13px}
 .dab{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:10px;background:rgba(236,198,115,.12);box-shadow:inset 0 0 0 1px rgba(236,198,115,.35)}

@@ -100,9 +100,11 @@ function dexEnt(e){
   return {key: 'recruit', uid: `dex-${e.set}-${e.stars}`, name: e.name, look: CLASS_LOOK[cls], cls, stars: e.stars, faction: e.faction};
 }
 // the tile picture: the map-icon head (its outline makes a readable silhouette), or the portrait if there's no icon
-const dexFace = ent => { const k = artResolve(ent, 'token'), A = ent.attire && ATTIRES[ent.attire];
-  if (A && !(k || '').endsWith(A.outfit)) return portraitInner(ent, 'panel');   // a costume with no map icon of its own: its portrait
-  const t = k && ART[k].token; return t ? `<img class="dface" alt="" src="${t}">` : portraitInner(ent, 'panel'); };
+// the tile picture: always the map icon the game uses for it (a costume without its own icon uses the character's),
+// whose outline also makes a readable silhouette; the portrait only if there is no icon at all
+const dexFace = ent => { const t = artFor(ent, 'token'); return t ? `<img class="dface" alt="" src="${t}">` : portraitInner(ent, 'panel'); };
+// the card picture: the whole portrait (a silhouette until collected)
+const dexFull = ent => { const a = artFor(ent, 'portrait'); return `<img class="dfull" alt="" src="${a || plushPortrait(ent.look)}">`; };
 const dexName = e => e.kind === 'char' ? charName(e.key) : e.kind === 'attire' ? ATTIRES[e.attire].name : e.name;
 
 function renderDex(){
@@ -142,8 +144,8 @@ function openDexEntry(id){
     body = `<div class="dfacts">${[...new Set(e.classes.map(c => CLASSES[c].name))].map(n => `<span>${n}</span>`).join('')}</div><p>${e.blurb}</p>`;
   }
   ov.innerHTML = `<div class="card wsheet dsheet${has ? '' : ' locked'}">
-    <div class="dhead"><div class="por f-${e.faction}">${has ? portraitInner(ent, 'panel') : dexFace(ent)}</div>
-      <div><span class="ustars s${e.stars}">${'★'.repeat(e.stars)}</span><h1>${has ? dexName(e) : '???'}</h1><h2>${e.kind === 'company' ? 'Soldiers' : e.kind === 'attire' ? 'Costume' : 'Character'}</h2></div></div>
+    <div class="dstage f-${e.faction}">${dexFull(ent)}</div>
+    <div class="dhead"><span class="ustars s${e.stars}">${'★'.repeat(e.stars)}</span><h1>${has ? dexName(e) : '???'}</h1><h2>${e.kind === 'company' ? 'Soldiers' : e.kind === 'attire' ? 'Costume' : 'Character'}</h2></div>
     ${body}<p class="dhow">${e.how}</p>
     <button class="btn" data-dex-close type="button">Close</button></div>`;
   ov.hidden = false;
