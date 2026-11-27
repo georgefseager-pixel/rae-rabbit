@@ -113,7 +113,7 @@ function speakerName(who){
 }
 // a character's name as the story has it now (Rabbit becomes Rae Rabbit, Little Sister becomes Flopsy Flora)
 const charName = key => speakerName(key) || CHARACTERS[key]?.name || key;
-const saveGame = () => { if (SAVE) SAVE.played = Date.now(); Store.save(SAVE); };
+const saveGame = () => { if (SAVE){ SAVE.played = Date.now(); if (typeof dexSync === 'function') dexSync(); } Store.save(SAVE); };   // dexSync: the Collection (65-dex.js)
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
 const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[clsOf(rec)].g;
 const weaponName = rec => weaponOf(rec).name;   // see 33-arms.js

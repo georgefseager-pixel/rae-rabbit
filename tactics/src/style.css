@@ -948,3 +948,24 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .gtease.nyb .note{background:radial-gradient(1.5px 1.5px at 30% 30%,#ffe08a 60%,transparent 61%),radial-gradient(1px 1px at 70% 65%,#fff 60%,transparent 61%),linear-gradient(160deg,#243066,#121736);background-size:40px 40px,30px 30px,100% 100%;border:2px solid #ecc673}
 .gtease.nyb .seal{background:radial-gradient(circle at 35% 30%,#f3d27a,#b8862c 70%)}
 .evstrip.ev-newyear{background:linear-gradient(90deg,#1a2148,#4a3a12);border-color:#ecc673}
+
+/* ---------- The Collection (65-dex.js) ---------- */
+.dintro{margin:4px 0 10px;color:var(--muted);font-size:14px}
+.dchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.dchips .chip{cursor:pointer;font:inherit;font-size:12px}.dchips small{opacity:.7;margin-left:3px}
+#dex .sec{margin:16px 0 8px;scroll-margin-top:12px}#dex .sec small{letter-spacing:.05em;margin-left:6px;opacity:.75}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:12px 8px}
+.dtile{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;min-width:0}
+.dtile .por{width:68px;height:68px;border-radius:10px}
+.dtile b{font-family:var(--fell);font-weight:400;font-size:12px;line-height:1.15;text-align:center;max-width:100%;overflow-wrap:anywhere}
+.dtile .ustars{font-size:10px;margin-top:-3px}
+.por img.dface{inset:7%;width:86%;height:86%;object-fit:contain}
+/* not yet collected: a dark silhouette on pale felt */
+.dtile.locked .por,.dsheet.locked .dhead .por{background-image:radial-gradient(circle at 50% 35%,#e6d9bc,#a39373 85%);box-shadow:0 0 0 2px #6e604a,0 0 0 4px #141010}
+.dtile.locked .porart,.dtile.locked .por img,.dsheet.locked .porart,.dsheet.locked .por img{filter:brightness(0);opacity:.78}
+.dtile.locked b{color:var(--muted)}.dtile.locked .ustars{opacity:.45}
+.dhead{display:flex;gap:14px;align-items:center}.dhead .por{width:96px;height:96px;border-radius:12px}
+.dhead h1{margin:2px 0 0}.dhead h2{margin:0;font-size:13px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.dfacts{display:flex;flex-wrap:wrap;gap:6px}.dfacts span{padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.08);font-size:13px}
+.dab{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:10px;background:rgba(236,198,115,.12);box-shadow:inset 0 0 0 1px rgba(236,198,115,.35)}
+.dab b{font-family:var(--fell);font-weight:400;color:#ffe2a0}.dab span{font-size:14px}
+.dsheet p{margin:0;font-size:14px;line-height:1.45}.dhow{color:#ffd98a;font-family:var(--fell)}

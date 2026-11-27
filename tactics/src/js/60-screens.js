@@ -1,5 +1,5 @@
 // ================= Campaign screens =================
-const SCREENS = ['app', 'hub', 'army', 'camp', 'prep', 'result'];
+const SCREENS = ['app', 'hub', 'army', 'camp', 'prep', 'result', 'dex'];
 const campTrack = () => CAMPAIGNS[SAVE.current]?.faction === 'frog' ? 'frogCamp' : 'raeCamp';
 function showScreen(id){
   if (SAVE?.current) document.body.dataset.army = SAVE.current;   // the menus' backdrop follows the army being played
@@ -130,7 +130,8 @@ function renderHub(){
         <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
         ${energyHTML()}
         <div class="hbtns"><button class="btn" data-go="army" type="button">Army &amp; Armoury</button>
-        <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
+        <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button>
+        <button class="btn" data-go="dex" type="button">Collection</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
     ${eventsOn(ck).map(id => { const s = camp.sides.find(x => x.event === id); return s ? `<button class="evstrip ev-${id}" data-hubtab="side" type="button"><span>${EVENTS[id].icon}</span><span><b>${EVENTS[id].name}</b><small>${s.title}${eventPlayedToday(s) ? ' · played today' : ' · ready to play'}</small></span><span>›</span></button>` : ''; }).join('')}
@@ -376,6 +377,9 @@ document.addEventListener('click', e => {
   else if (d.go === 'hub') renderHub();
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
   else if (d.go === 'prep') renderPrep();
+  else if (d.go === 'dex') renderDex();
+  else if (d.dex) openDexEntry(d.dex);
+  else if (d.dexjump) $('#dexsec-' + d.dexjump)?.scrollIntoView({behavior: 'smooth', block: 'start'});
   else if (d.go === 'title'){ saveGame(); renderSlots(); $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
   else if (d.armPick) openWeaponPicker(d.armPick);

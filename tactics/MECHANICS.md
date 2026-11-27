@@ -384,6 +384,14 @@ with a reveal: log-in 7 Rae's Casual Wear (+5 Whispers), log-in 14 Tiggle's Form
 second week repeats with 10 on every seventh. About 10 of each per week. "New day" in the debug menu makes
 it claimable again.
 
+Collection (`65-dex.js`, the hub's Collection button): a Pokédex of everyone who has ever been in either army, and every
+costume owned (`SAVE.dex`, kept up to date on every save, so released recruits stay collected). Uncollected entries are
+silhouettes (their map-icon heads) with how to get them. One entry per unique character, one per company and rarity
+(all ★ Republic soldiers are one entry, all ★★ another; Tall/Burly/Old Rabbit count as ★ Mine Rabbits), one per costume.
+Sections: each faction, Costumes, Daily log-in, and each seasonal event (its banners' characters, costumes and soldiers,
+unless an ordinary banner has them too). New characters, costumes and banners are picked up automatically; a new
+company (`troops` set) needs its names and blurb in `DEX_COMPANIES`.
+
 ## Debug menu (`src/js/69-debug.js`)
 
 One "🔧 Debug" button on the campaign screen and in the battle menu. It asks for the password (`scrumbly`, any case);
