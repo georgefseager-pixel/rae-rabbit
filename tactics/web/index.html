@@ -924,6 +924,19 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 #gacha.f-pirate{background:radial-gradient(ellipse at 50% 40%, #16404e, #04090c 75%)}   /* a pirate recruit's reveal */
 .sintro.f-pirate{background:linear-gradient(180deg,#1f4a5a,#0a1c24);box-shadow:0 0 0 2px #9fd3cf,0 20px 50px rgba(0,0,0,.7)}   /* pirate recruits (Ducky) */
 
+/* save slots on the title screen */
+.tslots{display:flex;flex-direction:column;gap:8px}
+.tslot{display:flex;gap:6px;align-items:stretch}
+.tslot>.btn:first-child{flex:1;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px;font-size:13px!important;padding:8px 12px!important;line-height:1.25}
+.tslot>.btn:first-child b{font-size:15px;letter-spacing:.04em}
+.tslot>.btn:first-child span,.tslot>.btn:first-child small{font-family:var(--body);font-size:11.5px;text-transform:none;letter-spacing:0;opacity:.9}
+.tslot>.btn:first-child small{opacity:.7}
+.tslot .f-rae{color:#ffb4a6}.tslot .f-frog{color:#cfe8a0}
+.tslot .btn.primary .f-rae,.tslot .btn.primary .f-frog{color:inherit}
+.tslot>.btn.empty{opacity:.8;border-style:dashed}
+.tslot .tslotx{flex:0 0 42px;padding:0!important;font-size:15px!important;min-height:0}
+.tslot .tslotx.armed{flex-basis:64px}
+
 </style>
 
 <!-- ===== Battle ===== -->
@@ -980,8 +993,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
       <div class="rule"></div>
       <p class="tag">Two stories. One war.</p>
       <div class="tbtns">
-        <button class="btn primary" id="contBtn" type="button">Continue</button>
-        <button class="btn" id="newBtn" type="button">New Campaign</button>
+        <div class="tslots" id="tslots"></div>
         <button class="btn sound" data-sound type="button">♪ On</button>
         <div class="tsave"><button class="btn" id="backupBtn" type="button">Back up save</button><button class="btn" id="restoreBtn" type="button">Restore save</button>
           <input type="file" id="restoreFile" accept=".json,application/json" hidden></div>
@@ -1026,13 +1038,18 @@ const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const ROMAN = n => { let s = ''; for (const [v, c] of [[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']]) while (n >= v){ s += c; n -= v; } return s; };
 function hash(x, y, s = 0){ let h = (x*374761393 + y*668265263 + s*1442695041) | 0; h = Math.imul(h ^ (h>>>13), 1274126177); return ((h ^ (h>>>16)) >>> 0) / 4294967295; }
 
-// Per-viewer save slot. Browser storage can be missing or throw (private windows,
-// previews), so every access is guarded and the game still runs without it.
+// Three save slots per viewer. Slot 1 keeps the original key, so saves from before slots became slot 1.
+// Browser storage can be missing or throw (private windows, previews), so every access is guarded and the game
+// still runs without it. Store.slot is the slot being played (remembered between visits).
+const SLOTS = 3;
 const Store = {
-  key: 'raepublic-save-v3',
-  load(){ try { const s = localStorage.getItem(this.key); return s ? JSON.parse(s) : null; } catch (e){ return null; } },
+  slot: (() => { try { return Math.min(SLOTS, Math.max(1, +localStorage.getItem('raepublic-slot') || 1)); } catch (e){ return 1; } })(),
+  keyOf: n => n === 1 ? 'raepublic-save-v3' : `raepublic-save-v3-s${n}`,
+  get key(){ return this.keyOf(this.slot); },
+  use(n){ this.slot = n; try { localStorage.setItem('raepublic-slot', String(n)); } catch (e){} },
+  load(n = this.slot){ try { const s = localStorage.getItem(this.keyOf(n)); return s ? JSON.parse(s) : null; } catch (e){ return null; } },
   save(d){ try { localStorage.setItem(this.key, JSON.stringify(d)); } catch (e){} },
-  clear(){ try { localStorage.removeItem(this.key); } catch (e){} },
+  clear(n = this.slot){ try { localStorage.removeItem(this.keyOf(n)); } catch (e){} },
 };
 
 // Character art arrives as data URIs (see tools/build.py). Turn each into a short blob: URL
@@ -8748,7 +8765,7 @@ function speakerName(who){
 }
 // a character's name as the story has it now (Rabbit becomes Rae Rabbit, Little Sister becomes Flopsy Flora)
 const charName = key => speakerName(key) || CHARACTERS[key]?.name || key;
-const saveGame = () => Store.save(SAVE);
+const saveGame = () => { if (SAVE) SAVE.played = Date.now(); Store.save(SAVE); };
 const isCleared = id => Object.values(SAVE.camps).some(c => c.cleared.includes(id));
 const growthOf = rec => CHARACTERS[rec.key]?.g || CLASSES[clsOf(rec)].g;
 const weaponName = rec => weaponOf(rec).name;   // see 33-arms.js
@@ -11051,7 +11068,7 @@ document.addEventListener('click', e => {
   else if (d.go === 'hub') renderHub();
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
   else if (d.go === 'prep') renderPrep();
-  else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
+  else if (d.go === 'title'){ saveGame(); renderSlots(); $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
   else if (d.armPick) openWeaponPicker(d.armPick);
   else if (d.attirePick) openAttirePicker(d.attirePick);
@@ -11079,16 +11096,39 @@ document.addEventListener('click', e => {
 
 // ---------- Title ----------
 // How the two-campaign structure works, shown once when a new game starts.
-$('#contBtn').addEventListener('click', () => {
-  SAVE = SAVE || Store.load();
-  if (!SAVE) return;
-  $('#title').hidden = true; renderHub();
-});
-$('#newBtn').addEventListener('click', async e => {
-  if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again to erase your save')) return;
-  newSave(); saveGame(); prep = null;
-  $('#title').hidden = true; renderHub();
-  Music.want(campTrack());
+// Save slots: each shows how far both stories have got. The most recently played slot carries #contBtn, the first
+// empty one #newBtn.
+function slotSummary(s){
+  const ch = ck => { const nx = CAMPAIGNS[ck].stages.find(sg => !sg.stub && !s.camps[ck]?.cleared?.includes(sg.id));
+    return nx ? nx.chapter.title : 'All caught up'; };
+  const d = s.played ? new Date(s.played) : null;
+  return `<span class="f-rae">${FACTIONS.rae.name} · ${ch('rae')}</span><span class="f-frog">${FACTIONS.frog.name} · ${ch('frog')}</span>`
+    + (d ? `<small>Last played ${d.getDate()} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}</small>` : '');
+}
+function renderSlots(){
+  const saves = [1, 2, 3].map(n => migrateSave(Store.load(n)));
+  const last = saves[Store.slot - 1] ? Store.slot : (saves.findIndex(Boolean) + 1 || 0), firstEmpty = saves.findIndex(s => !s) + 1;
+  $('#tslots').innerHTML = saves.map((s, i) => { const n = i + 1;
+    return s ? `<div class="tslot${n === last ? ' last' : ''}"><button class="btn${n === last ? ' primary' : ''}" data-slot-play="${n}"${n === last ? ' id="contBtn"' : ''} type="button">
+        <b>Slot ${n}${n === last ? ' · Continue' : ''}</b>${slotSummary(s)}</button>
+        <button class="btn tslotx" data-slot-erase="${n}" type="button" aria-label="Erase slot ${n}">✕</button></div>`
+      : `<div class="tslot"><button class="btn empty" data-slot-new="${n}"${n === firstEmpty ? ' id="newBtn"' : ''} type="button"><b>Slot ${n}</b><span>New Campaign</span></button></div>`; }).join('');
+  for (const id of ['backupBtn', 'restoreBtn']) { const b = $('#' + id); if (b) b.textContent = `${id === 'backupBtn' ? 'Back up' : 'Restore'} slot ${Store.slot}`; }
+}
+function playSlot(n){
+  Store.use(n); SAVE = migrateSave(Store.load(n)); if (!SAVE) return;
+  prep = null; $('#title').hidden = true; renderHub(); Music.want(campTrack());
+}
+$('#tslots').addEventListener('click', e => {
+  const t = e.target.closest('[data-slot-play], [data-slot-new], [data-slot-erase]'); if (!t) return;
+  const d = t.dataset;
+  if (d.slotPlay) playSlot(+d.slotPlay);
+  else if (d.slotNew){ Store.use(+d.slotNew); newSave(); saveGame(); playSlot(+d.slotNew); }
+  else if (d.slotErase){
+    if (!armed(t, 'Erase?')) return;
+    const n = +d.slotErase; Store.clear(n); if (Store.slot === n) SAVE = null;
+    toast(`Slot ${n} erased.`); renderSlots();
+  }
 });
 
 // ---------------- 62-gacha-ui.js ----------------
@@ -11796,13 +11836,13 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'ab4c4f50f399';
+const BUILD_ID = '191f47c01e61';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
 // A backup is a small text file of the save. Restoring one replaces the save on this device.
 function backupSave(){
-  const s = SAVE || Store.load(); if (!s){ toast('Nothing to back up yet: start a campaign first.'); return; }
+  const s = Store.load() || SAVE; if (!s){ toast(`Slot ${Store.slot} is empty: nothing to back up.`); return; }
   const blob = new Blob([JSON.stringify({game: 'toy-wars', saved: new Date().toISOString(), save: s})], {type: 'application/json'});
   const a = document.createElement('a'), d = gameDate();
   a.href = URL.createObjectURL(blob); a.download = `toy-wars-save-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.json`;
@@ -11814,7 +11854,7 @@ async function restoreSave(file){
     const data = JSON.parse(await file.text()), s = data?.game === 'toy-wars' ? data.save : data;
     if (!s?.camps?.rae || !s?.camps?.frog) throw new Error('not a save');
     SAVE = migrateSave(s); saveGame();
-    $('#contBtn').hidden = false; toast('Save restored. Tap Continue.');
+    renderSlots(); toast(`Save restored into slot ${Store.slot}. Tap Continue.`);
   } catch (e){ toast('That file isn\'t a Toy Wars save.'); }
 }
 // (only on the hosted app: the Claude preview can't hand out files, and its save lives in the preview)
@@ -12016,7 +12056,7 @@ function debugAction(act, btn){
     case 'copysave': { const txt = JSON.stringify(SAVE), ta = $('#dbgSaveTxt'); ta.value = txt; ta.select();
       (navigator.clipboard?.writeText(txt) || Promise.reject()).then(() => toast('Save copied.'), () => toast('Select the text and copy it.')); return; }
     case 'pastesave': try { const s = JSON.parse($('#dbgSaveTxt').value); if (!s?.camps?.rae) throw 0; SAVE = migrateSave(s); return done('Save loaded.'); } catch (e){ toast('That isn\'t a save.'); return; }
-    case 'wipe': if (!armed(btn, 'Tap again: erase everything')) return; Store.clear(); location.reload(); return;
+    case 'wipe': if (!armed(btn, 'Tap again: erase this slot')) return; Store.clear(); location.reload(); return;
     case 'lock': debugAuthed = false; $('#dbgsheet').hidden = true; toast('Debug menu locked.'); return;
   }
 }
@@ -12046,7 +12086,7 @@ function boot(data){
   SAVE = migrateSave((data && data.save) || Store.load());
   $('#titleArt').src = ART.rae?.portrait || plushPortrait('rae');
   $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');
-  $('#contBtn').hidden = !SAVE; soundLabels();
+  renderSlots(); soundLabels();
   if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update
   requestAnimationFrame(frame);

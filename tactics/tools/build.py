@@ -92,7 +92,7 @@ out.write_text(html)
 
 # ---- tactics/web/: the same game as an installable web app, for hosting on a website ----
 # index.html (a full page that links the app manifest), manifest.webmanifest, sw.js (offline copy),
-# icon-192.png / icon-512.png (from the loading art), and version.json (the newest build id).
+# icon-192.png / icon-512.png (Rae's face, from her map icon), and version.json (the newest build id).
 WEB = ROOT / "web"; WEB.mkdir(exist_ok=True)
 head = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -103,9 +103,24 @@ head = """<!doctype html>
 </head><body>
 """
 (WEB / "index.html").write_text(head + html + "\n</body></html>\n")
-_src = Image.open(ROOT / "art" / "loading.jpg").convert("RGB")
-_side = min(_src.size); _sq = _src.crop(((_src.width - _side)//2, 0, (_src.width - _side)//2 + _side, _side))
-for n in (192, 512): _sq.resize((n, n), Image.LANCZOS).save(WEB / f"icon-{n}.png", optimize=True)
+# the app icon: Rae's face (her map icon, art/rae-token.png) on Raepublic red, ringed with a stitched seam. Phones crop
+# icons to a circle or a rounded square, so the face stays inside the middle 80% (maskable safe zone).
+def app_icon(n):
+    import math
+    from PIL import ImageDraw
+    S = n*4; bg = Image.new("RGBA", (S, S)); d = ImageDraw.Draw(bg)
+    for r in range(S//2, 0, -4):
+        t = r/(S/2); d.ellipse((S/2 - r*1.45, S/2 - r*1.45, S/2 + r*1.45, S/2 + r*1.45), fill=(int(184 - 74*t), int(46 - 22*t), int(38 - 18*t), 255))
+    R = S*.465
+    for k in range(56):
+        a0 = k*360/56; d.arc((S/2 - R, S/2 - R, S/2 + R, S/2 + R), a0, a0 + 360/56*.55, fill=(243, 231, 203, 210), width=max(2, S//110))
+    tok = Image.open(ROOT / "art" / "rae-token.png").convert("RGBA"); t = tok.crop(tok.getbbox())
+    sc = S*.76/t.width; t = t.resize((int(t.width*sc), int(t.height*sc)), Image.LANCZOS)
+    sh = Image.new("RGBA", t.size, (0, 0, 0, 0)); sh.putalpha(t.getchannel("A").point(lambda v: v*.55)); sh = sh.filter(ImageFilter.GaussianBlur(S/90))
+    x, y = (S - t.width)//2, (S - t.height)//2 + S//40
+    bg.alpha_composite(sh, (x + S//80, y + S//50)); bg.alpha_composite(t, (x, y))
+    return bg.resize((n, n), Image.LANCZOS).convert("RGB")
+for n in (192, 512): app_icon(n).save(WEB / f"icon-{n}.png", optimize=True)
 (WEB / "manifest.webmanifest").write_text(json.dumps({
     "name": "Toy Wars", "short_name": "Toy Wars", "start_url": "./", "scope": "./", "display": "standalone",
     "orientation": "portrait", "background_color": "#120c08", "theme_color": "#120c08",

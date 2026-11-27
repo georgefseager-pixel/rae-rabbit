@@ -374,7 +374,7 @@ document.addEventListener('click', e => {
   else if (d.go === 'hub') renderHub();
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
   else if (d.go === 'prep') renderPrep();
-  else if (d.go === 'title'){ $('#contBtn').hidden = false; $('#title').hidden = false; Music.want('title'); }
+  else if (d.go === 'title'){ saveGame(); renderSlots(); $('#title').hidden = false; Music.want('title'); }
   else if (d.tab){ armyTab = d.tab; renderArmy(); if (d.tab === 'recruit') recruitTutorial(SAVE.current); }
   else if (d.armPick) openWeaponPicker(d.armPick);
   else if (d.attirePick) openAttirePicker(d.attirePick);
@@ -402,14 +402,37 @@ document.addEventListener('click', e => {
 
 // ---------- Title ----------
 // How the two-campaign structure works, shown once when a new game starts.
-$('#contBtn').addEventListener('click', () => {
-  SAVE = SAVE || Store.load();
-  if (!SAVE) return;
-  $('#title').hidden = true; renderHub();
-});
-$('#newBtn').addEventListener('click', async e => {
-  if ((SAVE || Store.load()) && !armed(e.currentTarget, 'Tap again to erase your save')) return;
-  newSave(); saveGame(); prep = null;
-  $('#title').hidden = true; renderHub();
-  Music.want(campTrack());
+// Save slots: each shows how far both stories have got. The most recently played slot carries #contBtn, the first
+// empty one #newBtn.
+function slotSummary(s){
+  const ch = ck => { const nx = CAMPAIGNS[ck].stages.find(sg => !sg.stub && !s.camps[ck]?.cleared?.includes(sg.id));
+    return nx ? nx.chapter.title : 'All caught up'; };
+  const d = s.played ? new Date(s.played) : null;
+  return `<span class="f-rae">${FACTIONS.rae.name} · ${ch('rae')}</span><span class="f-frog">${FACTIONS.frog.name} · ${ch('frog')}</span>`
+    + (d ? `<small>Last played ${d.getDate()} ${d.toLocaleString('en-GB', {month: 'short'})} ${d.getFullYear()}</small>` : '');
+}
+function renderSlots(){
+  const saves = [1, 2, 3].map(n => migrateSave(Store.load(n)));
+  const last = saves[Store.slot - 1] ? Store.slot : (saves.findIndex(Boolean) + 1 || 0), firstEmpty = saves.findIndex(s => !s) + 1;
+  $('#tslots').innerHTML = saves.map((s, i) => { const n = i + 1;
+    return s ? `<div class="tslot${n === last ? ' last' : ''}"><button class="btn${n === last ? ' primary' : ''}" data-slot-play="${n}"${n === last ? ' id="contBtn"' : ''} type="button">
+        <b>Slot ${n}${n === last ? ' · Continue' : ''}</b>${slotSummary(s)}</button>
+        <button class="btn tslotx" data-slot-erase="${n}" type="button" aria-label="Erase slot ${n}">✕</button></div>`
+      : `<div class="tslot"><button class="btn empty" data-slot-new="${n}"${n === firstEmpty ? ' id="newBtn"' : ''} type="button"><b>Slot ${n}</b><span>New Campaign</span></button></div>`; }).join('');
+  for (const id of ['backupBtn', 'restoreBtn']) { const b = $('#' + id); if (b) b.textContent = `${id === 'backupBtn' ? 'Back up' : 'Restore'} slot ${Store.slot}`; }
+}
+function playSlot(n){
+  Store.use(n); SAVE = migrateSave(Store.load(n)); if (!SAVE) return;
+  prep = null; $('#title').hidden = true; renderHub(); Music.want(campTrack());
+}
+$('#tslots').addEventListener('click', e => {
+  const t = e.target.closest('[data-slot-play], [data-slot-new], [data-slot-erase]'); if (!t) return;
+  const d = t.dataset;
+  if (d.slotPlay) playSlot(+d.slotPlay);
+  else if (d.slotNew){ Store.use(+d.slotNew); newSave(); saveGame(); playSlot(+d.slotNew); }
+  else if (d.slotErase){
+    if (!armed(t, 'Erase?')) return;
+    const n = +d.slotErase; Store.clear(n); if (Store.slot === n) SAVE = null;
+    toast(`Slot ${n} erased.`); renderSlots();
+  }
 });

@@ -8,13 +8,18 @@ const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const ROMAN = n => { let s = ''; for (const [v, c] of [[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']]) while (n >= v){ s += c; n -= v; } return s; };
 function hash(x, y, s = 0){ let h = (x*374761393 + y*668265263 + s*1442695041) | 0; h = Math.imul(h ^ (h>>>13), 1274126177); return ((h ^ (h>>>16)) >>> 0) / 4294967295; }
 
-// Per-viewer save slot. Browser storage can be missing or throw (private windows,
-// previews), so every access is guarded and the game still runs without it.
+// Three save slots per viewer. Slot 1 keeps the original key, so saves from before slots became slot 1.
+// Browser storage can be missing or throw (private windows, previews), so every access is guarded and the game
+// still runs without it. Store.slot is the slot being played (remembered between visits).
+const SLOTS = 3;
 const Store = {
-  key: 'raepublic-save-v3',
-  load(){ try { const s = localStorage.getItem(this.key); return s ? JSON.parse(s) : null; } catch (e){ return null; } },
+  slot: (() => { try { return Math.min(SLOTS, Math.max(1, +localStorage.getItem('raepublic-slot') || 1)); } catch (e){ return 1; } })(),
+  keyOf: n => n === 1 ? 'raepublic-save-v3' : `raepublic-save-v3-s${n}`,
+  get key(){ return this.keyOf(this.slot); },
+  use(n){ this.slot = n; try { localStorage.setItem('raepublic-slot', String(n)); } catch (e){} },
+  load(n = this.slot){ try { const s = localStorage.getItem(this.keyOf(n)); return s ? JSON.parse(s) : null; } catch (e){ return null; } },
   save(d){ try { localStorage.setItem(this.key, JSON.stringify(d)); } catch (e){} },
-  clear(){ try { localStorage.removeItem(this.key); } catch (e){} },
+  clear(n = this.slot){ try { localStorage.removeItem(this.keyOf(n)); } catch (e){} },
 };
 
 // Character art arrives as data URIs (see tools/build.py). Turn each into a short blob: URL

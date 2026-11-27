@@ -9,7 +9,7 @@ const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySele
 // ---------- Save backup ----------
 // A backup is a small text file of the save. Restoring one replaces the save on this device.
 function backupSave(){
-  const s = SAVE || Store.load(); if (!s){ toast('Nothing to back up yet: start a campaign first.'); return; }
+  const s = Store.load() || SAVE; if (!s){ toast(`Slot ${Store.slot} is empty: nothing to back up.`); return; }
   const blob = new Blob([JSON.stringify({game: 'toy-wars', saved: new Date().toISOString(), save: s})], {type: 'application/json'});
   const a = document.createElement('a'), d = gameDate();
   a.href = URL.createObjectURL(blob); a.download = `toy-wars-save-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.json`;
@@ -21,7 +21,7 @@ async function restoreSave(file){
     const data = JSON.parse(await file.text()), s = data?.game === 'toy-wars' ? data.save : data;
     if (!s?.camps?.rae || !s?.camps?.frog) throw new Error('not a save');
     SAVE = migrateSave(s); saveGame();
-    $('#contBtn').hidden = false; toast('Save restored. Tap Continue.');
+    renderSlots(); toast(`Save restored into slot ${Store.slot}. Tap Continue.`);
   } catch (e){ toast('That file isn\'t a Toy Wars save.'); }
 }
 // (only on the hosted app: the Claude preview can't hand out files, and its save lives in the preview)

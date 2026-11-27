@@ -156,7 +156,7 @@ function debugAction(act, btn){
     case 'copysave': { const txt = JSON.stringify(SAVE), ta = $('#dbgSaveTxt'); ta.value = txt; ta.select();
       (navigator.clipboard?.writeText(txt) || Promise.reject()).then(() => toast('Save copied.'), () => toast('Select the text and copy it.')); return; }
     case 'pastesave': try { const s = JSON.parse($('#dbgSaveTxt').value); if (!s?.camps?.rae) throw 0; SAVE = migrateSave(s); return done('Save loaded.'); } catch (e){ toast('That isn\'t a save.'); return; }
-    case 'wipe': if (!armed(btn, 'Tap again: erase everything')) return; Store.clear(); location.reload(); return;
+    case 'wipe': if (!armed(btn, 'Tap again: erase this slot')) return; Store.clear(); location.reload(); return;
     case 'lock': debugAuthed = false; $('#dbgsheet').hidden = true; toast('Debug menu locked.'); return;
   }
 }
