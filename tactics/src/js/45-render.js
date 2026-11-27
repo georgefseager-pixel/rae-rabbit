@@ -293,6 +293,18 @@ function triangleArrow(g, x, y, r, up){
   g.fillStyle = up ? '#4fdc6e' : '#ff4f3e'; g.fill();
   g.restore();
 }
+// How much of a map icon is drawn: opaque pixels, measured once per image (at natural size).
+const TOKEN_INK = .78;   // every icon's drawn area is (TOKEN_INK × tile)², about what the rabbits always had
+const inkCache = new WeakMap();
+function inkOf(img){
+  if (inkCache.has(img)) return inkCache.get(img);
+  const c = document.createElement('canvas'), k = Math.min(1, 160/Math.max(img.width, img.height));
+  c.width = Math.max(1, Math.round(img.width*k)); c.height = Math.max(1, Math.round(img.height*k));
+  const g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height);
+  const px = g.getImageData(0, 0, c.width, c.height).data; let n = 0;
+  for (let i = 3; i < px.length; i += 4) if (px[i] > 128) n++;
+  const ink = Math.max(1, n/(k*k)); inkCache.set(img, ink); return ink;
+}
 function tokenFor(u, variant){
   const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
@@ -308,10 +320,10 @@ function tokenFor(u, variant){
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
   if (icon){
     // Real token art: fit it to the tile, sitting on the felt coaster.
-    // fit inside a fixed box so tall icons (plumes, shoulders) don't run off the top of the tile
-    // Fraggle's Black Guard get a taller box: their plumes rise above the tile instead of shrinking the soldier
-    const tall = /^(black|mk|fish|shark|glad)/.test(artResolve(u, 'token') || '') ? 1.14 : .9;   // (the monkeys' helmet plumes too)
-    const sc = Math.min(T*1.16/icon.width, T*tall/icon.height), w = icon.width*sc, h = icon.height*sc;
+    // Every icon is sized by how much of it is actually drawn (its ink), not by its picture's box: so a wide frog with a
+    // banner, a monkey with a tall plume and a rabbit with long ears all read as the same size on the map. Limits keep
+    // the widest and tallest from spilling off their tile.
+    const sc = Math.min(Math.sqrt((T*TOKEN_INK)**2/inkOf(icon)), T*1.45/icon.width, T*1.15/icon.height), w = icon.width*sc, h = icon.height*sc;
     g.drawImage(icon, ox + T*.5 - w/2, oy + T*.88 - h, w, h);
   } else {
     const s = T*(L.sp === 'bun' ? .27 : L.sp === 'mouse' ? .27 : L.sp === 'monkey' ? .26 : .28)*(L.small ? .82 : L.big ? 1.15 : 1);
