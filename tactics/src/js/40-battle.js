@@ -69,7 +69,7 @@ function freeTileNear(x, y){
 function runBattle(campKey, ch, records, opts = {}){
   B = {ch, campKey, pf: CAMPAIGNS[campKey].faction, ef: ch.enemyFaction, kills: 0, done: false, deployed: records.length, lordHit: false, bossBy: null,
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
-       objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null,
+       objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null, bells: {p: 0, e: 0},
        events: opts.replay ? (ch.events || []).filter(ev => ev.defect).map(ev => ({turn: ev.turn, defect: ev.defect, popup: ev.popup})) : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
   mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
   nextId = 1; units = [];
@@ -97,7 +97,7 @@ function finishBattle(win, retreated = false, reason = ''){
   if (!B || B.done) return;
   B.done = true; busy = true; mode = 'over'; $('#duel').hidden = true;
   Music.jingle(win ? 'victory' : 'defeat');
-  B.resolve({win, retreated, reason, turn, gifts: win && B.ch.event ? giftCount() : 0, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
+  B.resolve({win, retreated, reason, turn, bells: {...B.bells}, gifts: win && B.ch.event ? giftCount() : 0, star: win && B.ch.star ? starCheck(B.ch.star, {...starLive(), over: true}) : 'pending', survivors: units.filter(u => u.team === 'p' && !u.dead), lost: units.filter(u => u.team === 'p' && u.dead)});
 }
 
 // ---------- Movement & ranges ----------
@@ -406,8 +406,8 @@ function porHTML(u){ return `<div class="por f-${u.faction}">${portraitInner(u, 
 // ---------- Event couriers (31-data-events.js) ----------
 const couriers = () => units.filter(u => u.courier);
 // gifts so far: couriers caught (stealing) or couriers safe (escorting)
-const giftCount = () => B.ch.escort ? couriers().filter(u => u.escaped || !u.dead).length : couriers().filter(u => u.dead && !u.escaped).length;
-const giftLine = () => `<b>${EVENTS[B.ch.event].icon} ${giftCount()} of ${eventMaxGifts(B.ch)} ${B.ch.escort ? 'safe' : 'caught'}</b>`;
+const giftCount = () => B.objective.type === 'bells' ? bellPay() : B.ch.escort ? couriers().filter(u => u.escaped || !u.dead).length : couriers().filter(u => u.dead && !u.escaped).length;
+const giftLine = () => B.objective.type === 'bells' ? `<b>🔔 You ${B.bells.p} · Them ${B.bells.e}</b> (first to ${B.objective.n})` : `<b>${EVENTS[B.ch.event].icon} ${giftCount()} of ${eventMaxGifts(B.ch)} ${B.ch.escort ? 'safe' : 'caught'}</b>`;
 const onExit = u => (B.ch.exits || []).some(([x, y]) => x === u.x && y === u.y);
 function exitField(u){
   const f = new Array(COLS*ROWS).fill(Infinity), open = [];
@@ -444,7 +444,8 @@ function objectiveText(){
   const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
     : ob.type === 'survive' ? (B.ch.escort ? `Protect the ${ob.who || 'couriers'} until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach ${ob.dest || 'the road'}.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
     : ob.type === 'intercept' ? `Catch as many ${ob.who || 'couriers'} as you can before they reach ${ob.dest || 'the road'}.${B.ch.event ? '' : ` ${couriers().filter(u => u.dead && !u.escaped).length} caught.`}`
-    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.` : 'Rout the enemy.';
+    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`
+    : ob.type === 'bells' ? `Hold the bells: each one you stand on at the end of your turn rings once. Ring ${ob.n} before they do.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
   return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
@@ -735,6 +736,41 @@ async function litFuses(){
   }
   return false;
 }
+// ---------- Bells (objective 'bells', the New Year event) ----------
+// Every fort square is a bell. At the end of a side's turn, each bell one of its units stands on rings once for it.
+const bellSquares = () => { const out = []; MAP.forEach((row, y) => [...row].forEach((c, x) => { if (c === 'T') out.push([x, y]); })); return out; };
+const onBell = u => MAP[u.y]?.[u.x] === 'T';
+const bellHolder = ([x, y]) => { const u = unitAt(x, y); return u ? (sideOfTeam(u) === 'p' ? 'p' : 'e') : null; };
+// pay by the margin: 12-0 pays the full 8, a 12-11 squeaker 1
+const bellPay = () => Math.max(1, Math.min(BELL_PAY, Math.round(BELL_PAY*(B.objective.n - B.bells.e)/B.objective.n)));
+async function ringBells(side){
+  const held = bellSquares().filter(b => bellHolder(b) === side); if (!held.length) return false;
+  for (const [x, y] of held){ if (B.bells[side] >= B.objective.n) break; B.bells[side]++; popup({x, y}, `🔔 ${B.bells[side]}`, side === 'p' ? '#ffd98a' : '#ffb3a6'); Sfx.play('coin'); await wait(260); }
+  refreshTop(); panelIdle(); await wait(300);
+  if (B.bells[side] >= B.objective.n){ finishBattle(side === 'p', false, 'bells'); return true; }
+  return false;
+}
+// the bell AI: hold a bell once on one (striking anything in reach); otherwise head for the nearest bell not held by its
+// own side, and strike whoever is in reach on arrival (preferring whoever is standing on a bell)
+async function bellAct(e){
+  const mine = sideOfTeam(e) === 'p' ? 'p' : 'e';
+  if (!onBell(e)){
+    const goals = bellSquares().filter(b => bellHolder(b) !== mine), f = new Array(COLS*ROWS).fill(Infinity), open = [];
+    for (const [x, y] of goals){ f[K(x, y)] = 0; open.push(K(x, y)); }
+    while (open.length){ open.sort((a, b) => f[a] - f[b]); const cur = open.shift(), cx = KX(cur), cy = KY(cur);
+      for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx = cx + dx, ny = cy + dy; if (!inBounds(nx, ny)) continue;
+        const c = moveCost(e, cx, cy); if (c >= 99) continue; const nk = K(nx, ny), nd = f[cur] + c; if (nd < f[nk]){ f[nk] = nd; open.push(nk); } } }
+    const map = reach(e); let bk = K(e.x, e.y);
+    for (const dk of destinations(e, map)) if (f[dk] < f[bk] || (f[dk] === f[bk] && map.get(dk).d < map.get(bk).d)) bk = dk;
+    if (bk !== K(e.x, e.y)){ inspect = e; await wait(150); await moveAlong(e, pathTo(map, bk)); }
+  }
+  const tgts = foes(e).filter(p => !p.sanct && man(e, p) >= e.rng[0] && man(e, p) <= e.rng[1]);
+  if (tgts.length && e.w !== 'staff'){
+    const pick = tgts.sort((a, b) => (onBell(b) - onBell(a)) || (calc(e, b, e, b).dmg - calc(e, a, e, a).dmg))[0];
+    await wait(150); inspect = null; await doCombat(e, pick);
+  }
+  inspect = null; updateDanger();
+}
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
@@ -749,6 +785,7 @@ async function spawnReinforcements(){
 }
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
+  if (B.objective.type === 'bells' && await ringBells('p')) return;
   for (const u of units) if (sideOfTeam(u) !== 'p') u.sanct = false;
   for (const u of units) if (sideOfTeam(u) !== 'p') u.offbal = false;
   for (const u of units) if (sideOfTeam(u) === 'p') u.planted = (u.movedDist || 0) <= 1;   // Plant the Spear: braced if she barely moved
@@ -775,6 +812,10 @@ async function enemyPhase(){
     if (checkEnd()) return;
   }
   const ob = B.objective;
+  if (ob.type === 'bells'){
+    if (await ringBells('e')) return;
+    if (turn >= ob.turns){ finishBattle(B.bells.p > B.bells.e, false, 'bells'); return; }
+  }
   if (ob.type === 'survive' && turn >= ob.turns){
     if (B.twist && !B.twist.done) await runTwist();   // the story turns: a new objective
     else { finishBattle(true); return; }
@@ -823,6 +864,7 @@ async function aiAct(e){
     if (foes(e).some(p => th.has(K(p.x, p.y)))) e.triggered = true; else return;
   }
   if (e.ai === 'courier') return courierAct(e);
+  if (e.ai === 'bell') return bellAct(e);
   if (e.w === 'staff') return aiHeal(e);
   const map = e.ai === 'hold' ? new Map([[K(e.x, e.y), {d: 0, prev: -1}]]) : reach(e);
   const dests = destinations(e, map);

@@ -23,7 +23,7 @@ function recChip(ck, sg, team){
   const low = have < rec - .5;
   return `<span class="chip${low ? " under" : ""}" title="Your team's average: Lv ${have.toFixed(1)}">Rec. Lv ${rec}${low ? ` · yours ${have.toFixed(1)}` : ''}</span>`;
 }
-const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the ${ob.who || 'couriers'} for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? `Catch the ${ob.who || 'couriers'}` : ob.type === 'escape' ? 'Escape' : 'Rout the enemy';
+const objectiveLabel = ob => ob.type === 'boss' ? (ob.limit ? `Defeat the commander within ${ob.limit} turns` : 'Defeat the commander') : ob.type === 'survive' ? (ob.escort ? `Protect the ${ob.who || 'couriers'} for ${ob.turns} turns` : `Survive ${ob.turns} turns`) : ob.type === 'intercept' ? `Catch the ${ob.who || 'couriers'}` : ob.type === 'escape' ? 'Escape' : ob.type === 'bells' ? `First to ring ${ob.n} bells` : 'Rout the enemy';
 function chapterRef(id){
   const f = findStage(id); if (!f) return id;
   return `${FACTIONS[CAMPAIGNS[f.camp].faction].name} · ${stageLabel(f.st)}: ${f.st.title}`;
@@ -94,13 +94,13 @@ function sideNodeHTML(ck, s, j){
 // Seasonal event side stories: a festive card at the top of the tab, playable once a day
 function eventNodeHTML(ck, s, j){
   const st = sideState(ck, j), E_ = EVENTS[s.event], cur = E_.currency[ck], best = (SAVE.eventBest || {})[s.id];
-  return `<div class="evcard"><div class="evsnow" aria-hidden="true"></div>
-    <div class="evkick">${E_.icon} ${E_.name} · December only</div><h3>${s.title}</h3>
+  return `<div class="evcard ev-${s.event}"><div class="${s.event === 'december' ? 'evsnow' : 'evspark'}" aria-hidden="true"></div>
+    <div class="evkick">${E_.icon} ${E_.name} · ${MONTH_NAMES[E_.month]} only</div><h3>${s.title}</h3>
     <p>${s.brief}</p>
     <div class="chips">${recChip(ck, s)}<span class="chip">${objectiveLabel(s.objective)}</span><span class="chip evc">Up to ${eventMaxGifts(s)} ${cur.name} a day</span>${best != null ? `<span class="chip">Best: ${best} of ${eventMaxGifts(s)}</span>` : ''}</div>
     ${st.s === 'played' ? `<button class="btn" type="button" disabled>Played today · come back tomorrow</button>`
       : `<button class="btn primary evplay" data-play="s${j}" type="button">${E_.icon} Play today's run</button>`}
-    <div class="evbal">You have <b>${gachaState(ck).gifts || 0} ${cur.name}</b> for the festive recruiting banner.</div></div>`;
+    <div class="evbal">You have <b>${gachaState(ck)[E_.key] || 0} ${cur.name}</b>${GACHA_ARMY[ck].banners.some(b => b.event === s.event) ? ' for the seasonal recruiting banner' : ', saved for the seasonal banner to come'}.</div></div>`;
 }
 function sidesHTML(ck){
   const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
@@ -133,7 +133,7 @@ function renderHub(){
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button></div></div>
     </div>
     ${SAVE.debugUnlock ? '<div class="gatebox"><span><b>Debug:</b> all fights and recruit banners are unlocked.</span></div>' : ''}
-    ${eventsOn(ck).map(id => { const s = camp.sides.find(x => x.event === id); return s ? `<button class="evstrip" data-hubtab="side" type="button"><span>${EVENTS[id].icon}</span><span><b>${EVENTS[id].name}</b><small>${s.title}${eventPlayedToday(s) ? ' · played today' : ' · ready to play'}</small></span><span>›</span></button>` : ''; }).join('')}
+    ${eventsOn(ck).map(id => { const s = camp.sides.find(x => x.event === id); return s ? `<button class="evstrip ev-${id}" data-hubtab="side" type="button"><span>${EVENTS[id].icon}</span><span><b>${EVENTS[id].name}</b><small>${s.title}${eventPlayedToday(s) ? ' · played today' : ' · ready to play'}</small></span><span>›</span></button>` : ''; }).join('')}
     <div class="htabs" role="tablist"><button class="${hubTab === 'main' ? 'on' : ''}" data-hubtab="main" role="tab" aria-selected="${hubTab === 'main'}" type="button">Main Story</button><button class="${hubTab === 'side' ? 'on' : ''}" data-hubtab="side" role="tab" aria-selected="${hubTab === 'side'}" type="button" ${campOpen(ck) ? '' : 'disabled'}>Side Stories${campOpen(ck) ? '' : ' <small>· after Ch. Two</small>'}${(() => { const n = sidesNew(ck); return n ? ` <span class="hbadge">${n}</span>` : ''; })()}</button></div>
     ${hubTab === 'side' && campOpen(ck) ? sidesHTML(ck) : camp.chapters.map(c => `<div class="chead"><span>${c.title}</span>${c.name}</div>
       <div class="track">${camp.stages.map((sg, i) => sg.chapter === c ? nodeHTML(ck, sg, i) : '').join('')}</div>`).join('')}
@@ -297,12 +297,12 @@ async function playChapter(){
   const kills = B.kills, lightFingers = B.bonusRes || 0;   // Brigand's Light Fingers
   // seasonal event: gifts by how well you did; once a (game) day
   const gifts = res.win && ch.event ? res.gifts : 0;
-  if (res.win && ch.event){ gachaState(ck).gifts = (gachaState(ck).gifts || 0) + gifts; (SAVE.eventPlays ||= {})[ch.id] = todayKey();
+  if (res.win && ch.event){ const gk = EVENTS[ch.event].key || 'gifts'; gachaState(ck)[gk] = (gachaState(ck)[gk] || 0) + gifts; (SAVE.eventPlays ||= {})[ch.id] = todayKey();
     (SAVE.eventBest ||= {})[ch.id] = Math.max(SAVE.eventBest[ch.id] || 0, gifts); }
   if (!res.win){
     B = null;
     const energyLeft = spendEnergy();   // losing or retreating costs 1 energy (winning costs none)
-    renderResult({win: false, retreated: res.retreated, reason: res.reason, ck, i, energyLeft});
+    renderResult({win: false, retreated: res.retreated, reason: res.reason, bells: res.bells, ck, i, energyLeft});
     return;
   }
   // Commit the battle to the permanent army.
@@ -332,7 +332,7 @@ async function playChapter(){
   saveGame();
   if (!seen) await talk(ch.post);
   B = null;
-  renderResult({win: true, ck, i, replay, turn: res.turn, kills, spoils, tokens, starTokens, star: res.star, joined, gifts, armed, lost: res.lost.map(u => u.name), departed});
+  renderResult({win: true, ck, i, replay, turn: res.turn, bells: res.bells, kills, spoils, tokens, starTokens, star: res.star, joined, gifts, armed, lost: res.lost.map(u => u.name), departed});
 }
 
 function renderResult(r){
@@ -344,7 +344,7 @@ function renderResult(r){
     html = `<div class="brief"><div class="kick">${r.replay ? 'Replay victory' : 'Victory'} · ${camp.name} · ${stageLabel(ch)}</div><h2>${ch.title}</h2><p>Won on turn ${ROMAN(r.turn)}.</p></div>
       <div class="rlist">
         <div><span>Spoils</span><b>+${r.spoils} ${F.currency}</b></div>
-        ${ch.event ? `<div class="rgift"><span>${EVENTS[ch.event].icon} ${ch.escort ? 'Couriers kept safe' : 'Couriers caught'}: ${r.gifts} of ${eventMaxGifts(ch)}${(SAVE.eventBest||{})[ch.id] != null ? ` · best ${SAVE.eventBest[ch.id]}` : ''}</span><b>+${r.gifts} ${giftName(r.ck, r.gifts)}</b></div>
+        ${ch.event ? `<div class="rgift"><span>${EVENTS[ch.event].icon} ${ch.objective.type === 'bells' ? `Bells rung ${r.bells?.p ?? 0} to ${r.bells?.e ?? 0}` : ch.escort ? 'Couriers kept safe' : 'Couriers caught'}: ${r.gifts} of ${eventMaxGifts(ch)}${(SAVE.eventBest||{})[ch.id] != null ? ` · best ${SAVE.eventBest[ch.id]}` : ''}</span><b>+${r.gifts} ${giftName(r.ck, r.gifts, ch.event)}</b></div>
         <div><span>Come back tomorrow to play again</span><b>Once a day</b></div>`
           : `<div><span>For recruiting</span><b>+${r.tokens} ${GACHA_ARMY[r.ck].currency}</b></div>`}
         <div><span>Foes unstitched</span><b>${r.kills}</b></div>
@@ -359,7 +359,7 @@ function renderResult(r){
       <div class="sticky"><button class="btn primary" data-go="hub" type="button">Continue</button></div>`;
   } else {
     html = `<div class="brief"><div class="kick">${r.retreated ? 'Retreat' : 'Defeat'} · ${camp.name}</div><h2>${ch.title}</h2>
-      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason === 'escaped' ? (ch.escapeFail || 'They got away.') : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
+      <p>${r.retreated ? 'You pulled back from the field.' : r.reason === 'limit' ? (ch.limitFail || 'You ran out of time.') : r.reason === 'escaped' ? (ch.escapeFail || 'They got away.') : r.reason === 'bells' ? `They rang the bells first, ${r.bells?.e ?? 0} to ${r.bells?.p ?? 0}.` : r.reason?.startsWith('vip:') ? `${r.reason.slice(4)} has fallen.` : `${speakerName(ch.lead || camp.lord)} has fallen.`} Nothing was lost: your army is exactly as it was before the battle.</p></div>
       <div class="renergy"><span><b>−1 energy.</b> ${r.energyLeft ? `${r.energyLeft} left.` : 'You\'re out: battles wait until some comes back.'} One comes back every hour.</span>${energyHTML('big')}</div>
       <div class="sticky"><button class="btn" data-go="hub" type="button">Campaign</button><button class="btn primary" data-retry type="button">Try Again</button></div>`;
   }

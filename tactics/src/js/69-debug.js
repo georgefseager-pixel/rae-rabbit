@@ -78,7 +78,7 @@ function renderDebug(){
       <div class="dbggrid">${b('setlv', 'Set levels')}${b('recruit', 'Recruit everyone')}${b('revive', 'Stitch up the fallen')}${b('weapons', 'Every weapon (one each)')}${b('attires', 'Every attire')}${b('clearrel', 'Release all ★ and ★★')}</div>
       <label>Supports<select id="dbgSup"><option value="*">Everyone</option>${charOpts}</select></label>
       <div class="dbggrid">${['C', 'B', 'A', 'S'].map((r, i) => b('sup' + (i + 1), 'Set to ' + r)).join('')}${b('sup0', 'Reset')}</div>`)}
-    ${sec('Time, energy and events', `<div class="dbggrid">${b('newday', 'New day')}${b('loginall', 'Claim every log-in reward')}${b('hour', '+1 hour')}${b('energy0', 'Empty energy')}${b('energy1', 'Energy −1')}${b('energyfull', 'Refill energy')}${b('december', SAVE.debugDecember ? 'December: on' : 'December: off')}${b('eventplays', 'Event stories: play again today')}</div>
+    ${sec('Time, energy and events', `<div class="dbggrid">${b('newday', 'New day')}${b('loginall', 'Claim every log-in reward')}${b('hour', '+1 hour')}${b('energy0', 'Empty energy')}${b('energy1', 'Energy −1')}${b('energyfull', 'Refill energy')}${b('december', SAVE.debugMonth === 11 ? 'December: on' : 'December: off')}${b('january', SAVE.debugMonth === 0 ? 'January: on' : 'January: off')}${b('eventplays', 'Event stories: play again today')}</div>
       <label>Log-ins so far (${L.claimed})<input id="dbgLogin" type="number" min="0" max="200" value="${L.claimed}"></label>
       <div class="dbggrid">${b('setlogin', 'Set, and log in again today')}${b('resetlogin', 'Reset log-ins')}</div>`)}
     ${sec('Tutorials and display', `<div class="dbggrid">${b('tuts', 'Show every tutorial again')}${b('fast', SAVE.debugFast ? 'Fast animations: on' : 'Fast animations: off')}${b('nomusic', 'Sound: ' + SOUND_SHORT[Audio_.mode].replace('♪ ', ''))}</div>`)}
@@ -116,9 +116,9 @@ function debugAction(act, btn){
     case 'res10': st.res += 10000; return done();
     case 'tok': g.tokens += 10; return done();
     case 'tok100': g.tokens += 100; return done();
-    case 'gifts': g.gifts = (g.gifts || 0) + 20; return done();
+    case 'gifts': for (const E_ of Object.values(EVENTS)) g[E_.key] = (g[E_.key] || 0) + 20; return done('+20 of every seasonal currency.');
     case 'pity': for (const bn of GACHA_ARMY[ck].banners) (g.pity ||= {})[bn.id] = GACHA.pity - 1; return done('The next pull on any banner is a guaranteed ★★★.');
-    case 'zero': st.res = 0; g.tokens = 0; g.gifts = 0; return done('Money and pulls set to 0.');
+    case 'zero': st.res = 0; g.tokens = 0; for (const E_ of Object.values(EVENTS)) g[E_.key] = 0; return done('Money and pulls set to 0.');
     // army
     case 'setlv': { const to = Math.max(1, Math.min(40, num('#dbgLv') || 1)); for (const r of st.roster) if (r.lv < to) dbgLevelTo(r, to); else r.lv = to; return done(`Everyone is level ${to}.`); }
     case 'recruit': { const n = debugRecruitAll(ck); if (n && festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.()); return done(`${n} recruits joined.`); }
@@ -144,7 +144,11 @@ function debugAction(act, btn){
     case 'energy0': { const e = energyNow(); e.n = 0; e.t = nowMs(); return done(); }
     case 'energy1': spendEnergy(); return done();
     case 'energyfull': energyNow().n = ENERGY.max; return done();
-    case 'december': SAVE.debugDecember = !SAVE.debugDecember; if (festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.()); return done(SAVE.debugDecember ? 'It is December.' : 'Back to the real date.');
+    case 'december': case 'january': {   // pretend it's that month (the seasonal events follow the game's month); again to go back
+      const m = act === 'december' ? 11 : 0; SAVE.debugMonth = SAVE.debugMonth === m ? null : m; delete SAVE.debugDecember;
+      if (festiveNeeded()) buildFestiveTroops().then(() => tokenCache?.clear?.());
+      return done(SAVE.debugMonth == null ? 'Back to the real date.' : `It is ${MONTH_NAMES[m]}.`);
+    }
     case 'eventplays': SAVE.eventPlays = {}; return done('The seasonal stories can be played again today.');
     case 'setlogin': { const L = loginState(); L.claimed = Math.max(0, num('#dbgLogin') || 0); L.last = ''; saveGame(); $('#dbgsheet').hidden = true; refreshUnder(); checkDailyLogin(true); return; }
     case 'resetlogin': SAVE.login = {claimed: 0, last: ''}; return done('Log-ins reset.');

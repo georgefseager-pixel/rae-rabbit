@@ -10,7 +10,7 @@
 const gameDate = () => new Date(Date.now() + ((typeof SAVE !== 'undefined' && SAVE?.debugDays) || 0)*864e5);
 const EVENTS = {
   december: {
-    name: 'The Festive Season', month: 11, icon: '🎁',
+    name: 'The Festive Season', month: 11, icon: '🎁', key: 'gifts',
     currency: {rae: {name: 'Rabbit Gifts', one: 'Rabbit Gift'}, frog: {name: 'Frog Gifts', one: 'Frog Gift'}},
     intro: {
       rae: [
@@ -27,10 +27,30 @@ const EVENTS = {
       ],
     },
   },
+  // January: ring in the New Year. Hold the bell posts (fort squares); first to ring twelve wins (objective 'bells').
+  newyear: {
+    name: 'Ring in the New Year', month: 0, icon: '🔔', key: 'chimes',
+    currency: {rae: {name: 'Rabbit Chimes', one: 'Rabbit Chime'}, frog: {name: 'Frog Chimes', one: 'Frog Chime'}},
+    intro: {rae: [
+      {who: "narr", text: "The year is turning. Out in the felt forest, the Raepublic is about to see its first New Year free, for the whole of January!"},
+      {who: "sister", text: "Rae! Do you remember the shift bells? The ones that rang us awake in the dark, every morning, every year?"},
+      {who: "rae", text: "I remember."},
+      {who: "narr", text: "A seasonal side story is open on the Side Stories tab: The Shift Bells. It can be played once a day, all January."},
+      {who: "narr", text: "Hold the old bell posts and ring in the New Year before the frogs do. Win by a wide margin for more Rabbit Chimes."},
+    ], frog: [
+      {who: "narr", text: "The year is turning. In Tiggle's war camp, the soldiers want a New Year's contest, for the whole of January!"},
+      {who: "biggle", text: "An old Lily Court custom, little brother. Two teams, four bells, first to ring twelve. Loser polishes everyone's boots."},
+      {who: "narr", text: "A seasonal side story is open on the Side Stories tab: The War Camp Bells. It can be played once a day, all January."},
+      {who: "narr", text: "Hold the bells and ring in the New Year before Biggle's team does. Win by a wide margin for more Frog Chimes."},
+    ]},
+  },
 };
-const eventActive = id => { const E = EVENTS[id]; return !!E && (!!SAVE?.debugDecember && id === 'december' || gameDate().getMonth() === E.month); };
+// The game's month: the real one, or the one the debug menu pretends it is (SAVE.debugMonth, 0 = January).
+const gameMonth = () => (SAVE?.debugMonth ?? gameDate().getMonth());
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const eventActive = id => { const E = EVENTS[id]; return !!E && gameMonth() === E.month; };
 const eventsOn = ck => Object.keys(EVENTS).filter(id => eventActive(id) && campOpen(ck));
-const giftName = (ck, n) => n === 1 ? EVENTS.december.currency[ck].one : EVENTS.december.currency[ck].name;
+const giftName = (ck, n, id = 'december') => n === 1 ? EVENTS[id].currency[ck].one : EVENTS[id].currency[ck].name;
 
 // ---------- December side stories ----------
 const COURIER = (x, y, extra = {}) => E('courier', 4, x, y, 'courier', {courier: true, name: 'Gift Courier', ...extra});
@@ -103,11 +123,68 @@ CAMPAIGNS.frog.sides.push({
   reward: {res: 200, tokens: 0},
 });
 // side story fields the list expects
+// ---------- New Year side stories (January): hold the bell posts, first to ring twelve ----------
+// Objective 'bells' (40-battle.js): every fort square is a bell; at the end of each side's turn, each bell that side is
+// standing on rings once. First to `n` wins; after `turns` turns the side with more rings wins. Pays by the margin.
+const BELL_PAY = 8;
+CAMPAIGNS.rae.sides.push({
+  id: 'NY-R', title: 'The Shift Bells', event: 'newyear', map: 'shiftBells', enemyFaction: 'frog', enemyLine: 'THE GUARDS RUN FOR THE BELLS',
+  objective: {type: 'bells', n: 12, turns: 14}, maxDeploy: 6, enemyMods: {},
+  deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14]],
+  brief: 'The old mine watch-posts each hold a shift bell. A bell rings for whoever is standing at it when their turn ends. Ring twelve before the frog guards do. The bigger your lead, the more Rabbit Chimes.',
+  prepNote: 'Once a day, all January. The bells are the three posts (fort squares). End your turn on them to ring them; the guards will try to take them back.',
+  enemies: () => [E('lily',3,5,2,'bell'), E('blade',3,4,1,'bell'), E('reed',3,6,1,'bell'), E('bruiser',3,2,3,'bell'), E('lily',3,7,3,'bell')],
+  reinforce: () => [{turn: 3, units: [E('blade',3,0,0,'bell'), E('bruiser',3,9,0,'bell')]}, {turn: 6, units: [E('lily',4,4,0,'bell'), E('reed',3,5,0,'bell')]}],
+  reward: {res: 200, tokens: 0},
+  pre: [
+    {card: 'Seasonal Side Story', sub: 'The Shift Bells'},
+    {scene: 'yard', place: 'The Old Watch-Posts · New Year\'s Eve'},
+    {who: "narr", text: "At the edge of the felt forest stand the old watch-posts of the mine camp, each with a brass shift bell. For years, those bells rang the rabbits awake in the dark."},
+    {who: "sister", text: "Every morning. Every single morning, Rae. Clang, clang, up you get, down the shaft."},
+    {who: "willow", text: "Tonight the frog guards will ring them at midnight, for their New Year. As they always have."},
+    {who: "rae", text: "Not this year. This year rabbits ring them. Twelve times, for twelve years of digging."},
+    {who: "willow", text: "Then hold the posts. A bell rings for whoever is standing at it when the turn ends. The frogs will try the same."},
+    {who: "sister", text: "First to twelve! And then we're free for a whole new year!"},
+  ],
+  post: [
+    {who: "narr", text: "Twelve chimes ring out over the treetops, and every rabbit in the camp below looks up."},
+    {who: "sister", text: "Happy New Year, Rae."},
+    {who: "rae", text: "Happy New Year, Flopsy. Our first one."},
+    {who: "willow", text: "The first of a great many, I should think."},
+  ],
+});
+CAMPAIGNS.frog.sides.push({
+  id: 'NY-F', title: 'The War Camp Bells', event: 'newyear', map: 'campBells', enemyFaction: 'frog', spar: true, ban: ['biggle'], enemyLine: 'BIGGLE\'S TEAM RUNS FOR THE BELLS',
+  objective: {type: 'bells', n: 12, turns: 14}, maxDeploy: 6, enemyMods: {},
+  deploy: [[4,14],[5,14],[3,13],[6,13],[2,14],[7,14]],
+  brief: 'Tiggle\'s team against Biggle\'s: four bells hung from the tent poles. A bell rings for whoever is standing at it when their turn ends. Ring twelve first. The bigger your lead, the more Frog Chimes.',
+  prepNote: 'Once a day, all January. A friendly contest: nobody is unstitched for good. Biggle plays for the other team. End your turn on the bells (fort squares) to ring them.',
+  enemies: () => [E('lilyknight',3,4,2,'bell',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true}), E('blade',3,2,3,'bell'), E('blade',3,7,3,'bell'),
+                  E('lily',3,3,1,'bell'), E('reed',3,6,1,'bell'), E('bruiser',3,5,4,'bell')],
+  reinforce: () => [{turn: 4, units: [E('blade',3,0,0,'bell'), E('bruiser',3,9,0,'bell')]}],
+  reward: {res: 200, tokens: 0},
+  pre: [
+    {card: 'Seasonal Side Story', sub: 'The War Camp Bells'},
+    {scene: 'warcamp', place: 'The War Camp · New Year\'s Eve'},
+    {who: "narr", text: "New Year's Eve in the war camp. The soldiers have hung four bells from the tent poles, and the whole camp has come out to watch."},
+    {who: "biggle", text: "Lily Court rules, little brother. My team, your team, four bells. A bell rings for whoever is standing at it when the turn ends. First to twelve."},
+    {who: "tiggle", text: "And if I lose?"},
+    {who: "biggle", text: "Then you polish every boot in the camp. Including mine. Especially mine."},
+    {who: "tiggle", text: "Fine. But nobody gets hurt. It's New Year."},
+    {who: "biggle", text: "Nobody ever gets hurt in the bell game. Much."},
+  ],
+  post: [
+    {who: "narr", text: "The twelfth bell rings out, and the whole camp cheers, both teams together."},
+    {who: "biggle", text: "Not bad, little brother. Not bad at all."},
+    {who: "tiggle", text: "Happy New Year, Biggle."},
+    {who: "biggle", text: "Happy New Year. Now go and enjoy it. Somebody else can polish the boots."},
+  ],
+});
 for (const ck of ['rae', 'frog']) for (const s of CAMPAIGNS[ck].sides) if (s.event){
   const at = CAMPAIGNS[ck].stages.find(x => x.id === SIDE_OPENS[ck]); Object.assign(s, {side: true, chapter: at.chapter, ci: at.ci, si: 0, rank: 0});
 }
 const eventPlayedToday = s => (SAVE.eventPlays || {})[s.id] === todayKey();
-const eventMaxGifts = s => [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? s.allies({}) : []), ...(s.reinforce ? s.reinforce({}).flatMap(w => w.units) : [])].filter(u => u.courier).length;
+const eventMaxGifts = s => s.objective?.type === 'bells' ? BELL_PAY : [...(s.enemies ? s.enemies({}) : []), ...(s.allies ? s.allies({}) : []), ...(s.reinforce ? s.reinforce({}).flatMap(w => w.units) : [])].filter(u => u.courier).length;
 
 // ---------- December banners (paid with Gifts) ----------
 GACHA_ARMY.rae.banners.push({id: 'rae-festive', name: 'A Sack Full of Rabbits', kind: 'featured', event: 'december', currency: 'gifts', festive: true,
@@ -124,7 +201,7 @@ GACHA_ARMY.frog.troops.elves = {stars: [1, 2], generic: ['xblade', 'xaxe', 'xpik
   names: ['Jingle', 'Tinsel', 'Sprout', 'Holly', 'Pudding', 'Bauble', 'Sleet', 'Cracker', 'Nutmeg', 'Figgy', 'Wassail', 'Snowdrop', 'Mince', 'Clove', 'Ivy']};
 // what a banner is paid with: {key in the army's gacha state, name, one, seal, tease}
 function bannerCur(ck, b){
-  if (b?.currency === 'gifts'){ const c = EVENTS[b.event].currency[ck]; return {key: 'gifts', name: c.name, one: c.one, seal: '🎁', tease: b.tease}; }
+  if (b?.currency === 'gifts'){ const E_ = EVENTS[b.event], c = E_.currency[ck]; return {key: E_.key || 'gifts', name: c.name, one: c.one, seal: E_.icon, tease: b.tease}; }
   const a = GACHA_ARMY[ck]; return {key: 'tokens', name: a.currency, one: a.one, seal: a.seal, tease: a.tease};
 }
 // event banners show only while their event is on (and the Camp is open)

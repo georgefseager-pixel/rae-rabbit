@@ -13,6 +13,8 @@ function scaledStats(cls, lv, bonus){
 function migrateSave(s){
   if (!s?.camps) return s;
   s.stars = s.stars || {};
+  // the December debug switch became a pretend month
+  if (s.debugDecember){ s.debugMonth = 11; delete s.debugDecember; }
   // the day-7 log-in placeholders became Rae's Casual Wear (Tiggle's was dropped)
   for (const c of Object.values(s.camps)) for (const r of c.roster || []){
     if (!r.attires) continue;

@@ -187,6 +187,7 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Exit squares (gold, ⬇) where couriers leave | `exits: [[x,y],…]` | XM-R, XM-F, R3-1, R3-2, F3-3, F3-5 |
 | Escort outside the event (refugees walk to the exits on their own) | `objective: {type: 'survive', turns, escort: true, who, dest}` + allies with `ai: 'courier', courier: true` | R3-1 |
 | Intercept outside the event (no gifts; over when no runner is left) | `objective: {type: 'intercept', who, dest}` + enemy couriers | F3-3 (the grain runners), F4-4 (the Ribbon Hunt's squires) |
+| Bells (hold ground: first to ring n) | `objective: {type: 'bells', n, turns}`: every fort square is a bell; at the end of each side's turn every bell it stands on rings once. First to `n` wins; after `turns`, more rings wins. Enemy `ai: 'bell'` heads for the nearest bell its side doesn't hold, then holds it. Event pay is by the margin | NY-R, NY-F (January) |
 | Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5, CS-2, F4-2 (the Gauntlet's bell) |
 | Units change sides mid-battle | `events: [{turn, defect: true, popup, talk}]` + spawns with `defects: true`: enemies become allies, allies become enemies. Happens on replays too | R3-5 (Speshul's guards join you), F3-5 (the hall guard betray Tiggle) |
 
@@ -337,9 +338,10 @@ with a short tutorial once per season per route (flag `tut-event-<id>-<year>-<ck
 
 | Event | When | Raepublic | Friggliarchy | Currency |
 |---|---|---|---|---|
+| Ring in the New Year (`newyear`) | January | NY-R The Shift Bells (Rae, Flopsy and Willow ring the old mine watch-post bells, 3 bells; real battle) | NY-F The War Camp Bells (Tiggle's team against Biggle's, 4 bells; a training match, Biggle on the other side) | Rabbit Chimes / Frog Chimes (no banner yet: saved for one) |
 | The Festive Season (`december`) | December | XM-R How Rae Stole Christmas (intercept 8 couriers), banner "A Sack Full of Rabbits" (★★★ Ilc the Scout, a frog defector with a spear; attire Hoppy Xmas for Flopsy) | XM-F Froggy Festivities (escort 8 couriers for 6 turns), banner "Gifts for the Capital" (★★★ Chriggle Chraggle, tome Gift-Bringer; attire Gingerbiggle) | Rabbit Gifts / Frog Gifts |
 
-Debug menu, Time section: "December on/off" toggles `SAVE.debugDecember`; "New day" moves
+Debug menu, Time section: "December on/off" and "January on/off" set a pretend month (`SAVE.debugMonth`; events follow `gameMonth()`); "New day" moves
 the clock on a day, so the daily log-in and the once-a-day event stories come round again.
 
 The Raepublic festive banner's soldiers (`troops: 'festive'`: Knitter, Log Splitter, Pole Bearer, Snowballer, Caroller)
@@ -391,7 +393,7 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
 - **Resources**: money, pull currency, event gifts, next pull is a guaranteed ★★★ on every banner, zero everything.
 - **Army**: set everyone's level, recruit everyone, revive the fallen, every weapon, every costume, reset relationships,
   set every support (or one character's) to none/C/B/A/S.
-- **Time, energy and events**: new day, claim every log-in reward (the rest of the 21-day track: currency and the three
+- **Time, energy and events**: December / January on (pretend month), new day, claim every log-in reward (the rest of the 21-day track: currency and the three
   costumes, without using up today's log-in), +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.
 - **Tutorials and display**: replay tutorials, fast animations (4×), music off.
 - **Save**: copy the save as text, paste one back, wipe everything.

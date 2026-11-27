@@ -384,6 +384,12 @@ function render(now){
     for (const [ex, ey] of B.ch.exits){ ctx.fillStyle = 'rgba(255,190,60,.42)'; ctx.fillRect(ex*T + 1, ey*T + 1, T - 2, T - 2); ctx.strokeStyle = 'rgba(190,120,20,.8)'; ctx.lineWidth = 2; ctx.strokeRect(ex*T + 2, ey*T + 2, T - 4, T - 4); ctx.fillStyle = '#8a4a10';
       ctx.font = `${Math.round(T*.42)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = .85; ctx.fillText('⬇', ex*T + T/2, ey*T + T/2); ctx.globalAlpha = 1; }
   }
+  if (B?.objective?.type === 'bells') for (const [bx, by] of bellSquares()){   // the bells: dashed gold (yours), red (theirs) or white (free)
+    const h = bellHolder([bx, by]);
+    ctx.strokeStyle = h === 'p' ? 'rgba(255,217,138,.95)' : h === 'e' ? 'rgba(255,110,90,.95)' : 'rgba(255,255,255,.55)'; ctx.lineWidth = Math.max(2, T*.07);
+    ctx.setLineDash([T*.12, T*.08]); ctx.strokeRect(bx*T + T*.08, by*T + T*.08, T*.84, T*.84); ctx.setLineDash([]);
+    ctx.font = `${Math.round(T*.34)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('🔔', bx*T + T*.82, by*T + T*.18); ctx.textBaseline = 'alphabetic';
+  }
   if (showDanger) fillKeys(dangerKeys, 'rgba(255,128,32,.26)');
   if (inspect && !inspect.dead){
     const m = inspect.ai === 'hold' ? [K(inspect.x, inspect.y)] : destinations(inspect, reach(inspect));
