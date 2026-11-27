@@ -97,6 +97,7 @@ waits in the Armoury (the class's basic weapon is used) and comes back when the 
 | Mine Rags, Camp Rags | Rae, Flopsy Flora | look only | story (R2-1) |
 | Rose Knight | Biggle | Lily Knight → Rose Knight (mounted lance): −3 Def, +4 Spd, +1 Skl, +3 Mov | The Black Frog's Son banner |
 | Monkeyland Militia | Rae | Captain → Militia Captain (lance, Militia Spear): +2 HP, +3 Def, −2 Spd | Across the Stream (after Chapter Three) |
+| Powder Monkey | Speshul | Canopy Heir → Powder Monkey (hook, still climbs; Sunrise Hook): +2 HP, +2 Atk, +1 Def, −2 Spd | Pirates of the Satin Sea (after Chapter Four) |
 | Simian Sorcerer | Flopsy Flora | Mender → Simian Sorcerer (tome, 1–2): +3 Atk, −1 Def, +1 Spd | Across the Stream (after Chapter Three) |
 | Hoppy Xmas | Flopsy Flora | same class and needle: +2 Def, −1 Spd | A Sack Full of Rabbits (December) |
 | Gingerbiggle | Biggle | Lily Knight → Gingerbread Knight (sword on foot, Candy Cane Rapier): −5 Def, +5 Spd, +2 Skl, +1 Mov | Gifts for the Capital (December) |
@@ -130,6 +131,7 @@ and The Lesson, which only help the player.
 | Ilc the Scout | Guiding Nose | allies who start their move within 2 squares of him get +1 Mov | escorts, races, long marches |
 | Chansey | Sanctuary | whoever she mends can't be chosen as a target by enemies until her next turn | protecting a wounded front-liner |
 | Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
+| Speshul (Powder Monkey) | Lit Fuse | an enemy his hook pulls in gets a lit fuse: at the start of the next enemy turn, 5 damage to it and 2 to each of its allies beside it (it can unstitch) | pull enemies into their own crowd |
 | Ducky | Blood in the Water | while any enemy is below half HP he gets +2 Mov; +2 damage against enemies below half HP (also as an enemy boss, R4-6, R4-7) | finishing wounded enemies, hit-and-run |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
@@ -276,7 +278,7 @@ capital's throne room reuses `court`.
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
-| Pirates of the Satin Sea (Raepublic: ★★★ Ducky; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
+| Pirates of the Satin Sea (Raepublic: ★★★ Ducky and Speshul's Powder Monkey attire; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

@@ -80,6 +80,7 @@ const CLASSES = {
   mkchant:   {name: 'Blossom Chanter',w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blossom Staff',     base: {mhp:16,atk:5, def:2, spd:6,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
   governess: {name: 'Governess',      w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'The Old Treaty',    base: {mhp:22,atk:12,def:5, spd:7,skl:10,mov:5}, g: {mhp:60,atk:50,def:25,spd:40,skl:55}},   // Aurora
   sorcerer:  {name: 'Simian Sorcerer', w: 'tome', rng: [1,2], mt: 'foot',    wname: 'Book of Lotus Spells', base: {mhp:17,atk:10,def:2, spd:8,skl:8,mov:5}, g: {mhp:45,atk:50,def:15,spd:45,skl:50}},   // Flopsy's Simian Sorcerer attire
+  powdermonkey:{name: 'Powder Monkey', w: 'hook', rng: [2,2], mt: 'climb',   wname: 'Sunrise Hook',      base: {mhp:20,atk:12,def:5, spd:9,skl:9,mov:6}, g: {mhp:60,atk:50,def:25,spd:50,skl:50}},   // Speshul's Powder Monkey attire
   militia:   {name: 'Militia Captain',w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Militia Spear',     base: {mhp:21,atk:11,def:7, spd:6,skl:7,mov:5}, g: {mhp:70,atk:45,def:40,spd:35,skl:45}},   // Rae's Monkeyland Militia attire
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
@@ -188,7 +189,7 @@ const LOOKS = {
   croaker:   {sp:'frog', skin:'#5d7e3e', light:'#7fa05c', dark:'#2d421b', belly:'#bccb8c', gear:'hood'},
 };
 const CLASS_LOOK = {
-  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey', militia:'rae', sorcerer:'sister',
+  mkacro:'monkey', mkguard:'monkey', mkbrute:'monkey', mkthrow:'monkey', mkchant:'monkey', governess:'aurora', heir:'speshul', guardcapt:'cornelius', priestess:'chansey', militia:'rae', sorcerer:'sister', powdermonkey:'speshul',
   xfencer:'soldierxm', xfighter:'soldierxm', xlancer:'soldierxm', xarcher:'soldierxm', xadept:'soldierxm',
   rfencer:'soldier', rfighter:'soldier', rlancer:'soldier', rarcher:'soldier', radept:'soldier',
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
@@ -393,6 +394,7 @@ const ART_CROP = {
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   tiggleformal: {panel: ['200% auto', '50% 2%'], talk: ['150% auto', '50% 1%']}, // Formal Wear (log-in reward)
   raemilitia: {panel: ['175% auto', '48% 8%'], talk: ['135% auto', '48% 6%']},   // Monkeyland Militia attire
+  speshulpowder: {panel: ['165% auto', '46% 6%'], talk: ['130% auto', '46% 4%']},   // Powder Monkey attire: the hat sits high
   raecasual: {panel: ['215% auto', '50% 2%'], talk: ['160% auto', '50% 1%']},   // Casual Wear (log-in reward)
   raecamp: {panel: ['225% auto', '51% 1%'], talk: ['165% auto', '52% 1%']},   // camp rags (Chapter One)
   sistercamp: {panel: ['190% auto', '48% 3%'], talk: ['150% auto', '48% 3%']}, // Little Sister, Chapter One

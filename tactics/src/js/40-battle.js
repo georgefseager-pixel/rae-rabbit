@@ -323,6 +323,7 @@ function hookPull(a, d, scene){
   const fx = d.x, fy = d.y; d.x = sq.x; d.y = sq.y; d.pulled = true;
   tween(220, t => { d.px = fx + (sq.x - fx)*t; d.py = fy + (sq.y - fy)*t; });
   popup(d, '🪝 Pulled!', '#f0965a'); Sfx.play('step');
+  if (hasAb(a, 'fuse') && sideOfTeam(d) !== sideOfTeam(a)){ d.fuse = true; setTimeout(() => abilityPop(a, 'fuse'), 500); }   // Lit Fuse: it goes off at the start of the next enemy turn
   if (scene) setTimeout(() => duelPop(d, 'PULLED IN', '#f0965a'), 380);
 }
 // Can x strike y right now? (Reach is checked again before every blow, because a hook can pull someone mid-fight:
@@ -457,7 +458,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.fuse || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -694,6 +695,28 @@ async function runTwist(){
   B.objective = {...tw.objective};
   refreshTop(); panelIdle();
 }
+// Lit Fuse (Speshul, Powder Monkey): at the start of the enemy turn, each lit fuse goes off. 5 damage to the enemy carrying
+// it, 2 to each of that enemy's allies beside it. Returns true if that ended the battle.
+async function litFuses(){
+  const lit = units.filter(u => u.fuse && !u.dead); if (!lit.length) return false;
+  for (const u of lit){
+    u.fuse = false; focusOn(u.x, u.y); Sfx.play('crit'); shake = .8;
+    const hits = [[u, 5], ...friends(u).filter(o => o !== u && !o.dead && man(o, u) === 1).map(o => [o, 2])];
+    for (const [o, n] of hits){
+      const from = o.hp; o.hp = Math.max(0, o.hp - n); popup(o, o === u ? `🧨 ${n}` : String(n), '#ffb347');
+      tween(280, t => { o.flash = 1 - t; o.shp = from + (o.hp - from)*t; });
+    }
+    await wait(650);
+    for (const [o] of hits) if (o.hp <= 0 && !o.dead){
+      if (o.flees) popup(o, B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
+      if (o.boss && !B.bossBy) B.bossBy = 'speshul';
+      await tween(380, t => { o.alpha = 1 - t; }); o.dead = true; if (o.team === 'e') B.kills++;
+    }
+    updateDanger(); refreshTop();
+    if (checkEnd()) return true;
+  }
+  return false;
+}
 async function spawnReinforcements(){
   const wave = B.waves.find(w => w.turn === turn);
   if (!wave) return;
@@ -725,6 +748,7 @@ async function enemyPhase(){
   Music.want(B.bossMusic ? 'boss' : 'enemy'); Sfx.play('phase', 'e');
   await showBanner(B.ch.enemyLine || FACTIONS[B.ef].enemyLine, `Turn ${ROMAN(turn)}`, B.ef);
   await fortHeal('e');
+  if (await litFuses()) return;
   await spawnReinforcements();
   for (const e of team('e')){
     if (e.dead || B.done) continue;

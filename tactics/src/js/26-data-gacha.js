@@ -61,8 +61,8 @@ const GACHA_ARMY = {
        blurb: 'Out of hiding at last: the frog who built the Republic and gave it away, and the one-eyed corporal who always marches at the front. The ★ soldiers who answer are trained troops of the Republic, and the ★★ are its helmeted veterans.'},
       {id: 'rae-monkeys', name: 'Across the Stream', kind: 'featured', featured: [], attires: ['raeMilitia', 'floraSorcerer'], after: 'R3-6', bg: 'monkeyland', troops: 'monkeys',
        blurb: 'The monkeys who crossed the stream with Speshul take up the Raepublic\'s colours, and have made Rae a suit of their militia\'s armour, and Flopsy Flora a hat she refuses to take off. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
-      {id: 'rae-pirates', name: 'Pirates of the Satin Sea', kind: 'featured', featured: ['ducky'], after: 'R4-7', bg: 'shore', troops: 'pirates',
-       blurb: 'The crew of the Grinning Mary have hung up their ten-thousand-Crown posters (on the longhouse wall, for a laugh), and their captain is asking for a proper job. He swears it\'s only for the treasure. The soldiers who answer are his crew: ★ pirate fish in every colour of the Satin Sea, and ★★ sharks.'},
+      {id: 'rae-pirates', name: 'Pirates of the Satin Sea', kind: 'featured', featured: ['ducky'], attires: ['speshulPowder'], after: 'R4-7', bg: 'shore', troops: 'pirates',
+       blurb: 'The crew of the Grinning Mary have hung up their ten-thousand-Crown posters (on the longhouse wall, for a laugh), and their captain is asking for a proper job. He swears it\'s only for the treasure. Speshul has signed on as his Powder Monkey. The soldiers who answer are his crew: ★ pirate fish in every colour of the Satin Sea, and ★★ sharks.'},
     ],
   },
   frog: {

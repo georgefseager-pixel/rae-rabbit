@@ -26,6 +26,10 @@ const ATTIRES = {
   // A spear instead of a sword; sturdier, and slower.
   raeMilitia: {char: 'rae', outfit: 'militia', name: 'Monkeyland Militia', cls: 'militia', mods: {def: 3, spd: -2, mhp: 2}, ability: 'plant',
               desc: 'The monkeys who crossed the stream made it for her, plate by plate, in the old Southern Watch colours. The helmet was made for a monkey. The ear holes were added later, with some difficulty.'},
+  // Pirates of the Satin Sea (after Chapter Four): Speshul signs on with Ducky's crew. A hook instead of his bow (he still
+  // climbs); sturdier and harder-hitting, a little slower. His pulls leave a lit fuse behind (Lit Fuse).
+  speshulPowder: {char: 'speshul', outfit: 'powder', name: 'Powder Monkey', cls: 'powdermonkey', mods: {mhp: 2, atk: 2, def: 1, spd: -2}, ability: 'fuse',
+              desc: 'Ducky\'s crew needed someone small and quick to run the powder below decks. Speshul volunteered before they finished asking. The hat came from the captain\'s own sea-chest. The sun on it he stitched himself.'},
   // December festive banner (31-data-events.js): Flopsy in a very large jumper. Same class and needle; a little
   // cosier (Def) and a little slower (Spd), and her mending comes with presents.
   floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',
