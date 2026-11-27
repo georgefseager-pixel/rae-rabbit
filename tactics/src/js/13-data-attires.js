@@ -30,6 +30,10 @@ const ATTIRES = {
   // climbs); sturdier and harder-hitting, a little slower. His pulls leave a lit fuse behind (Lit Fuse).
   speshulPowder: {char: 'speshul', outfit: 'powder', name: 'Powder Monkey', cls: 'powdermonkey', mods: {mhp: 2, atk: 2, def: 1, spd: -2}, ability: 'fuse',
               desc: 'Ducky\'s crew needed someone small and quick to run the powder below decks. Speshul volunteered before they finished asking. The hat came from the captain\'s own sea-chest. The sun on it he stitched himself.'},
+  // Champions of the Lists (after Chapter Four): Tiggle in the laurels and armour of the Royal Tournament's champion. An axe
+  // instead of his sword; tougher and harder-hitting, a little slower. Every foe he beats wins the crowd (Crowd Pleaser).
+  tiggleChampion: {char: 'tiggle', outfit: 'champion', name: 'Arena Champion', cls: 'champion', mods: {mhp: 3, atk: 2, spd: -2}, ability: 'crowd',
+              desc: 'The armour of the Royal Tournament\'s champion, made for whoever won it. It was meant for Biggle. Biggle had it taken in at the waist, and sent to his little brother with no note at all.'},
   // December festive banner (31-data-events.js): Flopsy in a very large jumper. Same class and needle; a little
   // cosier (Def) and a little slower (Spd), and her mending comes with presents.
   floraXmas: {char: 'sister', outfit: 'xmas', name: 'Hoppy Xmas', mods: {def: 2, spd: -1}, ability: 'present',

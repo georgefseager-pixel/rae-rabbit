@@ -26,6 +26,7 @@ const ABILITIES = {
   naughty:     {name: 'Naughty List',      icon: '📜', text: 'Any enemy Chriggle Chraggle hits goes on the Naughty List: for the rest of the battle, everyone deals it +2 damage.'},
   bend:        {name: 'Bend, Not Break',   icon: '🙇', text: 'Once a battle, a blow that would unstitch Aurora leaves her standing on 1 HP instead.'},
   wecan:       {name: 'We Can Fight!',     icon: '✊', text: 'Against an enemy of a higher level than him, Speshul gets +2 damage and +10 Hit.'},
+  crowd:       {name: 'Crowd Pleaser',     icon: '🏆', text: 'The crowd loves a winner: every enemy Tiggle defeats gives him +1 damage for the rest of the battle (up to +3).'},
   grievance:   {name: 'Every Grievance Noted', icon: '📜', text: 'Anyone who damages Princess goes in her Book of Grievances: for the rest of the battle, she deals them +3 damage.'},
   closer:      {name: 'Do Come Closer',    icon: '🎀', text: 'An enemy Tilly\'s hook pulls in is left Off Balance until its next turn: no cover from the ground it stands on, and −20 Avoid. Everyone may now take their turn, darling.'},
   scurry:      {name: 'Two Pairs of Paws', icon: '🐭', text: 'One mends while the other runs on ahead: after Tandy & Maus mend an ally, they can scurry 1 more square.'},
