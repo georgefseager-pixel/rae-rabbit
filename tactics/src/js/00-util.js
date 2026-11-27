@@ -317,7 +317,8 @@ async function buildFurVariants(){
     for (const base of ['shark', 'sharkaxe', 'sharklance', 'sharkbow', 'sharkbook', 'sharkstaff', 'sharkhook']) await buildVariants(base, SHARK_COLOURS, fishWeight(base));
     // the tournament's gladiator frogs: frog skin colours, from art/glad*skin-<kind>.png
     for (const base of ['', 'axe', 'lance', 'bow', 'book', 'staff', 'hook'].flatMap(p => ['glad' + p, 'gladelite' + p])) await buildVariants(base, SKINS, skinWeight(base));
-    if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
+    if (typeof tokenCache !== 'undefined') tokenCache.clear();
+    if (typeof dexRefresh === 'function') dexRefresh(); })();   // the Collection, if open, now has every soldier's colours
 }
 
 function toast(msg){

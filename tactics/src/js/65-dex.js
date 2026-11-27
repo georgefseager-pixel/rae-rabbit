@@ -107,8 +107,12 @@ const dexFace = ent => { const t = artFor(ent, 'token'); return t ? `<img class=
 const dexFull = ent => { const a = artFor(ent, 'portrait'); return `<img class="dfull" alt="" src="${a || plushPortrait(ent.look)}">`; };
 const dexName = e => e.kind === 'char' ? charName(e.key) : e.kind === 'attire' ? ATTIRES[e.attire].name : e.name;
 
-function renderDex(){
+// Redraw an open Collection in place (once soldiers' recoloured art is ready), keeping the scroll position.
+function dexRefresh(){ if ($('#dex').hidden) return; const y = window.scrollY; renderDex(true); window.scrollTo(0, y); }
+function renderDex(refresh){
   dexSync();
+  // December's soldiers are only dyed when needed: the Collection needs them (their entries would otherwise be plush placeholders)
+  if (!refresh) buildFestiveTroops().then(() => { tokenCache?.clear?.(); dexRefresh(); });
   const S = dexEntries(), all = S.flatMap(s => s.entries), got = all.filter(dexHas).length;
   const tile = e => { const has = dexHas(e);
     return `<button class="dtile${has ? '' : ' locked'}" data-dex="${e.id}" type="button">
@@ -120,7 +124,7 @@ function renderDex(){
     <div class="dchips">${S.map(s => `<button class="chip" data-dexjump="${s.id}" type="button">${s.name} <small>${s.entries.filter(dexHas).length}/${s.entries.length}</small></button>`).join('')}</div>
     ${S.map(s => `<div class="sec" id="dexsec-${s.id}">${s.name} <small>${s.entries.filter(dexHas).length} of ${s.entries.length}</small></div>
       <div class="dgrid">${s.entries.map(tile).join('')}</div>`).join('')}`;
-  showScreen('dex');
+  if (!refresh) showScreen('dex');
 }
 
 function openDexEntry(id){
