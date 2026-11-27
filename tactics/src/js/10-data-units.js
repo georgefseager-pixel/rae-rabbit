@@ -85,6 +85,14 @@ const CLASSES = {
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
+  // Chapter Four: the gladiators of the Royal Tournament (art/glad*-*.png), and the ★ soldiers of Champions of the Lists
+  gladblade: {name: 'Gladiator',      w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Arena Gladius',     base: {mhp:19,atk:11,def:4, spd:8,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:50,skl:50}},
+  gladspear: {name: 'Hastatus',       w: 'lance', rng: [1,1], mt: 'foot',    wname: 'Arena Spear',       base: {mhp:20,atk:10,def:5, spd:5,skl:5,mov:5}, g: {mhp:70,atk:40,def:40,spd:30,skl:40}},
+  gladaxe:   {name: 'Arena Axe',      w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Arena Axe',         base: {mhp:21,atk:11,def:3, spd:4,skl:4,mov:5}, g: {mhp:80,atk:50,def:20,spd:30,skl:30}},
+  gladbow:   {name: 'Sagittarius',    w: 'bow',   rng: [2,2], mt: 'foot',    wname: 'Laurel Bow',        base: {mhp:17,atk:10,def:3, spd:6,skl:7,mov:5}, g: {mhp:55,atk:45,def:20,spd:40,skl:50}},
+  gladscribe:{name: 'Arena Herald',   w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Laurels',   base: {mhp:16,atk:10,def:2, spd:6,skl:7,mov:5}, g: {mhp:45,atk:50,def:15,spd:40,skl:50}},
+  gladmedic: {name: 'Arena Medic',    w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Laurel Staff',      base: {mhp:16,atk:5, def:2, spd:5,skl:5,mov:5}, g: {mhp:50,atk:45,def:20,spd:40,skl:40}},
+  gladhook:  {name: 'Retiarius',      w: 'hook',  rng: [2,2], mt: 'foot',    wname: 'Arena Hook',        base: {mhp:19,atk:11,def:4, spd:7,skl:8,mov:5}, g: {mhp:60,atk:45,def:30,spd:45,skl:50}},   // pulls what it hooks
   // Chapter Four. The tournament's champions: Tilly Tealbottom rides with a hook (art/tilly-*.png); Princess reads her grievances aloud.
   jouster:   {name: 'Hook Rider',     w: 'hook',  rng: [2,2], mt: 'mounted', wname: 'Tealbottom Hook',   base: {mhp:24,atk:13,def:7, spd:8,skl:9,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:50}},   // Tilly Tealbottom
   heiress:   {name: 'Royal Heiress',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Grievances', base: {mhp:22,atk:13,def:4, spd:9,skl:10,mov:5}, g: {mhp:60,atk:50,def:20,spd:50,skl:55}},   // Princess
@@ -163,6 +171,8 @@ const LOOKS = {
   chansey:     {sp:'monkey', fur:'#e48aa0', light:'#f6b4c4', dark:'#9a4a5c', face:'#f6e0be', gear:'tiara'},   // art/chansey-*.png
   cornelius: {sp:'monkey', fur:'#d0642a', light:'#ee8a4e', dark:'#7a3412', face:'#b08a70', gear:'helm', big:true},   // art/cornelius-*.png (an orangutan)
   // Chapter Four placeholders (no art yet)
+  // art: 'glad' draws the tournament's gladiator frogs (art/glad*-*.png), skin recoloured into SKINS
+  gladiator: {sp:'frog', art:'glad', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'kettle'},
   tilly:     {sp:'frog', skin:'#3a9a92', light:'#62c2b8', dark:'#1a524c', belly:'#d6f0ea', gear:'lilypad'},   // Tilly Tealbottom, a teal aristocrat
   princess:  {sp:'frog', skin:'#f08ab4', light:'#fbb8d4', dark:'#a04470', belly:'#fde2ee', gear:'tiara'},     // Princess, Tiggle's cousin
   herald:    {sp:'frog', skin:'#7aa84a', light:'#9cc86c', dark:'#3c5a20', belly:'#d6e8a8', gear:'bandana', band:'#d9b04a'},
@@ -197,6 +207,7 @@ const CLASS_LOOK = {
   captain:'worker', digger:'workerBig', hauler:'worker', pebbler:'workerLop', runner:'worker', patcher:'workerMend', quarter:'workerLop',
   lily:'guard', bruiser:'bruiser', reed:'reed', blade:'duelist', toadknight:'toadknight', croaker:'croaker', headsman:'headsman', overseer:'rhubarb', marshlord:'fraggle', tribune:'froggle', roseknight:'biggle', gingerknight:'biggle', courier:'courier', giftgiver:'chriggle', runaway:'ilc', xblade:'courier', xaxe:'courier', xpike:'courier', xbow:'courier', xscribe:'courier',
   gblade:'blackguard', gaxe:'blackguard', gpike:'blackguard', gscribe:'blackguard', gchaplain:'blackguard',
+  gladblade:'gladiator', gladspear:'gladiator', gladaxe:'gladiator', gladbow:'gladiator', gladscribe:'gladiator', gladmedic:'gladiator', gladhook:'gladiator',
   lilyknight:'toadknight', jouster:'tilly', heiress:'princess', pcutlass:'pirate', pboarder:'pirateBig', pharpoon:'pirate', pgunner:'pirate', pshanty:'pirate', psawbones:'pirate', phook:'pirate', shipsurgeon:'tandy', sharkcapt:'ducky',
 };
 
@@ -403,6 +414,7 @@ const ART_CROP = {
   fish:    {panel: ['200% auto', '58% 4%'], talk: ['150% auto', '58% 3%']},   // the pirate fish, every colour
   shark:   {panel: ['200% auto', '62% 4%'], talk: ['150% auto', '62% 3%']},   // the pirate sharks, every colour
   elf:     {panel: ['200% auto', '48% 5%'], talk: ['150% auto', '48% 4%']},   // festive frog scouts, every skin   // Fraggle's Black Guard, every skin
+  glad:    {panel: ['215% auto', '52% 9%'], talk: ['160% auto', '52% 7%']},   // the gladiator frogs, every skin
   grunt:   {panel: ['230% auto', '44% 6%'], talk: ['165% auto', '42% 4%']},   // generic frog soldier, every skin
   rae:     {panel: ['225% auto', '33% 2%'], talk: ['190% auto', '33% 2%']},   // uniform
   tiggleformal: {panel: ['200% auto', '50% 2%'], talk: ['150% auto', '50% 1%']}, // Formal Wear (log-in reward)

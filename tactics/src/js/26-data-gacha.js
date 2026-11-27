@@ -78,6 +78,9 @@ const GACHA_ARMY = {
       monkeys: {stars: [1, 2], generic: ['mkacro', 'mkguard', 'mkbrute', 'mkthrow', 'mkchant'],
         names: ['Acacia', 'Baobab', 'Cypress', 'Kapok', 'Mahogany', 'Teak', 'Sandalwood', 'Ebony', 'Rosewood', 'Wisteria',
                 'Magnolia', 'Camphor', 'Laurel', 'Myrtle', 'Banksia']},
+      // the Royal Tournament's gladiators (Chapter Four): ★ only
+      gladiators: {stars: [1], generic: ['gladblade', 'gladspear', 'gladaxe', 'gladbow', 'gladscribe', 'gladmedic', 'gladhook'],
+        names: ['Maximus', 'Crixus', 'Spiculus', 'Verus', 'Priscus', 'Flamma', 'Carpophorus', 'Tetraites', 'Gannicus', 'Oenomaus', 'Hermes', 'Triumphus', 'Marcus', 'Felix']},
       fraggle: {stars: [1, 2], generic: ['gblade', 'gaxe', 'gpike', 'gscribe', 'gchaplain'],
       names: ['Thornback', 'Gloam', 'Blackwater', 'Nettlejaw', 'Sedge', 'Murkmire', 'Briarwick', 'Fen', 'Rook', 'Sloe',
               'Blackthorn', 'Wormwood', 'Grimsby', 'Tarn', 'Hollin']}},
@@ -88,8 +91,8 @@ const GACHA_ARMY = {
        blurb: 'The crown sends a letter of condolence to the woods, and an offer. Fraggle Friggle\'s son answers it, wearing his father\'s coat, and every soldier who answers (★ and ★★) is from his father\'s Black Guard. Biggle\'s Rose Knight attire is featured too.'},
       {id: 'frog-monkeys', name: 'The Loyal Court', kind: 'featured', featured: ['cornelius', 'chansey'], after: 'F3-6', bg: 'castle', troops: 'monkeys',
        blurb: 'Captain Cornelius, the old orangutan who stayed with the Governess when Monkeyland split, brings her guard to the prince, and Chansey, her head priestess, brings her blessing. They kneel, as they always have. The ★ soldiers who answer are Monkeyland\'s guard, and the ★★ its gilded veterans.'},
-      {id: 'frog-tournament', name: 'Champions of the Lists', kind: 'featured', featured: ['tilly'], after: 'F4-7', bg: 'arena',
-       blurb: 'The Royal Tournament is over, and its champions want a word with the prince who won it. Tilly Tealbottom has ridden to the war camp on her pony, Biscuit, hook polished, saying she has never been unseated by anyone she didn\'t then follow. The soldiers who answer are the Friggliarchy\'s own.'},
+      {id: 'frog-tournament', name: 'Champions of the Lists', kind: 'featured', featured: ['tilly'], after: 'F4-7', bg: 'arena', troops: 'gladiators',
+       blurb: 'The Royal Tournament is over, and its champions want a word with the prince who won it. Tilly Tealbottom has ridden to the war camp on her pony, Biscuit, hook polished, saying she has never been unseated by anyone she didn\'t then follow. The ★ soldiers who answer are the tournament\'s gladiators, who would rather fight for a champion than for a crowd.'},
     ],
   },
 };

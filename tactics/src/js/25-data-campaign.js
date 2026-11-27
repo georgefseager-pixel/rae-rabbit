@@ -1843,8 +1843,8 @@ const CAMPAIGNS = {
           brief: 'Round one of the Royal Tournament: every team in the ring at once, last team standing.',
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield.",
           enemies: () => [
-            E('bruiser',7,2,3), E('bruiser',7,7,3), E('blade',7,4,4), E('blade',7,5,6), E('lily',7,1,6), E('lily',7,8,6),
-            E('reed',7,2,1,'guard'), E('reed',7,7,1,'guard'), E('croaker',7,4,1,'guard'), E('toadknight',8,5,2,'guard'),
+            E('gladaxe',7,2,3), E('gladaxe',7,7,3), E('gladblade',7,4,4), E('gladhook',7,5,6), E('gladspear',7,1,6), E('gladspear',7,8,6),
+            E('gladbow',7,2,1,'guard'), E('gladscribe',7,7,1,'guard'), E('gladmedic',7,4,1,'guard'), E('toadknight',8,5,2,'guard'),
           ],
           pre: [
             {card: "Chapter Four", sub: "The Tournament"},
@@ -1897,9 +1897,9 @@ const CAMPAIGNS = {
           brief: 'Round two: run the course to the finishing bell, past the champions of the Lily Court. You win when Tiggle reaches the bell.',
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. You don't have to beat everyone: get Tiggle to the gold squares.",
           enemies: () => [
-            E('lily',8,2,11,'guard'), E('reed',8,6,11,'guard'), E('bruiser',8,7,8,'guard'), E('blade',8,2,8),
-            E('toadknight',8,1,5,'guard'), E('reed',8,4,7,'guard'), E('lily',8,7,2,'guard'), E('croaker',8,5,1,'guard'),
-            E('blade',9,4,1,'hold',{elite: true}), E('reed',8,8,4,'guard'),
+            E('gladspear',8,2,11,'guard'), E('gladbow',8,6,11,'guard'), E('gladaxe',8,7,8,'guard'), E('gladblade',8,2,8),
+            E('toadknight',8,1,5,'guard'), E('gladhook',8,4,7,'guard'), E('gladspear',8,7,2,'guard'), E('gladmedic',8,5,1,'guard'),
+            E('gladblade',9,4,1,'hold',{elite: true}), E('gladbow',8,8,4,'guard'),
           ],
           pre: [
             {scene: "arena", place: "The Royal Tournament · Round Two"},
@@ -1933,9 +1933,9 @@ const CAMPAIGNS = {
           enemies: () => [
             // Tilly waits mid-field with her catchers around her: whoever she hooks lands among them, Off Balance
             E('jouster',11,5,4,'guard',{boss: true, flees: true, key: 'tilly', name: 'Tilly Tealbottom', look: 'tilly'}),
-            E('blade',8,6,3,'guard'), E('blade',8,4,5,'guard'), E('bruiser',8,6,5,'guard'),
-            E('reed',8,1,3,'guard'), E('reed',8,8,3,'guard'), E('croaker',8,5,1,'guard'),
-            E('lily',8,2,7), E('lily',8,7,7), E('blade',8,1,9),
+            E('gladblade',8,6,3,'guard'), E('gladblade',8,4,5,'guard'), E('gladaxe',8,6,5,'guard'),
+            E('gladbow',8,1,3,'guard'), E('gladbow',8,8,3,'guard'), E('gladmedic',8,5,1,'guard'),
+            E('gladspear',8,2,7), E('gladspear',8,7,7), E('gladblade',8,1,9),
           ],
           bossTalk: [
             {who: "tilly", text: "Tally-ho, darling! Do come closer."},
@@ -1977,7 +1977,7 @@ const CAMPAIGNS = {
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. The squires don't stop to fight: they run for the gold squares. Eight in all. The round ends once they're all caught or gone.",
           enemies: () => [
             ...[[2,0],[5,1],[7,0]].map(([x, y]) => E('blade',8,x,y,'courier',{courier: true, name: 'Squire', look: 'scout', bonus: {mov: -1}})),
-            E('lily',8,3,11,'guard'), E('lily',8,6,11,'guard'), E('blade',8,1,12), E('reed',8,8,12,'guard'),
+            E('gladspear',8,3,11,'guard'), E('gladspear',8,6,11,'guard'), E('gladblade',8,1,12), E('gladbow',8,8,12,'guard'),
           ],
           reinforce: () => [
             {turn: 1, units: [[1,0],[4,0],[8,1]].map(([x, y]) => E('blade',8,x,y,'courier',{courier: true, name: 'Squire', look: 'scout', bonus: {mov: -1}}))},
@@ -2017,14 +2017,14 @@ const CAMPAIGNS = {
           brief: 'Round five: hold the mock fort until the fifth bell, while every other team still in the tournament attacks it.',
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Attackers come from both ends of the ground. The fort's barriers have gaps on every side.",
           enemies: () => [
-            E('blade',8,2,1), E('blade',8,7,1), E('lily',8,4,2), E('reed',8,1,3,'guard'), E('bruiser',8,8,3),
-            E('blade',8,2,13), E('lily',8,6,13), E('reed',8,8,14,'guard'), E('bruiser',8,4,14),
+            E('gladblade',8,2,1), E('gladblade',8,7,1), E('gladspear',8,4,2), E('gladbow',8,1,3,'guard'), E('gladaxe',8,8,3),
+            E('gladblade',8,2,13), E('gladspear',8,6,13), E('gladbow',8,8,14,'guard'), E('gladaxe',8,4,14),
           ],
           reinforce: () => [
-            {turn: 1, units: [E('blade',8,0,0), E('toadknight',8,9,15)]},
-            {turn: 2, units: [E('croaker',8,4,0,'guard'), E('bruiser',8,0,15), E('blade',8,9,0)]},
-            {turn: 3, units: [E('blade',9,5,0,'charge',{elite: true}), E('lily',8,5,15), E('reed',8,0,8)]},
-            {turn: 4, units: [E('bruiser',9,9,8,'charge',{elite: true}), E('blade',8,4,15)]},
+            {turn: 1, units: [E('gladblade',8,0,0), E('toadknight',8,9,15)]},
+            {turn: 2, units: [E('gladmedic',8,4,0,'guard'), E('gladaxe',8,0,15), E('gladblade',8,9,0)]},
+            {turn: 3, units: [E('gladblade',9,5,0,'charge',{elite: true}), E('gladspear',8,5,15), E('gladbow',8,0,8)]},
+            {turn: 4, units: [E('gladaxe',9,9,8,'charge',{elite: true}), E('gladblade',8,4,15)]},
           ],
           pre: [
             {scene: "arena", place: "The Royal Tournament · Round Five"},
@@ -2057,11 +2057,11 @@ const CAMPAIGNS = {
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Princess fights with a tome, so she can strike from two squares away.",
           enemies: () => [
             E('heiress',12,4,1,'guard',{boss: true, flees: true, key: 'princess', name: 'Princess', look: 'princess'}),
-            E('lilyknight',10,3,2,'guard'), E('lilyknight',10,6,2,'guard'), E('croaker',9,5,1,'guard'),
-            E('reed',9,1,3,'guard'), E('reed',9,8,3,'guard'), E('blade',10,2,6,'charge',{elite: true}), E('blade',9,7,6),
-            E('bruiser',9,4,7), E('lily',9,1,9), E('lily',9,8,9),
+            E('lilyknight',10,3,2,'guard'), E('lilyknight',10,6,2,'guard'), E('gladmedic',9,5,1,'guard'),
+            E('gladhook',9,1,3,'guard'), E('gladscribe',9,8,3,'guard'), E('gladblade',10,2,6,'charge',{elite: true}), E('gladblade',9,7,6),
+            E('gladaxe',9,4,7), E('gladspear',9,1,9), E('gladspear',9,8,9),
           ],
-          reinforce: () => [{turn: 3, units: [E('blade',9,0,4), E('blade',9,9,4)]}],
+          reinforce: () => [{turn: 3, units: [E('gladblade',9,0,4), E('gladblade',9,9,4)]}],
           bossTalk: [
             {who: "princess", text: "Read it and weep, cousin! Every grievance I've ever had, and you're on most of the pages!"},
             {who: "tiggle", text: "What did I ever do to you?"},
@@ -2102,9 +2102,9 @@ const CAMPAIGNS = {
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Biggle Baggle is on the other side today, and can't fight for you. His Hold the Line works against you: your units stop when they reach a square next to him.",
           enemies: () => [
             E('lilyknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
-            E('toadknight',10,3,6,'guard'), E('toadknight',10,6,6,'guard'), E('croaker',10,5,8,'guard'),
-            E('reed',10,1,4,'guard'), E('reed',10,8,4,'guard'), E('lilyknight',10,2,9,'guard',{elite: true}), E('lilyknight',10,7,9,'guard',{elite: true}),
-            E('blade',10,3,2), E('blade',10,6,2), E('bruiser',10,1,11), E('bruiser',10,8,11),
+            E('toadknight',10,3,6,'guard'), E('toadknight',10,6,6,'guard'), E('gladmedic',10,5,8,'guard'),
+            E('gladhook',10,1,4,'guard'), E('gladbow',10,8,4,'guard'), E('lilyknight',10,2,9,'guard',{elite: true}), E('lilyknight',10,7,9,'guard',{elite: true}),
+            E('gladblade',10,3,2), E('gladblade',10,6,2), E('gladaxe',10,1,11), E('gladaxe',10,8,11),
           ],
           bossTalk: [
             {who: "biggle", text: "Come on, then! Show them! Show ME!"},

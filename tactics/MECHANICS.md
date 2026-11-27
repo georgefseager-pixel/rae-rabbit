@@ -282,6 +282,12 @@ Rae away: survive five turns while Captain Sedge's raiders attack the fevered se
 alone, keeping a young Captain Ducky's crew alive as allies until the Mary cuts loose), TM-3 Saltwort (drive Captain Mako
 off the rock pools holding the fever's cure); it ends with their own staff, the Tidewater Staff.
 
+The tournament's generic fighters (F4-1 to F4-7, and Tilly's catchers in F4-3) are gladiator frogs (`art/glad*-*.png`): a
+portrait, map icon and a battle pose per weapon including a hook, skin recoloured from the `glad*skin` masks into
+`SKINS`. Classes: Gladiator (sword), Hastatus (lance), Arena Axe, Sagittarius (bow), Arena Herald (tome), Arena Medic
+(staff) and Retiarius (hook). The Lily Court's armoured knights stay knights, and the Ribbon Hunt's squires stay scouts.
+Champions of the Lists gives ★ gladiators (`troops: 'gladiators'`, all seven classes; ★★ stay the Friggliarchy's own).
+
 Tilly Tealbottom (Champions of the Lists, Friggliarchy) has supports with Tiggle and side stories
 (`29d-data-sides-tournament.js`, recommended 9 · 11 · 11): TL-1 The Garden Party (she leads, Tiggle away: Magpie's
 bandits raid her mother's party), TL-2 Last Season (a flashback, only Tilly and ordinary soldiers: Captain Mako's
@@ -296,7 +302,7 @@ great-great-grandmother's tower, held by smugglers with hooks); it ends with Gra
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
 | Pirates of the Satin Sea (Raepublic: ★★★ Tandy & Maus and Speshul's Powder Monkey attire; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
-| Champions of the Lists (Friggliarchy: ★★★ Tilly Tealbottom; the usual company) | after F4-7 |
+| Champions of the Lists (Friggliarchy: ★★★ Tilly Tealbottom; ★ gladiator frogs, ★★ the usual company) | after F4-7 |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |

@@ -310,7 +310,7 @@ function tokenFor(u, variant){
     // Real token art: fit it to the tile, sitting on the felt coaster.
     // fit inside a fixed box so tall icons (plumes, shoulders) don't run off the top of the tile
     // Fraggle's Black Guard get a taller box: their plumes rise above the tile instead of shrinking the soldier
-    const tall = /^(black|mk|fish|shark)/.test(artResolve(u, 'token') || '') ? 1.14 : .9;   // (the monkeys' helmet plumes too)
+    const tall = /^(black|mk|fish|shark|glad)/.test(artResolve(u, 'token') || '') ? 1.14 : .9;   // (the monkeys' helmet plumes too)
     const sc = Math.min(T*1.16/icon.width, T*tall/icon.height), w = icon.width*sc, h = icon.height*sc;
     g.drawImage(icon, ox + T*.5 - w/2, oy + T*.88 - h, w, h);
   } else {

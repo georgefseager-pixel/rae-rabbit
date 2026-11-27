@@ -58,7 +58,8 @@ const SPECIES_ART = {bun: {base: 'miner', palette: () => FURS}, frog: {base: 'gr
                      elf: {base: 'elf', palette: () => SKINS},
                      mk: {base: 'mk', palette: () => MONKEY_FURS},
                      fish: {base: 'fish', palette: () => FISH_COLOURS},     // the pirate crew (art/fish-*.png)
-                     shark: {base: 'shark', palette: () => SHARK_COLOURS}};   // ★★ pirates and named pirates (art/shark-*.png)   // the pirate crew (art/fish-*.png)   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
+                     shark: {base: 'shark', palette: () => SHARK_COLOURS},   // ★★ pirates and named pirates (art/shark-*.png)
+                     glad: {base: 'glad', palette: () => SKINS}};   // the tournament's gladiator frogs (art/glad-*.png)   // ★★ pirates and named pirates (art/shark-*.png)   // the pirate crew (art/fish-*.png)   // Monkeyland soldiers (art/mk-*.png)       // festive frog scouts in elf green (art/elf-*.png)
 function speciesOf(ent){ const L = LOOKS[ent.look]; return SPECIES_ART[L?.art || L?.sp] || null; }
 function furOf(ent){
   const sp = speciesOf(ent); if (!sp) return null;
@@ -128,6 +129,12 @@ function artResolve(ent, kind){
     const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff', hook: ART[base + 'hook'] ? 'hook' : 'lance'}[ent.w || CLASSES[cls]?.w] || '';
     if (ART[base + pose + col]?.[kind]) return base + pose + col;
     if (ART[base + col]?.[kind]) return base + col;
+  }
+  if (sp.base === 'glad'){
+    // the gladiator frogs: one portrait and map icon, and a battle pose for each weapon (art/glad<weapon>-battle.png; swords use glad-battle.png)
+    const pose = kind === 'battle' && {axe: 'axe', lance: 'lance', bow: 'bow', tome: 'book', staff: 'staff', hook: 'hook'}[ent.w || CLASSES[cls]?.w] || '';
+    if (ART['glad' + pose + fur]?.[kind]) return 'glad' + pose + fur;
+    if (ART['glad' + fur]?.[kind]) return 'glad' + fur;
   }
   if (sp.base === 'elf'){
     // December frog scouts (the couriers, and the festive banner's soldiers): a battle pose for each weapon
@@ -304,6 +311,8 @@ async function buildFurVariants(){
     // the pirate fish (Chapter Four): the skin, fins and tail from art/fish*skin-<kind>.png
     for (const base of ['fish', 'fishaxe', 'fishlance', 'fishbow', 'fishbook', 'fishstaff', 'fishhook']) await buildVariants(base, FISH_COLOURS, fishWeight(base));
     for (const base of ['shark', 'sharkaxe', 'sharklance', 'sharkbow', 'sharkbook', 'sharkstaff', 'sharkhook']) await buildVariants(base, SHARK_COLOURS, fishWeight(base));
+    // the tournament's gladiator frogs: frog skin colours, from art/glad*skin-<kind>.png
+    for (const base of ['glad', 'gladaxe', 'gladlance', 'gladbow', 'gladbook', 'gladstaff', 'gladhook']) await buildVariants(base, SKINS, skinWeight(base));
     if (typeof tokenCache !== 'undefined') tokenCache.clear(); })();
 }
 
