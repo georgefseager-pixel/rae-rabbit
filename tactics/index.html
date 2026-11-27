@@ -40,9 +40,9 @@
 <style>
 /* Layout: portrait war-table. A felt command bar on top, the quilted battlefield in the middle, a stitched banner panel under the thumb. */
 :root{
-  --bg:#120d0c; --bg2:#1d1513; --navy:#212844; --navy2:#2c3559; --navy3:#3a4672;
+  --bg:#120d0c; --bg2:#1d1513; --navy:#1b1411; --navy2:#2d221c; --navy3:#47362b;   /* (named navy for history: now dark stitched felt, like the title's save cards) */
   --cream:#efe3c8; --muted:#b4a68d; --red:#b5302a; --red-hi:#dc4a3c; --brass:#c9973f; --brass-hi:#ecc673;
-  --frog:#6f9a3a; --frog-dk:#2c4a1c; --thread:rgba(239,227,200,.32);
+  --frog:#6f9a3a; --frog-dk:#2c4a1c; --thread:rgba(236,198,115,.34);
   --stencil:'Saira Stencil One', 'Arial Narrow', Impact, sans-serif;
   --fell:'IM Fell English SC', 'Iowan Old Style', Georgia, serif;
   --fell-i:'IM Fell English', 'Iowan Old Style', Georgia, serif;
@@ -262,8 +262,8 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 /* faction hero */
 .hero{position:relative;display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;align-items:end;border-radius:14px;padding:14px 14px 14px 6px;min-height:178px;overflow:hidden;
   outline:1.5px dashed var(--thread);outline-offset:-7px;box-shadow:0 14px 34px rgba(0,0,0,.5)}
-.hero.f-rae{background:radial-gradient(ellipse at 20% 30%, rgba(200,50,40,.45), transparent 65%), linear-gradient(180deg,var(--navy2),var(--navy))}
-.hero.f-frog{background:radial-gradient(ellipse at 20% 30%, rgba(120,170,60,.4), transparent 65%), linear-gradient(180deg,#2f4320,#16200e)}
+.hero.f-rae{background:radial-gradient(ellipse at 20% 30%, rgba(200,50,40,.5), transparent 65%), linear-gradient(180deg,rgba(70,18,14,.82),rgba(24,10,8,.92)), var(--bg-rae, none) 50% 40%/cover no-repeat, var(--navy)}
+.hero.f-frog{background:radial-gradient(ellipse at 20% 30%, rgba(120,170,60,.42), transparent 65%), linear-gradient(180deg,rgba(36,58,20,.82),rgba(12,20,8,.92)), var(--bg-frog, none) 50% 40%/cover no-repeat, #16200e}
 .himg{height:164px;align-self:end;display:flex;align-items:flex-end;justify-content:center;min-width:0}
 .himg img{display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 10px 12px rgba(0,0,0,.6))}
 .hero h2{font-family:var(--stencil);font-size:clamp(21px,7.6vw,28px);overflow-wrap:anywhere;line-height:1;margin:0;letter-spacing:.03em;text-wrap:balance}
@@ -957,6 +957,15 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .erasehold i{position:absolute;left:0;top:0;bottom:0;width:0;background:#c0392b}
 .erasehold span{position:relative}
 .tag{text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 14px rgba(0,0,0,.8)}
+
+/* Menus: each screen sits on its army's painting (the Republic camp / the war camp), faint and washed in the army's colour,
+   with felt panels in front. body[data-army] is set by showScreen. */
+body[data-army=rae] .screen{background:linear-gradient(180deg,rgba(40,10,8,.86),rgba(14,9,8,.95) 45%),var(--bg-rae, none) 50% 0/cover no-repeat,var(--bg)}
+body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86),rgba(10,12,8,.95) 45%),var(--bg-frog, none) 50% 0/cover no-repeat,var(--bg)}
+/* felt panels: a gold hairline around the stitching, and a little depth */
+.ncard,.ucard,.scard,.wrow,.card,.plate{box-shadow:0 0 0 1px rgba(236,198,115,.16),0 6px 14px rgba(0,0,0,.4)}
+.btn{box-shadow:0 0 0 1px rgba(236,198,115,.14),0 2px 0 rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06)}
+.tabs .btn.on{background:linear-gradient(180deg,#5a4430,#3a2b1f)}
 
 </style>
 
@@ -10755,6 +10764,7 @@ function showLevelUp(u, ups, title = 'LEVEL UP', sub = null){
 const SCREENS = ['app', 'hub', 'army', 'camp', 'prep', 'result'];
 const campTrack = () => CAMPAIGNS[SAVE.current]?.faction === 'frog' ? 'frogCamp' : 'raeCamp';
 function showScreen(id){
+  if (SAVE?.current) document.body.dataset.army = SAVE.current;   // the menus' backdrop follows the army being played
   for (const s of SCREENS) $('#' + s).hidden = s !== id;
   if (id !== 'app') Music.want(campTrack());   // battles choose their own music
   if (id !== 'app') window.scrollTo(0, 0);
@@ -10867,6 +10877,7 @@ function sidesHTML(ck){
         <div class="track">${sides.map((s, j) => s.char === key ? sideNodeHTML(ck, s, j) : '').join('')}</div>`; }).join('')}`;
 }
 function renderHub(){
+  document.body.dataset.army = SAVE.current;
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
   const lord = st.roster.find(r => r.lord), alive = living(ck);
   const art = artFor(lord, 'portrait') || plushPortrait(lord.look);
@@ -11925,7 +11936,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '93cae5731a22';
+const BUILD_ID = '4a991a8554da';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
@@ -12177,6 +12188,8 @@ function boot(data){
   $('#titleArt2').src = ART.tiggle?.portrait || plushPortrait('tiggle');
   renderSlots(); soundLabels();
   // the two halves of the title screen: each side's painted scene, washed in its colours
+  // the menus: each army's painting (Republic camp, war camp), used behind its screens and its campaign card
+  for (const [k, bg] of [['rae', 'republic'], ['frog', 'warcamp']]) if (ART.bg?.[bg]) document.documentElement.style.setProperty('--bg-' + k, `url(${ART.bg[bg]})`);
   for (const [side, bg] of [['rae', 'mine'], ['frog', 'court']]) if (ART.bg?.[bg]) document.querySelector('.tside.' + side)?.style.setProperty('--tbg', `url(${ART.bg[bg]})`);
   if (!(data && data.save)) Music.want('title');
   if (data && data.save){ $('#title').hidden = true; renderHub(); }   // returning from a live update

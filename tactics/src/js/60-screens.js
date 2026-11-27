@@ -2,6 +2,7 @@
 const SCREENS = ['app', 'hub', 'army', 'camp', 'prep', 'result'];
 const campTrack = () => CAMPAIGNS[SAVE.current]?.faction === 'frog' ? 'frogCamp' : 'raeCamp';
 function showScreen(id){
+  if (SAVE?.current) document.body.dataset.army = SAVE.current;   // the menus' backdrop follows the army being played
   for (const s of SCREENS) $('#' + s).hidden = s !== id;
   if (id !== 'app') Music.want(campTrack());   // battles choose their own music
   if (id !== 'app') window.scrollTo(0, 0);
@@ -114,6 +115,7 @@ function sidesHTML(ck){
         <div class="track">${sides.map((s, j) => s.char === key ? sideNodeHTML(ck, s, j) : '').join('')}</div>`; }).join('')}`;
 }
 function renderHub(){
+  document.body.dataset.army = SAVE.current;
   const ck = SAVE.current, camp = campOf(), st = stOf(), F = FACTIONS[camp.faction];
   const lord = st.roster.find(r => r.lord), alive = living(ck);
   const art = artFor(lord, 'portrait') || plushPortrait(lord.look);
