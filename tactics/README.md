@@ -98,8 +98,7 @@ generic look with `generic: 'standard'` (Tall Rabbit).
 
 Placeholders until their art arrives (each picks it up automatically once the files are in `art/`):
 
-- **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `tilly` (Tilly Tealbottom, a teal frog aristocrat,
-  mounted lance) and `princess` (Princess, a pink frog, tome). Ducky has his art (`art/ducky-*.png`).
+- **Characters** (`<key>-portrait.png`, `-battle.png`, `-token.png`): `princess` (Princess, a pink frog, tome). Ducky and Tilly have their art.
 - **Pirates**: done. ★ pirate fish (`art/fish*-*.png`) and ★★ / named pirate sharks (`art/shark*-*.png`), each
   recoloured from their `*skin` masks.
 - **Scene paintings**: `art/bg-shore.jpg` (the beach settlement), `art/bg-arena.jpg` (the tournament ground) and

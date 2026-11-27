@@ -85,8 +85,8 @@ const CLASSES = {
   priestess: {name: 'Head Priestess', w: 'staff', rng: [1,1], mt: 'foot',    wname: 'Blessed Egg',       base: {mhp:19,atk:7, def:3, spd:6,skl:7,mov:5}, g: {mhp:60,atk:50,def:20,spd:40,skl:45}},   // Chansey (a healer)
   guardcapt: {name: 'Guard Captain',  w: 'axe',   rng: [1,1], mt: 'foot',    wname: 'Sunrise Axe',       base: {mhp:26,atk:13,def:8, spd:4,skl:6,mov:5}, g: {mhp:85,atk:50,def:40,spd:20,skl:35}},   // Captain Cornelius
   heir:      {name: 'Canopy Heir',    w: 'bow',   rng: [2,2], mt: 'climb',   wname: 'Sunrise Bow',       base: {mhp:18,atk:10,def:4, spd:10,skl:9,mov:6}, g: {mhp:55,atk:45,def:20,spd:60,skl:55}},   // Speshul: a bow, and he climbs
-  // Chapter Four. The tournament's champions (placeholder art): Tilly Tealbottom rides; Princess reads her grievances aloud.
-  jouster:   {name: 'Lily Jouster',   w: 'lance', rng: [1,1], mt: 'mounted', wname: 'Tealbottom Lance',  base: {mhp:24,atk:13,def:7, spd:8,skl:9,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:50}},   // Tilly Tealbottom
+  // Chapter Four. The tournament's champions: Tilly Tealbottom rides with a hook (art/tilly-*.png); Princess reads her grievances aloud.
+  jouster:   {name: 'Hook Rider',     w: 'hook',  rng: [2,2], mt: 'mounted', wname: 'Tealbottom Hook',   base: {mhp:24,atk:13,def:7, spd:8,skl:9,mov:7}, g: {mhp:70,atk:45,def:35,spd:45,skl:50}},   // Tilly Tealbottom
   heiress:   {name: 'Royal Heiress',  w: 'tome',  rng: [1,2], mt: 'foot',    wname: 'Book of Grievances', base: {mhp:22,atk:13,def:4, spd:9,skl:10,mov:5}, g: {mhp:60,atk:50,def:20,spd:50,skl:55}},   // Princess
   // Pirates (placeholder art: plush sharks). Ducky captains them with a scimitar (art/ducky-*.png).
   pcutlass:  {name: 'Cutlass',        w: 'sword', rng: [1,1], mt: 'foot',    wname: 'Cutlass',           base: {mhp:20,atk:11,def:4, spd:9,skl:8,mov:5}, g: {mhp:60,atk:45,def:25,spd:50,skl:50}},
@@ -258,6 +258,10 @@ const CHARACTERS = {
   chriggle:    {name:'Chriggle Chraggle', faction:'frog', look:'chriggle', cls:'giftgiver', lv:3, stars:3, stats:{mhp:25,atk:13,def:5,spd:6,skl:10,mov:5},   // December banner only
                 retort:'Ho ho ho. Oh dear. Oh dear, oh dear. You\'re on the list.',
                 intro:{title:'The First Gift-Bringer', text:'Friggle Fraggle\'s legendary ancestor, who started the festive gift-giving centuries ago. Nobody can explain how he is still about. He turns up every December with a sack, a beard and a very long list, and nobody has ever dared ask him to leave.'}},
+  // Chapter Four: the Friggliarchy's ★★★ from the tournament (Champions of the Lists banner, after F4-7)
+  tilly:       {name:'Tilly Tealbottom', faction:'frog', look:'tilly', cls:'jouster', lv:9, stars:3, stats:{mhp:25,atk:13,def:7,spd:9,skl:10,mov:7},   // art/tilly-*.png
+                retort:'Tally-ho, darling! Do come closer.',
+                intro:{title:'Pride of the Lily Court', text:'Eleven tournaments, never unseated, until a prince with a lost army knocked her into the sand. She rides a chestnut pony called Biscuit and fights with a hook, because, as she puts it, a lance makes people come to you, and a hook makes them come whether they like it or not.'}},
   // Chapter Four: Ducky's first mates, two white mice who fight as one unit (Pirates of the Satin Sea banner, after R4-7)
   tandy:       {name:'Tandy & Maus', faction:'pirate', look:'tandy', cls:'shipsurgeon', lv:9, stars:3, stats:{mhp:23,atk:9,def:5,spd:11,skl:9,mov:5},   // art/tandy-*.png
                 retort:'Hold still! …No, wriggle. It\'s more fun if you wriggle.',
@@ -322,7 +326,6 @@ const SPEAKERS = Object.assign({
   // Chapter Four
   herald:      {name:'The Herald', faction:'frog', look:'herald'},
   crowd:       {name:'The Crowd', faction:'frog', look:'guard'},
-  tilly:       {name:'Tilly Tealbottom', faction:'frog', look:'tilly'},
   princess:    {name:'Princess', faction:'frog', look:'princess'},
   brine:       {name:'Warden Brine', faction:'frog', look:'toadknight'},   // the lighthouse garrison
   sedge:       {name:'Captain Sedge', faction:'frog', look:'duelist'},     // the rearguard on the coast road
@@ -385,7 +388,7 @@ const STAGE_SIZE = {
 
 // Battle poses are all drawn at the same height in fights; these are drawn bigger (per art key), e.g. a rider whose
 // pose includes the whole horse.
-const BATTLE_SIZE = {bigglerose: 1.3};
+const BATTLE_SIZE = {bigglerose: 1.3, tilly: 1.25};
 
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
@@ -426,7 +429,8 @@ const ART_CROP = {
   condemned: {panel: ['200% auto', '50% 4%'], talk: ['150% auto', '50% 3%']},
   biggle:   {panel: ['200% auto', '42% 8%'], talk: ['150% auto', '40% 6%']},
   biggleginger: {panel: ['190% auto', '44% 9%'], talk: ['145% auto', '44% 7%']},   // Gingerbiggle attire
-  bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},   // Rose Knight attire: mounted, so the face is small and high
+  bigglerose: {panel: ['300% auto', '38% 9%'], talk: ['210% auto', '36% 7%']},
+  tilly:    {panel: ['300% auto', '47% 7%'], talk: ['215% auto', '47% 5%']},   // on horseback: the face is small and high   // Rose Knight attire: mounted, so the face is small and high
   king:     {panel: ['250% auto', '56% 2%'], talk: ['180% auto', '56% 1%']},   // King Friggle Fraggle (battle sprite and map icon saved for later)
   sistersorcerer: {panel: ['170% auto', '50% 9%'], talk: ['135% auto', '50% 7%']},   // Simian Sorcerer attire
   sistercarrot: {panel: ['175% auto', '48% 6%'], talk: ['140% auto', '48% 4%']},   // In a Carrot (log-in 21)

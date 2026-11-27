@@ -157,7 +157,7 @@ const solo = (u, pos) => hasAb(u, 'nobody') && !alliesNear(u, pos, 2).length;   
 const effSpd = (u, pos) => u.spd + (solo(u, pos) ? 3 : 0);
 function calc(a, d, ap, dp){
   if (a.w === 'staff') return {can: false, dmg: 0, hit: 0, crit: 0, dbl: false, tri: 0};
-  const t = ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);
+  const t = d.offbal ? {def: 0, avo: 0} : ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);   // Off Balance: no cover
   let atk = a.atk + (solo(a, ap) ? 3 : 0) + (d.naughty ? 2 : 0) + (a.present ? 3 : 0), def = d.def + t.def + (d.seams || 0), hitB = 0, critB = 0;
   if (besideRae(a, ap)) atk += 1;
   if (besideRae(d, dp)) def += 1;
@@ -168,6 +168,7 @@ function calc(a, d, ap, dp){
   if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
   if (hasAb(a, 'blood') && d.hp < d.mhp/2) atk += 2;   // Blood in the Water
   if (hasAb(d, 'cantcatch') && d.ranFar) hitB -= 25;
+  if (d.offbal) hitB += 20;   // Off Balance (Tilly's Do Come Closer): −20 Avoid
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, atk + tri - def),
@@ -311,7 +312,7 @@ function pullSquare(a, d, ap = a, dp = d){
   for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
     const x = dp.x + dx, y = dp.y + dy;
     if (!inBounds(x, y) || man({x, y}, ap) !== 1) continue;
-    const o = unitAt(x, y); if (o && o !== d) continue;
+    const o = unitAt(x, y); if (o && o !== d && o !== a) continue;
     if (moveCost(d, x, y) >= 99) continue;
     return {x, y};
   }
@@ -323,6 +324,7 @@ function hookPull(a, d, scene){
   const fx = d.x, fy = d.y; d.x = sq.x; d.y = sq.y; d.pulled = true;
   tween(220, t => { d.px = fx + (sq.x - fx)*t; d.py = fy + (sq.y - fy)*t; });
   popup(d, '🪝 Pulled!', '#f0965a'); Sfx.play('step');
+  if (hasAb(a, 'closer')){ d.offbal = true; setTimeout(() => popup(d, '🎀 Off balance!', '#ffb3c6'), 450); }   // Do Come Closer: until its next turn
   if (hasAb(a, 'fuse') && sideOfTeam(d) !== sideOfTeam(a)){ d.fuse = true; setTimeout(() => abilityPop(a, 'fuse'), 500); }   // Lit Fuse: it goes off at the start of the next enemy turn
   if (scene) setTimeout(() => duelPop(d, 'PULLED IN', '#f0965a'), 380);
 }
@@ -458,7 +460,7 @@ function unitHTML(u){
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
-      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.fuse || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
+      ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.fuse || u.offbal || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
     </div></div>
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
@@ -643,6 +645,7 @@ async function startPlayerPhase(){
   if (ob.limit && turn > ob.limit){ finishBattle(false, false, 'limit'); return; }
   phase = 'p'; busy = true; mode = 'busy';
   for (const u of team('p')) u.moved = false;
+  for (const u of units) if (sideOfTeam(u) === 'p') u.offbal = false;   // Off Balance lasts until the pulled unit's next turn
   for (const u of units) if (sideOfTeam(u) === 'p') u.sanct = false;   // the player's Sanctuary lasts until their next turn
   for (const u of units){ if (sideOfTeam(u) === 'p') u.planted = false; else u.planted = (u.movedDist || 0) <= 1; }
   for (const u of units){ u.movedDist = 0; u.guardUsed = false; if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) === 'p')) u.seams = 0; }
@@ -743,6 +746,7 @@ async function spawnReinforcements(){
 async function enemyPhase(){
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
   for (const u of units) if (sideOfTeam(u) !== 'p') u.sanct = false;
+  for (const u of units) if (sideOfTeam(u) !== 'p') u.offbal = false;
   for (const u of units) if (sideOfTeam(u) === 'p') u.planted = (u.movedDist || 0) <= 1;   // Plant the Spear: braced if she barely moved
   for (const u of units){ u.movedDist = 0; u.baitUsed = false; u.guardUsed = false; if (sideOfTeam(u) === 'p') u.hobbled = false; else u.ranFar = false;
     if (u.seams && units.find(h => h.id === u.seamsBy && sideOfTeam(h) !== 'p')) u.seams = 0; }
@@ -825,9 +829,20 @@ async function aiAct(e){
       if (p.sanct) continue;   // Sanctuary: nobody chooses to attack them
       const d = man(pos, p); if (d < e.rng[0] || d > e.rng[1]) continue;
       const A = calc(e, p, pos, p), D = calc(p, e, p, pos), hits = A.dbl ? 2 : 1;
-      let score = A.dmg*A.hit/100*hits;
+      let score = A.dmg*A.hit/100*hits, Dx = D;
       if (A.dmg*hits >= p.hp) score += 40*A.hit/100;
-      if (D.can) score -= D.dmg*D.hit/100*(D.dbl ? 2 : 1)*.4;
+      // a hook plans its pull: readers can't answer once pulled, dragging someone off cover or into friends is worth it,
+      // and a pulled melee fighter will strike back from beside the hook
+      if (e.w === 'hook'){
+        const sq = pullSquare(e, p, pos, p);
+        if (sq){
+          if (p.w === 'staff' || p.rng[1] > 1) Dx = {...D, can: false};
+          else Dx = calc(p, e, sq, pos);
+          const t = ter(p.x, p.y); score += (t.def*2 + t.avo/10)*A.hit/100;
+          score += friends(e).filter(o => o !== e && man(o, sq) === 1).length*3*A.hit/100*(hasAb(e, 'closer') ? 1.5 : 1);
+        }
+      }
+      if (Dx.can) score -= Dx.dmg*Dx.hit/100*(Dx.dbl ? 2 : 1)*.4;
       score += ter(pos.x, pos.y).def*1.5 + (p.lord ? 2 : 0) + (p.vip ? 3 : 0) - map.get(dk).d*.05;
       if (hasAb(p, 'bait')) score += 1000;
       if (p.courier) score += 25;   // the December thieves go for the presents   // Bait, By Choice: anyone who can reach Patch goes for him

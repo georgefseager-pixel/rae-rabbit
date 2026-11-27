@@ -19,7 +19,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | Weapon badges | every map token carries its weapon's badge, coloured by weapon (swords red, axes green, lances blue, bows gold, tomes purple, staves pale teal). Danger view covers each unit with a large badge, ringed red (enemies), gold (yours) or blue (allies) |
 | Triangle arrows | with one of your units selected, each enemy shows a green ▲ (top left of its token) if your weapon beats theirs, a red ▼ if theirs beats yours (tomes over bows included) |
 | Ranges | Bows (and whips) 2 only, so no counterattack up close. Tomes 1–2. Hooks 2 only. Staves heal an adjacent ally (8 + Atk/2) and can't attack |
-| Hooks (Chapter Four on) | On a hit, the target is pulled one square closer (into the square beside the hook). No pull if that square is blocked by a unit or by ground the target can't stand on. A pulled melee fighter strikes back from beside the hook; a pulled ranged one (bow, tome, hook) can't. Reach is checked before every blow, so a pull can also cancel the hook's own follow-up. The forecast says what the pull will do. First used by the pirates' Grapplers (R4-4 on, DK-1); ★/★★ Grapplers on the Pirates of the Satin Sea banner. Fish and shark Grapplers have hook poses (`art/fishhook-battle.png`, `art/sharkhook-battle.png`). Willow reminds you of the rules before R4-4, the first fight with them |
+| Hooks (Chapter Four on) | On a hit, the target is pulled one square closer (into the square beside the hook). No pull if that square is blocked by a unit or by ground the target can't stand on. A pulled melee fighter strikes back from beside the hook; a pulled ranged one (bow, tome, hook) can't. Reach is checked before every blow, so a pull can also cancel the hook's own follow-up. The forecast says what the pull will do. Used by the pirates' Grapplers (R4-4 on, DK-1) and Tilly Tealbottom (F4-3, then the Champions of the Lists banner). Enemy hooks plan their pulls: they favour readers (who can't strike back once pulled), targets on good cover, and landing squares next to their own allies, and they count a pulled melee fighter's counter; ★/★★ Grapplers on the Pirates of the Satin Sea banner. Fish and shark Grapplers have hook poses (`art/fishhook-battle.png`, `art/sharkhook-battle.png`). Willow reminds you of the rules before R4-4, the first fight with them |
 | Experience | Kill: 30 + 3 × level difference (+40 for a boss). Damage without a kill: 10 + level difference. Heal: 12. 100 per level |
 
 ## Terrain (same rules on every map; each theme and map just names it differently)
@@ -79,7 +79,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | armor | 2 | can't enter | Lily Knight, Armoured Guard |
 | bog | 2 | 2 | Club Guard, Marsh Lord (frogs at home in the marsh) |
 | climb | 1 | 3 | monkeys: Acrobat, Nut Thrower, Canopy Heir (Speshul, a bow). Trees and flowers are open ground to them |
-| mounted | 3 | can't enter | Rose Knight (Biggle's attire), Lily Jouster (Tilly Tealbottom, F4-3) |
+| mounted | 3 | can't enter | Rose Knight (Biggle's attire), Hook Rider (Tilly Tealbottom: a hook on horseback, F4-3) |
 
 Mounted units move far on open ground (Rose Knight: Mov 7) but are slowed by forest and blocked by rocks: good on
 open maps and bridges (ford, riverWoods), awkward on rocky ones (ridge, thornHill, ravine).
@@ -133,6 +133,7 @@ and The Lesson, which only help the player.
 | Captain Cornelius | Guard Duty | once a turn, when an enemy attacks an ally next to him, he lunges at the attacker first if they're within 2 squares of him; also as an enemy boss | bodyguard formations; bosses with escorts |
 | Speshul (Powder Monkey) | Lit Fuse | an enemy his hook pulls in gets a lit fuse: at the start of the next enemy turn, 5 damage to it and 2 to each of its allies beside it (it can unstitch) | pull enemies into their own crowd |
 | Tandy & Maus | Two Pairs of Paws | after mending an ally they may scurry 1 more square (tap a blue square, or Stay) | mend the front line, then step back out of reach |
+| Tilly Tealbottom | Do Come Closer | an enemy her hook pulls in is Off Balance until its next turn: no terrain cover, −20 Avoid (also as the F4-3 boss) | pull a target into your allies, then pile in |
 | Ducky | Blood in the Water | while any enemy is below half HP he gets +2 Mov; +2 damage against enemies below half HP (also as an enemy boss, R4-6, R4-7) | finishing wounded enemies, hit-and-run |
 | Chriggle Chraggle | Naughty List | an enemy he hits is marked (📜 on its token) and takes +2 damage from everyone for the rest of the battle | bosses, tanky foes |
 
@@ -204,7 +205,7 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 |---|---|---|
 | Use cover; draw guards off rocks | WL-1 | any map with `M` held by `guard` enemies: ravine, thornHill, forestTrail |
 | Lesson | Taught in | Good places to reuse it | stages that field one weapon type per flank or bridge; bosses with an obvious counter |
-| The ranged triangle and hooks | mentioned by Willow in R2-1 ("unlikely to see one around here"); hooks shown in R4-4 | pirate stages with Grapplers near your readers; pull enemies off forts and bridges |
+| The ranged triangle and hooks | mentioned by Willow in R2-1 ("unlikely to see one around here"); hooks shown in R4-4; on the Friggliarchy side, Biggle explains them before F4-3, where Tilly demonstrates (she waits mid-field with catchers around her) | pirate stages with Grapplers near your readers; pull enemies off forts and bridges |
 | Danger view, choke points, moving together | WL-3 | walls with gaps (republicCamp, flowerField), bridges (ford, riverWoods) |
 | Protect a fragile leader | FD-1 to FD-3 | escort or VIP stages |
 | Choke points at a bridge | BR-3, PT-3 | riverWoods, ford |
@@ -290,6 +291,7 @@ off the rock pools holding the fever's cure); it ends with their own staff, the 
 | Every banner after the first | after each route's Chapter Two finale (R2-4, F2-4) |
 | The monkey banners (Across the Stream / The Loyal Court: monkey ★ and ★★ soldiers, ★★★: Rae's Monkeyland Militia and Flopsy's Simian Sorcerer attires; ★★★ Captain Cornelius and Chansey) | after each route's Chapter Three finale (R3-6, F3-6) |
 | Pirates of the Satin Sea (Raepublic: ★★★ Tandy & Maus and Speshul's Powder Monkey attire; ★ pirate fish, ★★ pirate sharks) | after R4-7 |
+| Champions of the Lists (Friggliarchy: ★★★ Tilly Tealbottom; the usual company) | after F4-7 |
 | Camp (supports) and the Side Stories tab | after the first stage of Chapter Two (R2-1, F2-1), with one tutorial |
 | A character's side stories | one each at Support C, B and A with them |
 | Support S | after all three of that character's side stories |
