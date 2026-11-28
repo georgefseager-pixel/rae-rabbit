@@ -278,7 +278,8 @@ function drawThemedTile(g, x, y, ch, theme){
 const WEAPON_COLOURS = {sword: ['#e8675a', '#9c2a20'], axe: ['#6fc25a', '#2f6e22'], lance: ['#5f9ae8', '#22508f'], bow: ['#f2cc5a', '#9a6e14'],
                         tome: ['#b07ae0', '#5a2e8a'], hook: ['#f0965a', '#9a4a1a'], staff: ['#bfe8e0', '#4f8c84'], whip: ['#f2cc5a', '#9a6e14']};
 function weaponBadge(g, u, x, y, r, ring){
-  const w = u.lash ? 'whip' : u.w, [hi, lo] = WEAPON_COLOURS[w] || WEAPON_COLOURS.sword;
+  const w = u.w,   // a whip is a bow in play, so it wears the bow badge
+  [hi, lo] = WEAPON_COLOURS[w] || WEAPON_COLOURS.sword;
   g.fillStyle = 'rgba(0,0,0,.4)'; ell(g, x + r*.08, y + r*.12, r, r); g.fill();
   const bg = g.createRadialGradient(x - r*.3, y - r*.3, 1, x, y, r); bg.addColorStop(0, hi); bg.addColorStop(1, lo);
   g.fillStyle = bg; ell(g, x, y, r, r); g.fill();
