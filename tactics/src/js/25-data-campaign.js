@@ -23,7 +23,7 @@
 //   allies        () => [spawns]: units on your side that act on their own (vip: true = must survive)
 //   solo / mustDeploy / prepNote / enemyLine   only the leader starts; required units; a note on the Prepare
 //                 screen; the enemy phase's banner text
-//   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, talk: [lines]}
+//   events        mid-battle happenings: {turn, join: character key, at: [x, y], mustSurvive, bonus: {stat: +n} (for that battle only), talk: [lines]}
 //                 at the start of that player turn the character runs onto the field, the lines play, and they fight
 //                 for you; they join the army if the battle is won (skipped if they're already in the army)
 //   star          the stage's bonus challenge (one ★ per stage, worth GACHA.starTokens recruiting currency once;
@@ -203,10 +203,11 @@ const CAMPAIGNS = {
           enemyMods: {mhp: -2, atk: -1, def: -2},   // Def too: Rhubarb on her healing tower must be beatable by Chapter One rabbits. Eases off Chapter One's weakening towards its finale (see recommendedLevel)
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and defeat Rhubarb.',
+          prepNote: 'Little Sister runs onto the field behind your line at the start of turn II, and the battle is lost if she falls. Keep a couple of units back with her: the archers and club guards will go for her first.',
           rename: {rae: 'Rae Rabbit'},
           departs: ['old'], fallsIn: {old: 'F1-4'},   // Old Rabbit stays behind with the rearguard, and falls in F1-4
           // Little Sister runs onto the field at the start of turn II and won't be sent back. She must not fall.
-          events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, talk: [
+          events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, bonus: {mhp: 6, def: 3}, talk: [
             {who: 'narr', text: 'Someone small comes running across the yard behind the line.'},
             {who: 'sister', text: 'Wait! Wait for me!'},
             {who: 'rae', text: 'What are you doing here? I told you to hide in the bunkhouse!'},

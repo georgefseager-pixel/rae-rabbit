@@ -732,6 +732,7 @@ async function battleEvents(){
       // someone already in the army (and standing) runs in as themselves; otherwise they're new
       const have = SAVE.camps[B.campKey].roster.find(r => r.key === ev.join && !r.dead);
       const u = battleUnit(have || recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
+      if (ev.bonus) for (const [k, v] of Object.entries(ev.bonus)){ u[k] += v; if (k === 'mhp'){ u.hp += v; u.shp = u.hp; } }   // for this battle only
       const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u); focusOn(tx, ty);
       // run in from beyond the edge of the map
       const fy = ROWS + .6;
