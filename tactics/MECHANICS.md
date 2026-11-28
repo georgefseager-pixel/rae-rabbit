@@ -237,7 +237,13 @@ per level, HP counted at half). The current line on both routes:
 Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Chapter Four: Raepublic 7 · 7 · 8 · 8 · 8 · 9 · 10; Friggliarchy 7 · 8 · 8 · 8 · 9 · 9 · 10. Side stories of Chapter Three's characters (Speshul, Aurora,
 Cornelius, Chansey; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
 
-Keep new stages on this line: about +½ a level per stage, and +1 for a finale. Expected player levels (from the
+Keep new stages on this line: about +½ a level per stage, and +1 for a finale.
+
+**Level cap** (`levelCap(ck)` in `30-save.js`): each army's units can't go above the recommended level of its next
+uncleared main stage + `LEVEL_CAP_OVER` (3); with every stage cleared, its hardest stage + 3 (13 after Chapter Four).
+So: Ch. 1 caps 4–5, Ch. 2 5–7, Ch. 3 7–10, Ch. 4 10–13. At the cap, battles give no experience (the unit card and
+the battle say so); recruits join at most at the cap; units already above it in older saves keep their level. A new
+chapter raises the cap automatically, as long as its stages are on the recommended line. Expected player levels (from the
 experience rules) run roughly a level above it by late Chapter Two.
 
 ## Chapter Three: Monkeyland

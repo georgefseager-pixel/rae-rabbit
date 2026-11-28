@@ -397,10 +397,13 @@ async function doHeal(h, t){
 async function giveExp(u, xp){
   // The Lesson: +20% near Willow
   if (u.team === 'p' && alliesNear(u, u, 2).some(o => hasAb(o, 'lesson'))) xp = Math.round(xp*1.2);
+  const cap = u.team === 'p' ? levelCap(B.campKey) : Infinity;   // the level cap (30-save.js): no experience at the cap
+  if (u.lv >= cap){ u.exp = 0; popup(u, `Lv ${cap} · cap`, '#c9c2b4'); await wait(300); return; }
   popup(u, `+${xp} EXP`, '#ecc673'); Sfx.play('exp');
   u.exp += xp;
   await wait(450);
-  while (u.exp >= 100){ u.exp -= 100; await levelUp(u); }
+  while (u.exp >= 100 && u.lv < cap){ u.exp -= 100; await levelUp(u); }
+  if (u.lv >= cap) u.exp = 0;
 }
 async function levelUp(u){
   u.lv++;

@@ -142,9 +142,19 @@ function currentStageIndex(campKey){
   return n - 1;
 }
 
+// The level cap rises with the story: LEVEL_CAP_OVER levels above the recommended level of the army's next main stage
+// (or, with every stage cleared, of its hardest). Grinding replays can put you ahead of the story, but not so far that
+// it stops being a fight. Units already above it (older saves) keep their level; they just stop gaining experience.
+const LEVEL_CAP_OVER = 3;
+function levelCap(campKey){
+  const stages = CAMPAIGNS[campKey].stages, real = stages.map((s, i) => ({s, i})).filter(x => !x.s.stub && recommendedLevel(x.s));
+  const next = real.find(x => stageState(campKey, x.i).s !== 'done');
+  const rec = next ? recommendedLevel(next.s) : Math.max(...real.map(x => recommendedLevel(x.s)));
+  return Math.ceil(rec) + LEVEL_CAP_OVER;
+}
 function recruitLevel(campKey){
   const lv = living(campKey).map(r => r.lv);
-  return Math.max(1, Math.floor(lv.reduce((a, b) => a + b, 0)/lv.length) - 1);
+  return Math.min(levelCap(campKey), Math.max(1, Math.floor(lv.reduce((a, b) => a + b, 0)/lv.length) - 1));
 }
 function makeRecruit(campKey, cls, fixedLv){
   const st = SAVE.camps[campKey], faction = CAMPAIGNS[campKey].faction, used = new Set(st.roster.map(r => r.name));

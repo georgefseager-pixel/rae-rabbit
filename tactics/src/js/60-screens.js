@@ -127,7 +127,7 @@ function renderHub(){
     <div class="hero f-${camp.faction}">
       <div class="himg"><img alt="${lord.name}" src="${art}"></div>
       <div><h2>${camp.name}</h2><div class="tagl">${(() => { const sg = camp.stages[currentStageIndex(ck)]; return `${sg.chapter.title}: ${sg.chapter.name}`; })()}</div>
-        <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span></div>
+        <div class="hstats"><span><b>${st.res}</b> ${F.currency}</span><span><b>${gachaState(ck).tokens}</b> ${GACHA_ARMY[ck].currency}</span><span><b>${alive.length}</b> in the army</span><span>Avg Lv <b>${avg}</b></span><span>Level cap <b>${levelCap(ck)}</b></span></div>
         ${energyHTML()}
         <div class="hbtns"><button class="btn" data-go="army" type="button">Army &amp; Armoury</button>
         <button class="btn" data-camp-open type="button" ${campOpen(ck) ? '' : 'disabled'}>${campOpen(ck) ? 'Camp' : 'Camp · after Ch. Two'}</button>
@@ -179,7 +179,9 @@ function recCard(rec, actions = '', extraClass = ''){
       ${rec.attires?.length && !rec.dead ? `<button class="uattire" data-attire-pick="${rec.uid}" type="button">Attire: ${attireOf(rec)?.name || 'Story outfit'} ›</button>` : ''}
       ${CHARACTERS[rec.key]?.intro && rec.stars === 3 ? `<button class="uabout" data-about="${rec.uid}" type="button">${CHARACTERS[rec.key].intro.title} ›</button>` : ''}
       <div class="ustat">${rec.dead ? `<b>${weaponName(rec)}</b>` : `<button class="uwpn" data-arm-pick="${rec.uid}" type="button" aria-label="Change weapon">${weaponIconSVG(weaponOf(rec), 18)}<b>${weaponName(rec)}</b> ›</button>`} · ${WTYPE[c.w]}${rec.lord ? ' · <span class="tick">Leader</span>' : ''}${rec.dead ? ` · <span class="tick">${rec.departed ? departureLabel(rec) : 'Unstitched'}</span>` : ''}</div>
-      <div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div></div>
+      ${(() => { const ck = campOfRec(rec), cap = ck ? levelCap(ck) : Infinity;
+        return rec.lv >= cap ? `<div class="ustat">Level cap ${cap} · <span class="tick">rises as the story goes on</span></div><div class="xp"><i style="width:100%;opacity:.35"></i></div>`
+          : `<div class="ustat">EXP ${rec.exp}/100</div><div class="xp"><i style="width:${rec.exp}%"></i></div>`; })()}</div>
     ${statsGrid(rec)}${actions}</div>`;
 }
 // Release every soldier of a rarity at once: ★ or ★★ recruits who aren't favourites (♥). Unique characters never.
