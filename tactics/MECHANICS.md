@@ -244,7 +244,7 @@ per level, HP counted at half). The current line on both routes:
 
 | | Ch. 1 | Ch. 2 | Each character's side stories |
 |---|---|---|---|
-| Recommended | 1 · 1 · 2 · 2 | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
+| Recommended | 1 · 1 · 2 · 1 (R1-4 eased: Rhubarb stands in front of her healing tower, enemies −2 Def) | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
 
 Chapter Five: Raepublic 10 · 11 · 11 · 11 · 12 · 13 · 13 · 14; Friggliarchy 10 · 11 · 11 · 12 · 12 · 13 · 13 · 14. Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Chapter Four: Raepublic 7 · 7 · 8 · 8 · 8 · 9 · 10; Friggliarchy 7 · 8 · 8 · 8 · 9 · 9 · 10. Side stories of Chapter Three's characters (Speshul, Aurora,
 Cornelius, Chansey; `29b-data-sides-monkeys.js`): 6 · 7 · 8.

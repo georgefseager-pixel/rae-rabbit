@@ -200,7 +200,7 @@ const CAMPAIGNS = {
           star: {type: 'noLosses', text: 'No one is unstitched'},
           requires: ['F1-3'], convergence: 'The Mines',
           objective: {type: 'boss'}, maxDeploy: 6,
-          enemyMods: {mhp: -2, atk: -1},   // eases off Chapter One's weakening towards its finale (see recommendedLevel)
+          enemyMods: {mhp: -2, atk: -1, def: -2},   // Def too: Rhubarb on her healing tower must be beatable by Chapter One rabbits. Eases off Chapter One's weakening towards its finale (see recommendedLevel)
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and defeat Rhubarb.',
           rename: {rae: 'Rae Rabbit'},
@@ -218,9 +218,9 @@ const CAMPAIGNS = {
             {who: 'sister', text: 'I will. I promise!'},
           ]}],
           enemies: () => [
-            E('overseer',4,4,0,'hold',{boss: true, key: 'rhubarb', name: 'Rhubarb', look: 'rhubarb'}),
-            E('toadknight',2,3,0,'guard',{elite: true}), E('croaker',2,4,1,'guard'), E('reed',2,1,1,'guard'),
-            E('lily',2,3,3,'guard',{elite: true}), E('lily',2,4,3,'guard',{elite: true}), E('bruiser',2,1,5), E('bruiser',2,6,5),
+            E('overseer',4,4,1,'hold',{boss: true, key: 'rhubarb', name: 'Rhubarb', look: 'rhubarb'}),   // at the top of the tower stairs, not on the healing tower itself
+            E('lily',2,3,0,'guard'), E('croaker',2,4,1,'guard'), E('reed',2,1,1,'guard'),
+            E('lily',2,3,3,'guard',{elite: true}), E('lily',2,4,3,'guard'), E('bruiser',2,1,5), E('bruiser',2,6,5),
           ],
           pre: [
             {scene: 'yard', place: 'The Overseer\'s Tower'},

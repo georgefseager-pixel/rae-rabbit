@@ -4,6 +4,7 @@ const campTrack = () => CAMPAIGNS[SAVE.current]?.faction === 'frog' ? 'frogCamp'
 function showScreen(id){
   if (SAVE?.current) document.body.dataset.army = SAVE.current;   // the menus' backdrop follows the army being played
   for (const s of SCREENS) $('#' + s).hidden = s !== id;
+  document.body.dataset.screen = id;   // (the update bar stays out of the way during battles)
   if (id !== 'app') Music.want(campTrack());   // battles choose their own music
   if (id !== 'app') window.scrollTo(0, 0);
 }

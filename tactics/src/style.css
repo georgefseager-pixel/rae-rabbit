@@ -978,3 +978,4 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .dab b{font-family:var(--fell);font-weight:400;color:#ffe2a0}.dab span{font-size:14px}
 .dbtns{display:flex;gap:8px}.dbtns .btn{flex:1}
 .dsheet p{margin:0;font-size:14px;line-height:1.45}.dhow{color:#ffd98a;font-family:var(--fell)}
+body[data-screen=app] #updbar{display:none}   /* never over the battle map: it comes back on the menus */
