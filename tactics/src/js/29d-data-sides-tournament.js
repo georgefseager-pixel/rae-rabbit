@@ -51,7 +51,7 @@ Object.assign(SIDE_SETS, {
         enemies: () => [
           E('sharkcapt',12,4,2,'hold',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('phook',10,3,4,'guard'), E('phook',10,6,4,'guard'), E('pgunner',10,2,3,'guard'), E('psawbones',10,7,3,'guard'),
-          E('pcutlass',10,3,7), E('pcutlass',10,6,7), E('pboarder',11,4,9,'charge',{elite: true}), E('pharpoon',10,1,9), E('pcutlass',10,8,9),
+          E('pcutlass',10,3,7), E('pcutlass',10,6,7), E('pboarder',11,4,9,'charge',{elite: true}), E('pharpoon',9,1,9), E('pcutlass',10,8,9),
         ],
         reinforce: () => [{turn: 3, units: [E('phook',10,1,3), E('pcutlass',10,8,3)]}],
         bossTalk: [
@@ -88,7 +88,7 @@ Object.assign(SIDE_SETS, {
         brief: 'Smugglers hold the old tower on the point, where Bess Tealbottom the pirate is said to have hidden her treasure. Cross the causeway and drive off Old Wrasse. Tilly must come.',
         prepNote: 'Tilly must come. The causeway to the tower is only two squares wide, and smugglers with hooks wait at the far end to pull your units in among their friends. They like to pick on readers, who can\'t strike back once pulled. Bows beat hooks.',
         enemies: () => [
-          E('sharkcapt',12,4,1,'hold',{boss: true, flees: true, key: 'wrasse', name: 'Old Wrasse', look: 'mako', fur: 'tiger'}),
+          E('sharkcapt',12,4,1,'hold',{boss: true, flees: true, key: 'wrasse', name: 'Old Wrasse', look: 'mako', fur: 'tiger', bonus: {def: -2, mhp: -6}}),
           E('phook',11,3,2,'guard'), E('phook',11,6,2,'guard'), E('psawbones',11,5,1,'guard'), E('pgunner',11,4,3,'guard'),
           E('pcutlass',11,1,7), E('pboarder',11,7,7), E('phook',11,8,8,'guard'), E('pgunner',11,3,10,'guard'), E('pcutlass',11,0,6),
         ],

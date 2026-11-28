@@ -546,7 +546,7 @@ Object.assign(SIDE_SETS, {
         brief: 'Years ago. Hawthorn is waiting on the ridge for his friends to reach him. Defeat him before they arrive.',
         prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
         enemies: () => [
-          E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger'}),
+          E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger', bonus: {def: -1, mhp: -3}}),
           E('pebbler',5,2,8,'guard'), E('digger',5,5,9,'guard'), E('runner',5,6,7),
         ],
         bossTalk: [

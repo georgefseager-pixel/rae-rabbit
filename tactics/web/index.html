@@ -4864,7 +4864,7 @@ const CAMPAIGNS = {
           brief: 'Ducky\'s three ships are lashed together, with gangplanks across the gaps. Board them, ship by ship, and defeat Ducky.',
           prepNote: 'The gangplanks are one square wide. Only one unit can cross at a time.',
           enemies: () => [
-            E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
+            E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky', bonus: {def: -2, mhp: -4}}),   // on his healing quarterdeck
             E('pboarder',11,5,1,'guard',{key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle', elite: true}),
             E('shipsurgeon',9,6,2,'guard',{key: 'tandy', name: 'Tandy & Maus', look: 'tandy', flees: true, talk: [
               {who: "maus", text: "Tandy, it's the rabbit again!"},
@@ -8683,7 +8683,7 @@ Object.assign(SIDE_SETS, {
         brief: 'Years ago. Hawthorn is waiting on the ridge for his friends to reach him. Defeat him before they arrive.',
         prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
         enemies: () => [
-          E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger'}),
+          E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger', bonus: {def: -1, mhp: -3}}),
           E('pebbler',5,2,8,'guard'), E('digger',5,5,9,'guard'), E('runner',5,6,7),
         ],
         bossTalk: [
@@ -9438,7 +9438,7 @@ Object.assign(SIDE_SETS, {
           E('pharpoon',8,7,14,'charge',{key: 'ally', name: 'Old Nettle', faction: 'pirate'}),
         ],
         enemies: () => [
-          E('toadknight',11,4,1,'hold',{boss: true, flees: true, key: 'croakwell', name: 'Admiral Croakwell', look: 'toadknight'}),
+          E('toadknight',11,4,1,'hold',{boss: true, flees: true, key: 'croakwell', name: 'Admiral Croakwell', look: 'toadknight', bonus: {def: -3, mhp: -6}}),
           E('blade',8,3,7), E('blade',8,6,7), E('lily',8,4,8), E('reed',8,1,8,'guard'), E('reed',8,8,8,'guard'),
           E('bruiser',8,5,9), E('blade',8,3,3), E('lily',8,6,3), E('croaker',8,5,1,'guard'),
         ],
@@ -9575,7 +9575,7 @@ Object.assign(SIDE_SETS, {
           E('pcutlass',8,7,14,'charge',{key: 'ally', name: 'Old Nettle', faction: 'pirate'}),
         ],
         enemies: () => [
-          E('blade',9,4,1,'hold',{boss: true, flees: true, elite: true, key: 'clerk', name: 'Customs Captain Pike', look: 'duelist'}),
+          E('blade',9,4,1,'hold',{boss: true, flees: true, key: 'clerk', name: 'Customs Captain Pike', look: 'duelist'}),
           E('blade',8,3,7), E('blade',8,6,7), E('lily',8,4,8), E('reed',8,1,8,'guard'), E('reed',8,8,8,'guard'), E('bruiser',8,5,9),
         ],
         reinforce: () => [{turn: 2, units: [E('blade',8,2,3), E('bruiser',8,7,3)]}, {turn: 3, units: [E('lily',9,4,9,'charge',{elite: true})]}],
@@ -9713,7 +9713,7 @@ Object.assign(SIDE_SETS, {
         enemies: () => [
           E('sharkcapt',12,4,2,'hold',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('phook',10,3,4,'guard'), E('phook',10,6,4,'guard'), E('pgunner',10,2,3,'guard'), E('psawbones',10,7,3,'guard'),
-          E('pcutlass',10,3,7), E('pcutlass',10,6,7), E('pboarder',11,4,9,'charge',{elite: true}), E('pharpoon',10,1,9), E('pcutlass',10,8,9),
+          E('pcutlass',10,3,7), E('pcutlass',10,6,7), E('pboarder',11,4,9,'charge',{elite: true}), E('pharpoon',9,1,9), E('pcutlass',10,8,9),
         ],
         reinforce: () => [{turn: 3, units: [E('phook',10,1,3), E('pcutlass',10,8,3)]}],
         bossTalk: [
@@ -9750,7 +9750,7 @@ Object.assign(SIDE_SETS, {
         brief: 'Smugglers hold the old tower on the point, where Bess Tealbottom the pirate is said to have hidden her treasure. Cross the causeway and drive off Old Wrasse. Tilly must come.',
         prepNote: 'Tilly must come. The causeway to the tower is only two squares wide, and smugglers with hooks wait at the far end to pull your units in among their friends. They like to pick on readers, who can\'t strike back once pulled. Bows beat hooks.',
         enemies: () => [
-          E('sharkcapt',12,4,1,'hold',{boss: true, flees: true, key: 'wrasse', name: 'Old Wrasse', look: 'mako', fur: 'tiger'}),
+          E('sharkcapt',12,4,1,'hold',{boss: true, flees: true, key: 'wrasse', name: 'Old Wrasse', look: 'mako', fur: 'tiger', bonus: {def: -2, mhp: -6}}),
           E('phook',11,3,2,'guard'), E('phook',11,6,2,'guard'), E('psawbones',11,5,1,'guard'), E('pgunner',11,4,3,'guard'),
           E('pcutlass',11,1,7), E('pboarder',11,7,7), E('phook',11,8,8,'guard'), E('pgunner',11,3,10,'guard'), E('pcutlass',11,0,6),
         ],
@@ -10585,6 +10585,9 @@ function enemyUnit(sp, faction, teamId = 'e'){
   // Armoured enemies (armoured guards, Lily Knights, Biggle as an enemy) lose some Def, more at higher levels: their class
   // Def growth outpaces anything the player's attack can catch up with, and nothing in the game pierces armour.
   if (teamId === 'e' && CLASSES[sp.cls].mt === 'armor') rec.stats.def = Math.max(0, rec.stats.def - (2 + Math.floor(sp.lv/4)));
+  // Every enemy has 1 less Def than its class (with the +10 Hit your side gets in calc): ordinary soldiers fall in one or
+  // two turns when surrounded, instead of three or four (see tools/balance_audit.js, SLOG).
+  if (teamId === 'e') rec.stats.def = Math.max(0, rec.stats.def - 1);
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
@@ -10715,7 +10718,7 @@ function calc(a, d, ap, dp){
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, atk + tri - def),
-    hit: clamp(75 + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
+    hit: clamp((sideOfTeam(a) === 'p' ? 85 : 75) + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
     crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) + critB - Math.floor(d.skl/4), 0, 100),
     dbl: effSpd(a, ap) - effSpd(d, dp) >= 4, tri,
   };
@@ -13588,7 +13591,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'bee251ca7aa8';
+const BUILD_ID = '68cec1b64213';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

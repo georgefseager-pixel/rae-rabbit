@@ -48,6 +48,9 @@ function enemyUnit(sp, faction, teamId = 'e'){
   // Armoured enemies (armoured guards, Lily Knights, Biggle as an enemy) lose some Def, more at higher levels: their class
   // Def growth outpaces anything the player's attack can catch up with, and nothing in the game pierces armour.
   if (teamId === 'e' && CLASSES[sp.cls].mt === 'armor') rec.stats.def = Math.max(0, rec.stats.def - (2 + Math.floor(sp.lv/4)));
+  // Every enemy has 1 less Def than its class (with the +10 Hit your side gets in calc): ordinary soldiers fall in one or
+  // two turns when surrounded, instead of three or four (see tools/balance_audit.js, SLOG).
+  if (teamId === 'e') rec.stats.def = Math.max(0, rec.stats.def - 1);
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
@@ -178,7 +181,7 @@ function calc(a, d, ap, dp){
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, atk + tri - def),
-    hit: clamp(75 + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
+    hit: clamp((sideOfTeam(a) === 'p' ? 85 : 75) + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
     crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) + critB - Math.floor(d.skl/4), 0, 100),
     dbl: effSpd(a, ap) - effSpd(d, dp) >= 4, tri,
   };

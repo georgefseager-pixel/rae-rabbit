@@ -30,6 +30,10 @@ const LV = +(process.env.LV || 0), ONLY = process.env.ONLY;
         for (const a of pu){ place(a, d.x, d.y<ROWS-1?d.y+1:d.y-1); if (a.w==='staff') continue; const A=calc(a,d,a,d); const eff=A.dmg*(A.dbl?2:1); if (eff>best) best=eff; if (A.dmg>=3) good++;
           const D=calc(d,a,d,a); const t=D.dmg*(D.dbl?2:1); if (t/a.mhp>worstTaken){ worstTaken=t/a.mhp; wk=a.name; } }
         const heal = TER[MAP[d.y][d.x]].heal ? Math.round(d.mhp*.2) : 0;
+        // SLOG: surrounded by your four best attackers (each attacking once a turn, by expected damage), how many turns it takes
+        const exp = pu.filter(a=>a.w!=='staff').map(a=>{ place(a, d.x, d.y<ROWS-1?d.y+1:d.y-1); const A=calc(a,d,a,d); return A.dmg*A.hit/100*(A.dbl?2:1); }).sort((x,y)=>y-x);
+        const per = exp.slice(0,4).reduce((x,y)=>x+y,0) - heal, turns = per > 0 ? d.mhp/per : 99;
+        if (turns > 2.5) flags.push('SLOG '+d.name+' '+turns.toFixed(1)+' turns surrounded (top hits '+exp.slice(0,4).map(x=>x.toFixed(1)).join('/')+', hp '+d.mhp+(heal?' heals '+heal:'')+')');
         if (best<=2) flags.push('WALL '+d.name+'(def '+d.def+'+'+TER[MAP[d.y][d.x]].def+') best '+best);
         else if (good<=1) flags.push('HARD '+d.name+' only '+good+' unit(s) do 3+ (best '+best+')');
         if (d.boss && heal && best*1.6 < heal + 2) flags.push('HEALS '+d.name+' best '+best+' vs heal '+heal);

@@ -11,8 +11,8 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 
 | Rule | Detail |
 |---|---|
-| Damage | Atk (+ weapon might) + triangle bonus − (Def + terrain Def) |
-| Hit | 75 + Skl×2 + weapon hit + triangle×15 − (Spd×2 + terrain avoid) |
+| Damage | Atk (+ weapon might) + triangle bonus − (Def + terrain Def); enemies have 1 less Def than their class |
+| Hit | 75 (85 for your side) + Skl×2 + weapon hit + triangle×15 − (Spd×2 + terrain avoid) |
 | Crit | Skl/2 + weapon crit − enemy Skl/4 |
 | Double attack | Spd at least 4 higher than the enemy's |
 | Weapon triangle | Two triangles. Melee: sword beats axe, axe beats lance, lance beats sword. Ranged: tome beats bow, bow beats hook, hook beats tome. A win is +1 damage, +15 hit. Shown as a diagram with `{show: 'triangle'}` |
@@ -256,7 +256,10 @@ Keep new stages on this line: about +½ a level per stage, and +1 for a finale.
 or changed stage. It fields the army a player is guaranteed to have at that point, at the recommended level, against every
 enemy where it stands, and flags walls (nobody does more than 2 damage), bosses who out-heal you on a fort, and enemies
 that take more than 120% of a unit's HP in one exchange. Fragile readers and healers taking big melee hits is expected.
-**Armoured enemies** (mt `armor`: Armoured Guards, Lily Knights, Biggle as an enemy) lose 2 + level/4 Def (enemies only,
+**Hit and Def** (`calc` and `enemyUnit` in `40-battle.js`): your side's attacks (yours and allies') start from 85 Hit,
+enemies' from 75; and every enemy has 1 less Def than its class. Together they mean an ordinary soldier falls in one or
+two turns when surrounded. The audit's SLOG flag measures this: surrounded by your four best attackers, turns to fall
+(expected damage, so misses count); keep it under about 2.5. **Armoured enemies** (mt `armor`: Armoured Guards, Lily Knights, Biggle as an enemy) lose 2 + level/4 Def (enemies only,
 in `enemyUnit`): their Def growth outpaces the player's attack, and nothing pierces armour. Bosses on healing forts may
 need a `bonus: {def: -n}` (Cornelius in R3-6, Biggle in F4-7).
 

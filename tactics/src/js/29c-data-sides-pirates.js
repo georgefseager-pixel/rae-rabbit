@@ -60,7 +60,7 @@ Object.assign(SIDE_SETS, {
           E('pharpoon',8,7,14,'charge',{key: 'ally', name: 'Old Nettle', faction: 'pirate'}),
         ],
         enemies: () => [
-          E('toadknight',11,4,1,'hold',{boss: true, flees: true, key: 'croakwell', name: 'Admiral Croakwell', look: 'toadknight'}),
+          E('toadknight',11,4,1,'hold',{boss: true, flees: true, key: 'croakwell', name: 'Admiral Croakwell', look: 'toadknight', bonus: {def: -3, mhp: -6}}),
           E('blade',8,3,7), E('blade',8,6,7), E('lily',8,4,8), E('reed',8,1,8,'guard'), E('reed',8,8,8,'guard'),
           E('bruiser',8,5,9), E('blade',8,3,3), E('lily',8,6,3), E('croaker',8,5,1,'guard'),
         ],
@@ -197,7 +197,7 @@ Object.assign(SIDE_SETS, {
           E('pcutlass',8,7,14,'charge',{key: 'ally', name: 'Old Nettle', faction: 'pirate'}),
         ],
         enemies: () => [
-          E('blade',9,4,1,'hold',{boss: true, flees: true, elite: true, key: 'clerk', name: 'Customs Captain Pike', look: 'duelist'}),
+          E('blade',9,4,1,'hold',{boss: true, flees: true, key: 'clerk', name: 'Customs Captain Pike', look: 'duelist'}),
           E('blade',8,3,7), E('blade',8,6,7), E('lily',8,4,8), E('reed',8,1,8,'guard'), E('reed',8,8,8,'guard'), E('bruiser',8,5,9),
         ],
         reinforce: () => [{turn: 2, units: [E('blade',8,2,3), E('bruiser',8,7,3)]}, {turn: 3, units: [E('lily',9,4,9,'charge',{elite: true})]}],

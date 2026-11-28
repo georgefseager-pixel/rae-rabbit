@@ -1129,7 +1129,7 @@ const CAMPAIGNS = {
           brief: 'Ducky\'s three ships are lashed together, with gangplanks across the gaps. Board them, ship by ship, and defeat Ducky.',
           prepNote: 'The gangplanks are one square wide. Only one unit can cross at a time.',
           enemies: () => [
-            E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky'}),
+            E('sharkcapt',12,4,1,'hold',{boss: true, key: 'ducky', name: 'Ducky', look: 'ducky', bonus: {def: -2, mhp: -4}}),   // on his healing quarterdeck
             E('pboarder',11,5,1,'guard',{key: 'barnacle', name: 'Bosun Barnacle', look: 'barnacle', elite: true}),
             E('shipsurgeon',9,6,2,'guard',{key: 'tandy', name: 'Tandy & Maus', look: 'tandy', flees: true, talk: [
               {who: "maus", text: "Tandy, it's the rabbit again!"},
