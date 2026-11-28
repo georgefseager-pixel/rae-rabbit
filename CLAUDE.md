@@ -3,6 +3,8 @@
 - The game lives in `tactics/`. Build with `python3 tactics/tools/build.py` (it writes `tactics/index.html`).
 - **Before designing or changing a stage or side story, read `tactics/MECHANICS.md`**: terrain, AI, objectives, stars,
   stage fields, what has been taught where, and the recommended-level line. Reuse mechanics across stages.
+- **Before writing any story text, dialogue, supports or descriptions, read `tactics/WRITING.md`** (plain, clear prose in
+  each character's own voice; no quippy button endings, aphorisms or airy riffing).
 - **Keep `tactics/MECHANICS.md` up to date** whenever a mechanic is added or a stage starts using one.
 - Art and data conventions are in `tactics/README.md` and in the comments at the top of each `tactics/src/js/*.js` data file.
 - The installable game is hosted at https://georgefseager-pixel.github.io/rae-rabbit/toy-wars/ from the `toy-wars/` folder on

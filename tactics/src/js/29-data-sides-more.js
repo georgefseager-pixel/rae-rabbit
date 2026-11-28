@@ -584,11 +584,11 @@ Object.assign(SIDE_SETS, {
     quests: [
       {
         id: 'EX-1', title: 'Outlaws', map: 'forestTrail', enemyFaction: 'frog', enemyLine: 'FRAGGLE\'S LOYALISTS RAID', mustDeploy: ['executioner'], yields: true, enemyMods: {},
-        teaser: 'Fraggle\'s old guard have turned outlaw, and they\'re raiding the villages.',
+        teaser: 'Some of Fraggle\'s guard have turned outlaw, and they\'re raiding the villages.',
         star: {type: 'noLosses', text: 'No one is unstitched'},
         objective: {type: 'boss'}, maxDeploy: 6,
         deploy: [[4,0],[5,0],[3,0],[6,0],[4,1],[5,1]],
-        brief: 'Fraggle\'s loyal guard have turned outlaw since the hollow. Bring in their captain, Gloamjaw, for sentence. The Executioner must come.',
+        brief: 'A band of Fraggle\'s guard have turned outlaw in the woods. Bring in their captain, Gloamjaw, for sentence. The Executioner must come.',
         prepNote: 'The Executioner must come. The outlaws are frogs (grey).',
         enemies: () => [
           E('gaxe',3,4,14,'hold',{boss: true, flees: true, elite: true, key: 'gloamjaw', name: 'Gloamjaw', look: 'blackguard'}),
