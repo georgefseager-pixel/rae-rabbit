@@ -47,6 +47,7 @@ function enemyUnit(sp, faction, teamId = 'e'){
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
   // Armoured enemies (armoured guards, Lily Knights, Biggle as an enemy) lose some Def, more at higher levels: their class
   // Def growth outpaces anything the player's attack can catch up with, and nothing in the game pierces armour.
+  const before = {...rec.stats};   // (what the enemy-only cuts below take off: a unit talked round gets it back)
   if (teamId === 'e' && CLASSES[sp.cls].mt === 'armor') rec.stats.def = Math.max(0, rec.stats.def - (2 + Math.floor(sp.lv/4)));
   // Every enemy has 1 less Def than its class (with the +10 Hit your side gets in calc): ordinary soldiers fall in one or
   // two turns when surrounded, instead of three or four (see tools/balance_audit.js, SLOG).
@@ -56,7 +57,8 @@ function enemyUnit(sp, faction, teamId = 'e'){
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, defects: !!sp.defects, talk, talked: false,
+  const cuts = {}; for (const k of ['mhp', 'atk', 'def', 'spd', 'skl']){ const d = before[k] + (sp.elite && k !== 'mhp' ? 1 : sp.elite ? 2 : 0) - rec.stats[k]; if (d > 0) cuts[k] = d; }
+  return Object.assign(battleUnit(rec, teamId), {cuts,ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, defects: !!sp.defects, talk, talked: false,
     parley: sp.parley || null, squad: sp.squad || null, fleeWord: sp.fleeWord || null});   // parley: can be talked round (Chapter Five)
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
@@ -78,7 +80,7 @@ function runBattle(campKey, ch, records, opts = {}){
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
        objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null, bells: {p: 0, e: 0},
        events: opts.replay ? (ch.events || []).filter(ev => ev.defect).map(ev => ({turn: ev.turn, defect: ev.defect, popup: ev.popup})) : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
-  mapDef = MAPS[ch.map]; MAP = [...mapDef.rows]; ROWS = MAP.length;   // a copy: the tide can change it COLS = MAP[0].length;
+  mapDef = MAPS[ch.map]; MAP = [...mapDef.rows]; ROWS = MAP.length; COLS = MAP[0].length;   // MAP is a copy: the tide can change it
   nextId = 1; units = [];
   // solo: only the leader starts on the field; the rest arrive with the stage's twist
   const starting = ch.solo ? records.filter(r => r.lord) : records;
@@ -562,7 +564,8 @@ function panelTalk(u, t){
 async function doTalk(u, t){
   if (t.parley.talk) await talk(t.parley.talk);
   const squad = units.filter(o => o.team === 'e' && !o.dead && (o === t || (t.squad && o.squad === t.squad)));
-  for (const o of squad){ o.team = 'a'; o.ai = 'charge'; o.boss = false; o.flees = false; o.talk = null; o.parley = null; popup(o, 'Changes sides!', '#9fd0ff'); }
+  for (const o of squad){ o.team = 'a'; o.ai = 'charge'; o.boss = false; o.flees = false; o.talk = null; o.parley = null; popup(o, 'Changes sides!', '#9fd0ff');
+    for (const [k, v] of Object.entries(o.cuts || {})){ o[k] += v; if (k === 'mhp'){ o.hp += v; o.shp = o.hp; } } o.cuts = {}; }   // allies don't keep the enemy-only cuts
   B.talked = (B.talked || 0) + 1; Sfx.play('coin'); updateDanger(); await wait(500);
 }
 const drawTargets = u => !hasAb(u, 'drawback') ? [] : friends(u).filter(o => { if (o === u || man(u, o) !== 1) return false;
@@ -585,7 +588,7 @@ function startTargeting(kind){
   mode = 'target'; tmode = kind;
   targets = kind === 'attack' ? enemiesInRange(sel) : kind === 'draw' ? drawTargets(sel) : kind === 'talk' ? parleyTargets(sel) : healTargets(sel);
   if (targets.length === 1) chooseTarget(targets[0]);
-  else setPanel(`<div class="hint">Tap a highlighted ${kind === 'attack' ? 'enemy' : 'ally'}.</div><div class="acts"><button class="btn" data-act="back" type="button">Back</button></div>`);
+  else setPanel(`<div class="hint">Tap a highlighted ${kind === 'attack' || kind === 'talk' ? 'enemy' : 'ally'}.</div><div class="acts"><button class="btn" data-act="back" type="button">Back</button></div>`);
 }
 function chooseTarget(t){ fc = t; tmode === 'attack' ? panelForecast(sel, t) : tmode === 'draw' ? panelDraw(sel, t) : tmode === 'talk' ? panelTalk(sel, t) : panelHeal(sel, t); }
 function panelDraw(u, t){
@@ -605,7 +608,7 @@ async function afterAction(){
   mode = 'idle'; updateDanger();
   if (checkEnd()) return;
   panelIdle(); refreshTop();
-  if (team('p').every(p => p.moved)){ await wait(350); enemyPhase(); }
+  if (team('p').every(p => p.moved)){ busy = true; refreshTop(); await wait(350); if (B && !B.done && phase === 'p') enemyPhase(); else busy = false; }   // busy: no End Turn tap in the gap
 }
 async function finishUnit(u){ u.moved = true; clearSel(); await afterAction(); }
 
@@ -689,7 +692,9 @@ async function tideTurn(){
   if (rise){
     toast('🌊 The tide comes in!'); Sfx.play('flee');
     for (const u of units) if (!u.dead && MAP[u.y][u.x] === 'W'){
-      const [nx, ny] = freeTileNear(u.x, u.y); await moveAlong(u, [K(u.x, u.y), K(nx, ny)]);
+      const seen = new Set([K(u.x, u.y)]), q = [[u.x, u.y]]; let to = null;   // nearest square this unit can stand on
+      while (q.length && !to){ const [cx, cy] = q.shift(); for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx = cx + dx, ny = cy + dy, k = K(nx, ny); if (!inBounds(nx, ny) || seen.has(k)) continue; seen.add(k); q.push([nx, ny]); if (!to && moveCost(u, nx, ny) < 99 && !unitAt(nx, ny)) to = [nx, ny]; } }
+      const [nx, ny] = to || freeTileNear(u.x, u.y); await moveAlong(u, [K(u.x, u.y), K(nx, ny)]);
       const h = Math.min(3, u.hp - 1); u.hp -= h; u.shp = u.hp; popup(u, `🌊 Swept! −${h}`, '#9fd0ff'); await wait(200);
     }
   } else toast('The tide goes out.');
@@ -735,7 +740,7 @@ async function battleEvents(){
       // someone already in the army (and standing) runs in as themselves; otherwise they're new
       const have = SAVE.camps[B.campKey].roster.find(r => r.key === ev.join && !r.dead);
       const u = battleUnit(have || recordFor(ev.join), 'p'); u.vip = !!ev.mustSurvive;
-      if (ev.bonus) for (const [k, v] of Object.entries(ev.bonus)){ u[k] += v; if (k === 'mhp'){ u.hp += v; u.shp = u.hp; } }   // for this battle only
+      if (ev.bonus){ u.eventBonus = {...ev.bonus}; for (const [k, v] of Object.entries(ev.bonus)){ u[k] += v; if (k === 'mhp'){ u.hp += v; u.shp = u.hp; } } }   // for this battle only (taken off again in playChapter)
       const [tx, ty] = freeTileNear(...ev.at); place(u, tx, ty); units.push(u); focusOn(tx, ty);
       // run in from beyond the edge of the map
       const fy = ROWS + .6;
@@ -791,7 +796,7 @@ async function litFuses(){
     }
     await wait(650);
     for (const [o] of hits) if (o.hp <= 0 && !o.dead){
-      if (o.flees) popup(o, B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
+      if (o.flees) popup(o, o.fleeWord ? o.fleeWord + '!' : B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
       if (o.boss && !B.bossBy) B.bossBy = 'speshul';
       await tween(380, t => { o.alpha = 1 - t; }); o.dead = true; if (o.team === 'e') B.kills++;
     }

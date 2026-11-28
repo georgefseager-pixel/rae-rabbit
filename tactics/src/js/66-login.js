@@ -20,7 +20,14 @@ const ownsAttire = ([ck, id]) => SAVE.camps[ck].roster.some(r => r.key === ATTIR
 // The reward for log-in n (0-based). After the track, its second week repeats with currency on the milestone.
 function loginEntry(n){
   const e = n < LOGIN.track.length ? LOGIN.track[n] : {...LOGIN.track[7 + (n - LOGIN.track.length) % 7], attire: null};
-  return e.attire && !ownsAttire(e.attire) ? e : e.instead ? {tokens: e.instead, milestone: true} : e;
+  // a costume whose wearer hasn't joined yet pays the currency instead; the costume itself arrives when they join
+  const wearerHere = e.attire && SAVE.camps[e.attire[0]].roster.some(r => r.key === ATTIRES[e.attire[1]].char);
+  return e.attire && wearerHere && !ownsAttire(e.attire) ? e : e.instead ? {tokens: e.instead, milestone: true} : e;
+}
+// Costumes from log-ins already claimed, for wearers who have joined since (called on every save)
+function grantLoginCostumes(){
+  const n = SAVE?.login?.claimed || 0;
+  LOGIN.track.forEach((e, k) => { if (k < n && e.attire && !ownsAttire(e.attire)) grantAttires(e.attire[0], [e.attire[1]]); });
 }
 const isMilestone = n => n % 7 === 6;
 const loginCk = n => n % 2 === 0 ? 'rae' : 'frog';   // which story's currency log-in n (0-based) gives

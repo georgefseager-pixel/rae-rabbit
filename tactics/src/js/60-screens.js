@@ -169,7 +169,7 @@ function sortRecs(list){
 const sortBarHTML = () => `<div class="sortbar" role="group" aria-label="Sort the roster"><span>Sort</span>${Object.entries(SORTS).map(([k, l]) =>
   `<button class="btn${rosterSort === k ? ' on' : ''}" data-sort="${k}" type="button" aria-pressed="${rosterSort === k}">${l}</button>`).join('')}</div>`;
 // re-render without jumping back to the top of the list
-function rerenderKeepScroll(){ const y = window.scrollY; if (!$('#prep').hidden) renderPrep(); else renderArmy(); window.scrollTo(0, y); }
+function rerenderKeepScroll(){ const y = window.scrollY; if (!$('#prep').hidden) openPrep(prep.ck, prep.i); else renderArmy(); window.scrollTo(0, y); }
 
 function recCard(rec, actions = '', extraClass = ''){
   const c = CLASSES[clsOf(rec)];
@@ -327,6 +327,7 @@ async function playChapter(){
     const r = u.rec;
     r.lv = u.lv; r.exp = u.exp;
     r.stats = {mhp: u.mhp, atk: u.atk - u.tb, def: u.def, spd: u.spd, skl: u.skl, mov: u.mov};
+    for (const [k, v] of Object.entries(u.eventBonus || {})) r.stats[k] -= v;   // a story event's boost was for that battle only
     const m = attireOf(r)?.mods; if (m) for (const k in m) r.stats[k] -= m[k];   // the attire's changes aren't kept
   }
   // their weapon stays in the Armoury. Training (spar) and seasonal event stories knock nobody out for good.
@@ -392,7 +393,7 @@ document.addEventListener('click', e => {
   if (d.camp){ if (d.camp !== SAVE.current) hubTab = 'main'; SAVE.current = d.camp; saveGame(); renderHub(); }
   else if (d.go === 'hub') renderHub();
   else if (d.go === 'army'){ armyReturn = d.from || 'hub'; renderArmy(); }
-  else if (d.go === 'prep') renderPrep();
+  else if (d.go === 'prep') openPrep(prep.ck, prep.i);
   else if (d.go === 'dex') renderDex();
   else if (d.dex) openDexEntry(d.dex);
   else if (d.dexjump) $('#dexsec-' + d.dexjump)?.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -415,7 +416,12 @@ document.addEventListener('click', e => {
   else if (d.play !== undefined) openPrep(SAVE.current, d.play.startsWith('s') ? d.play : +d.play);
   else if (d.hubtab){ hubTab = d.hubtab; renderHub(); }
   else if (d.sidego){ SAVE.current = d.sidego; hubTab = 'side'; saveGame(); renderHub(); }
-  else if ('begin' in d){ if (energyGate()) playChapter(); }
+  else if ('begin' in d){
+    // the leader and anyone the stage needs must be standing (stitched up) before it can start
+    const ch = stageAt(prep.ck, prep.i), roster = SAVE.camps[prep.ck].roster;
+    const missing = roster.filter(r => r.dead && !r.departed && (isLead(ch, r) || (ch.mustDeploy || []).includes(r.key)));
+    if (missing.length){ toast(`${missing.map(r => r.name).join(' and ')} must be stitched up first.`); return; }
+    if (energyGate()) playChapter(); }
   else if ('retry' in d) openPrep(prep.ck, prep.i);
   else if (d.fav){ const rec = stOf().roster.find(r => r.uid === d.fav); if (rec){ rec.fav = !rec.fav; saveGame(); rerenderKeepScroll(); } }
   else if (d.sort){ rosterSort = d.sort; try { localStorage.setItem('raepublic-sort', d.sort); } catch (e){} rerenderKeepScroll(); }
