@@ -12323,10 +12323,11 @@ function eventNodeHTML(ck, s, j){
     <div class="evbal">You have <b>${gachaState(ck)[E_.key] || 0} ${cur.name}</b>${GACHA_ARMY[ck].banners.some(b => b.event === s.event) ? ' for the seasonal recruiting banner' : ', saved for the seasonal banner to come'}.</div></div>`;
 }
 function sidesHTML(ck){
-  const sets = Object.entries(SIDE_SETS).filter(([, set]) => set.camp === ck);
+  // only the characters who have joined this army (story or recruiting): nobody else's stories are shown, not even locked
+  const sets = Object.entries(SIDE_SETS).filter(([key, set]) => set.camp === ck && (SAVE.debugUnlock || SAVE.camps[ck].roster.some(r => r.key === key)));
   const sides = CAMPAIGNS[ck].sides;
   const seasonal = sides.map((s, j) => s.event && sideState(ck, j).s !== 'locked' ? eventNodeHTML(ck, s, j) : '').join('');
-  if (!sets.length) return seasonal || '<div class="hint">No side stories on this route yet.</div>';
+  if (!sets.length) return seasonal || '<div class="hint">Side stories open for each unique member of the army as they join.</div>';
   return `${seasonal}<div class="hint">Every unique member of the army has three side stories. One opens with each support rank (C, B and A) you reach with them at the Camp. Clear all three for a final conversation, Support S. Their rewards are extras: the main story never needs them.</div>
     ${sets.map(([key, set]) => { const done = sidesDone(ck, key), rank = supportRank(ck, key);
       const sTag = rank >= 4 ? '<span class="chip ok">Support S reached</span>' : done === 3 ? '<span class="chip conv">Support S ready at the Camp</span>' : `<span class="chip">Support S: clear all three</span>`;
@@ -13584,7 +13585,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '768938d0b24d';
+const BUILD_ID = 'a39485707bee';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
