@@ -273,7 +273,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .hero.f-frog{background:radial-gradient(ellipse at 20% 30%, rgba(120,170,60,.42), transparent 65%), linear-gradient(180deg,rgba(36,58,20,.82),rgba(12,20,8,.92)), var(--bg-frog, none) 50% 40%/cover no-repeat, #16200e}
 .himg{height:164px;align-self:end;display:flex;align-items:flex-end;justify-content:center;min-width:0}
 .himg img{display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 10px 12px rgba(0,0,0,.6))}
-.hero h2{font-family:var(--stencil);font-size:clamp(21px,7.6vw,28px);overflow-wrap:anywhere;line-height:1;margin:0;letter-spacing:.03em;text-wrap:balance}
+.hero h2{font-family:var(--stencil);font-size:clamp(17px,6.4vw,28px);overflow-wrap:normal;word-break:keep-all;hyphens:none;line-height:1;margin:0;letter-spacing:.03em;text-wrap:balance}
 .hero .tagl{font-family:var(--fell-i);font-style:italic;font-size:17px;color:var(--brass-hi);margin:6px 0 10px}
 .hero .hstats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin-bottom:10px}
 .hero .hstats b{color:var(--cream);font-weight:500}
@@ -866,6 +866,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 /* ---------- Installed app: save backup and updates (68-app.js) ---------- */
 .tsave{display:flex;gap:8px;justify-content:center}
 .tbtns .tsave .btn{font-size:12px;padding:6px 12px;min-height:34px;flex:1;opacity:.85}
+.tbtns .tupd{font-size:12px;padding:6px 12px;min-height:34px;opacity:.85}
 #updbar{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9000;
   max-width:calc(100% - 32px);padding:12px 18px;border-radius:12px;border:1.5px solid #ecc673;background:linear-gradient(180deg,#3a2a14,#1e150a);
   color:#f3e7cb;font:15px 'Alegreya Sans',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.6);cursor:pointer}
@@ -1088,6 +1089,7 @@ body[data-screen=app] #updbar{display:none}   /* never over the battle map: it c
         <button class="btn sound" data-sound type="button">♪ On</button>
         <div class="tsave"><button class="btn" id="backupBtn" type="button">Back up save</button><button class="btn" id="restoreBtn" type="button">Restore save</button>
           <input type="file" id="restoreFile" accept=".json,application/json" hidden></div>
+        <button class="btn tupd" id="updBtn" type="button">Check for updates</button>
       </div>
     </div>
   </div>
@@ -13635,7 +13637,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '1d7c39f0ce98';
+const BUILD_ID = '85411fe59f3f';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
@@ -13657,7 +13659,7 @@ async function restoreSave(file){
   } catch (e){ toast('That file isn\'t a Toy Wars save.'); }
 }
 // (only on the hosted app: the Claude preview can't hand out files, and its save lives in the preview)
-if (!hosted()) document.querySelector('.tsave')?.remove();
+if (!hosted()){ document.querySelector('.tsave')?.remove(); document.querySelector('#updBtn')?.remove(); }
 else {
 $('#backupBtn').addEventListener('click', backupSave);
 $('#restoreBtn').addEventListener('click', e => {
@@ -13675,17 +13677,26 @@ if (hosted()){
   navigator.serviceWorker?.register('./sw.js').catch(() => {});
   // New versions: version.json names the newest build. When it differs, fetch the new game into the offline copy,
   // then offer to switch (never in the middle of a battle without asking).
-  let offered = false;
-  async function checkForUpdate(){
-    if (offered || !navigator.onLine) return;
+  // The query strings get past GitHub's own caching (it can keep serving the old files for ten minutes), and the
+  // downloaded game is only offered once it really is the new build.
+  let offered = false, checking = false;
+  async function checkForUpdate(manual){
+    if (offered){ if (manual) toast('A new version is ready: tap the bar at the top.'); return; }
+    if (checking) return;
+    if (!navigator.onLine){ if (manual) toast('You\'re offline. Connect to the internet to check for updates.'); return; }
+    checking = true;
     try {
-      const v = await (await fetch('./version.json', {cache: 'no-store'})).json();
-      if (!v?.build || v.build === BUILD_ID) return;
-      const fresh = await fetch('./', {cache: 'reload'}); if (!fresh.ok) return;
-      const cache = await caches.open('toy-wars'); await cache.put('./', fresh.clone());
+      const v = await (await fetch(`./version.json?t=${Date.now()}`, {cache: 'no-store'})).json();
+      if (!v?.build || v.build === BUILD_ID){ if (manual) toast('You have the newest version.'); return; }
+      if (manual) toast('Downloading the new version…');
+      const fresh = await fetch(`./?v=${v.build}`, {cache: 'reload'}); if (!fresh.ok) throw new Error('download failed');
+      const text = await fresh.text(); if (!text.includes(v.build)) throw new Error('got an old copy');
+      const cache = await caches.open('toy-wars'); await cache.put('./', new Response(text, {headers: {'Content-Type': 'text/html; charset=utf-8'}}));
       offered = true; showUpdateBar();
-    } catch (e){}
+    } catch (e){ if (manual) toast('Couldn\'t download the update just now. Try again in a few minutes.'); }
+    finally { checking = false; }
   }
+  $('#updBtn')?.addEventListener('click', () => checkForUpdate(true));
   function showUpdateBar(){
     const bar = document.createElement('button'); bar.id = 'updbar'; bar.type = 'button';
     bar.innerHTML = '<b>A new version is ready.</b> Tap to update.';
