@@ -1252,8 +1252,8 @@ const CAMPAIGNS = {
           ],
           reinforce: () => [{turn: 3, units: [E('blade',11,3,0), E('lily',11,8,0)]}],
           bossTalk: [
-            {who: "sedge", text: "You again. Last time we met at this hut, I was on my way home. This time I've got Princess behind me, and I'm staying."},
-            {who: "rae", text: "Then take her a message, Captain. Tell her my answer is no."},
+            {who: "sedge", text: "You again. I told you on this road, rabbit: home is somewhere you'll never have. Now Princess has come to make sure of it."},
+            {who: "rae", text: "I have a home now, Captain. That's why she's here. Take her my answer: no."},
           ],
           pre: [
             {scene: "shore", place: "The Longhouse · Night"},
