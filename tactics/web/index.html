@@ -315,7 +315,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .ucard{display:grid;grid-template-columns:70px 1fr;gap:12px;background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:10px;padding:10px;
   outline:1px dashed rgba(239,227,200,.18);outline-offset:-4px;min-width:0}
 .f-frog .ucard{background:linear-gradient(180deg,#2c3e1e,#1a260f)}
-.ucard.dead{filter:grayscale(1);opacity:.5}
+.ucard.dead{opacity:1}.ucard.dead>:not(.uacts){filter:grayscale(1);opacity:.5}   /* the fallen are greyed out, but their Stitch up button stays bright */
 .ucard.pick{cursor:pointer}
 .ucard.pick.on{outline:2px solid var(--brass-hi);outline-offset:-2px;box-shadow:0 0 0 3px rgba(236,198,115,.2)}
 .ucard .stats{grid-column:1/-1}
@@ -12430,7 +12430,7 @@ function renderArmy(){
   showScreen('army');
 }
 // Fallen units can be stitched back up for money: more for higher levels. Story departures can't.
-const STITCH = {base: 50, perLevel: 10};
+const STITCH = {base: 25, perLevel: 5};
 const stitchCost = rec => STITCH.base + STITCH.perLevel*rec.lv;
 function stitchUp(uid){
   const st = stOf(), rec = st.roster.find(r => r.uid === uid);
@@ -12483,6 +12483,9 @@ function renderPrep(){
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     ${sortBarHTML()}
     <div class="ulist">${sortRecs(order).map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
+    ${(() => { const fallen = SAVE.camps[ck].roster.filter(r => r.dead && !r.departed && canDeploy(ch, r)), res = SAVE.camps[ck].res, cur = FACTIONS[camp.faction].currency;
+      return fallen.length ? `<div class="sec">Unstitched</div><div class="hint">Stitch them back up to bring them on this battle.</div><div class="ulist">${sortRecs(fallen).map(r => recCard(r,
+        `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${cur}</button></div>`)).join('')}</div>` : ''; })()}
     <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">${beginLabel()}</button></div>
   </div>`;
   showScreen('prep');
@@ -13574,7 +13577,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '88931d99a919';
+const BUILD_ID = 'd111070009d9';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

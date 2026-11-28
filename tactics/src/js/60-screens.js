@@ -217,7 +217,7 @@ function renderArmy(){
   showScreen('army');
 }
 // Fallen units can be stitched back up for money: more for higher levels. Story departures can't.
-const STITCH = {base: 50, perLevel: 10};
+const STITCH = {base: 25, perLevel: 5};
 const stitchCost = rec => STITCH.base + STITCH.perLevel*rec.lv;
 function stitchUp(uid){
   const st = stOf(), rec = st.roster.find(r => r.uid === uid);
@@ -270,6 +270,9 @@ function renderPrep(){
     <div class="sec">Deploy ${prep.picks.size} of ${max}</div>
     ${sortBarHTML()}
     <div class="ulist">${sortRecs(order).map(r => recCard(r, '', 'pick' + (prep.picks.has(r.uid) ? ' on' : ''))).join('')}</div>
+    ${(() => { const fallen = SAVE.camps[ck].roster.filter(r => r.dead && !r.departed && canDeploy(ch, r)), res = SAVE.camps[ck].res, cur = FACTIONS[camp.faction].currency;
+      return fallen.length ? `<div class="sec">Unstitched</div><div class="hint">Stitch them back up to bring them on this battle.</div><div class="ulist">${sortRecs(fallen).map(r => recCard(r,
+        `<div class="uacts"><button class="btn primary" data-stitch="${r.uid}" type="button" ${res < stitchCost(r) ? 'disabled' : ''}>Stitch up · ${stitchCost(r)} ${cur}</button></div>`)).join('')}</div>` : ''; })()}
     <div class="sticky"><button class="btn" data-go="army" data-from="prep" type="button">Army</button><button class="btn primary" data-begin type="button">${beginLabel()}</button></div>
   </div>`;
   showScreen('prep');

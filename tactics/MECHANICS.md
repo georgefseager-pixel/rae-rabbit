@@ -372,6 +372,8 @@ Captains Moss, Rush, Pickerel, Lotus and Wort.
 
 ## Progression and unlocks
 
+Stitching up (`STITCH` in `60-screens.js`): a unit who falls in a battle you win is unstitched. It can be stitched back up for 25 + 5 per level of its money (Thread / Crowns), on the Army screen or straight from the Prepare screen, where the fallen are listed under the units you can deploy. Story departures can't be stitched up.
+
 | What | Opens |
 |---|---|
 | Recruiting | after each route's Chapter One finale (R1-4, F1-4) |

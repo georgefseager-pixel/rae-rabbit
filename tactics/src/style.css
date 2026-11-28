@@ -268,7 +268,7 @@ body{color:var(--cream);font-family:var(--body);overflow:hidden;touch-action:man
 .ucard{display:grid;grid-template-columns:70px 1fr;gap:12px;background:linear-gradient(180deg,var(--navy2),var(--navy));border-radius:10px;padding:10px;
   outline:1px dashed rgba(239,227,200,.18);outline-offset:-4px;min-width:0}
 .f-frog .ucard{background:linear-gradient(180deg,#2c3e1e,#1a260f)}
-.ucard.dead{filter:grayscale(1);opacity:.5}
+.ucard.dead{opacity:1}.ucard.dead>:not(.uacts){filter:grayscale(1);opacity:.5}   /* the fallen are greyed out, but their Stitch up button stays bright */
 .ucard.pick{cursor:pointer}
 .ucard.pick.on{outline:2px solid var(--brass-hi);outline-offset:-2px;box-shadow:0 0 0 3px rgba(236,198,115,.2)}
 .ucard .stats{grid-column:1/-1}
