@@ -390,6 +390,14 @@ function render(now){
     ctx.setLineDash([T*.12, T*.08]); ctx.strokeRect(bx*T + T*.08, by*T + T*.08, T*.84, T*.84); ctx.setLineDash([]);
     ctx.font = `${Math.round(T*.34)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('🔔', bx*T + T*.82, by*T + T*.18); ctx.textBaseline = 'alphabetic';
   }
+  if (B?.ch?.tide && !tideHigh()){   // the tide flats: pale blue ripples; brighter, dashed, the turn before the sea comes in
+    const warn = tideComing();
+    for (const [tx, ty] of tideFlats()){ ctx.fillStyle = warn ? 'rgba(90,170,255,.38)' : 'rgba(120,180,235,.16)'; ctx.fillRect(tx*T, ty*T, T, T);
+      if (warn){ ctx.strokeStyle = 'rgba(200,230,255,.9)'; ctx.lineWidth = Math.max(1.5, T*.05); ctx.setLineDash([T*.1, T*.08]); ctx.strokeRect(tx*T + T*.1, ty*T + T*.1, T*.8, T*.8); ctx.setLineDash([]); } }
+  }
+  for (const u of units) if (u.parley && u.team === 'e' && !u.dead){   // can be talked round
+    ctx.font = `${Math.round(T*.36)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', (u.px + u.ox)*T + T*.82, (u.py + u.oy)*T + T*.12); ctx.textBaseline = 'alphabetic';
+  }
   if (showDanger) fillKeys(dangerKeys, 'rgba(255,128,32,.26)');
   if (inspect && !inspect.dead){
     const m = inspect.ai === 'hold' ? [K(inspect.x, inspect.y)] : destinations(inspect, reach(inspect));

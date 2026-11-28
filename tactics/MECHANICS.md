@@ -70,6 +70,10 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | royalPark (meadow) | lawns, topiary `F`, fountains `M`, hedges `X`; gates (exits) along the bottom | F4-4 |
 | siegeGame (arena) | a mock fort of barriers `X` in the middle, gaps on every side, pavilions `T` inside | F4-5 |
 | royalArena (arena) | grandstands, the champion's dais `T` in the middle | F4-7 |
+| sandbar (shore) | tide flats across the middle (the stage's `tide` mask) with two firm-sand strips (columns 2 and 7) and rocks that stay dry; frog pickets `T` at the top, a hut `T` at the bottom | R5-3 |
+| supplyCamp (shore) | jetties `B` at the top (the Raepublic lands there), a stockade `X` with two gaps, supply tents `T`, crates `F` | R5-5 |
+| duelPoint (shore, 10×10) | the point below the lighthouse: sea all round, a few rocks, the beacon stone `T` in the middle | R5-8, F5-8 |
+| (reused in Chapter Five) | beachCamp R5-1, R5-4, R5-7, F5-7 · coastRoad R5-2, F5-6 · lighthouse R5-6 · forestTrail F5-1 · ravine F5-2 · riverWoods F5-3 · ford F5-4 · campBells F5-5 | |
 
 ## Movement types (a class's `mt`)
 
@@ -155,7 +159,8 @@ and The Lesson, which only help the player.
 | `courier` | never attacks; runs for the nearest of the stage's `exits` and leaves the map there (`escaped`, not a kill). Enemy AI goes for couriers first (+25 target score) | December event (XM-R as enemies, XM-F as allies) |
 
 Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, `monkey`), `defects` (changes sides at a `defect` event), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
-`talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`.
+`talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`,
+`parley` and `squad` (Talk, below), `fleeWord` (what a fleeing unit's popup says instead of Fled!/Yields!, e.g. "Falls back", "Disarmed").
 
 ## Stage-level mechanics
 
@@ -193,6 +198,9 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Intercept outside the event (no gifts; over when no runner is left) | `objective: {type: 'intercept', who, dest}` + enemy couriers | F3-3 (the grain runners), F4-4 (the Ribbon Hunt's squires) |
 | Bells (hold ground: first to ring n) | `objective: {type: 'bells', n, turns}`: every fort square is a bell; at the end of each side's turn every bell it stands on rings once. First to `n` wins; after `turns`, more rings wins. Enemy `ai: 'bell'` heads for the nearest bell its side doesn't hold, then holds it. Event pay is by the margin | NY-R, NY-F (January) |
 | Escape (win when the leader reaches an exit) | `objective: {type: 'escape', dest}` + `exits` | F3-5, CS-2, F4-2 (the Gauntlet's bell) |
+| Talk (Chapter Five on) | spawn `parley: {by: characterKey, talk: [lines]}` (+ `squad: 'id'` on it and its soldiers): the named unit, standing next to it, gets a 💬 Talk action (uses its turn). The lines play, and the unit and its whole squad become allies (team `a`, AI). Marked 💬 on the map; its panel says who can talk to it | F5-1 (Moss: taught by Biggle), F5-2 (Rush, Pickerel; Wort won't listen), F5-5 (Lotus, Wort), F5-6 (Grebe, by Biggle) |
+| The tide (Chapter Five on) | `tide: {mask: rows ('~' = flat), rises: [turns], falls: [turns]}`: at the start of a rising turn's player phase the flats become sea (`W`); anyone on one is swept to the nearest dry square and loses 3 HP (never below 1). Falling turns restore them. Pale blue at low tide, bright and dashed the turn before it rises; the objective line says which | R5-3 (rises III and VII, falls V; taught by Willow and Ducky) |
+| A one-on-one duel | `solo` + `maxDeploy: 1` + a lone enemy boss (`flees`, `fleeWord`) | R5-8 (defeat Tiggle), F5-8 (survive four turns against Rae) |
 | Units change sides mid-battle | `events: [{turn, defect: true, popup, talk}]` + spawns with `defects: true`: enemies become allies, allies become enemies. Happens on replays too | R3-5 (Speshul's guards join you), F3-5 (the hall guard betray Tiggle) |
 
 ### Bonus stars (`star.type`)
@@ -205,7 +213,8 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | `bossBy` (key) | that character lands the blow on the boss | R1-3, R2-4, F1-1, F2-3 |
 | `fewer` (n) | deploy at most n | F1-4 |
 | `allies` | no ally falls (allies who leave by an exit are safe) | R2-2, R3-1, R3-6, F3-2 |
-| `catch` (n) | catch at least n runners (intercept) | F3-3, F4-4 |
+| `catch` (n) | catch at least n runners (intercept) | F3-3, F4-4, R5-4 |
+| `talked` (n) | talk at least n enemies round (Talk) | F5-1, F5-2, F5-5 |
 
 ## Side-story characters
 
@@ -220,6 +229,8 @@ Marigold (CO-2) is a gilded ★★ monkey in grey; Captain Mako is a pirate shar
 | Use cover; draw guards off rocks | WL-1 | any map with `M` held by `guard` enemies: ravine, thornHill, forestTrail |
 | Lesson | Taught in | Good places to reuse it | stages that field one weapon type per flank or bridge; bosses with an obvious counter |
 | The ranged triangle and hooks | mentioned by Willow in R2-1 ("unlikely to see one around here"); hooks shown in R4-4; on the Friggliarchy side, Biggle explains them before F4-3, where Tilly demonstrates (she waits mid-field with catchers around her) | pirate stages with Grapplers near your readers; pull enemies off forts and bridges |
+| Talk: win enemy captains (and their squads) over instead of fighting them | F5-1 (Biggle explains) | any stage where the enemy is the player's own people: civil war, deserters, recruitable garrisons |
+| The tide: ground that floods and drains on a timetable | R5-3 (Willow and Ducky explain) | shore maps, river fords, harbours |
 | Danger view, choke points, moving together | WL-3 | walls with gaps (republicCamp, flowerField), bridges (ford, riverWoods) |
 | Protect a fragile leader | FD-1 to FD-3 | escort or VIP stages |
 | Choke points at a bridge | BR-3, PT-3 | riverWoods, ford |
@@ -234,7 +245,7 @@ per level, HP counted at half). The current line on both routes:
 |---|---|---|---|
 | Recommended | 1 · 1 · 2 · 2 | 2 · 3 · 3 · 3 · 4 | 3 · 4 · 5 |
 
-Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Chapter Four: Raepublic 7 · 7 · 8 · 8 · 8 · 9 · 10; Friggliarchy 7 · 8 · 8 · 8 · 9 · 9 · 10. Side stories of Chapter Three's characters (Speshul, Aurora,
+Chapter Five: Raepublic 10 · 11 · 11 · 11 · 12 · 13 · 13 · 14; Friggliarchy 10 · 11 · 11 · 12 · 12 · 13 · 13 · 14. Chapter Three (both routes): 4 · 5 · 5 · 6 · 6 · 7. Chapter Four: Raepublic 7 · 7 · 8 · 8 · 8 · 9 · 10; Friggliarchy 7 · 8 · 8 · 8 · 9 · 9 · 10. Side stories of Chapter Three's characters (Speshul, Aurora,
 Cornelius, Chansey; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
 
 Keep new stages on this line: about +½ a level per stage, and +1 for a finale.
@@ -315,6 +326,41 @@ Tilly Tealbottom (Champions of the Lists, Friggliarchy) has supports with Tiggle
 bandits raid her mother's party), TL-2 Last Season (a flashback, only Tilly and ordinary soldiers: Captain Mako's
 pirates raid the Tealbottom summer house, and she takes up a Grappler's hook), TL-3 Bess Tealbottom (her pirate
 great-great-grandmother's tower, held by smugglers with hooks); it ends with Grandmama Bess, her own ★★★ hook.
+
+## Chapter Five: The Last Shore / The Prince's Army (the end of Act One)
+
+Eight stages a side, `enemyMods: {mhp: -1}`, deploy 7 (8 in the great battle). The stories run apart, then meet:
+F5-6 needs R5-6, R5-7 needs F5-6, F5-7 needs R5-6, and the duels need the other side's stage 7 (R5-8 needs F5-7,
+F5-8 needs R5-7). Chapter Six is a stub ("Act Two").
+
+- **The Last Shore (Raepublic): Rae against Princess.** Princess brings the King's army to the shore. R5-1 Drums (her
+  vanguard; Warden Brine back with orders), R5-2 Terms (her offer: Rae alone, or every name noted; Rae answers by taking
+  Captain Sedge's pickets), R5-3 The Tide (a column on the sandbar: the tide mechanic), R5-4 Torches (intercept the
+  torch-bearers before they reach the huts), R5-5 The Stores (Ducky's ships land the Raepublic at her supply camp; his
+  crew are allies), R5-6 Princess (hold the lighthouse causeway four turns, then Princess comes herself: her army
+  breaks and runs), R5-7 The Prince's Army (Tiggle has the army and Princess rides with him: survive six turns against
+  Tiggle, Biggle, Princess and Aurora, with the pirates as allies; Tiggle calls for a duel), R5-8 Rae and Tiggle (alone
+  on the point: defeat him).
+- **The Prince's Army (Friggliarchy): Tiggle wins the army back.** F5-1 The Road South (the Talk mechanic: Captain Moss),
+  F5-2 The Willing (Rush and Pickerel; Captain Wort stays loyal), F5-3 The Bridge at Mossford (catch Lieutenant Silt by
+  turn VII or he burns it), F5-4 Biggle's Doubt (hold the fords; Biggle must come: "He'll give her a scaffold, with a
+  trial painted on the front"), F5-5 The Camp at Night (four go in; escape to the command pavilion, talking Lotus and
+  Wort round; Tiggle speaks to the camp), F5-6 Princess (her last stand after the lighthouse; Biggle can talk Colonel
+  Grebe round; the King's letter relieves her and blames her, and she joins: `reward.joins`), F5-7 The Last Shore (the
+  great battle, Princess must come: drive Ducky back; Tiggle calls the duel), F5-8 Tiggle and Rae (alone on the point:
+  survive four turns against Rae at her best).
+- **The ending (both routes).** Rae wins the duel, then sees the next army's dust on the horizon: there's no escape,
+  only more armies. She tells Tiggle he's on the wrong side; he says he knows (the King is neither a good brother nor a
+  good king) but believes in reform through order, not revolution through chaos. The King recognised Monkeyland once
+  it knelt; he'll recognise the shore if he has someone to punish, and the prince who brings Rae home can guide what
+  comes after. Rae makes him swear the rest go free, and hands him her sword: she'll stand trial in the capital, and
+  speak for the rabbits there. "There has to be a punishment for crime." He wavers, and takes her. The scene is the
+  same on both routes; the Raepublic hears Rae's thoughts and ends with Flopsy at the lighthouse window, the
+  Friggliarchy hears Tiggle's and ends on the road north ("Mustn't there?"). Both end "End of Act One".
+
+Princess joins the Friggliarchy after F5-6 (`CHARACTERS.princess`, Royal Heiress, tome, Every Grievance Noted). Her
+supports and side stories are still to be written. New speakers (generic looks): Colonel Grebe, Lieutenant Silt, and
+Captains Moss, Rush, Pickerel, Lotus and Wort.
 
 ## Progression and unlocks
 

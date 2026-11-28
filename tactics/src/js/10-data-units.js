@@ -281,6 +281,8 @@ const CHARACTERS = {
   speshul:     {name:'Speshul', faction:'monkey', look:'speshul', cls:'heir', lv:5, stats:{mhp:22,atk:12,def:5,spd:12,skl:9,mov:6},
                 retort:'We were a kingdom once! We can be one again!',
                 intro:{title:'Heir to Monkeyland', text:'Aurora\'s son. He has never been further than the edge of the meadows, and he wants to see absolutely everything. He has read every book about the old kingdom twice. He thinks the monkeys could fight. Nobody has dared tell him otherwise.'}},
+  // Chapter Five: Princess joins the Friggliarchy after F5-6 (story), with her Book of Grievances (art/princess-*.png)
+  princess:    {name:'Princess', faction:'frog', look:'princess', cls:'heiress', lv:12, stats:{mhp:28,atk:16,def:6,spd:12,skl:13,mov:5}},
   biggle:  {name:'Biggle Baggle', faction:'frog', cls:'courtknight', lv:4, stats:{mhp:29,atk:14,def:12,spd:3,skl:7,mov:4}, retort:'Kneel, rabbit. Order is coming whether you like it or not.'},
 };
 // Characters who only speak (or appear as bosses), plus the narrator.
@@ -339,6 +341,15 @@ const SPEAKERS = Object.assign({
   pirate:      {name:'A Pirate', faction:'pirate', look:'pirate'},
   pirates:     {name:'The Pirates', faction:'pirate', look:'pirate'},
   banyan:      {name:'Guard Banyan', faction:'monkey', look:'monkey'},
+  // Chapter Five: officers of the King's army under Princess (generic frog looks)
+  grebe:       {name:'Colonel Grebe', faction:'frog', look:'toadknight'},   // Princess's loyal second
+  silt:        {name:'Lieutenant Silt', faction:'frog', look:'duelist'},    // her rearguard
+  moss:        {name:'Captain Moss', faction:'frog', look:'guard'},         // the regiment captains Tiggle talks round
+  rush:        {name:'Captain Rush', faction:'frog', look:'reed'},
+  pickerel:    {name:'Captain Pickerel', faction:'frog', look:'bruiser'},
+  lotus:       {name:'Captain Lotus', faction:'frog', look:'toadknight'},
+  wort:        {name:'Captain Wort', faction:'frog', look:'duelist'},
+  soldiers:    {name:'The Soldiers', faction:'frog', look:'guard'},
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Fur colours for the generic mine-rabbit art (art/miner-*.png): [hue shift°, saturation ×, lightness shift].

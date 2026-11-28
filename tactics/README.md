@@ -103,6 +103,12 @@ Placeholders until their art arrives (each picks it up automatically once the fi
   recoloured from their `*skin` masks.
 - **Scene paintings**: done (`art/bg-shore.jpg`, `bg-arena.jpg`, `bg-ships.jpg`).
 
+### Chapter Five
+
+No new art: the stages reuse the shore maps and the existing generic frog, rabbit, monkey and pirate art. Princess
+(`art/princess-*.png`) becomes playable. The new officers (Colonel Grebe, Lieutenant Silt, Captains Moss, Rush,
+Pickerel, Lotus and Wort) are speakers with generic frog looks.
+
 ### Generic frog soldiers
 
 `art/grunt-portrait.png`, `grunt-battle.png` and `grunt-token.png` are the shared art for

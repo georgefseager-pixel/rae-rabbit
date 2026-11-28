@@ -69,6 +69,7 @@ function starCheck(star, v){
     case 'turns':    return v.turn > star.n ? 'missed' : v.over ? 'ok' : 'pending';
     case 'unhurt':   return v.lordHit ? 'missed' : v.over ? 'ok' : 'pending';
     case 'bossBy':   return v.bossBy ? (v.bossBy === star.key ? 'ok' : 'missed') : 'pending';
+    case 'talked':   return (v.talked || 0) >= star.n ? 'ok' : v.over ? 'missed' : 'pending';   // Chapter Five: talk n enemies round
     case 'fewer':    return v.deployed > star.n ? 'missed' : v.over ? 'ok' : 'pending';
   }
   return 'pending';

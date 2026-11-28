@@ -50,7 +50,8 @@ function enemyUnit(sp, faction, teamId = 'e'){
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
   // talk: lines this boss / named enemy says the first time anyone fights it (bosses fall back to the stage's bossTalk)
   const talk = sp.talk || (sp.boss ? B?.ch?.bossTalk : null);
-  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, defects: !!sp.defects, talk, talked: false});
+  return Object.assign(battleUnit(rec, teamId), {ai: sp.ai || 'charge', boss: !!sp.boss, flees: !!sp.flees, vip: !!sp.vip, courier: !!sp.courier, defects: !!sp.defects, talk, talked: false,
+    parley: sp.parley || null, squad: sp.squad || null, fleeWord: sp.fleeWord || null});   // parley: can be talked round (Chapter Five)
 }
 function place(u, x, y){ u.x = u.px = x; u.y = u.py = y; }
 function freeTileNear(x, y){
@@ -71,7 +72,7 @@ function runBattle(campKey, ch, records, opts = {}){
        waves: ch.reinforce ? ch.reinforce(SAVE.flags) : [],
        objective: {...ch.objective}, twist: ch.twist ? {...ch.twist} : null, bells: {p: 0, e: 0},
        events: opts.replay ? (ch.events || []).filter(ev => ev.defect).map(ev => ({turn: ev.turn, defect: ev.defect, popup: ev.popup})) : (ch.events || []).map(ev => ({...ev}))};   // story events only happen the first time
-  mapDef = MAPS[ch.map]; MAP = mapDef.rows; ROWS = MAP.length; COLS = MAP[0].length;
+  mapDef = MAPS[ch.map]; MAP = [...mapDef.rows]; ROWS = MAP.length;   // a copy: the tide can change it COLS = MAP[0].length;
   nextId = 1; units = [];
   // solo: only the leader starts on the field; the rest arrive with the stage's twist
   const starting = ch.solo ? records.filter(r => r.lord) : records;
@@ -299,7 +300,7 @@ async function strike(a, d, f){
   if (d.hp <= 0){
     if (d.boss && !B.bossBy) B.bossBy = a.key;   // who brought the boss down (for bonus stars)
     if (scene && d.flees){   // escapes instead of being unstitched (e.g. Brigand)
-      stamp(B.ch.spar || B.ch.yields ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
+      stamp(d.fleeWord ? d.fleeWord.toUpperCase() : B.ch.spar || B.ch.yields ? 'YIELDS' : 'FLEES', '#ecc673'); Sfx.play('flee');
       anim(D.querySelector('.pf'), [{opacity: 1, transform: 'none'}, {opacity: 0, transform: `translateX(${dir*140}px)`}], 700, {fill: 'forwards'});
       await wait(500);
     } else if (scene){
@@ -307,7 +308,7 @@ async function strike(a, d, f){
       anim(D.querySelector('.pf'), [{filter: 'none', transform: 'none'}, {filter: 'grayscale(1) brightness(.45)', transform: `translateY(18px) rotate(${-dir*6}deg)`}], 700, {fill: 'forwards'});
       await wait(500);
     }
-    if (d.flees) popup(d, B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
+    if (d.flees) popup(d, d.fleeWord ? d.fleeWord + '!' : B.ch.spar || B.ch.yields ? 'Yields!' : 'Fled!', '#ecc673');
     if (hasAb(a, 'crowd') && (a.cheers || 0) < 3){ a.cheers = (a.cheers || 0) + 1; popup(a, `🏆 The crowd roars! +${a.cheers}`, '#ffd166'); }   // Crowd Pleaser
     if (hasAb(a, 'cork')){ let any = false;   // Pop the Cork: allies within 2 recover 4 HP
       for (const o of alliesNear(a, a, 2)) if (o.hp < o.mhp){ const h = Math.min(4, o.mhp - o.hp); o.hp += h; o.shp = o.hp; any = true; setTimeout(() => popup(o, `🎉 +${h}`, '#9ff0b0'), 250); }
@@ -458,10 +459,11 @@ function objectiveText(){
     : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`
     : ob.type === 'bells' ? `Hold the bells: each one you stand on at the end of your turn rings once. Ring ${ob.n} before they do.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
+  const tide = B.ch.tide ? (tideHigh() ? ' 🌊 High tide: the flats are under water.' : tideComing() ? ' 🌊 The tide comes in next turn: get off the marked flats!' : ' 🌊 Low tide: the flats are dry, for now.') : '';
   const must = [lord, ...units.filter(u => u.team !== 'e' && u.vip && !u.dead)].filter(Boolean).map(u => u.name);
-  return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}`;
+  return `${goal} ${must.length ? must.join(' and ') + ' must not fall.' : ''}${tide}`;
 }
-const starLive = () => ({caught: couriers().filter(u => u.team === 'e' && u.dead && !u.escaped).length, allyLost: units.filter(u => u.team === 'a' && u.dead && !u.escaped).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
+const starLive = () => ({talked: B.talked || 0, caught: couriers().filter(u => u.team === 'e' && u.dead && !u.escaped).length, allyLost: units.filter(u => u.team === 'a' && u.dead && !u.escaped).length, lost: units.filter(u => u.team === 'p' && u.dead).length, turn, lordHit: B.lordHit, bossBy: B.bossBy, deployed: B.deployed, over: false});
 function starHTML(){
   if (!B.ch.star) return '';
   const st = starCheck(B.ch.star, starLive()), had = hasStar(B.ch.id);
@@ -471,6 +473,7 @@ function unitHTML(u){
   const t = ter(u.x, u.y), tn = tileInfo(MAP[u.y][u.x])[0], pct = u.hp/u.mhp*100;
   const col = pct > 50 ? '#6fbf6a' : pct > 25 ? '#e0b44c' : '#e0533d';
   const note = u.team === 'a' ? ' · Ally: fights on its own' : u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
+  const parley = u.parley && u.team === 'e' ? `<div class="hint">💬 ${u.parley.by ? charName(u.parley.by) : 'Your units'} can talk ${u.name} round: stand next to them and choose Talk.${u.squad ? ' Their squad comes too.' : ''}</div>` : '';
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
       <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
@@ -478,6 +481,7 @@ function unitHTML(u){
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
       ${abilityOf(u) ? `<div class="abl">${abilityIcon(u)}${u.seams ? ' <i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed</i>' : ''}${smellsBlood(u) ? ' <i>🦈 Smells blood: +2 Mov</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.grieved ? ' <i>📜 On Princess\'s list: she deals +3 damage</i>' : ''}${u.cheers ? ` <i>🏆 Crowd Pleaser: +${u.cheers} damage</i>` : ''}${u.ranFar ? ' <i>🍪 Can\'t catch him: −25 Hit against him</i>' : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : (u.seams || u.hobbled || u.naughty || u.fuse || u.offbal || u.grieved || u.present || u.sanct) ? `<div class="abl">${u.seams ? '<i>Mended: +2 Def</i>' : ''}${u.hobbled ? ' <i>Slowed: 1 square</i>' : ''}${u.naughty ? ' <i>📜 Naughty: +2 damage taken</i>' : ''}${u.fuse ? ' <i>🧨 Lit fuse: goes off next enemy turn</i>' : ''}${u.offbal ? ' <i>🎀 Off balance: no cover, −20 Avoid</i>' : ''}${u.grieved ? ' <i>📜 On Princess\'s list: she deals +3 damage</i>' : ''}${u.cheers ? ` <i>🏆 Crowd Pleaser: +${u.cheers} damage</i>` : ''}${u.present ? ' <i>🎁 Present: +3 damage next fight</i>' : ''}${u.sanct ? ' <i>🪷 Sanctuary: enemies leave them be</i>' : ''}</div>` : ''}
     </div></div>
+    ${parley}
     <div class="stats">${[[isMagic(u.w) ? 'Mag' : 'Atk', u.atk], ['Def', u.def], ['Spd', u.spd], ['Skl', u.skl], ['Mov', u.mov]].map(([l, v]) => `<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
 }
 const setPanel = html => { $('#panel').innerHTML = html; };
@@ -494,6 +498,7 @@ function panelActions(u){
     ${atk ? '<button class="btn primary" data-act="attack" type="button">Attack</button>' : ''}
     ${heal ? '<button class="btn primary" data-act="heal" type="button">Mend</button>' : ''}
     ${drawTargets(u).length ? '<button class="btn wide" data-act="draw" type="button">↩ Draw Back</button>' : ''}
+    ${parleyTargets(u).length ? '<button class="btn primary" data-act="talk" type="button">💬 Talk</button>' : ''}
     <button class="btn" data-act="wait" type="button">Wait</button>
     <button class="btn" data-act="cancel" type="button">Undo</button></div>`);
 }
@@ -539,6 +544,21 @@ const enemiesInRange = u => foes(u).filter(o => { const d = man(u, o); return d 
 const healTargets = u => friends(u).filter(o => o !== u && man(u, o) === 1 && o.hp < o.mhp);
 // Draw Back (Froggle): an adjacent ally, where the square behind her (away from them) is free for her to step into
 const backSquare = (u, o) => ({x: u.x + (u.x - o.x), y: u.y + (u.y - o.y)});
+// Talk (Chapter Five): an enemy with `parley` can be talked round by the unit it names (parley.by), standing next to it.
+// It changes sides, with everyone in its squad, and fights on as an ally.
+const parleyTargets = u => units.filter(o => o.team === 'e' && !o.dead && o.parley && (!o.parley.by || o.parley.by === u.key) && man(u, o) === 1);
+function panelTalk(u, t){
+  const n = units.filter(o => o.team === 'e' && !o.dead && o !== t && t.squad && o.squad === t.squad).length;
+  setPanel(unitHTML(t) + `<div class="hint">💬 <b>Talk:</b> ${u.name} tries to talk ${t.name} round.${n ? ` If it works, ${n === 1 ? 'one more soldier comes' : n + ' more soldiers come'} with them.` : ''} It uses ${u.name}'s turn.</div>
+    <div class="acts"><button class="btn primary" data-act="confirm" type="button">Talk</button>
+    <button class="btn" data-act="back" type="button">Back</button></div>`);
+}
+async function doTalk(u, t){
+  if (t.parley.talk) await talk(t.parley.talk);
+  const squad = units.filter(o => o.team === 'e' && !o.dead && (o === t || (t.squad && o.squad === t.squad)));
+  for (const o of squad){ o.team = 'a'; o.ai = 'charge'; o.boss = false; o.flees = false; o.talk = null; o.parley = null; popup(o, 'Changes sides!', '#9fd0ff'); }
+  B.talked = (B.talked || 0) + 1; Sfx.play('coin'); updateDanger(); await wait(500);
+}
 const drawTargets = u => !hasAb(u, 'drawback') ? [] : friends(u).filter(o => { if (o === u || man(u, o) !== 1) return false;
   const b = backSquare(u, o); return inBounds(b.x, b.y) && moveCost(u, b.x, b.y) < 99 && !unitAt(b.x, b.y); });
 function clearSel(){ sel = null; orig = null; reachMap = null; moveKeys = new Set(); atkKeys = new Set(); healKeys = new Set(); targets = []; fc = null; tmode = null; }
@@ -557,11 +577,11 @@ function openActions(){
 }
 function startTargeting(kind){
   mode = 'target'; tmode = kind;
-  targets = kind === 'attack' ? enemiesInRange(sel) : kind === 'draw' ? drawTargets(sel) : healTargets(sel);
+  targets = kind === 'attack' ? enemiesInRange(sel) : kind === 'draw' ? drawTargets(sel) : kind === 'talk' ? parleyTargets(sel) : healTargets(sel);
   if (targets.length === 1) chooseTarget(targets[0]);
   else setPanel(`<div class="hint">Tap a highlighted ${kind === 'attack' ? 'enemy' : 'ally'}.</div><div class="acts"><button class="btn" data-act="back" type="button">Back</button></div>`);
 }
-function chooseTarget(t){ fc = t; tmode === 'attack' ? panelForecast(sel, t) : tmode === 'draw' ? panelDraw(sel, t) : panelHeal(sel, t); }
+function chooseTarget(t){ fc = t; tmode === 'attack' ? panelForecast(sel, t) : tmode === 'draw' ? panelDraw(sel, t) : tmode === 'talk' ? panelTalk(sel, t) : panelHeal(sel, t); }
 function panelDraw(u, t){
   setPanel(unitHTML(t) + `<div class="hint">${ABILITIES.drawback.icon} <b>Draw Back:</b> ${u.name} steps back, and ${t.name} takes her place, out of the front line.</div>
     <div class="acts"><button class="btn primary" data-act="confirm" type="button">Draw Back</button>
@@ -613,6 +633,7 @@ async function onTap(x, y){
     if (u && sel.w !== 'staff' && enemiesInRange(sel).includes(u)){ startTargeting('attack'); chooseTarget(u); }
     else if (u && sel.w === 'staff' && healTargets(sel).includes(u)){ startTargeting('heal'); chooseTarget(u); }
     else if (u && drawTargets(sel).includes(u)){ startTargeting('draw'); chooseTarget(u); }
+    else if (u && parleyTargets(sel).includes(u)){ startTargeting('talk'); chooseTarget(u); }
     return;
   }
   if (mode === 'target' && u && targets.includes(u)){ if (fc === u) act('confirm'); else chooseTarget(u); }
@@ -624,14 +645,15 @@ async function act(a){
   if (a === 'attack') startTargeting('attack');
   else if (a === 'heal') startTargeting('heal');
   else if (a === 'draw') startTargeting('draw');
+  else if (a === 'talk') startTargeting('talk');
   else if (a === 'wait') finishUnit(sel);
   else if (a === 'cancel'){ const u = sel; place(u, orig.x, orig.y); u.movedDist = 0; u.ranFar = false; select(u); }
   else if (a === 'back') openActions();
   else if (a === 'confirm' && fc){
     busy = true; refreshTop();
     const u = sel, t = fc, kind = tmode; mode = 'busy'; targets = []; atkKeys = new Set(); healKeys = new Set();
-    setPanel(`<div class="hint"><em>${kind === 'attack' ? `${u.name} strikes at ${t.name}…` : kind === 'draw' ? `${u.name} draws ${t.name} back…` : `${u.name} mends ${t.name}…`}</em></div>`);
-    if (kind === 'attack') await doCombat(u, t); else if (kind === 'draw') await doDrawBack(u, t); else await doHeal(u, t);
+    setPanel(`<div class="hint"><em>${kind === 'attack' ? `${u.name} strikes at ${t.name}…` : kind === 'talk' ? `${u.name} talks to ${t.name}…` : kind === 'draw' ? `${u.name} draws ${t.name} back…` : `${u.name} mends ${t.name}…`}</em></div>`);
+    if (kind === 'attack') await doCombat(u, t); else if (kind === 'talk') await doTalk(u, t); else if (kind === 'draw') await doDrawBack(u, t); else await doHeal(u, t);
     busy = false;
     if (u.dead){ clearSel(); await afterAction(); return; }
     // Two Pairs of Paws (Tandy & Maus): after mending, they may scurry one more square
@@ -643,6 +665,29 @@ async function act(a){
     }
     finishUnit(u);
   }
+}
+
+// ---------- The tide (Chapter Five: a stage's `tide`) ----------
+// tide: {mask: rows ('~' = a tide flat), rises: [turns], falls: [turns]}. At the start of a rising turn's player phase
+// the flats become sea (anyone standing on one is swept to the nearest dry square and loses 3 HP, never below 1);
+// on a falling turn they're sand again. The flats are marked the turn before the sea comes in.
+const tideFlats = () => { const m = B?.ch?.tide?.mask, out = []; if (m) m.forEach((r, y) => [...r].forEach((c, x) => { if (c === '~') out.push([x, y]); })); return out; };
+const tideHigh = () => { const t = B?.ch?.tide; if (!t) return false; let hi = false; for (let n = 1; n <= turn; n++){ if (t.rises.includes(n)) hi = true; if (t.falls.includes(n)) hi = false; } return hi; };
+const tideComing = () => { const t = B?.ch?.tide; return !!t && !tideHigh() && t.rises.includes(turn + 1); };
+async function tideTurn(){
+  const t = B.ch.tide; if (!t) return;
+  const rise = t.rises.includes(turn), fall = t.falls.includes(turn); if (!rise && !fall) return;
+  B.tideRows ||= [...MAP];
+  for (const [x, y] of tideFlats()){ const ch = rise ? 'W' : B.tideRows[y][x]; MAP[y] = MAP[y].slice(0, x) + ch + MAP[y].slice(x + 1); }
+  resize();
+  if (rise){
+    toast('🌊 The tide comes in!'); Sfx.play('flee');
+    for (const u of units) if (!u.dead && MAP[u.y][u.x] === 'W'){
+      const [nx, ny] = freeTileNear(u.x, u.y); await moveAlong(u, [K(u.x, u.y), K(nx, ny)]);
+      const h = Math.min(3, u.hp - 1); u.hp -= h; u.shp = u.hp; popup(u, `🌊 Swept! −${h}`, '#9fd0ff'); await wait(200);
+    }
+  } else toast('The tide goes out.');
+  updateDanger(); await wait(400);
 }
 
 // ---------- Phases ----------
@@ -670,6 +715,7 @@ async function startPlayerPhase(){
   refreshTop(); panelIdle();
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
   await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
+  await tideTurn();
   await fortHeal('p');
   await battleEvents();
   busy = false; mode = 'idle'; updateDanger(); panelIdle(); refreshTop();
