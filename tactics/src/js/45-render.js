@@ -27,6 +27,7 @@ function resize(){
   g.globalAlpha = .55; g.fillStyle = g.createPattern(noisePat, 'repeat'); g.fillRect(0, 0, COLS*T, ROWS*T); g.globalAlpha = 1;
   const v = g.createRadialGradient(COLS*T/2, ROWS*T/2, Math.min(COLS, ROWS)*T*.45, COLS*T/2, ROWS*T/2, ROWS*T*.72);
   v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(20,8,4,.5)'); g.fillStyle = v; g.fillRect(0, 0, COLS*T, ROWS*T);
+  if (!$('#app').hidden) render(performance.now());   // paint straight away: a resized canvas is blank until the next frame
 }
 function patch(g, X, Y, base, x, y){
   g.fillStyle = base; g.fillRect(X, Y, T, T);

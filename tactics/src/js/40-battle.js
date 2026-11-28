@@ -1032,15 +1032,22 @@ $('#zoomOut').addEventListener('click', () => setZoom((mapZoom || 1)/1.35));
 mapView.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); setZoom((mapZoom || 1)*Math.exp(-e.deltaY*.01), e.clientX - mapView.getBoundingClientRect().left, e.clientY - mapView.getBoundingClientRect().top); }, {passive: false});
 let pinch = null, pinchRaf = 0;
 const tdist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+// While pinching, the canvas is only scaled as a picture (cheap and smooth); it's redrawn at the new zoom once, when the
+// fingers lift. (Resizing the canvas on every move made phones flash black.)
 mapView.addEventListener('touchstart', e => { if (e.touches.length === 2) pinch = {d: tdist(e.touches), z: mapZoom || 1}; }, {passive: true});
 mapView.addEventListener('touchmove', e => {
   if (!pinch || e.touches.length !== 2) return;
   e.preventDefault();
-  const r = mapView.getBoundingClientRect(), z = pinch.z*tdist(e.touches)/pinch.d;
+  const r = mapView.getBoundingClientRect(), z = clamp(pinch.z*tdist(e.touches)/pinch.d, 1, 3.2);
   const cx = (e.touches[0].clientX + e.touches[1].clientX)/2 - r.left, cy = (e.touches[0].clientY + e.touches[1].clientY)/2 - r.top;
-  cancelAnimationFrame(pinchRaf); pinchRaf = requestAnimationFrame(() => setZoom(z, cx, cy));
+  if (pinch.cx === undefined){ pinch.cx = cx; pinch.cy = cy; cvs.style.transformOrigin = `${mapView.scrollLeft + cx - cvs.offsetLeft}px ${mapView.scrollTop + cy - cvs.offsetTop}px`; }
+  pinch.zz = z;
+  cancelAnimationFrame(pinchRaf); pinchRaf = requestAnimationFrame(() => { cvs.style.transform = `scale(${z/(mapZoom || 1)})`; });
 }, {passive: false});
-mapView.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; });
+const endPinch = e => { if (!pinch || (e.touches && e.touches.length >= 2)) return;
+  const p = pinch; pinch = null; cancelAnimationFrame(pinchRaf); cvs.style.transform = '';
+  if (p.zz !== undefined) setZoom(p.zz, p.cx, p.cy); };
+mapView.addEventListener('touchend', endPinch); mapView.addEventListener('touchcancel', endPinch);
 $('#cv').addEventListener('click', e => {
   const r = $('#cv').getBoundingClientRect();
   const x = Math.floor((e.clientX - r.left)/T), y = Math.floor((e.clientY - r.top)/T);

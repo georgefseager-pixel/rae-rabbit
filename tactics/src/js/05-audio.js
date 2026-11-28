@@ -14,14 +14,17 @@ const Audio_ = (() => {
   function init(){
     if (ctx) return ctx;
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
-    ctx = new AC();
-    master = ctx.createGain(); master.gain.value = .9;
-    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+    // 'balanced' gives Android a larger audio buffer than the default, which stops crackles and dropouts
+    try { ctx = new AC({latencyHint: 'balanced'}); } catch (e){ ctx = new AC(); }
+    master = ctx.createGain(); master.gain.value = .8;
+    // a firm limiter on the way out: loud moments (several sounds at once) mustn't clip into static
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 8; comp.knee.value = 6; comp.attack.value = .003; comp.release.value = .2;
     master.connect(comp); comp.connect(ctx.destination);
     musicBus = ctx.createGain(); sfxBus = ctx.createGain();
     musicBus.connect(master); sfxBus.connect(master);
     // a soft room reverb, shared
-    const len = ctx.sampleRate*2.2, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    // (kept short: a long convolution reverb is too much work for phones, and they crackle)
+    const len = Math.floor(ctx.sampleRate*1.1), ir = ctx.createBuffer(2, len, ctx.sampleRate);
     for (let c = 0; c < 2; c++){ const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random()*2 - 1)*Math.pow(1 - i/len, 3); }
     verb = ctx.createConvolver(); verb.buffer = ir; const vg = ctx.createGain(); vg.gain.value = .28; verb.connect(vg); vg.connect(master);
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
@@ -284,7 +287,10 @@ const Music = (() => {
     // a queued track starts once any jingle has finished
     if (want && (!cur || cur.done || cur.name !== want) && ctx.currentTime >= jingleUntil){ if (cur && !cur.done) fadeOut(cur); start(want); }
     const st = cur; if (!st || st.done) return;
-    while (st.next < ctx.currentTime + .15){
+    // If the timer fell behind (a busy or throttled phone), skip the missed notes rather than playing them all at once:
+    // a burst of late notes is what made the sound crackle and stutter.
+    while (st.next < ctx.currentTime - .05){ st.next += st.dt; st.step++; if (st.tr.once && st.step >= st.steps){ st.done = true; return; } }
+    while (st.next < ctx.currentTime + .4){
       const s = st.step % st.steps;
       st.tr.parts.forEach((p, pi) => {
         for (const e of p.ev) if (e.step === s){
@@ -298,7 +304,7 @@ const Music = (() => {
     }
   }
   return {
-    kick(){ if (!timer) timer = setInterval(tick, 30); tick(); },
+    kick(){ if (!timer) timer = setInterval(tick, 60); tick(); },
     want(name){ want = name; if (Audio_.ready()) tick(); },
     get current(){ return want; },
     // a one-shot: fades the loop out, plays, and anything asked for meanwhile follows it
