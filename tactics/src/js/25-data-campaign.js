@@ -264,7 +264,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: 'I don\'t know. Keep walking, little one, and stay close to me.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, tokens: 3, joins: ['sister']},   // the finale (with the rest of the chapter, about a first ×10 when recruiting opens
+          reward: {res: 500, tokens: 5, joins: ['sister']},   // the finale (with the rest of the chapter, about a first ×10 when recruiting opens
         },
       ]},
       // Chapter Two: Rae in her Republic uniform (outfit '' = art/rae-*.png), Little Sister as Flopsy Flora ('flora').
@@ -551,7 +551,7 @@ const CAMPAIGNS = {
             {who: "sister", text: "The Raepublic! I'm sewing it on a flag! A big one!"},
             {card: "End of Chapter Two", sub: "The Raepublic"},
           ],
-          reward: {res: 600, tokens: 3},
+          reward: {res: 600, tokens: 5},
         },
       ]},
       {id: 'RC3', title: 'Chapter Three', name: 'Monkeyland', enemyMods: {mhp: -1},
@@ -825,7 +825,7 @@ const CAMPAIGNS = {
             {who: 'rae', thought: true, text: 'There are more of us now than ever, and all of them are following me. I have to find them somewhere safe before the frogs catch up.'},
             {card: 'End of Chapter Three', sub: 'Monkeyland'},
           ],
-          reward: {res: 700, tokens: 3},
+          reward: {res: 700, tokens: 5},
         },
       ]},
       {id: 'RC4', title: 'Chapter Four', name: 'The Shore', enemyMods: {mhp: -1},
@@ -1188,7 +1188,7 @@ const CAMPAIGNS = {
             {who: "narr", text: "Far to the north, on the King's road, drums are beating. An army is marching south."},
             {card: "End of Chapter Four", sub: "The Shore"},
           ],
-          reward: {res: 900, tokens: 3, joins: ['ducky']},   // Ducky signs on with the Raepublic (Tandy & Maus come from the banner)
+          reward: {res: 900, tokens: 5, joins: ['ducky']},   // Ducky signs on with the Raepublic (Tandy & Maus come from the banner)
         },
       ]},
       {id: 'RC5', title: 'Chapter Five', name: 'The Last Shore', enemyMods: {mhp: -1},
@@ -1582,7 +1582,7 @@ const CAMPAIGNS = {
             {who: "narr", text: "That evening Flopsy climbs to the top of the tower and trims the lamp herself, so that the light will still be burning when Rae comes home."},
             {card: "End of Act One", sub: "The Last Shore"},
           ],
-          reward: {res: 1200, tokens: 4},
+          reward: {res: 1200, tokens: 6},
         },
       ]},
 
@@ -1763,7 +1763,7 @@ const CAMPAIGNS = {
             {who: 'tiggle', text: 'If Rae is real, she\'s out in those woods, and she\'ll be back. Then I\'ll find her and stop her, before anyone else has to climb these steps.'},
             {card: 'End of Chapter One', sub: 'The Prince'},
           ],
-          reward: {res: 500, tokens: 3},
+          reward: {res: 500, tokens: 5},
         },
       ]},
       {id: 'FC2', title: 'Chapter Two', name: 'The Black Frog', enemyMods: {mhp: -2, atk: -1}, stages: [
@@ -1973,7 +1973,7 @@ const CAMPAIGNS = {
             {who: "tiggle", text: "This is your doing, Rae Rabbit. I'm going to find you, and I'm going to put an end to it."},
             {card: "End of Chapter Two", sub: "The Black Frog"},
           ],
-          reward: {res: 600, tokens: 3},
+          reward: {res: 600, tokens: 5},
         },
       ]},
       {id: 'FC3', title: 'Chapter Three', name: 'The Governess', enemyMods: {mhp: -1}, stages: [
@@ -2221,7 +2221,7 @@ const CAMPAIGNS = {
             {who: 'tiggle', thought: true, text: 'All the time we\'ve ruled them, it never occurred to any of us to ask.'},
             {card: 'End of Chapter Three', sub: 'The Governess'},
           ],
-          reward: {res: 700, tokens: 3, joins: ['aurora']},
+          reward: {res: 700, tokens: 5, joins: ['aurora']},
         },
       ]},
       {id: 'FC4', title: 'Chapter Four', name: 'The Tournament', enemyMods: {mhp: -1},
@@ -2552,7 +2552,7 @@ const CAMPAIGNS = {
             {who: "narr", text: "That night, two riders leave the capital by the south gate. Behind them come Aurora and the monkeys who stayed. A day's march ahead of them, the King's army is heading for the sea, with Princess at its head."},
             {card: "End of Chapter Four", sub: "The Tournament"},
           ],
-          reward: {res: 900, tokens: 3},
+          reward: {res: 900, tokens: 5},
         },
       ]},
       {id: 'FC5', title: 'Chapter Five', name: 'The Prince\'s Army', enemyMods: {mhp: -1},
@@ -2990,7 +2990,7 @@ const CAMPAIGNS = {
             {who: "tiggle", thought: true, text: "Mustn't there?"},
             {card: "End of Act One", sub: "The Prince's Army"},
           ],
-          reward: {res: 1200, tokens: 4},
+          reward: {res: 1200, tokens: 6},
         },
       ]},
 

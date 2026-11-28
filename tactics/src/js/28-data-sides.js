@@ -113,7 +113,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'You look tired, Willow.'},
           {who: 'willow', text: 'I am, a little. Come and find me tonight, Rae. I want to tell you more about the friend I lost.'},
         ],
-        reward: {res: 600, tokens: 1},
+        reward: {res: 600, tokens: 2},
       },
     ]},
 
@@ -225,7 +225,7 @@ const SIDE_SETS = {
           {who: 'sister', text: 'I know. I\'ll tell her everything, and say sorry for going without asking.'},
           {who: 'sister', thought: true, text: 'But I\'m not sorry we came. I\'m going to sew this flower onto her coat, next to the one on the elbow.'},
         ],
-        reward: {res: 600, tokens: 1, weapons: [{id: 'patchneedle', to: 'sister'}]},
+        reward: {res: 600, tokens: 2, weapons: [{id: 'patchneedle', to: 'sister'}]},
       },
     ]},
 };

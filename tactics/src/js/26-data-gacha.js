@@ -27,7 +27,7 @@ const GACHA = {
   // banner takes about a chapter and a half. Chapter One: 3 stages × 1, its finale 6, up to 4 stars × 3 = 9–21.
   startTokens: 0,
   stageTokens: 1,         // for clearing a stage the first time, unless the stage's reward sets `tokens`
-  starTokens: 1,          // for earning a stage's bonus star (once per stage)
+  starTokens: 2,          // for earning a stage's bonus star (once per stage)
 };
 
 const GACHA_ARMY = {
