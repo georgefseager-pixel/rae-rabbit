@@ -203,11 +203,10 @@ const CAMPAIGNS = {
           enemyMods: {mhp: -2, atk: -1, def: -2},   // Def too: Rhubarb on her healing tower must be beatable by Chapter One rabbits. Eases off Chapter One's weakening towards its finale (see recommendedLevel)
           deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10],[1,11],[6,11]],
           brief: 'The whole camp is awake. Storm the tower above the gate and defeat Rhubarb.',
-          prepNote: 'Little Sister runs onto the field behind your line at the start of turn II, and the battle is lost if she falls. Keep a couple of units back with her: the archers and club guards will go for her first.',
           rename: {rae: 'Rae Rabbit'},
           departs: ['old'], fallsIn: {old: 'F1-4'},   // Old Rabbit stays behind with the rearguard, and falls in F1-4
           // Little Sister runs onto the field at the start of turn II and won't be sent back. She must not fall.
-          events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, bonus: {mhp: 6, def: 3}, talk: [
+          events: [{turn: 2, join: 'sister', at: [4, 11], mustSurvive: true, bonus: {mhp: 3, def: 1}, talk: [
             {who: 'narr', text: 'Someone small comes running across the yard behind the line.'},
             {who: 'sister', text: 'Wait! Wait for me!'},
             {who: 'rae', text: 'What are you doing here? I told you to hide in the bunkhouse!'},
