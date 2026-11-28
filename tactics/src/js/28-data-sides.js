@@ -8,7 +8,7 @@
 //   ban: [keys]   characters who can't be deployed
 //   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
 //   teaser        one line shown while it's locked
-//   flashback     set years ago: only the `lead` and ordinary soldiers can deploy
+//   flashback     set years ago (the `lead` must come; anyone else in the army may too)
 //   yields        the stage's fleeing boss surrenders ("Yields!") instead of escaping
 // Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
 const SIDE_OPENS = SUPPORT.opensAfter;

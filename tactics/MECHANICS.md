@@ -183,7 +183,7 @@ Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, 
 | Someone else leads | `lead` | FD-1, FD-2, FD-3 (Flopsy) |
 | Characters kept out | `ban` | WL-* (Willow), FD-* (Rae) |
 | Training fight (no permanent losses, the boss yields) | `spar` | WL-1, WL-2, WL-3, CO-1 (taught: monkeys cross trees; keep to the open), R4-2 (rabbits and monkeys, mixed teams), every round of the tournament (F4-1 to F4-7) |
-| Flashback (years ago: only the leader and ordinary soldiers) | `flashback` + `lead` | RH-1–3 (Rhubarb), FJ-1–3 (Fraggle Jr.), AU-2 (Aurora), CO-2 (Cornelius) |
+| Flashback (years ago; the leader must come, and anyone else may) | `flashback` + `lead` | RH-1–3 (Rhubarb), FJ-1–3 (Fraggle Jr.), AU-2 (Aurora), CO-2 (Cornelius) |
 | Boss surrenders ("Yields!") instead of fleeing | `yields` + a `flees` boss | EX-1, EX-3 |
 | Enemies from another side (mixed factions) | spawn `faction` | BR-2 (Magpie's gang with the reeve's frogs) |
 | Lone leader (deploy 1) | `maxDeploy: 1` | FJ-1 |
@@ -335,7 +335,7 @@ the same way); elite gladiator enemies use it too. Champions of the Lists gives 
 
 Tilly Tealbottom (Champions of the Lists, Friggliarchy) has supports with Tiggle and side stories
 (`29d-data-sides-tournament.js`, recommended 9 · 11 · 11): TL-1 The Garden Party (she leads, Tiggle away: Magpie's
-bandits raid her mother's party), TL-2 Last Season (a flashback, only Tilly and ordinary soldiers: Captain Mako's
+bandits raid her mother's party), TL-2 Last Season (a flashback: Captain Mako's
 pirates raid the Tealbottom summer house, and she takes up a Grappler's hook), TL-3 Bess Tealbottom (her pirate
 great-great-grandmother's tower, held by smugglers with hooks); it ends with Grandmama Bess, her own ★★★ hook.
 

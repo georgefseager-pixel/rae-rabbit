@@ -238,8 +238,8 @@ function release(btn){
 // ---------- Battle preparation ----------
 // A stage can name its own leader (lead: key) and keep characters out (ban: [keys]).
 const isLead = (ch, r) => ch.lead ? r.key === ch.lead : r.lord;
-// flashback: set years ago, so only the leader and ordinary soldiers (no other named characters) can deploy
-const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key) && (!ch.flashback || r.key === 'recruit' || r.key === ch.lead);
+// (flashbacks, set years ago, used to allow only their leader and ordinary soldiers; now anyone can come)
+const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key);
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
   const ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));

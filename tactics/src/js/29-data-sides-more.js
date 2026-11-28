@@ -482,7 +482,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'rout'}, maxDeploy: 6,
         deploy: [[3,1],[4,1],[2,1],[5,1],[1,1],[6,1]],
         brief: 'Years ago. The rabbits of the lower seam have downed picks. Overseer Rhubarb comes to get them digging again.',
-        prepNote: 'A flashback, years before the war: Rhubarb leads, with ordinary soldiers. Nobody else from the story is there.',
+        prepNote: 'A flashback, years before the war. Rhubarb leads (the battle is lost if she falls).',
         enemies: () => [
           E('digger',3,3,7,'charge',{talk: [
             {who: 'rabbits', text: "We're not digging! Hawthorn says if we all stop at once, they can't make us!"},
@@ -515,7 +515,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 6,
         deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
         brief: 'Years ago. Hawthorn\'s friends are meeting in the bunkhouses at night, led by a grey rabbit. Break up the meeting and defeat her before word reaches Hawthorn.',
-        prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
+        prepNote: 'A flashback. Rhubarb leads (the battle is lost if she falls).',
         enemies: () => [
           E('runner',4,3,1,'hold',{boss: true, flees: true, key: 'greyone', name: 'The Grey Rabbit', look: 'workerLop', fur: 'grey'}),
           E('pebbler',4,1,1,'guard'), E('hauler',4,6,1,'guard'), E('digger',4,3,4), E('runner',4,4,5), E('digger',4,1,8), E('hauler',4,6,8),
@@ -544,7 +544,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 6,
         deploy: [[3,0],[4,0],[3,1],[4,1],[1,1],[5,1]],
         brief: 'Years ago. Hawthorn is waiting on the ridge for his friends to reach him. Defeat him before they arrive.',
-        prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
+        prepNote: 'A flashback. Rhubarb leads (the battle is lost if she falls).',
         enemies: () => [
           E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger', bonus: {def: -1, mhp: -3}}),
           E('pebbler',5,2,8,'guard'), E('digger',5,5,9,'guard'), E('runner',5,6,7),
@@ -719,7 +719,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 4,
         deploy: [[4,15],[5,15],[3,14],[6,14]],
         brief: 'Years ago. To prove he\'s worth his name, Fraggle Jr. must take the hill from his father\'s champion, Gristle, with only three soldiers.',
-        prepNote: 'A flashback: Fraggle Jr. leads, with three ordinary soldiers.',
+        prepNote: 'A flashback. Fraggle Jr. leads (the battle is lost if he falls), with three others.',
         enemies: () => [
           E('gaxe',4,4,0,'hold',{boss: true, elite: true, key: 'gristle', name: 'Gristle', look: 'blackguard'}),
           E('gpike',3,3,3,'guard'), E('gpike',3,6,3,'guard'), E('gscribe',3,2,1,'guard'), E('gblade',3,4,6), E('gaxe',3,5,9), E('gchaplain',3,5,1,'guard'),
@@ -749,7 +749,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'survive', turns: 4}, maxDeploy: 5,
         deploy: [[4,13],[5,13],[3,14],[6,14],[4,14]],
         brief: 'Years ago. Fraggle Friggle sends his son to hold the river against raiders, with orders to call if he needs help. Hold for four turns.',
-        prepNote: 'A flashback: Fraggle Jr. leads, with ordinary soldiers.',
+        prepNote: 'A flashback. Fraggle Jr. leads (the battle is lost if he falls).',
         enemies: () => [E('gblade',5,3,3), E('gaxe',5,6,2), E('gpike',5,5,5), E('gscribe',5,8,4,'guard'), E('gblade',5,7,6)],
         reinforce: () => [{turn: 2, units: [E('gaxe',5,4,0)]}, {turn: 3, units: [E('gpike',5,3,0,'charge',{elite: true})]}],
         twist: {objective: {type: 'boss'}, popup: 'Father', units: [

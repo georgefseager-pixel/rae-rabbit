@@ -7915,7 +7915,7 @@ const SUPPORTS = {
 //   ban: [keys]   characters who can't be deployed
 //   spar: true    a training fight: nobody is unstitched for real, and a fleeing boss "yields"
 //   teaser        one line shown while it's locked
-//   flashback     set years ago: only the `lead` and ordinary soldiers can deploy
+//   flashback     set years ago (the `lead` must come; anyone else in the army may too)
 //   yields        the stage's fleeing boss surrenders ("Yields!") instead of escaping
 // Side stories use the Chapter Two outfits and run at full strength (enemyMods: {}).
 const SIDE_OPENS = SUPPORT.opensAfter;
@@ -8622,7 +8622,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'rout'}, maxDeploy: 6,
         deploy: [[3,1],[4,1],[2,1],[5,1],[1,1],[6,1]],
         brief: 'Years ago. The rabbits of the lower seam have downed picks. Overseer Rhubarb comes to get them digging again.',
-        prepNote: 'A flashback, years before the war: Rhubarb leads, with ordinary soldiers. Nobody else from the story is there.',
+        prepNote: 'A flashback, years before the war. Rhubarb leads (the battle is lost if she falls).',
         enemies: () => [
           E('digger',3,3,7,'charge',{talk: [
             {who: 'rabbits', text: "We're not digging! Hawthorn says if we all stop at once, they can't make us!"},
@@ -8655,7 +8655,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 6,
         deploy: [[3,11],[4,11],[2,11],[5,11],[3,10],[4,10]],
         brief: 'Years ago. Hawthorn\'s friends are meeting in the bunkhouses at night, led by a grey rabbit. Break up the meeting and defeat her before word reaches Hawthorn.',
-        prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
+        prepNote: 'A flashback. Rhubarb leads (the battle is lost if she falls).',
         enemies: () => [
           E('runner',4,3,1,'hold',{boss: true, flees: true, key: 'greyone', name: 'The Grey Rabbit', look: 'workerLop', fur: 'grey'}),
           E('pebbler',4,1,1,'guard'), E('hauler',4,6,1,'guard'), E('digger',4,3,4), E('runner',4,4,5), E('digger',4,1,8), E('hauler',4,6,8),
@@ -8684,7 +8684,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 6,
         deploy: [[3,0],[4,0],[3,1],[4,1],[1,1],[5,1]],
         brief: 'Years ago. Hawthorn is waiting on the ridge for his friends to reach him. Defeat him before they arrive.',
-        prepNote: 'A flashback: Rhubarb leads, with ordinary soldiers.',
+        prepNote: 'A flashback. Rhubarb leads (the battle is lost if she falls).',
         enemies: () => [
           E('captain',6,3,10,'hold',{boss: true, key: 'hawthorn', name: 'Hawthorn', look: 'worker', fur: 'ginger', bonus: {def: -1, mhp: -3}}),
           E('pebbler',5,2,8,'guard'), E('digger',5,5,9,'guard'), E('runner',5,6,7),
@@ -8859,7 +8859,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 4,
         deploy: [[4,15],[5,15],[3,14],[6,14]],
         brief: 'Years ago. To prove he\'s worth his name, Fraggle Jr. must take the hill from his father\'s champion, Gristle, with only three soldiers.',
-        prepNote: 'A flashback: Fraggle Jr. leads, with three ordinary soldiers.',
+        prepNote: 'A flashback. Fraggle Jr. leads (the battle is lost if he falls), with three others.',
         enemies: () => [
           E('gaxe',4,4,0,'hold',{boss: true, elite: true, key: 'gristle', name: 'Gristle', look: 'blackguard'}),
           E('gpike',3,3,3,'guard'), E('gpike',3,6,3,'guard'), E('gscribe',3,2,1,'guard'), E('gblade',3,4,6), E('gaxe',3,5,9), E('gchaplain',3,5,1,'guard'),
@@ -8889,7 +8889,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'survive', turns: 4}, maxDeploy: 5,
         deploy: [[4,13],[5,13],[3,14],[6,14],[4,14]],
         brief: 'Years ago. Fraggle Friggle sends his son to hold the river against raiders, with orders to call if he needs help. Hold for four turns.',
-        prepNote: 'A flashback: Fraggle Jr. leads, with ordinary soldiers.',
+        prepNote: 'A flashback. Fraggle Jr. leads (the battle is lost if he falls).',
         enemies: () => [E('gblade',5,3,3), E('gaxe',5,6,2), E('gpike',5,5,5), E('gscribe',5,8,4,'guard'), E('gblade',5,7,6)],
         reinforce: () => [{turn: 2, units: [E('gaxe',5,4,0)]}, {turn: 3, units: [E('gpike',5,3,0,'charge',{elite: true})]}],
         twist: {objective: {type: 'boss'}, popup: 'Father', units: [
@@ -9082,7 +9082,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 5,
         deploy: [[4,1],[5,1],[3,1],[6,1],[4,2]],
         brief: "Twenty years ago. On the day Aurora was crowned, her brother led Monkeyland in a rising against the frogs, and the King's army was a day's march away. Defeat the rising's leader and end it before the army arrives.",
-        prepNote: 'Years ago: only Aurora and ordinary soldiers can come.',
+        prepNote: 'Years ago. Aurora leads (the battle is lost if she falls).',
         enemies: () => [
           E('mkguard',7,4,13,'hold',{boss: true, elite: true, flees: true, key: 'lordsorrel', name: 'Lord Sorrel', look: 'monkey'}),
           E('mkacro',6,2,10), E('mkacro',6,7,10), E('mkthrow',6,1,8,'guard'), E('mkthrow',6,8,8,'guard'),
@@ -9199,7 +9199,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'survive', turns: 5}, maxDeploy: 4,
         deploy: [[4,1],[5,1],[3,1],[6,1]],
         brief: "Thirty years ago. Masked raiders break into the great hall at night, after the Governess, Aurora's mother. Hold them off for five turns, until the rest of the guard arrives. She must not fall.",
-        prepNote: 'Years ago: only Cornelius and ordinary soldiers can come. Governess Marigold (blue) must not fall.',
+        prepNote: 'Years ago. Cornelius leads, and Governess Marigold (green) must not fall either.',
         allies: () => [E('governess',6,4,0,'hold',{key: 'marigold', name: 'Governess Marigold', look: 'monkey', fur: 'grey', elite: true, vip: true, bonus: {mhp: 6, def: 3}})],
         enemies: () => [E('blade',6,2,9), E('blade',6,7,9), E('blade',6,4,11), E('reed',6,1,10,'guard'), E('reed',6,8,10,'guard')],
         reinforce: () => [
@@ -9712,7 +9712,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 5,
         deploy: [[4,14],[5,14],[3,13],[6,13],[2,14]],
         brief: 'Last season. Pirates have raided the Tealbottom summer house on the coast, and a lance is no use at all on a jetty. Drive off their captain. Tilly must not fall.',
-        prepNote: 'Last season: only Tilly and ordinary soldiers can come. The pirates have Grapplers too, and their hooks pull your units in just as Tilly\'s do.',
+        prepNote: 'Last season. Tilly leads (the battle is lost if she falls). The pirates have Grapplers too, and their hooks pull your units in just as Tilly\'s do.',
         enemies: () => [
           E('sharkcapt',12,4,2,'hold',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('phook',10,3,4,'guard'), E('phook',10,6,4,'guard'), E('pgunner',10,2,3,'guard'), E('psawbones',10,7,3,'guard'),
@@ -9808,7 +9808,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 5,
         deploy: [[4,15],[5,15],[3,14],[6,14],[5,14]],
         brief: 'Years ago, at the King\'s spring hunt. Marsh brigands have climbed into the royal park while the hunt is out in the woods. Drive off their leader. Princess must not fall.',
-        prepNote: 'A flashback: Princess, eleven years old, leads the pavilion guards and the beaters, so only she and ordinary soldiers can come. The battle is lost if she falls.',
+        prepNote: 'A flashback: Princess, eleven years old, leads the defence of the pavilion. The battle is lost if she falls.',
         enemies: () => [
           E('bruiser',13,4,2,'hold',{boss: true, flees: true, key: 'mudge', name: 'Mudge', look: 'bruiser'}),
           E('blade',12,2,4), E('blade',12,7,4), E('reed',12,1,1,'guard'), E('reed',12,8,1,'guard'), E('croaker',12,5,0,'guard'),
@@ -12466,8 +12466,8 @@ function release(btn){
 // ---------- Battle preparation ----------
 // A stage can name its own leader (lead: key) and keep characters out (ban: [keys]).
 const isLead = (ch, r) => ch.lead ? r.key === ch.lead : r.lord;
-// flashback: set years ago, so only the leader and ordinary soldiers (no other named characters) can deploy
-const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key) && (!ch.flashback || r.key === 'recruit' || r.key === ch.lead);
+// (flashbacks, set years ago, used to allow only their leader and ordinary soldiers; now anyone can come)
+const canDeploy = (ch, r) => !(ch.ban || []).includes(r.key);
 let prep = null;   // {ck, i, picks:Set(uid)}
 function openPrep(ck, i){
   const ch = stageAt(ck, i), alive = living(ck).filter(r => canDeploy(ch, r));
@@ -13603,7 +13603,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'fe071dbbbcd9';
+const BUILD_ID = 'b816f64ba350';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

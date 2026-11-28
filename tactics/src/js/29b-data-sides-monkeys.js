@@ -156,7 +156,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 5,
         deploy: [[4,1],[5,1],[3,1],[6,1],[4,2]],
         brief: "Twenty years ago. On the day Aurora was crowned, her brother led Monkeyland in a rising against the frogs, and the King's army was a day's march away. Defeat the rising's leader and end it before the army arrives.",
-        prepNote: 'Years ago: only Aurora and ordinary soldiers can come.',
+        prepNote: 'Years ago. Aurora leads (the battle is lost if she falls).',
         enemies: () => [
           E('mkguard',7,4,13,'hold',{boss: true, elite: true, flees: true, key: 'lordsorrel', name: 'Lord Sorrel', look: 'monkey'}),
           E('mkacro',6,2,10), E('mkacro',6,7,10), E('mkthrow',6,1,8,'guard'), E('mkthrow',6,8,8,'guard'),
@@ -273,7 +273,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'survive', turns: 5}, maxDeploy: 4,
         deploy: [[4,1],[5,1],[3,1],[6,1]],
         brief: "Thirty years ago. Masked raiders break into the great hall at night, after the Governess, Aurora's mother. Hold them off for five turns, until the rest of the guard arrives. She must not fall.",
-        prepNote: 'Years ago: only Cornelius and ordinary soldiers can come. Governess Marigold (blue) must not fall.',
+        prepNote: 'Years ago. Cornelius leads, and Governess Marigold (green) must not fall either.',
         allies: () => [E('governess',6,4,0,'hold',{key: 'marigold', name: 'Governess Marigold', look: 'monkey', fur: 'grey', elite: true, vip: true, bonus: {mhp: 6, def: 3}})],
         enemies: () => [E('blade',6,2,9), E('blade',6,7,9), E('blade',6,4,11), E('reed',6,1,10,'guard'), E('reed',6,8,10,'guard')],
         reinforce: () => [

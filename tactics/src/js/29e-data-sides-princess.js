@@ -13,7 +13,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 5,
         deploy: [[4,15],[5,15],[3,14],[6,14],[5,14]],
         brief: 'Years ago, at the King\'s spring hunt. Marsh brigands have climbed into the royal park while the hunt is out in the woods. Drive off their leader. Princess must not fall.',
-        prepNote: 'A flashback: Princess, eleven years old, leads the pavilion guards and the beaters, so only she and ordinary soldiers can come. The battle is lost if she falls.',
+        prepNote: 'A flashback: Princess, eleven years old, leads the defence of the pavilion. The battle is lost if she falls.',
         enemies: () => [
           E('bruiser',13,4,2,'hold',{boss: true, flees: true, key: 'mudge', name: 'Mudge', look: 'bruiser'}),
           E('blade',12,2,4), E('blade',12,7,4), E('reed',12,1,1,'guard'), E('reed',12,8,1,'guard'), E('croaker',12,5,0,'guard'),

@@ -47,7 +47,7 @@ Object.assign(SIDE_SETS, {
         objective: {type: 'boss'}, maxDeploy: 5,
         deploy: [[4,14],[5,14],[3,13],[6,13],[2,14]],
         brief: 'Last season. Pirates have raided the Tealbottom summer house on the coast, and a lance is no use at all on a jetty. Drive off their captain. Tilly must not fall.',
-        prepNote: 'Last season: only Tilly and ordinary soldiers can come. The pirates have Grapplers too, and their hooks pull your units in just as Tilly\'s do.',
+        prepNote: 'Last season. Tilly leads (the battle is lost if she falls). The pirates have Grapplers too, and their hooks pull your units in just as Tilly\'s do.',
         enemies: () => [
           E('sharkcapt',12,4,2,'hold',{boss: true, flees: true, key: 'mako', name: 'Captain Mako', look: 'mako', fur: 'mako'}),
           E('phook',10,3,4,'guard'), E('phook',10,6,4,'guard'), E('pgunner',10,2,3,'guard'), E('psawbones',10,7,3,'guard'),
