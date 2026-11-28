@@ -456,7 +456,7 @@ function objectiveText(){
   const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
     : ob.type === 'survive' ? (B.ch.escort ? `Protect the ${ob.who || 'couriers'} until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach ${ob.dest || 'the road'}.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
     : ob.type === 'intercept' ? `Catch as many ${ob.who || 'couriers'} as you can before they reach ${ob.dest || 'the road'}.${B.ch.event ? '' : ` ${couriers().filter(u => u.dead && !u.escaped).length} caught.`}`
-    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`
+    : ob.type === 'escape' ? (ob.reach ? `Get ${lord?.name || 'your leader'} to ${ob.dest || 'the gold squares'}.` : `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`)
     : ob.type === 'bells' ? `Hold the bells: each one you stand on at the end of your turn rings once. Ring ${ob.n} before they do.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
   const tide = B.ch.tide ? (tideHigh() ? ' 🌊 High tide: the flats are under water.' : tideComing() ? ' 🌊 The tide comes in next turn: get off the marked flats!' : ' 🌊 Low tide: the flats are dry, for now.') : '';

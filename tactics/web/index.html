@@ -5252,9 +5252,9 @@ const CAMPAIGNS = {
           objective: {type: 'boss'}, maxDeploy: 1, enemyLine: 'TIGGLE TAGGLE',
           deploy: [[4,8]],
           brief: 'Dawn, on the point below the lighthouse. Rae Rabbit against Tiggle Taggle, with no one else on either side.',
-          prepNote: 'Rae fights alone. Tiggle is alone too. The beacon stone in the middle heals whoever stands on it.',
+          prepNote: 'Rae fights alone. Tiggle is alone too. The beacon stone in the middle (+2 Def, +20 Avoid) heals whoever stands on it: Rae can reach it on her first turn.',
           enemies: () => [
-            E('prince',12,4,1,'charge',{boss: true, flees: true, key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', fleeWord: 'Disarmed', bonus: {mhp: 6, def: 1}}),
+            E('prince',12,4,1,'charge',{boss: true, flees: true, key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', fleeWord: 'Disarmed', bonus: {mhp: 2, def: 1}}),
           ],
           bossTalk: [
             {who: "tiggle", text: "Ready?"},
@@ -6473,7 +6473,7 @@ const CAMPAIGNS = {
         {
           id: 'F5-5', title: 'The Camp at Night', map: 'campBells', enemyFaction: 'frog',
           star: {type: 'talked', n: 2, text: 'Talk both captains round on the way'},
-          objective: {type: 'escape', dest: 'the command pavilion'}, maxDeploy: 4, exits: [[4,1]],
+          objective: {type: 'escape', dest: 'the command pavilion', reach: true}, maxDeploy: 4, exits: [[4,1]],
           deploy: [[4,14],[5,14],[3,15],[6,15],[2,14]],
           brief: 'Princess is at the front, besieging the rabbits\' lighthouse. Her camp is half asleep. Tiggle walks into the middle of it, to speak to her army himself.',
           prepNote: 'Only four go in. Get Tiggle to the command pavilion at the top of the camp. Captain Lotus and Captain Wort are sleeping in tents on the way, and both can be talked round.',
@@ -6658,7 +6658,7 @@ const CAMPAIGNS = {
           objective: {type: 'survive', turns: 4}, maxDeploy: 1, enemyLine: 'RAE RABBIT',
           deploy: [[4,8]],
           brief: 'Dawn, on the point below the lighthouse. Tiggle Taggle against Rae Rabbit, with no one else on either side.',
-          prepNote: 'Tiggle fights alone, against Rae at her very best. Hold out for four turns. The beacon stone in the middle heals whoever stands on it.',
+          prepNote: 'Tiggle fights alone, against Rae at her very best. Hold out for four turns. The beacon stone in the middle (+2 Def, +20 Avoid) heals whoever stands on it: Tiggle can reach it on his first turn, and out in the open she will win.',
           enemies: () => [
             E('captain',12,4,1,'charge',{boss: true, flees: true, key: 'rae', name: 'Rae Rabbit', look: 'rae', fleeWord: 'Steps back', bonus: {mhp: 6, atk: 2, spd: 2, skl: 2}}),
           ],
@@ -10783,7 +10783,7 @@ function objectiveText(){
   const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
     : ob.type === 'survive' ? (B.ch.escort ? `Protect the ${ob.who || 'couriers'} until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go), or until they reach ${ob.dest || 'the road'}.` : `Survive until the end of turn ${ROMAN(ob.turns)} (${Math.max(0, ob.turns - turn + 1)} to go).`)
     : ob.type === 'intercept' ? `Catch as many ${ob.who || 'couriers'} as you can before they reach ${ob.dest || 'the road'}.${B.ch.event ? '' : ` ${couriers().filter(u => u.dead && !u.escaped).length} caught.`}`
-    : ob.type === 'escape' ? `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`
+    : ob.type === 'escape' ? (ob.reach ? `Get ${lord?.name || 'your leader'} to ${ob.dest || 'the gold squares'}.` : `Get ${lord?.name || 'your leader'} out: reach ${ob.dest || 'the gold squares'}.`)
     : ob.type === 'bells' ? `Hold the bells: each one you stand on at the end of your turn rings once. Ring ${ob.n} before they do.` : 'Rout the enemy.';
   if (B.ch.event) return `${goal} ${giftLine()}`;
   const tide = B.ch.tide ? (tideHigh() ? ' 🌊 High tide: the flats are under water.' : tideComing() ? ' 🌊 The tide comes in next turn: get off the marked flats!' : ' 🌊 Low tide: the flats are dry, for now.') : '';
@@ -13364,7 +13364,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '9a92628ca1ad';
+const BUILD_ID = 'decadadd1ba5';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

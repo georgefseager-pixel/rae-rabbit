@@ -1524,9 +1524,9 @@ const CAMPAIGNS = {
           objective: {type: 'boss'}, maxDeploy: 1, enemyLine: 'TIGGLE TAGGLE',
           deploy: [[4,8]],
           brief: 'Dawn, on the point below the lighthouse. Rae Rabbit against Tiggle Taggle, with no one else on either side.',
-          prepNote: 'Rae fights alone. Tiggle is alone too. The beacon stone in the middle heals whoever stands on it.',
+          prepNote: 'Rae fights alone. Tiggle is alone too. The beacon stone in the middle (+2 Def, +20 Avoid) heals whoever stands on it: Rae can reach it on her first turn.',
           enemies: () => [
-            E('prince',12,4,1,'charge',{boss: true, flees: true, key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', fleeWord: 'Disarmed', bonus: {mhp: 6, def: 1}}),
+            E('prince',12,4,1,'charge',{boss: true, flees: true, key: 'tiggle', name: 'Tiggle Taggle', look: 'tiggle', fleeWord: 'Disarmed', bonus: {mhp: 2, def: 1}}),
           ],
           bossTalk: [
             {who: "tiggle", text: "Ready?"},
@@ -2745,7 +2745,7 @@ const CAMPAIGNS = {
         {
           id: 'F5-5', title: 'The Camp at Night', map: 'campBells', enemyFaction: 'frog',
           star: {type: 'talked', n: 2, text: 'Talk both captains round on the way'},
-          objective: {type: 'escape', dest: 'the command pavilion'}, maxDeploy: 4, exits: [[4,1]],
+          objective: {type: 'escape', dest: 'the command pavilion', reach: true}, maxDeploy: 4, exits: [[4,1]],
           deploy: [[4,14],[5,14],[3,15],[6,15],[2,14]],
           brief: 'Princess is at the front, besieging the rabbits\' lighthouse. Her camp is half asleep. Tiggle walks into the middle of it, to speak to her army himself.',
           prepNote: 'Only four go in. Get Tiggle to the command pavilion at the top of the camp. Captain Lotus and Captain Wort are sleeping in tents on the way, and both can be talked round.',
@@ -2930,7 +2930,7 @@ const CAMPAIGNS = {
           objective: {type: 'survive', turns: 4}, maxDeploy: 1, enemyLine: 'RAE RABBIT',
           deploy: [[4,8]],
           brief: 'Dawn, on the point below the lighthouse. Tiggle Taggle against Rae Rabbit, with no one else on either side.',
-          prepNote: 'Tiggle fights alone, against Rae at her very best. Hold out for four turns. The beacon stone in the middle heals whoever stands on it.',
+          prepNote: 'Tiggle fights alone, against Rae at her very best. Hold out for four turns. The beacon stone in the middle (+2 Def, +20 Avoid) heals whoever stands on it: Tiggle can reach it on his first turn, and out in the open she will win.',
           enemies: () => [
             E('captain',12,4,1,'charge',{boss: true, flees: true, key: 'rae', name: 'Rae Rabbit', look: 'rae', fleeWord: 'Steps back', bonus: {mhp: 6, atk: 2, spd: 2, skl: 2}}),
           ],
