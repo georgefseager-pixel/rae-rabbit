@@ -403,7 +403,7 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
 - **Story progress**: jump to any stage (everything before it counts as cleared, with the story choices that implies),
   clear the whole current chapter, unlock everything, reset this army's story; play / clear any side story, clear all.
 - **Resources**: money, pull currency, event gifts, next pull is a guaranteed ★★★ on every banner, zero everything.
-- **Army**: set everyone's level, recruit everyone, revive the fallen, every weapon, every costume, reset relationships,
+- **Army**: set everyone's level, recruit everyone (story characters who join that army, every banner character and soldier, and every costume for them), revive the fallen, every weapon, every costume, reset relationships,
   set every support (or one character's) to none/C/B/A/S.
 - **Time, energy and events**: December / January on (pretend month), new day, claim every log-in reward (the rest of the 35-day track: currency and the five
   costumes, without using up today's log-in), +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.

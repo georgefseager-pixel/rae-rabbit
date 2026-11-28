@@ -46,11 +46,13 @@ function weaponResult(ck, stars){ const it = addWeapon(ck, pick(weaponPool(ck, s
 function debugRecruitAll(ck){
   const st = SAVE.camps[ck], army = GACHA_ARMY[ck]; let n = 0;
   const banners = army.banners.map(b => ({...b, army: ck}));
-  for (const key of new Set([...army.rares, ...banners.flatMap(b => [...bannerPool(b), ...(b.featured || [])])]))
-    if (CHARACTERS[key] && !st.roster.some(r => r.key === key)){ const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3; st.roster.push(rec); n++; }
+  // story characters who join this army (from its start, a stage's reward, or a battle event), then everyone on its banners
+  const story = [...CAMPAIGNS[ck].start, ...CAMPAIGNS[ck].stages.flatMap(s => [...(s.reward?.joins || []), ...(s.events || []).map(e => e.join).filter(Boolean)])];
+  for (const key of new Set([...story, ...army.rares, ...banners.flatMap(b => [...bannerPool(b), ...(b.featured || [])])]))
+    if (CHARACTERS[key] && CHARACTERS[key].rarity !== 1 && !st.roster.some(r => r.key === key)){ const rec = recordFor(key); rec.uid = `${key}-${Date.now().toString(36)}`; rec.stars = 3; st.roster.push(rec); n++; }
   for (const set of [null, ...new Set(banners.map(b => b.troops).filter(Boolean))])
     for (const tpl of companyOf(ck, set)) if (!st.roster.some(r => r.gid === tpl.id)){ st.roster.push(asCompanySoldier(makeRecruit(ck, tpl.cls), tpl)); n++; }
-  grantAttires(ck, banners.flatMap(b => b.attires || []));
+  grantAttires(ck, Object.keys(ATTIRES));   // every costume for everyone here (banner, story, log-in and event costumes)
   return n;
 }
 function grantPull(ck, banner, stars){
