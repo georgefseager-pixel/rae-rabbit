@@ -317,6 +317,9 @@ function tokenFor(u, variant){
   // training opponents, and real enemies from your own side (frog against frog, rabbit against rabbit), stand on grey
   const spar = u.team === 'e' && (!!B?.ch?.spar || u.faction === B?.pf);
   g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
+  // a bright rim says whose side a unit is on, whatever it looks like: gold for yours, red for enemies, light blue for allies
+  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.38, T*.1, 0, 0, Math.PI*2); g.lineWidth = Math.max(1.5, T*.055);
+  g.strokeStyle = u.team === 'p' ? '#ffd75e' : ally ? '#9fd4ff' : '#ff4b3a'; g.stroke();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : spar ? '#e8e4da' : F.stitch, T*.5);
   const icon = artImage(u, 'token');
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache

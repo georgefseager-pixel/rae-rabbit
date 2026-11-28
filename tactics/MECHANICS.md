@@ -16,6 +16,7 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | Crit | Skl/2 + weapon crit − enemy Skl/4 |
 | Double attack | Spd at least 4 higher than the enemy's |
 | Weapon triangle | Two triangles. Melee: sword beats axe, axe beats lance, lance beats sword. Ranged: tome beats bow, bow beats hook, hook beats tome. A win is +1 damage, +15 hit. Shown as a diagram with `{show: 'triangle'}` |
+| Team rims | every unit's coaster has a bright rim: gold for yours, red for enemies, light blue for allies (so the sides are clear even when both armies look alike) |
 | Weapon badges | every map token carries its weapon's badge, coloured by weapon (swords red, axes green, lances blue, bows gold, tomes purple, staves pale teal). Danger view covers each unit with a large badge, ringed red (enemies), gold (yours) or blue (allies) |
 | Triangle arrows | with one of your units selected, each enemy shows a green ▲ (top left of its token) if your weapon beats theirs, a red ▼ if theirs beats yours (tomes over bows included) |
 | Ranges | Bows (and whips) 2 only, so no counterattack up close. Tomes 1–2. Hooks 2 only. Staves heal an adjacent ally (8 + Atk/2) and can't attack |
@@ -442,8 +443,9 @@ its energy buttons (0, 1, full) set it directly.
 
 ## Economy
 
-Pull currency (Whispers / Writs) comes from clearing stages (1 each, chapter finales 6), bonus stars (3), side stories
-(2, 2, 3 per set, plus their stars), the daily log-in, or trading 400 money for one. Target: a typical chapter (most
+Pull currency (Whispers / Writs) comes from clearing stages (1 each, chapter finales 3, the Act One finales 4), bonus
+stars (1), side stories (1 each, plus their stars), the daily log-in, or trading 400 money for one. (Cut in November 2026:
+it had been 6 / 3 / 2-2-3, which gave far too much.) Target: a typical chapter (most
 stars, a few side stories, a week of log-ins) earns about two-thirds of a banner. Typical per side: Chapter One about 28,
 Chapter Two about 45. Getting both ★★★ from a two-character banner costs about 60 on average (median 50–60, 3 in 4 by 80).
 Releasing units or spare weapons pays a little money (15 / 40 / 100 by rarity), never pull currency.

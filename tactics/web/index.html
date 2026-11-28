@@ -3999,7 +3999,7 @@ const CAMPAIGNS = {
             {who: 'rae', text: 'I don\'t know. Keep walking, little one, and stay close to me.'},
             {card: 'End of Chapter One', sub: 'Rae Rabbit'},
           ],
-          reward: {res: 500, tokens: 6, joins: ['sister']},   // the finale (with the rest of the chapter, about a first ×10 when recruiting opens
+          reward: {res: 500, tokens: 3, joins: ['sister']},   // the finale (with the rest of the chapter, about a first ×10 when recruiting opens
         },
       ]},
       // Chapter Two: Rae in her Republic uniform (outfit '' = art/rae-*.png), Little Sister as Flopsy Flora ('flora').
@@ -4286,7 +4286,7 @@ const CAMPAIGNS = {
             {who: "sister", text: "The Raepublic! I'm sewing it on a flag! A big one!"},
             {card: "End of Chapter Two", sub: "The Raepublic"},
           ],
-          reward: {res: 600, tokens: 6},
+          reward: {res: 600, tokens: 3},
         },
       ]},
       {id: 'RC3', title: 'Chapter Three', name: 'Monkeyland', enemyMods: {mhp: -1},
@@ -4560,7 +4560,7 @@ const CAMPAIGNS = {
             {who: 'rae', thought: true, text: 'There are more of us now than ever, and all of them are following me. I have to find them somewhere safe before the frogs catch up.'},
             {card: 'End of Chapter Three', sub: 'Monkeyland'},
           ],
-          reward: {res: 700, tokens: 6},
+          reward: {res: 700, tokens: 3},
         },
       ]},
       {id: 'RC4', title: 'Chapter Four', name: 'The Shore', enemyMods: {mhp: -1},
@@ -4923,7 +4923,7 @@ const CAMPAIGNS = {
             {who: "narr", text: "Far to the north, on the King's road, drums are beating. An army is marching south."},
             {card: "End of Chapter Four", sub: "The Shore"},
           ],
-          reward: {res: 900, tokens: 6, joins: ['ducky']},   // Ducky signs on with the Raepublic (Tandy & Maus come from the banner)
+          reward: {res: 900, tokens: 3, joins: ['ducky']},   // Ducky signs on with the Raepublic (Tandy & Maus come from the banner)
         },
       ]},
       {id: 'RC5', title: 'Chapter Five', name: 'The Last Shore', enemyMods: {mhp: -1},
@@ -5317,7 +5317,7 @@ const CAMPAIGNS = {
             {who: "narr", text: "That evening Flopsy climbs to the top of the tower and trims the lamp herself, so that the light will still be burning when Rae comes home."},
             {card: "End of Act One", sub: "The Last Shore"},
           ],
-          reward: {res: 1200, tokens: 8},
+          reward: {res: 1200, tokens: 4},
         },
       ]},
 
@@ -5498,7 +5498,7 @@ const CAMPAIGNS = {
             {who: 'tiggle', text: 'If Rae is real, she\'s out in those woods, and she\'ll be back. Then I\'ll find her and stop her, before anyone else has to climb these steps.'},
             {card: 'End of Chapter One', sub: 'The Prince'},
           ],
-          reward: {res: 500, tokens: 6},
+          reward: {res: 500, tokens: 3},
         },
       ]},
       {id: 'FC2', title: 'Chapter Two', name: 'The Black Frog', enemyMods: {mhp: -2, atk: -1}, stages: [
@@ -5708,7 +5708,7 @@ const CAMPAIGNS = {
             {who: "tiggle", text: "This is your doing, Rae Rabbit. I'm going to find you, and I'm going to put an end to it."},
             {card: "End of Chapter Two", sub: "The Black Frog"},
           ],
-          reward: {res: 600, tokens: 6},
+          reward: {res: 600, tokens: 3},
         },
       ]},
       {id: 'FC3', title: 'Chapter Three', name: 'The Governess', enemyMods: {mhp: -1}, stages: [
@@ -5956,7 +5956,7 @@ const CAMPAIGNS = {
             {who: 'tiggle', thought: true, text: 'All the time we\'ve ruled them, it never occurred to any of us to ask.'},
             {card: 'End of Chapter Three', sub: 'The Governess'},
           ],
-          reward: {res: 700, tokens: 6, joins: ['aurora']},
+          reward: {res: 700, tokens: 3, joins: ['aurora']},
         },
       ]},
       {id: 'FC4', title: 'Chapter Four', name: 'The Tournament', enemyMods: {mhp: -1},
@@ -6287,7 +6287,7 @@ const CAMPAIGNS = {
             {who: "narr", text: "That night, two riders leave the capital by the south gate. Behind them come Aurora and the monkeys who stayed. A day's march ahead of them, the King's army is heading for the sea, with Princess at its head."},
             {card: "End of Chapter Four", sub: "The Tournament"},
           ],
-          reward: {res: 900, tokens: 6},
+          reward: {res: 900, tokens: 3},
         },
       ]},
       {id: 'FC5', title: 'Chapter Five', name: 'The Prince\'s Army', enemyMods: {mhp: -1},
@@ -6725,7 +6725,7 @@ const CAMPAIGNS = {
             {who: "tiggle", thought: true, text: "Mustn't there?"},
             {card: "End of Act One", sub: "The Prince's Army"},
           ],
-          reward: {res: 1200, tokens: 8},
+          reward: {res: 1200, tokens: 4},
         },
       ]},
 
@@ -6788,7 +6788,7 @@ const GACHA = {
   // banner takes about a chapter and a half. Chapter One: 3 stages × 1, its finale 6, up to 4 stars × 3 = 9–21.
   startTokens: 0,
   stageTokens: 1,         // for clearing a stage the first time, unless the stage's reward sets `tokens`
-  starTokens: 3,          // for earning a stage's bonus star (once per stage)
+  starTokens: 1,          // for earning a stage's bonus star (once per stage)
 };
 
 const GACHA_ARMY = {
@@ -7951,7 +7951,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'It felt wrong, waiting for them. In the mines I\'d have charged straight up the hill.'},
           {who: 'willow', text: 'And half your squad would have been knocked flat on the way up. Go and rest, Rae.'},
         ],
-        reward: {res: 400, tokens: 2},
+        reward: {res: 400, tokens: 1},
       },
       {
         id: 'WL-2', title: 'Lesson Two: Swords, Axes and Spears', map: 'ford', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
@@ -7984,7 +7984,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'It\'s like stone, paper and scissors. The kits played that in the mines.'},
           {who: 'willow', text: 'It is. But in a battle the enemy chooses too, so look again every turn. There\'s one lesson left.'},
         ],
-        reward: {res: 500, tokens: 2},
+        reward: {res: 500, tokens: 1},
       },
       {
         id: 'WL-3', title: 'Lesson Three: Never Alone', map: 'republicCamp', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
@@ -8017,7 +8017,7 @@ const SIDE_SETS = {
           {who: 'rae', text: 'You look tired, Willow.'},
           {who: 'willow', text: 'I am, a little. Come and find me tonight, Rae. I want to tell you more about the friend I lost.'},
         ],
-        reward: {res: 600, tokens: 3},
+        reward: {res: 600, tokens: 1},
       },
     ]},
 
@@ -8056,7 +8056,7 @@ const SIDE_SETS = {
           {who: 'republic', text: 'A frog patrol, this close to camp. We ought to go back and tell the Commander.'},
           {who: 'sister', text: 'We will. But the meadow is just past those trees, and I haven\'t picked a single flower. One more hour.'},
         ],
-        reward: {res: 400, tokens: 2},
+        reward: {res: 400, tokens: 1},
       },
       {
         id: 'FD-2', title: 'Scarier Than She Looks', map: 'forestTrail', enemyFaction: 'frog',
@@ -8091,7 +8091,7 @@ const SIDE_SETS = {
           {who: 'republic', text: 'You were, Flopsy Flora. You kept us all together the whole fight.'},
           {who: 'sister', text: 'He said the meadow. That\'s where the flowers are. Come on, I\'m not letting him have it.'},
         ],
-        reward: {res: 500, tokens: 2},
+        reward: {res: 500, tokens: 1},
       },
       {
         id: 'FD-3', title: 'The Flower Field', map: 'flowerField', enemyFaction: 'frog',
@@ -8129,7 +8129,7 @@ const SIDE_SETS = {
           {who: 'sister', text: 'I know. I\'ll tell her everything, and say sorry for going without asking.'},
           {who: 'sister', thought: true, text: 'But I\'m not sorry we came. I\'m going to sew this flower onto her coat, next to the one on the elbow.'},
         ],
-        reward: {res: 600, tokens: 3, weapons: [{id: 'patchneedle', to: 'sister'}]},
+        reward: {res: 600, tokens: 1, weapons: [{id: 'patchneedle', to: 'sister'}]},
       },
     ]},
 };
@@ -8137,7 +8137,7 @@ const SIDE_SETS = {
 // ---------------- 29-data-sides-more.js ----------------
 // ================= Side Stories: the rest of the unique characters =================
 // Same format as 28-data-sides.js. Rhubarb's and Fraggle Jr.'s are flashbacks, set years before the war.
-const sideReward = (n, weapon, to) => ({res: [400, 500, 600][n], tokens: [2, 2, 3][n], ...(weapon ? {weapons: [{id: weapon, to}]} : {})});
+const sideReward = (n, weapon, to) => ({res: [400, 500, 600][n], tokens: [1, 1, 1][n], ...(weapon ? {weapons: [{id: weapon, to}]} : {})});
 
 Object.assign(SIDE_SETS, {
   // ======================================== The Raepublic ========================================
@@ -11914,6 +11914,9 @@ function tokenFor(u, variant){
   // training opponents, and real enemies from your own side (frog against frog, rabbit against rabbit), stand on grey
   const spar = u.team === 'e' && (!!B?.ch?.spar || u.faction === B?.pf);
   g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
+  // a bright rim says whose side a unit is on, whatever it looks like: gold for yours, red for enemies, light blue for allies
+  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.38, T*.1, 0, 0, Math.PI*2); g.lineWidth = Math.max(1.5, T*.055);
+  g.strokeStyle = u.team === 'p' ? '#ffd75e' : ally ? '#9fd4ff' : '#ff4b3a'; g.stroke();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : spar ? '#e8e4da' : F.stitch, T*.5);
   const icon = artImage(u, 'token');
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
@@ -13585,7 +13588,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = 'a39485707bee';
+const BUILD_ID = '93cca0e8cde2';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
