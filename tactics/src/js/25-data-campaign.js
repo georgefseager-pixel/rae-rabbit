@@ -1149,7 +1149,7 @@ const CAMPAIGNS = {
             {scene: "ships", place: "The Satin Sea · Morning"},
             {who: "narr", text: "The little ship the pirates left at the pier is called the Hopeful."},
             {who: "narr", text: "Flopsy ties the knots, and Speshul keeps watch from the top of the mast. Froggle takes the wheel, because she's the only one who can read the old charts in the cabin."},
-            {who: "froggle", text: "I kept the mine ledgers for twenty years. Sailing turns out to be mostly sums, and I can do sums."},
+            {who: "froggle", text: "I spent years keeping the King's mine ledgers. Sailing turns out to be mostly sums, and I can do sums."},
             {who: "narr", text: "Ahead, Ducky's three ships are lashed together side by side, with gangplanks thrown across the gaps between them."},
             {who: "patch", text: "We're heading straight at all three of them."},
             {who: "froggle", text: "We are. He's tied them together, so once we're alongside one, we can walk across to the others."},
