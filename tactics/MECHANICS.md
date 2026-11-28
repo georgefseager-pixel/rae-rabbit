@@ -483,3 +483,21 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
   costumes, without using up today's log-in), +1 hour, energy 0 / 1 / full, December on/off, replay events, set the log-in day.
 - **Tutorials and display**: replay tutorials, fast animations (4×), music off.
 - **Save**: copy the save as text, paste one back, wipe everything.
+
+## Local multiplayer (`70-versus.js`)
+
+- **Local Multiplayer** sits beside Debug at the foot of the campaign screen. Pass and play on one phone: George against Rosie.
+- **Setup steps:**
+  1. Troops per army: 1 to 6, limited by how many troops are standing in both armies.
+  2. A map from `VS_MAPS`.
+  3. A draft: the players take turns picking from everyone standing in either army. Who picks first is random.
+  4. A coin toss decides who moves first.
+- **Maps** are half a map turned 180° (a story map's top rows, or a hand-drawn half), so both sides are identical. They're added to `MAPS` as `vs-<key>`. George starts at the bottom and Rosie at the top. The starting squares are the open squares nearest the bottom middle, turned round for Rosie.
+- **Engine:** `runBattle(..., {vs})` sets `B.vs`. Whoever is moving is team `'p'`, the other player is `'e'`, and every unit's team flips at the end of a turn (`vsSwap`, in place of `enemyPhase`). That way the ordinary controls and turn-start resets work for both players. `turn` goes up when the first mover's turn comes round again.
+- **Rules that differ from the story:**
+  - Both sides hit from base 85.
+  - Nobody is a leader.
+  - No experience is earned and nothing is saved.
+  - Bait, By Choice works on the other player's turn (`baitTurn`).
+  - The match ends when one side has no troops left (`vsCheckEnd`).
+- **Colours:** George green and Rosie pink, in place of the team colours (`VS_COLOURS`, `VS_BANNERS`). This covers coasters, HP bars, the turn banner, the top bar and the names in the panel.

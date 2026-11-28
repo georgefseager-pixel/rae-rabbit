@@ -310,9 +310,10 @@ function inkOf(img){
 const TEAM_COLOURS = {p: {fill: 'rgba(36,92,196,.95)', rim: '#8fc0ff', stitch: '#d8e8ff', bar: '#5aa0ff'},
                       a: {fill: 'rgba(34,138,70,.95)', rim: '#8fe6a2', stitch: '#d8f5de', bar: '#5fd27a'},
                       e: {fill: 'rgba(186,40,32,.95)', rim: '#ff8a78', stitch: '#ffe0da', bar: '#ff5a48'}};
-const teamColours = u => TEAM_COLOURS[u.team] || TEAM_COLOURS.e;
+// Local multiplayer colours each side by its player instead (VS_COLOURS, 70-versus.js): George green, Rosie pink
+const teamColours = u => (B?.vs && VS_COLOURS[u.owner]) || TEAM_COLOURS[u.team] || TEAM_COLOURS.e;
 function tokenFor(u, variant){
-  const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
+  const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${B?.vs ? u.owner : u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -449,7 +450,7 @@ function render(now){
     const vw = Math.min(COLS*T, mapView.clientWidth), vh = Math.min(ROWS*T, mapView.clientHeight);
     const vx = clamp(mapView.scrollLeft - cvs.offsetLeft, 0, COLS*T - vw), vy = clamp(mapView.scrollTop - cvs.offsetTop, 0, ROWS*T - vh);
     const bT = Math.min(T, vw/8, vh/6);   // the banner's own scale, so it fits the view at any zoom
-    const F = FACTIONS[banner.f], W = vw, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
+    const F = VS_BANNERS[banner.f] || FACTIONS[banner.f], W = vw, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
     const h = bT*1.9, y = vh/2 - h/2, slide = (1 - a)*W*.15*(t < .5 ? -1 : 1);
     ctx.globalAlpha = a*.55; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, COLS*T, ROWS*T);
     ctx.save(); ctx.translate(vx, vy);

@@ -1020,6 +1020,39 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .dbtns{display:flex;gap:8px}.dbtns .btn{flex:1}
 .dsheet p{margin:0;font-size:14px;line-height:1.45}.dhow{color:#ffd98a;font-family:var(--fell)}
 body[data-screen=app] #updbar{display:none}   /* never over the battle map: it comes back on the menus */
+/* Local multiplayer (70-versus.js): George green, Rosie pink */
+.vsname.vs-george,#phase.vs-george,.vsprompt.vs-george{color:#7fe08f}
+.vsname.vs-rosie,#phase.vs-rosie,.vsprompt.vs-rosie{color:#ff8fd0}
+.uhead .vsname{font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.card.vscard{max-width:560px}
+.vscard .dbgrow{flex-wrap:wrap}
+.vssizes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vsprompt{font-family:var(--stencil);font-size:20px;letter-spacing:.03em;text-align:center}
+.vsteams{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;line-height:1.4;color:#d8cdb4}
+.vsnone{opacity:.6;font-style:italic}
+.vsmaps{display:flex;flex-direction:column;gap:8px}
+.vsmap{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;text-align:left;padding:10px;border-radius:10px;cursor:pointer;
+  background:rgba(0,0,0,.25);border:1.5px solid rgba(236,198,115,.35);color:#e8dcc0;font:14px/1.4 var(--body)}
+.vsmap:hover,.vsmap:focus-visible{border-color:var(--brass-hi)}
+.vsmap b{display:block;font-family:var(--fell);font-size:18px;font-weight:400;color:var(--cream)}
+.vsmap small{display:block;color:var(--muted);font-size:12px;margin-bottom:2px}
+.vsmini{display:grid;gap:1px;width:86px;padding:2px;background:rgba(0,0,0,.4);border-radius:4px;box-sizing:border-box}
+.vsmini i{aspect-ratio:1;display:block;background:#6a9a4c;border-radius:1px}
+.vsmini i.tF{background:#3f6e32}.vsmini i.tM{background:#857f62}.vsmini i.tW{background:#3c78ad}.vsmini i.tB{background:#b58a5a}.vsmini i.tT{background:#c9a45a}.vsmini i.tX{background:#4a3b2c}
+.vsmini i.vs-george{box-shadow:inset 0 0 0 2px #5fd27a;background:#2a7a44}.vsmini i.vs-rosie{box-shadow:inset 0 0 0 2px #ff72c4;background:#9c2c68}
+.vspool{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.vspick{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;cursor:pointer;text-align:center;
+  background:linear-gradient(180deg,var(--navy2),var(--navy));border:1.5px solid rgba(239,227,200,.18);color:#e8dcc0;font:13px/1.25 var(--body);min-width:0}
+.vspick .por{width:56px;height:68px;position:relative;margin-bottom:4px}
+.vspick b{font-family:var(--fell);font-weight:400;font-size:15px;color:var(--cream);overflow-wrap:anywhere}
+.vspick small{font-size:11px;color:var(--muted)}
+.vspick .vsst{font-size:10px;opacity:.85}
+.vspick.taken{cursor:default;opacity:.55}
+.vspick.taken.vs-george{border-color:#5fd27a;background:linear-gradient(180deg,#24553a,#163423)}
+.vspick.taken.vs-rosie{border-color:#ff72c4;background:linear-gradient(180deg,#6a2450,#3c1430)}
+.vspick .vsown{position:absolute;top:4px;right:4px;font-style:normal;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:6px;color:#fff}
+.vspick.vs-george .vsown{background:#2a8a46}.vspick.vs-rosie .vsown{background:#c03e8c}
+.fc .h.vsname.vs-george{color:#7fe08f}.fc .h.vsname.vs-rosie{color:#ff8fd0}
 
 </style>
 
@@ -10631,6 +10664,12 @@ function runBattle(campKey, ch, records, opts = {}){
   if (ch.lead) for (const u of units) if (u.team === 'p') u.lord = u.key === ch.lead;
   for (const sp of ch.allies ? ch.allies(SAVE.flags) : []){ const u = enemyUnit(sp, B.pf, 'a'); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
+  // Local multiplayer (70-versus.js): the second player's troops start as team 'e'; the two sides swap at every turn
+  if (opts.vs){
+    const v = B.vs = {...opts.vs, cur: opts.vs.first}, second = vsOther(v.first);
+    for (const u of units){ u.owner = v.first; u.lord = false; }
+    v.teams[second].forEach((r, i) => { const u = battleUnit(r, 'e'); u.owner = second; u.lord = false; place(u, ...v.deploy[second][i]); units.push(u); });
+  }
   fortOwner = new Map();
   MAP.forEach((row, y) => [...row].forEach((c, x) => {
     if (c !== 'T') return;
@@ -10705,6 +10744,8 @@ const alliesNear = (u, pos, r) => friends(u).filter(o => o !== u && !o.dead && m
 const besideRae = (u, pos) => alliesNear(u, pos, 1).some(o => hasAb(o, 'nextto') || hasAb(u, 'nextto'));
 const solo = (u, pos) => hasAb(u, 'nobody') && !alliesNear(u, pos, 2).length;   // Nobody Comes
 const effSpd = (u, pos) => u.spd + (solo(u, pos) ? 3 : 0);
+// Bait, By Choice works on the other side's turn (in local multiplayer, whoever isn't moving)
+const baitTurn = d => B?.vs ? sideOfTeam(d) === 'e' : phase === 'e' && sideOfTeam(d) === 'p';
 function calc(a, d, ap, dp){
   if (a.w === 'staff') return {can: false, dmg: 0, hit: 0, crit: 0, dbl: false, tri: 0};
   const t = d.offbal ? {def: 0, avo: 0} : ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);   // Off Balance: no cover
@@ -10712,7 +10753,7 @@ function calc(a, d, ap, dp){
   if (besideRae(a, ap)) atk += 1;
   if (besideRae(d, dp)) def += 1;
   if (hasAb(a, 'lancecharge') && (a.movedDist || 0) >= 3) atk += 3;
-  if (hasAb(d, 'bait') && phase === 'e' && sideOfTeam(d) === 'p' && !d.baitUsed) def += 2;
+  if (hasAb(d, 'bait') && baitTurn(d) && !d.baitUsed) def += 2;
   if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
   if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
@@ -10724,7 +10765,7 @@ function calc(a, d, ap, dp){
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, atk + tri - def),
-    hit: clamp((sideOfTeam(a) === 'p' ? 85 : 75) + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
+    hit: clamp((B?.vs || sideOfTeam(a) === 'p' ? 85 : 75) + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
     crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) + critB - Math.floor(d.skl/4), 0, 100),
     dbl: effSpd(a, ap) - effSpd(d, dp) >= 4, tri,
   };
@@ -10817,7 +10858,7 @@ async function strike(a, d, f){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - (B.god && sideOfTeam(d) === 'p' ? 0 : dmg));   // (debug: invincible)
     if (d.hp <= 0 && from > 1 && hasAb(d, 'bend') && !d.bendUsed){ d.hp = 1; d.bendUsed = true; abilityPop(d, 'bend'); }   // Bend, Not Break
-    if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
+    if (hasAb(d, 'bait') && baitTurn(d) && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
     if (hasAb(a, 'verse')){   // Healing Verse: allies beside her recover a little
       for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
@@ -10945,6 +10986,7 @@ async function doHeal(h, t){
   if (h.team === 'p') await giveExp(h, 12);
 }
 async function giveExp(u, xp){
+  if (B?.vs) return;   // no experience in local multiplayer
   // The Lesson: +20% near Willow
   if (u.team === 'p' && alliesNear(u, u, 2).some(o => hasAb(o, 'lesson'))) xp = Math.round(xp*1.2);
   const cap = u.team === 'p' ? levelCap(B.campKey) : Infinity;   // the level cap (30-save.js): no experience at the cap
@@ -11000,6 +11042,7 @@ async function courierAct(e){
   updateDanger();
 }
 function objectiveText(){
+  if (B.vs) return `Unstitch every one of ${VS_NAME[vsOther(B.vs.cur)]}'s troops.`;
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const runner = units.find(u => u.boss && u.ai === 'courier');
   const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
@@ -11024,7 +11067,7 @@ function unitHTML(u){
   const note = u.team === 'a' ? ' · Ally: fights on its own' : u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
   const parley = u.parley && u.team === 'e' ? `<div class="hint">💬 ${u.parley.by ? charName(u.parley.by) : 'Your units'} can talk ${u.name} round: stand next to them and choose Talk.${u.squad ? ' Their squad comes too.' : ''}</div>` : '';
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
-      <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
+      <div class="uhead"><span class="nm">${u.name}</span>${B?.vs && u.owner ? `<span class="vsname vs-${u.owner}">${VS_NAME[u.owner]}</span>` : ''}<span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
@@ -11037,7 +11080,7 @@ const setPanel = html => { $('#panel').innerHTML = html; };
 function panelIdle(){
   if (phase !== 'p'){ setPanel(`<div class="hint"><em>${FACTIONS[B.ef].name} is moving…</em></div>`); return; }
   const left = team('p').filter(u => !u.moved).length;
-  setPanel(`<div class="hint"><b>${left} unit${left === 1 ? '' : 's'} ready.</b> Tap one of yours to give orders. Tap an enemy to see how far it can reach.</div>
+  setPanel(`<div class="hint">${B.vs ? `<b class="vsname vs-${B.vs.cur}">${VS_NAME[B.vs.cur]}'s turn.</b> ` : ''}<b>${left} unit${left === 1 ? '' : 's'} ready.</b> Tap one of yours to give orders. Tap an enemy to see how far it can reach.</div>
     <div class="hint"><em>${objectiveText()}</em></div>${starHTML()}`);
 }
 function panelSelected(u){ setPanel(unitHTML(u) + `<div class="hint">Tap a blue patch to march there, or tap ${u.name.split(' ')[0]} again to act in place.</div>`); }
@@ -11063,7 +11106,7 @@ function panelForecast(a, d){
   const ar = x => x > 0 ? ' <span class="adv">▲</span>' : x < 0 ? ' <span class="dis">▼</span>' : '';
   const row = (l, a1, d1) => `<div class="v pc">${a1}</div><div class="l">${l}</div><div class="v ec">${d1}</div>`;
   setPanel(`<div class="fc">
-      <div class="h pc">${a.name.split(' ')[0]}${ar(A.tri)}</div><div></div><div class="h ec">${d.name.split(' ').slice(-2).join(' ')}${ar(D.tri)}</div>
+      <div class="h pc${B.vs ? ' vsname vs-' + a.owner : ''}">${a.name.split(' ')[0]}${ar(A.tri)}</div><div></div><div class="h ec${B.vs ? ' vsname vs-' + d.owner : ''}">${d.name.split(' ').slice(-2).join(' ')}${ar(D.tri)}</div>
       ${row('HP', `${a.hp}/${a.mhp}`, `${d.hp}/${d.mhp}`)}
       ${row('Dmg', A.dmg + (A.dbl ? ' ×2' : ''), D.can ? D.dmg + (D.dbl ? ' ×2' : '') : '–')}
       ${row('Hit', A.hit, D.can ? D.hit : '–')}
@@ -11081,8 +11124,8 @@ function panelHeal(h, t){
 function refreshTop(){
   const f = phase === 'p' ? B.pf : B.ef;
   $('#turn').textContent = ROMAN(turn);
-  $('#phase').textContent = FACTIONS[f].name;
-  $('#phase').className = 'f-' + f;
+  $('#phase').textContent = B.vs ? VS_NAME[B.vs.cur] : FACTIONS[f].name;
+  $('#phase').className = B.vs ? 'vs-' + B.vs.cur : 'f-' + f;
   $('#endBtn').disabled = phase !== 'p' || busy || !(mode === 'idle' || mode === 'selected');
   $('#menuBtn').disabled = phase !== 'p' || busy;
   $('#dangerBtn').classList.toggle('on', showDanger);
@@ -11266,7 +11309,8 @@ async function startPlayerPhase(){
   for (const u of units) if (sideOfTeam(u) === 'p') u.ranFar = false;   // Can't Catch Me lasts until his next turn
   refreshTop(); panelIdle();
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
-  await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
+  if (B.vs) await showBanner(`${VS_NAME[B.vs.cur].toUpperCase()}'S TURN`, `Turn ${ROMAN(turn)}`, 'vs-' + B.vs.cur);
+  else await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
   await tideTurn();
   await fortHeal('p');
   await battleEvents();
@@ -11396,6 +11440,7 @@ async function spawnReinforcements(){
   await wait(700);
 }
 async function enemyPhase(){
+  if (B.vs) return vsSwap();   // local multiplayer: the other player's turn
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
   if (B.objective.type === 'bells' && await ringBells('p')) return;
   for (const u of units) if (sideOfTeam(u) !== 'p') u.sanct = false;
@@ -11528,6 +11573,7 @@ async function aiAct(e){
 // ---------- End conditions ----------
 function checkEnd(){
   if (!B || B.done) return true;
+  if (B.vs) return vsCheckEnd();
   const lord = units.find(u => u.team === 'p' && u.lord);
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
   const vip = units.find(u => u.team !== 'e' && u.vip && u.dead);
@@ -11603,13 +11649,14 @@ $('#endBtn').addEventListener('click', () => {
 $('#dangerBtn').addEventListener('click', () => { if (!B) return; showDanger = !showDanger; updateDanger(); refreshTop(); });
 $('#menuBtn').addEventListener('click', () => {
   if (!B || busy || phase !== 'p') return;
-  $('#menuSub').textContent = `${CAMPAIGNS[B.campKey].name} · ${B.ch.title} · Turn ${ROMAN(turn)}`;
+  $('#menuSub').textContent = B.vs ? `Local Multiplayer · ${B.ch.title} · Turn ${ROMAN(turn)}` : `${CAMPAIGNS[B.campKey].name} · ${B.ch.title} · Turn ${ROMAN(turn)}`;
+  $('#retreatBtn').textContent = B.vs ? 'Quit the match' : 'Retreat to Campaign';
   $('#menuObj').textContent = objectiveText();
   $('#menu').hidden = false;
 });
 $('#resumeBtn').addEventListener('click', () => { $('#menu').hidden = true; });
 $('#retreatBtn').addEventListener('click', e => {
-  if (!armed(e.currentTarget, 'Tap again: lose this battle')) return;
+  if (!armed(e.currentTarget, B?.vs ? 'Tap again: end the match' : 'Tap again: lose this battle')) return;
   $('#menu').hidden = true; finishBattle(false, true);
 });
 
@@ -11926,9 +11973,10 @@ function inkOf(img){
 const TEAM_COLOURS = {p: {fill: 'rgba(36,92,196,.95)', rim: '#8fc0ff', stitch: '#d8e8ff', bar: '#5aa0ff'},
                       a: {fill: 'rgba(34,138,70,.95)', rim: '#8fe6a2', stitch: '#d8f5de', bar: '#5fd27a'},
                       e: {fill: 'rgba(186,40,32,.95)', rim: '#ff8a78', stitch: '#ffe0da', bar: '#ff5a48'}};
-const teamColours = u => TEAM_COLOURS[u.team] || TEAM_COLOURS.e;
+// Local multiplayer colours each side by its player instead (VS_COLOURS, 70-versus.js): George green, Rosie pink
+const teamColours = u => (B?.vs && VS_COLOURS[u.owner]) || TEAM_COLOURS[u.team] || TEAM_COLOURS.e;
 function tokenFor(u, variant){
-  const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
+  const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${B?.vs ? u.owner : u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -12065,7 +12113,7 @@ function render(now){
     const vw = Math.min(COLS*T, mapView.clientWidth), vh = Math.min(ROWS*T, mapView.clientHeight);
     const vx = clamp(mapView.scrollLeft - cvs.offsetLeft, 0, COLS*T - vw), vy = clamp(mapView.scrollTop - cvs.offsetTop, 0, ROWS*T - vh);
     const bT = Math.min(T, vw/8, vh/6);   // the banner's own scale, so it fits the view at any zoom
-    const F = FACTIONS[banner.f], W = vw, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
+    const F = VS_BANNERS[banner.f] || FACTIONS[banner.f], W = vw, t = (now - banner.t0)/banner.dur, a = t < .15 ? t/.15 : t > .82 ? Math.max(0, (1 - t)/.18) : 1;
     const h = bT*1.9, y = vh/2 - h/2, slide = (1 - a)*W*.15*(t < .5 ? -1 : 1);
     ctx.globalAlpha = a*.55; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, COLS*T, ROWS*T);
     ctx.save(); ctx.translate(vx, vy);
@@ -13630,7 +13678,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '85411fe59f3f';
+const BUILD_ID = 'ec00dd0e7f3f';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
@@ -13709,7 +13757,8 @@ const DEBUG_PASSWORD = 'scrumbly';
 let debugAuthed = location.hash === '#debug';   // automated checks skip the password
 let dbgCk = null;                                // which army the menu is acting on (defaults to the one in view)
 
-function debugButtonHTML(){ return `<div class="dbg"><button class="btn" data-dbgopen type="button">🔧 Debug</button></div>`; }
+// (with Local Multiplayer beside it, 70-versus.js)
+function debugButtonHTML(){ return `<div class="dbg">${vsButtonHTML()}<button class="btn" data-dbgopen type="button">🔧 Debug</button></div>`; }
 
 // ---------- Password ----------
 function openDebug(){
@@ -13882,6 +13931,177 @@ document.addEventListener('click', e => {
   else if (d.dbg) debugAction(d.dbg, t);
 });
 document.addEventListener('toggle', e => { const s = e.target.closest?.('.dbgsec'); if (s){ (SAVE.debugOpenSec ||= {})[s.dataset.sec] = s.open; } }, true);
+
+// ---------------- 70-versus.js ----------------
+// ================= Local multiplayer (pass and play) =================
+// From the "Local Multiplayer" button at the foot of the campaign screen. Two players share one phone: George and Rosie.
+// 1. Choose how many troops each army has. 2. Choose a map (VS_MAPS). 3. Take turns picking troops from everyone
+// standing in either army (the first picker is chosen at random). 4. A coin toss decides who moves first.
+// The battle runs on the ordinary engine with runBattle(..., {vs}): whoever is moving is team 'p' and the other player
+// is team 'e', and the two swap at the end of every turn (vsSwap). Nothing is saved: no experience, no rewards, no
+// losses. George's troops are green and Rosie's pink (VS_COLOURS); the banner and top bar name whose turn it is.
+
+const VS_NAME = {george: 'George', rosie: 'Rosie'};
+const vsOther = p => p === 'george' ? 'rosie' : 'george';
+const VS_COLOURS = {george: {fill: 'rgba(34,138,70,.95)', rim: '#8fe6a2', stitch: '#d8f5de', bar: '#5fd27a'},
+                    rosie:  {fill: 'rgba(204,62,140,.95)', rim: '#ffa6dc', stitch: '#ffe2f3', bar: '#ff72c4'}};
+const VS_BANNERS = {'vs-george': {band: '#23623a', text: '#e8f8e4', sub: '#a8e2b0', stitch: 'rgba(220,245,222,.65)'},
+                    'vs-rosie':  {band: '#9c2c68', text: '#fde8f3', sub: '#ffc0e0', stitch: 'rgba(255,226,243,.65)'}};
+const VS_MAX = 6;
+
+// The maps are made fair by turning half of a story map (or a hand-drawn half) round 180°: each player's half is the
+// other's, square for square. George starts at the bottom, Rosie at the top.
+const vsTurn = rows => rows.slice().reverse().map(r => [...r].reverse().join(''));
+const VS_MAPS = [
+  {key: 'hollow', name: 'The Hollow', about: 'A small wood with roots and rocks for cover. The armies meet quickly.', from: 'hollow', half: 6},
+  {key: 'bridges', name: 'Three Bridges', about: 'A river across the middle, with a bridge at each side and a wide one in the centre.', theme: 'meadow', top: [
+    'F..F..F..F',
+    '.F......F.',
+    '..F.MM....',
+    'F......F..',
+    '.F..F....M',
+    'WBWWBBWWBW']},
+  {key: 'snow', name: 'The Snowy Wood', about: 'Pines and boulders in the snow. Plenty of places to hide archers.', from: 'snowWoods', half: 6},
+  {key: 'arena', name: 'The Grand Arena', about: 'Open sand and stone pillars, with a healing gate behind each army. A long walk.', from: 'grandArena', half: 7},
+];
+for (const m of VS_MAPS){
+  const src = m.from ? MAPS[m.from] : null, top = m.top || src.rows.slice(0, m.half);
+  MAPS['vs-' + m.key] = {theme: m.theme || src.theme, names: src?.names, rows: [...top, ...vsTurn(top)]};
+}
+// Starting squares: George's are the open squares nearest the bottom middle; Rosie's are the same squares turned round.
+function vsDeploy(m){
+  const rows = MAPS['vs-' + m.key].rows, H = rows.length, W = rows[0].length, sq = [];
+  for (let y = H - 3; y < H; y++) for (let x = 0; x < W; x++){ const c = rows[y][x]; if (TER[c].cost < 99) sq.push({x, y, s: Math.abs(x - (W - 1)/2) + (H - 1 - y)*.6 + (c === 'M' ? 3 : 0)}); }
+  const george = sq.sort((a, b) => a.s - b.s).slice(0, VS_MAX).map(p => [p.x, p.y]);
+  return {george, rosie: george.map(([x, y]) => [W - 1 - x, H - 1 - y])};
+}
+
+// Everyone standing, in both armies
+const vsPool = () => Object.keys(CAMPAIGNS).flatMap(ck => (SAVE.camps[ck]?.roster || []).filter(r => !r.dead).map(r => ({ck, r, id: ck + ':' + r.uid})));
+let vs = null;   // {step, size, map, pickFirst, picks: {george: [ids], rosie: [ids]}, first}
+const vsPicker = () => { const n = vs.picks.george.length + vs.picks.rosie.length; return n % 2 === 0 ? vs.pickFirst : vsOther(vs.pickFirst); };
+const vsOwnerOf = id => vs.picks.george.includes(id) ? 'george' : vs.picks.rosie.includes(id) ? 'rosie' : null;
+const vsRec = id => vsPool().find(p => p.id === id)?.r;
+const vsNameTag = p => `<b class="vsname vs-${p}">${VS_NAME[p]}</b>`;
+
+function vsButtonHTML(){ return `<button class="btn" data-vsopen type="button">👥 Local Multiplayer</button>`; }
+function openVersus(){
+  if (vsPool().length < 2){ toast('You need at least two troops between your armies to play.'); return; }
+  vs = {step: 'size', size: 0, map: null, pickFirst: null, picks: {george: [], rosie: []}, first: null};
+  renderVersus();
+}
+function vsMiniMap(m){
+  const rows = MAPS['vs-' + m.key].rows, d = vsDeploy(m), at = {};
+  d.george.slice(0, vs.size || VS_MAX).forEach(([x, y]) => at[x + ',' + y] = 'george'); d.rosie.slice(0, vs.size || VS_MAX).forEach(([x, y]) => at[x + ',' + y] = 'rosie');
+  return `<div class="vsmini" style="grid-template-columns:repeat(${rows[0].length},1fr)" aria-hidden="true">${rows.map((r, y) => [...r].map((c, x) =>
+    `<i class="t${c === '.' ? 'o' : c}${at[x + ',' + y] ? ' vs-' + at[x + ',' + y] : ''}"></i>`).join('')).join('')}</div>`;
+}
+function vsPickCard({id, r}){
+  const owner = vsOwnerOf(id), s = statsOf(r), wp = weaponOf(r);
+  return `<button class="vspick${owner ? ' taken vs-' + owner : ''}" data-vspick="${id}" type="button" ${owner ? 'disabled' : ''}>
+    <div class="por f-${r.faction}">${portraitInner(r, 'panel')}</div>
+    <b>${r.name}</b><small>${CLASSES[clsOf(r)].name} · Lv ${r.lv}</small>
+    <small class="vsst">HP ${s.mhp} · ${isMagic(wp.type) ? 'Mag' : 'Atk'} ${s.atk + (wp.mt || 0)} · Def ${s.def} · Spd ${s.spd}</small>
+    ${owner ? `<i class="vsown">${VS_NAME[owner]}</i>` : ''}</button>`;
+}
+const vsTeamList = p => vs.picks[p].map(id => vsRec(id)?.name).filter(Boolean).join(', ') || '<span class="vsnone">nobody yet</span>';
+function renderVersus(){
+  let ov = $('#vsov');
+  if (!ov){ ov = document.createElement('div'); ov.id = 'vsov'; ov.className = 'ov'; document.body.appendChild(ov); }
+  const pool = vsPool(), max = Math.min(VS_MAX, Math.floor(pool.length/2));
+  let body = '';
+  if (vs.step === 'size'){
+    body = `<h1>Local Multiplayer</h1><h2>George against Rosie, on one phone</h2>
+      <p>How many troops in each army?</p>
+      <div class="vssizes">${Array.from({length: VS_MAX}, (_, k) => k + 1).map(n => `<button class="btn${n === 4 && n <= max ? ' primary' : ''}" data-vssize="${n}" type="button" ${n > max ? 'disabled' : ''}>${n} v ${n}</button>`).join('')}</div>
+      ${max < VS_MAX ? `<p class="hint">Your armies have ${pool.length} troops standing between them, so each side can have up to ${max}.</p>` : ''}
+      <div class="dbgrow"><button class="btn" data-vsclose type="button">Cancel</button></div>`;
+  } else if (vs.step === 'map'){
+    body = `<h1>Choose a map</h1><h2>${vs.size} v ${vs.size}</h2>
+      <div class="vsmaps">${VS_MAPS.map(m => { const rows = MAPS['vs-' + m.key].rows;
+        return `<button class="vsmap" data-vsmap="${m.key}" type="button">${vsMiniMap(m)}<span><b>${m.name}</b><small>${rows[0].length} × ${rows.length}</small><span>${m.about}</span></span></button>`; }).join('')}</div>
+      <p class="hint">${vsNameTag('george')} starts at the bottom (green squares), ${vsNameTag('rosie')} at the top (pink).</p>
+      <div class="dbgrow"><button class="btn" data-vsback="size" type="button">Back</button><button class="btn" data-vsclose type="button">Cancel</button></div>`;
+  } else if (vs.step === 'draft'){
+    const p = vsPicker(), n = vs.picks[p].length + 1;
+    body = `<h1>Pick your troops</h1>
+      <div class="vsprompt vs-${p}">${VS_NAME[p]}, pick troop ${n} of ${vs.size}.</div>
+      <div class="vsteams"><div>${vsNameTag('george')}: ${vsTeamList('george')}</div><div>${vsNameTag('rosie')}: ${vsTeamList('rosie')}</div></div>
+      ${Object.keys(CAMPAIGNS).map(ck => { const list = pool.filter(x => x.ck === ck).sort((a, b) => (b.r.lord ? 1 : 0) - (a.r.lord ? 1 : 0) || b.r.lv - a.r.lv);
+        return list.length ? `<div class="sec">${CAMPAIGNS[ck].name}</div><div class="vspool">${list.map(vsPickCard).join('')}</div>` : ''; }).join('')}
+      <div class="dbgrow"><button class="btn" data-vsundo type="button" ${vs.picks.george.length + vs.picks.rosie.length ? '' : 'disabled'}>Undo last pick</button><button class="btn" data-vsback="map" type="button">Back</button><button class="btn" data-vsclose type="button">Cancel</button></div>`;
+  } else if (vs.step === 'toss'){
+    const m = VS_MAPS.find(x => x.key === vs.map);
+    body = `<h1>Coin toss</h1><h2>${m.name} · ${vs.size} v ${vs.size}</h2>
+      <div class="vsprompt vs-${vs.first}">${VS_NAME[vs.first]} goes first!</div>
+      <div class="vsteams"><div>${vsNameTag('george')} (bottom): ${vsTeamList('george')}</div><div>${vsNameTag('rosie')} (top): ${vsTeamList('rosie')}</div></div>
+      <p>Take turns moving, and pass the phone when your turn is over. Unstitch every one of the other player's troops to win.</p>
+      <button class="btn primary" data-vsgo type="button">Start the battle</button>
+      <div class="dbgrow"><button class="btn" data-vsback="draft" type="button">Back</button><button class="btn" data-vsclose type="button">Cancel</button></div>`;
+  } else if (vs.step === 'result'){
+    const w = vs.winner;
+    body = `<h1 class="vsname vs-${w}">${VS_NAME[w]} wins!</h1><h2>${VS_MAPS.find(x => x.key === vs.map).name} · ${vs.turns === 1 ? 'in the first turn' : `in ${vs.turns} turns`}</h2>
+      <div class="vsteams"><div>${vsNameTag('george')}: ${vsTeamList('george')}</div><div>${vsNameTag('rosie')}: ${vsTeamList('rosie')}</div></div>
+      <button class="btn primary" data-vsrematch type="button">Rematch (same troops and map)</button>
+      <button class="btn" data-vsnew type="button">New match</button>
+      <button class="btn" data-vsclose type="button">Back to the campaign</button>`;
+  }
+  ov.innerHTML = `<div class="card vscard">${body}</div>`;
+  ov.hidden = false;
+}
+function vsToss(){ vs.first = Math.random() < .5 ? 'george' : 'rosie'; vs.step = 'toss'; }
+async function vsStart(){
+  const m = VS_MAPS.find(x => x.key === vs.map), dep = vsDeploy(m), first = vs.first;
+  const teams = {george: vs.picks.george.map(vsRec), rosie: vs.picks.rosie.map(vsRec)};
+  if (teams.george.some(r => !r) || teams.rosie.some(r => !r)){ toast('Something changed in the armies: pick again.'); vs.picks = {george: [], rosie: []}; vs.step = 'draft'; return renderVersus(); }
+  const ch = {id: 'VS', title: m.name, map: 'vs-' + m.key, enemyFaction: 'frog', objective: {type: 'rout'}, deploy: dep[first], enemies: () => [], events: []};
+  $('#vsov').hidden = true;
+  const res = await runBattle('rae', ch, teams[first], {vs: {first, teams, deploy: dep}});
+  const winner = B?.vs?.winner;
+  renderHub();
+  if (res.retreated || !winner){ vs = null; return; }
+  Object.assign(vs, {step: 'result', winner, turns: res.turn}); renderVersus();
+}
+
+// ---------- In battle (called from 40-battle.js) ----------
+// End of a player's turn: the sides swap, so the next player's troops become team 'p' and use the ordinary controls.
+async function vsSwap(){
+  clearSel(); inspect = null; busy = true; mode = 'busy';
+  for (const u of units){ u.team = u.team === 'p' ? 'e' : 'p'; u.moved = false; u.baitUsed = false; }
+  B.vs.cur = vsOther(B.vs.cur);
+  if (B.vs.cur === B.vs.first) turn++;
+  updateDanger();
+  const lead = team('p')[0]; if (lead) focusOn(lead.x, lead.y);   // show the next player their troops
+  startPlayerPhase();
+}
+// Over when one side has nobody left standing (a counter-attack can knock out the last of the side that's moving)
+function vsCheckEnd(){
+  const mine = team('p').length, theirs = team('e').length;
+  if (mine && theirs) return false;
+  B.vs.winner = theirs ? vsOther(B.vs.cur) : B.vs.cur;
+  finishBattle(true); return true;
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-vsopen], [data-vsclose], [data-vssize], [data-vsmap], [data-vspick], [data-vsundo], [data-vsback], [data-vsgo], [data-vsrematch], [data-vsnew]'); if (!t) return;
+  const d = t.dataset; Sfx.play('select');
+  if ('vsopen' in d) return openVersus();
+  if ('vsclose' in d){ vs = null; $('#vsov').hidden = true; return; }
+  if ('vsnew' in d) return openVersus();
+  if (!vs) return;
+  if (d.vssize){ vs.size = +d.vssize; vs.step = 'map'; }
+  else if (d.vsmap){ vs.map = d.vsmap; vs.picks = {george: [], rosie: []}; vs.pickFirst = Math.random() < .5 ? 'george' : 'rosie'; vs.step = 'draft'; }
+  else if (d.vspick){
+    if (vsOwnerOf(d.vspick)) return;
+    vs.picks[vsPicker()].push(d.vspick);
+    if (vs.picks.george.length >= vs.size && vs.picks.rosie.length >= vs.size) vsToss();
+  }
+  else if ('vsundo' in d){ const last = vs.picks.george.length + vs.picks.rosie.length - 1; if (last >= 0) vs.picks[last % 2 === 0 ? vs.pickFirst : vsOther(vs.pickFirst)].pop(); }
+  else if (d.vsback){ vs.step = d.vsback; if (d.vsback === 'draft'){ const p = vsOther(vsPicker()); vs.picks[p].pop(); } }
+  else if ('vsgo' in d) return vsStart();
+  else if ('vsrematch' in d) vsToss();
+  const y = $('#vsov')?.scrollTop || 0; renderVersus(); if (d.vspick || 'vsundo' in d) $('#vsov').scrollTop = y;
+});
 
 // ---------------- 90-main.js ----------------
 // ================= Boot =================

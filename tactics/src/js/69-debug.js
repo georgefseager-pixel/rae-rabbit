@@ -6,7 +6,8 @@ const DEBUG_PASSWORD = 'scrumbly';
 let debugAuthed = location.hash === '#debug';   // automated checks skip the password
 let dbgCk = null;                                // which army the menu is acting on (defaults to the one in view)
 
-function debugButtonHTML(){ return `<div class="dbg"><button class="btn" data-dbgopen type="button">🔧 Debug</button></div>`; }
+// (with Local Multiplayer beside it, 70-versus.js)
+function debugButtonHTML(){ return `<div class="dbg">${vsButtonHTML()}<button class="btn" data-dbgopen type="button">🔧 Debug</button></div>`; }
 
 // ---------- Password ----------
 function openDebug(){

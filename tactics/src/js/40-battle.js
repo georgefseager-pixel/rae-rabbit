@@ -90,6 +90,12 @@ function runBattle(campKey, ch, records, opts = {}){
   if (ch.lead) for (const u of units) if (u.team === 'p') u.lord = u.key === ch.lead;
   for (const sp of ch.allies ? ch.allies(SAVE.flags) : []){ const u = enemyUnit(sp, B.pf, 'a'); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
   for (const sp of ch.enemies(SAVE.flags)){ const u = enemyUnit(sp, B.ef); place(u, ...freeTileNear(sp.x, sp.y)); units.push(u); }
+  // Local multiplayer (70-versus.js): the second player's troops start as team 'e'; the two sides swap at every turn
+  if (opts.vs){
+    const v = B.vs = {...opts.vs, cur: opts.vs.first}, second = vsOther(v.first);
+    for (const u of units){ u.owner = v.first; u.lord = false; }
+    v.teams[second].forEach((r, i) => { const u = battleUnit(r, 'e'); u.owner = second; u.lord = false; place(u, ...v.deploy[second][i]); units.push(u); });
+  }
   fortOwner = new Map();
   MAP.forEach((row, y) => [...row].forEach((c, x) => {
     if (c !== 'T') return;
@@ -164,6 +170,8 @@ const alliesNear = (u, pos, r) => friends(u).filter(o => o !== u && !o.dead && m
 const besideRae = (u, pos) => alliesNear(u, pos, 1).some(o => hasAb(o, 'nextto') || hasAb(u, 'nextto'));
 const solo = (u, pos) => hasAb(u, 'nobody') && !alliesNear(u, pos, 2).length;   // Nobody Comes
 const effSpd = (u, pos) => u.spd + (solo(u, pos) ? 3 : 0);
+// Bait, By Choice works on the other side's turn (in local multiplayer, whoever isn't moving)
+const baitTurn = d => B?.vs ? sideOfTeam(d) === 'e' : phase === 'e' && sideOfTeam(d) === 'p';
 function calc(a, d, ap, dp){
   if (a.w === 'staff') return {can: false, dmg: 0, hit: 0, crit: 0, dbl: false, tri: 0};
   const t = d.offbal ? {def: 0, avo: 0} : ter(dp.x, dp.y), tri = triangle(a.w, d.w), dist = man(ap, dp);   // Off Balance: no cover
@@ -171,7 +179,7 @@ function calc(a, d, ap, dp){
   if (besideRae(a, ap)) atk += 1;
   if (besideRae(d, dp)) def += 1;
   if (hasAb(a, 'lancecharge') && (a.movedDist || 0) >= 3) atk += 3;
-  if (hasAb(d, 'bait') && phase === 'e' && sideOfTeam(d) === 'p' && !d.baitUsed) def += 2;
+  if (hasAb(d, 'bait') && baitTurn(d) && !d.baitUsed) def += 2;
   if (alliesNear(a, ap, 2).some(o => hasAb(o, 'listen'))) hitB += 10;
   if (hasAb(a, 'onestroke') && d.hp < d.mhp/2) critB += 25;
   if (hasAb(a, 'wecan') && d.lv > a.lv){ atk += 2; hitB += 10; }   // We Can Fight!
@@ -183,7 +191,7 @@ function calc(a, d, ap, dp){
   return {
     can: dist >= a.rng[0] && dist <= a.rng[1],
     dmg: Math.max(0, atk + tri - def),
-    hit: clamp((sideOfTeam(a) === 'p' ? 85 : 75) + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
+    hit: clamp((B?.vs || sideOfTeam(a) === 'p' ? 85 : 75) + a.skl*2 + (a.whit || 0) + tri*15 + hitB - (effSpd(d, dp)*2 + t.avo), 0, 100),
     crit: clamp(Math.floor(a.skl/2) + (a.wcrit || 0) + critB - Math.floor(d.skl/4), 0, 100),
     dbl: effSpd(a, ap) - effSpd(d, dp) >= 4, tri,
   };
@@ -276,7 +284,7 @@ async function strike(a, d, f){
     const crit = Math.random()*100 < f.crit, dmg = crit ? f.dmg*3 : f.dmg;
     const from = d.hp; d.hp = Math.max(0, d.hp - (B.god && sideOfTeam(d) === 'p' ? 0 : dmg));   // (debug: invincible)
     if (d.hp <= 0 && from > 1 && hasAb(d, 'bend') && !d.bendUsed){ d.hp = 1; d.bendUsed = true; abilityPop(d, 'bend'); }   // Bend, Not Break
-    if (hasAb(d, 'bait') && phase === 'e' && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
+    if (hasAb(d, 'bait') && baitTurn(d) && !d.baitUsed){ d.baitUsed = true; if (dmg >= 0) abilityPop(d, 'bait'); }
     if (hasAb(a, 'digging') && d.hp > 0){ d.hobbled = true; }   // Keep Them Digging: 1 square on its next turn
     if (hasAb(a, 'verse')){   // Healing Verse: allies beside her recover a little
       for (const o of alliesNear(a, a, 1)) if (o.hp < o.mhp){ const h = Math.min(3, o.mhp - o.hp); o.hp += h; o.shp = o.hp; popup(o, `+${h}`, '#9ff0b0'); }
@@ -404,6 +412,7 @@ async function doHeal(h, t){
   if (h.team === 'p') await giveExp(h, 12);
 }
 async function giveExp(u, xp){
+  if (B?.vs) return;   // no experience in local multiplayer
   // The Lesson: +20% near Willow
   if (u.team === 'p' && alliesNear(u, u, 2).some(o => hasAb(o, 'lesson'))) xp = Math.round(xp*1.2);
   const cap = u.team === 'p' ? levelCap(B.campKey) : Infinity;   // the level cap (30-save.js): no experience at the cap
@@ -459,6 +468,7 @@ async function courierAct(e){
   updateDanger();
 }
 function objectiveText(){
+  if (B.vs) return `Unstitch every one of ${VS_NAME[vsOther(B.vs.cur)]}'s troops.`;
   const ob = B.objective, lord = units.find(u => u.team === 'p' && u.lord);
   const runner = units.find(u => u.boss && u.ai === 'courier');
   const goal = ob.type === 'boss' ? `${runner ? 'Catch' : 'Defeat'} ${units.find(u => u.boss)?.name || 'the commander'}${ob.limit ? ` by the end of turn ${ROMAN(ob.limit)}` : ''}${runner ? ` before they reach ${ob.dest || 'the gold squares'}` : ''}.`
@@ -483,7 +493,7 @@ function unitHTML(u){
   const note = u.team === 'a' ? ' · Ally: fights on its own' : u.w === 'staff' ? ` · Mends ${healAmt(u)} HP` : u.boss ? ' · Commander' : (u.ai === 'guard' && !u.triggered) ? ' · Waits for you' : '';
   const parley = u.parley && u.team === 'e' ? `<div class="hint">💬 ${u.parley.by ? charName(u.parley.by) : 'Your units'} can talk ${u.name} round: stand next to them and choose Talk.${u.squad ? ' Their squad comes too.' : ''}</div>` : '';
   return `<div class="urow">${porHTML(u)}<div class="uinfo">
-      <div class="uhead"><span class="nm">${u.name}</span><span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
+      <div class="uhead"><span class="nm">${u.name}</span>${B?.vs && u.owner ? `<span class="vsname vs-${u.owner}">${VS_NAME[u.owner]}</span>` : ''}<span class="cl">${CLASSES[u.cls].name} · Lv ${u.lv}${u.team === 'p' ? ` · ${u.exp} EXP` : ''}</span></div>
       <div class="hprow">HP ${u.hp}/${u.mhp}<div class="bar"><i style="width:${pct}%;background:${col}"></i></div></div>
       <div class="meta"><b>${u.wname}</b> · ${WTYPE[u.w]} · Rng ${u.rng[0] === u.rng[1] ? u.rng[0] : u.rng.join("–")}${note}</div>
       <div class="tr">${tn}${t.def || t.avo ? ` <b>+${t.def} Def +${t.avo} Avo</b>` : ''}</div>
@@ -496,7 +506,7 @@ const setPanel = html => { $('#panel').innerHTML = html; };
 function panelIdle(){
   if (phase !== 'p'){ setPanel(`<div class="hint"><em>${FACTIONS[B.ef].name} is moving…</em></div>`); return; }
   const left = team('p').filter(u => !u.moved).length;
-  setPanel(`<div class="hint"><b>${left} unit${left === 1 ? '' : 's'} ready.</b> Tap one of yours to give orders. Tap an enemy to see how far it can reach.</div>
+  setPanel(`<div class="hint">${B.vs ? `<b class="vsname vs-${B.vs.cur}">${VS_NAME[B.vs.cur]}'s turn.</b> ` : ''}<b>${left} unit${left === 1 ? '' : 's'} ready.</b> Tap one of yours to give orders. Tap an enemy to see how far it can reach.</div>
     <div class="hint"><em>${objectiveText()}</em></div>${starHTML()}`);
 }
 function panelSelected(u){ setPanel(unitHTML(u) + `<div class="hint">Tap a blue patch to march there, or tap ${u.name.split(' ')[0]} again to act in place.</div>`); }
@@ -522,7 +532,7 @@ function panelForecast(a, d){
   const ar = x => x > 0 ? ' <span class="adv">▲</span>' : x < 0 ? ' <span class="dis">▼</span>' : '';
   const row = (l, a1, d1) => `<div class="v pc">${a1}</div><div class="l">${l}</div><div class="v ec">${d1}</div>`;
   setPanel(`<div class="fc">
-      <div class="h pc">${a.name.split(' ')[0]}${ar(A.tri)}</div><div></div><div class="h ec">${d.name.split(' ').slice(-2).join(' ')}${ar(D.tri)}</div>
+      <div class="h pc${B.vs ? ' vsname vs-' + a.owner : ''}">${a.name.split(' ')[0]}${ar(A.tri)}</div><div></div><div class="h ec${B.vs ? ' vsname vs-' + d.owner : ''}">${d.name.split(' ').slice(-2).join(' ')}${ar(D.tri)}</div>
       ${row('HP', `${a.hp}/${a.mhp}`, `${d.hp}/${d.mhp}`)}
       ${row('Dmg', A.dmg + (A.dbl ? ' ×2' : ''), D.can ? D.dmg + (D.dbl ? ' ×2' : '') : '–')}
       ${row('Hit', A.hit, D.can ? D.hit : '–')}
@@ -540,8 +550,8 @@ function panelHeal(h, t){
 function refreshTop(){
   const f = phase === 'p' ? B.pf : B.ef;
   $('#turn').textContent = ROMAN(turn);
-  $('#phase').textContent = FACTIONS[f].name;
-  $('#phase').className = 'f-' + f;
+  $('#phase').textContent = B.vs ? VS_NAME[B.vs.cur] : FACTIONS[f].name;
+  $('#phase').className = B.vs ? 'vs-' + B.vs.cur : 'f-' + f;
   $('#endBtn').disabled = phase !== 'p' || busy || !(mode === 'idle' || mode === 'selected');
   $('#menuBtn').disabled = phase !== 'p' || busy;
   $('#dangerBtn').classList.toggle('on', showDanger);
@@ -725,7 +735,8 @@ async function startPlayerPhase(){
   for (const u of units) if (sideOfTeam(u) === 'p') u.ranFar = false;   // Can't Catch Me lasts until his next turn
   refreshTop(); panelIdle();
   Music.want(B.bossMusic ? 'boss' : 'battle'); Sfx.play('phase', 'p');
-  await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
+  if (B.vs) await showBanner(`${VS_NAME[B.vs.cur].toUpperCase()}'S TURN`, `Turn ${ROMAN(turn)}`, 'vs-' + B.vs.cur);
+  else await showBanner(FACTIONS[B.pf].playerLine, `Turn ${ROMAN(turn)}`, B.pf);
   await tideTurn();
   await fortHeal('p');
   await battleEvents();
@@ -855,6 +866,7 @@ async function spawnReinforcements(){
   await wait(700);
 }
 async function enemyPhase(){
+  if (B.vs) return vsSwap();   // local multiplayer: the other player's turn
   clearSel(); inspect = null; phase = 'e'; busy = true; mode = 'busy'; refreshTop(); panelIdle();
   if (B.objective.type === 'bells' && await ringBells('p')) return;
   for (const u of units) if (sideOfTeam(u) !== 'p') u.sanct = false;
@@ -987,6 +999,7 @@ async function aiAct(e){
 // ---------- End conditions ----------
 function checkEnd(){
   if (!B || B.done) return true;
+  if (B.vs) return vsCheckEnd();
   const lord = units.find(u => u.team === 'p' && u.lord);
   if ((lord && lord.dead) || !team('p').length){ finishBattle(false); return true; }
   const vip = units.find(u => u.team !== 'e' && u.vip && u.dead);
@@ -1062,12 +1075,13 @@ $('#endBtn').addEventListener('click', () => {
 $('#dangerBtn').addEventListener('click', () => { if (!B) return; showDanger = !showDanger; updateDanger(); refreshTop(); });
 $('#menuBtn').addEventListener('click', () => {
   if (!B || busy || phase !== 'p') return;
-  $('#menuSub').textContent = `${CAMPAIGNS[B.campKey].name} · ${B.ch.title} · Turn ${ROMAN(turn)}`;
+  $('#menuSub').textContent = B.vs ? `Local Multiplayer · ${B.ch.title} · Turn ${ROMAN(turn)}` : `${CAMPAIGNS[B.campKey].name} · ${B.ch.title} · Turn ${ROMAN(turn)}`;
+  $('#retreatBtn').textContent = B.vs ? 'Quit the match' : 'Retreat to Campaign';
   $('#menuObj').textContent = objectiveText();
   $('#menu').hidden = false;
 });
 $('#resumeBtn').addEventListener('click', () => { $('#menu').hidden = true; });
 $('#retreatBtn').addEventListener('click', e => {
-  if (!armed(e.currentTarget, 'Tap again: lose this battle')) return;
+  if (!armed(e.currentTarget, B?.vs ? 'Tap again: end the match' : 'Tap again: lose this battle')) return;
   $('#menu').hidden = true; finishBattle(false, true);
 });

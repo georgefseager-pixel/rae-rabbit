@@ -980,3 +980,36 @@ body[data-army=frog] .screen{background:linear-gradient(180deg,rgba(16,28,10,.86
 .dbtns{display:flex;gap:8px}.dbtns .btn{flex:1}
 .dsheet p{margin:0;font-size:14px;line-height:1.45}.dhow{color:#ffd98a;font-family:var(--fell)}
 body[data-screen=app] #updbar{display:none}   /* never over the battle map: it comes back on the menus */
+/* Local multiplayer (70-versus.js): George green, Rosie pink */
+.vsname.vs-george,#phase.vs-george,.vsprompt.vs-george{color:#7fe08f}
+.vsname.vs-rosie,#phase.vs-rosie,.vsprompt.vs-rosie{color:#ff8fd0}
+.uhead .vsname{font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.card.vscard{max-width:560px}
+.vscard .dbgrow{flex-wrap:wrap}
+.vssizes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vsprompt{font-family:var(--stencil);font-size:20px;letter-spacing:.03em;text-align:center}
+.vsteams{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;line-height:1.4;color:#d8cdb4}
+.vsnone{opacity:.6;font-style:italic}
+.vsmaps{display:flex;flex-direction:column;gap:8px}
+.vsmap{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;text-align:left;padding:10px;border-radius:10px;cursor:pointer;
+  background:rgba(0,0,0,.25);border:1.5px solid rgba(236,198,115,.35);color:#e8dcc0;font:14px/1.4 var(--body)}
+.vsmap:hover,.vsmap:focus-visible{border-color:var(--brass-hi)}
+.vsmap b{display:block;font-family:var(--fell);font-size:18px;font-weight:400;color:var(--cream)}
+.vsmap small{display:block;color:var(--muted);font-size:12px;margin-bottom:2px}
+.vsmini{display:grid;gap:1px;width:86px;padding:2px;background:rgba(0,0,0,.4);border-radius:4px;box-sizing:border-box}
+.vsmini i{aspect-ratio:1;display:block;background:#6a9a4c;border-radius:1px}
+.vsmini i.tF{background:#3f6e32}.vsmini i.tM{background:#857f62}.vsmini i.tW{background:#3c78ad}.vsmini i.tB{background:#b58a5a}.vsmini i.tT{background:#c9a45a}.vsmini i.tX{background:#4a3b2c}
+.vsmini i.vs-george{box-shadow:inset 0 0 0 2px #5fd27a;background:#2a7a44}.vsmini i.vs-rosie{box-shadow:inset 0 0 0 2px #ff72c4;background:#9c2c68}
+.vspool{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.vspick{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;cursor:pointer;text-align:center;
+  background:linear-gradient(180deg,var(--navy2),var(--navy));border:1.5px solid rgba(239,227,200,.18);color:#e8dcc0;font:13px/1.25 var(--body);min-width:0}
+.vspick .por{width:56px;height:68px;position:relative;margin-bottom:4px}
+.vspick b{font-family:var(--fell);font-weight:400;font-size:15px;color:var(--cream);overflow-wrap:anywhere}
+.vspick small{font-size:11px;color:var(--muted)}
+.vspick .vsst{font-size:10px;opacity:.85}
+.vspick.taken{cursor:default;opacity:.55}
+.vspick.taken.vs-george{border-color:#5fd27a;background:linear-gradient(180deg,#24553a,#163423)}
+.vspick.taken.vs-rosie{border-color:#ff72c4;background:linear-gradient(180deg,#6a2450,#3c1430)}
+.vspick .vsown{position:absolute;top:4px;right:4px;font-style:normal;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:6px;color:#fff}
+.vspick.vs-george .vsown{background:#2a8a46}.vspick.vs-rosie .vsown{background:#c03e8c}
+.fc .h.vsname.vs-george{color:#7fe08f}.fc .h.vsname.vs-rosie{color:#ff8fd0}
