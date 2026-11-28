@@ -490,6 +490,7 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
 - **Setup steps:**
   0. Levels: as they are in the armies, or everyone at 5, 10, 15 or 20 (`vsAt`). A troop moved to a set level gains or loses its own growth rates' worth of stats per level, with no dice, on a copy that's never saved. The choice is remembered for the session.
   1. Troops per army: 1 to 6, limited by how many troops are standing in both armies.
+  1b. How troops are chosen: **Troop select** (the draft in step 3) or **Random** (`vsDeal`). Random deals pairs of troops with the same ★ rank, one to each player, so both armies have the same mix of ★s. The army size is capped by how many matching pairs there are, and the coin toss screen offers Deal again.
   2. A map from `VS_MAPS`.
   3. A draft: the players take turns picking from everyone standing in either army. Who picks first is random.
   4. A coin toss decides who moves first.

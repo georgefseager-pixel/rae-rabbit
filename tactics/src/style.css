@@ -1018,3 +1018,7 @@ body[data-screen=app] #updbar{display:none}   /* never over the battle map: it c
 .vslevels .btn:first-child{grid-column:1/-1}
 .vslevels .btn.on{outline:2px solid var(--brass-hi);color:var(--brass-hi);background:rgba(236,198,115,.12)}
 .vscard .hint.vscentre{text-align:center;margin-top:-6px}
+.vsmodes{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vsmodes .btn{min-height:40px;font-size:13px}
+.vsmodes .btn.on{outline:2px solid var(--brass-hi);color:var(--brass-hi);background:rgba(236,198,115,.12)}
+.vsstar{color:var(--brass-hi);font-size:11px;letter-spacing:-.05em;white-space:nowrap}
