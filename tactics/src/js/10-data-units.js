@@ -403,7 +403,10 @@ const STAGE_SIZE = {
 
 // Battle poses are all drawn at the same height in fights; these are drawn bigger (per art key), e.g. a rider whose
 // pose includes the whole horse.
-const BATTLE_SIZE = {bigglerose: 1.3, tilly: 1.25};
+// A key also matches every art key that starts with it (black covers blackaxe, blackelitered…), the longest match winning.
+// Fraggle's Black Guard: the tall plume takes up much of the picture, so the frog inside reads small.
+const BATTLE_SIZE = {bigglerose: 1.3, tilly: 1.25, black: 1.15};
+const battleSize = k => { let best = ''; for (const p in BATTLE_SIZE) if (k?.startsWith(p) && p.length > best.length) best = p; return best ? BATTLE_SIZE[best] : 1; };
 
 // How front-portrait art is framed in the small panel and in dialogue, per art key (character + outfit).
 const ART_CROP = {
