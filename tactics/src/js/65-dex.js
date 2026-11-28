@@ -92,15 +92,15 @@ function dexEntries(){
 }
 
 const dexHas = e => !!SAVE.dex?.[e.id];
+let DEX_ROLL = {};   // the soldier shown for each company entry (re-rolled when the Collection opens, or with Randomise)
 // Something to draw an entry with: the soldier or character you actually have, if any.
 function dexEnt(e){
   const recs = Object.entries(SAVE.camps).flatMap(([ck, st]) => (st.roster || []).map(r => ({ck, r})));
   if (e.kind === 'char'){ const own = recs.find(x => x.r.key === e.key)?.r; return own ? {...own, attire: null} : recordFor(e.key); }
   if (e.kind === 'attire') return {key: e.key, look: CHARACTERS[e.key]?.look || e.key, attire: e.attire, faction: e.faction};
-  const own = recs.find(x => !isUniqueRec(x.r) && (({set, stars}) => set === e.set && stars === e.stars)(dexCompanyOf(x.ck, x.r)))?.r;
-  if (own) return own;
-  const cls = e.classes[0];
-  return {key: 'recruit', uid: `dex-${e.set}-${e.stars}`, name: e.name, look: CLASS_LOOK[cls], cls, stars: e.stars, faction: e.faction};
+  // a company: a random soldier of it (any of its classes, any of its colours), rolled afresh each time the Collection opens
+  const roll = DEX_ROLL[e.id] ||= {seed: 'dex-' + Math.random().toString(36).slice(2), cls: e.classes[Math.floor(Math.random()*e.classes.length)]};
+  return {key: 'recruit', uid: roll.seed, name: roll.seed, look: CLASS_LOOK[roll.cls], cls: roll.cls, stars: e.stars, faction: e.faction};
 }
 // the tile picture: the map-icon head (its outline makes a readable silhouette), or the portrait if there's no icon
 // the tile picture: always the map icon the game uses for it (a costume without its own icon uses the character's),
@@ -115,6 +115,7 @@ function dexRefresh(){ if ($('#dex').hidden) return; const y = window.scrollY; r
 function renderDex(refresh){
   dexSync();
   // December's soldiers are only dyed when needed: the Collection needs them (their entries would otherwise be plush placeholders)
+  if (!refresh) DEX_ROLL = {};
   if (!refresh) buildFestiveTroops().then(() => { tokenCache?.clear?.(); dexRefresh(); });
   const S = dexEntries(), all = S.flatMap(s => s.entries), got = all.filter(dexHas).length;
   const tile = e => { const has = dexHas(e);
@@ -154,7 +155,13 @@ function openDexEntry(id){
     <div class="dstage f-${e.faction}"${ART.bg?.[e.bg] ? ` style="--dbg:url(${ART.bg[e.bg]})"` : ''}>${dexFull(ent)}</div>
     <div class="dhead"><span class="ustars s${e.stars}">${'★'.repeat(e.stars)}</span><h1>${has ? dexName(e) : '???'}</h1><h2>${e.kind === 'company' ? 'Soldiers' : e.kind === 'attire' ? 'Costume' : 'Character'}</h2></div>
     ${body}<p class="dhow">${e.how}</p>
-    <button class="btn" data-dex-close type="button">Close</button></div>`;
+    <div class="dbtns">${has && e.kind === 'company' ? '<button class="btn" data-dex-roll type="button">🎲 Randomise</button>' : ''}<button class="btn" data-dex-close type="button">Close</button></div></div>`;
   ov.hidden = false;
-  ov.onclick = ev => { if (ev.target === ov || ev.target.closest('[data-dex-close]')){ ov.hidden = true; ov.onclick = null; ov.innerHTML = ''; } };
+  ov.onclick = ev => {
+    if (ev.target.closest('[data-dex-roll]')){   // another soldier of the company: a new colour, and maybe another class's look
+      delete DEX_ROLL[e.id]; const n = dexEnt(e);
+      ov.querySelector('.dstage').innerHTML = dexFull(n);
+      const tile = document.querySelector(`.dtile[data-dex="${e.id}"] .por`); if (tile) tile.innerHTML = dexFace(n);
+      return; }
+    if (ev.target === ov || ev.target.closest('[data-dex-close]')){ ov.hidden = true; ov.onclick = null; ov.innerHTML = ''; } };
 }
