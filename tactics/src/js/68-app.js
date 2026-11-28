@@ -25,7 +25,7 @@ async function restoreSave(file){
   } catch (e){ toast('That file isn\'t a Toy Wars save.'); }
 }
 // (only on the hosted app: the Claude preview can't hand out files, and its save lives in the preview)
-if (!hosted()) document.querySelector('.tsave')?.remove();
+if (!hosted()){ document.querySelector('.tsave')?.remove(); document.querySelector('#updBtn')?.remove(); }
 else {
 $('#backupBtn').addEventListener('click', backupSave);
 $('#restoreBtn').addEventListener('click', e => {
@@ -43,17 +43,26 @@ if (hosted()){
   navigator.serviceWorker?.register('./sw.js').catch(() => {});
   // New versions: version.json names the newest build. When it differs, fetch the new game into the offline copy,
   // then offer to switch (never in the middle of a battle without asking).
-  let offered = false;
-  async function checkForUpdate(){
-    if (offered || !navigator.onLine) return;
+  // The query strings get past GitHub's own caching (it can keep serving the old files for ten minutes), and the
+  // downloaded game is only offered once it really is the new build.
+  let offered = false, checking = false;
+  async function checkForUpdate(manual){
+    if (offered){ if (manual) toast('A new version is ready: tap the bar at the top.'); return; }
+    if (checking) return;
+    if (!navigator.onLine){ if (manual) toast('You\'re offline. Connect to the internet to check for updates.'); return; }
+    checking = true;
     try {
-      const v = await (await fetch('./version.json', {cache: 'no-store'})).json();
-      if (!v?.build || v.build === BUILD_ID) return;
-      const fresh = await fetch('./', {cache: 'reload'}); if (!fresh.ok) return;
-      const cache = await caches.open('toy-wars'); await cache.put('./', fresh.clone());
+      const v = await (await fetch(`./version.json?t=${Date.now()}`, {cache: 'no-store'})).json();
+      if (!v?.build || v.build === BUILD_ID){ if (manual) toast('You have the newest version.'); return; }
+      if (manual) toast('Downloading the new version…');
+      const fresh = await fetch(`./?v=${v.build}`, {cache: 'reload'}); if (!fresh.ok) throw new Error('download failed');
+      const text = await fresh.text(); if (!text.includes(v.build)) throw new Error('got an old copy');
+      const cache = await caches.open('toy-wars'); await cache.put('./', new Response(text, {headers: {'Content-Type': 'text/html; charset=utf-8'}}));
       offered = true; showUpdateBar();
-    } catch (e){}
+    } catch (e){ if (manual) toast('Couldn\'t download the update just now. Try again in a few minutes.'); }
+    finally { checking = false; }
   }
+  $('#updBtn')?.addEventListener('click', () => checkForUpdate(true));
   function showUpdateBar(){
     const bar = document.createElement('button'); bar.id = 'updbar'; bar.type = 'button';
     bar.innerHTML = '<b>A new version is ready.</b> Tap to update.';
