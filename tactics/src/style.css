@@ -1013,3 +1013,8 @@ body[data-screen=app] #updbar{display:none}   /* never over the battle map: it c
 .vspick .vsown{position:absolute;top:4px;right:4px;font-style:normal;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:6px;color:#fff}
 .vspick.vs-george .vsown{background:#2a8a46}.vspick.vs-rosie .vsown{background:#c03e8c}
 .fc .h.vsname.vs-george{color:#7fe08f}.fc .h.vsname.vs-rosie{color:#ff8fd0}
+.vslevels{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.vslevels .btn{min-height:40px;padding:6px 4px;font-size:13px}
+.vslevels .btn:first-child{grid-column:1/-1}
+.vslevels .btn.on{outline:2px solid var(--brass-hi);color:var(--brass-hi);background:rgba(236,198,115,.12)}
+.vscard .hint.vscentre{text-align:center;margin-top:-6px}

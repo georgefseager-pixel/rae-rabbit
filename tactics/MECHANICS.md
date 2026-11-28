@@ -488,6 +488,7 @@ closes it again. It acts on one army at a time (switch at the top). Sections fol
 
 - **Local Multiplayer** sits beside Debug at the foot of the campaign screen. Pass and play on one phone: George against Rosie.
 - **Setup steps:**
+  0. Levels: as they are in the armies, or everyone at 5, 10, 15 or 20 (`vsAt`). A troop moved to a set level gains or loses its own growth rates' worth of stats per level, with no dice, on a copy that's never saved. The choice is remembered for the session.
   1. Troops per army: 1 to 6, limited by how many troops are standing in both armies.
   2. A map from `VS_MAPS`.
   3. A draft: the players take turns picking from everyone standing in either army. Who picks first is random.
