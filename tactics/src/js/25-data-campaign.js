@@ -792,7 +792,7 @@ const CAMPAIGNS = {
           allies: () => [E('mkguard',5,3,11,'charge',{key: 'ally', name: 'Guard Banyan'}), E('mkacro',5,6,11,'charge',{key: 'ally', name: 'Acrobat Kiwi'}),
                          E('mkthrow',5,1,12,'charge',{key: 'ally', name: 'Thrower Sorrel'}), E('mkbrute',5,8,12,'charge',{key: 'ally', name: 'Thumper Mango'})],
           enemies: () => [
-            E('guardcapt',8,4,2,'hold',{boss: true, flees: true, key: 'cornelius', name: 'Captain Cornelius', look: 'cornelius'}),
+            E('guardcapt',8,4,2,'hold',{boss: true, flees: true, key: 'cornelius', name: 'Captain Cornelius', look: 'cornelius', bonus: {def: -2}}),
             E('mkguard',7,2,5,'guard'), E('mkguard',7,7,5,'guard'), E('mkthrow',7,1,3,'guard'), E('mkthrow',7,8,3,'guard'), E('mkchant',7,5,2,'guard'),
             E('mkacro',7,2,8), E('mkacro',7,7,8), E('mkbrute',7,4,9,'charge',{elite: true}), E('mkacro',7,0,10),
             E('blade',7,3,0,'charge',{faction: 'frog'}), E('lily',7,6,0,'charge',{faction: 'frog'}),
@@ -2492,9 +2492,9 @@ const CAMPAIGNS = {
           brief: 'The final of the Royal Tournament. The champion waiting on the dais is Biggle Baggle.',
           prepNote: "A tournament round: nobody is unstitched for good, and beaten champions yield. Biggle Baggle is on the other side today, and can't fight for you. His Hold the Line works against you: your units stop when they reach a square next to him.",
           enemies: () => [
-            E('courtknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4}}),
+            E('courtknight',13,4,7,'hold',{boss: true, flees: true, key: 'biggle', name: 'Biggle Baggle', look: 'biggle', bonus: {mhp: 4, def: -4}}),
             E('toadknight',10,3,6,'guard'), E('toadknight',10,6,6,'guard'), E('gladmedic',10,5,8,'guard'),
-            E('gladhook',10,1,4,'guard'), E('gladbow',10,8,4,'guard'), E('lilyknight',10,2,9,'guard',{elite: true}), E('lilyknight',10,7,9,'guard',{elite: true}),
+            E('gladhook',10,1,4,'guard'), E('gladbow',10,8,4,'guard'), E('lilyknight',10,2,9,'guard'), E('lilyknight',10,7,9,'guard'),
             E('gladblade',10,3,2), E('gladblade',10,6,2), E('gladaxe',10,1,11), E('gladaxe',10,8,11),
           ],
           bossTalk: [

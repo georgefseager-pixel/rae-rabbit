@@ -251,6 +251,14 @@ Cornelius, Chansey; `29b-data-sides-monkeys.js`): 6 · 7 · 8.
 
 Keep new stages on this line: about +½ a level per stage, and +1 for a finale.
 
+**Damage check** (`node tactics/tools/balance_audit.js`, `SIDES=1` for side stories): after building, run it on any new
+or changed stage. It fields the army a player is guaranteed to have at that point, at the recommended level, against every
+enemy where it stands, and flags walls (nobody does more than 2 damage), bosses who out-heal you on a fort, and enemies
+that take more than 120% of a unit's HP in one exchange. Fragile readers and healers taking big melee hits is expected.
+**Armoured enemies** (mt `armor`: Armoured Guards, Lily Knights, Biggle as an enemy) lose 2 + level/4 Def (enemies only,
+in `enemyUnit`): their Def growth outpaces the player's attack, and nothing pierces armour. Bosses on healing forts may
+need a `bonus: {def: -n}` (Cornelius in R3-6, Biggle in F4-7).
+
 **Level cap** (`levelCap(ck)` in `30-save.js`): each army's units can't go above the recommended level of its next
 uncleared main stage + `LEVEL_CAP_OVER` (3); with every stage cleared, its hardest stage + 3 (13 after Chapter Four).
 So: Ch. 1 caps 4–5, Ch. 2 5–7, Ch. 3 7–10, Ch. 4 10–13. At the cap, battles give no experience (the unit card and

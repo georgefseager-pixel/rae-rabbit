@@ -45,6 +45,9 @@ function enemyUnit(sp, faction, teamId = 'e'){
   faction = sp.faction || (LOOKS[sp.look || CLASS_LOOK[sp.cls]]?.sp === 'monkey' ? 'monkey' : faction);
   const rec = {key: sp.key || 'enemy', look: sp.look || CLASS_LOOK[sp.cls], name: sp.name || CLASSES[sp.cls].name, faction, cls: sp.cls, fur: sp.fur,
                lv: sp.lv, stats: scaledStats(sp.cls, sp.lv, sp.bonus), wtier: 0, wname: CLASSES[sp.cls].wname};
+  // Armoured enemies (armoured guards, Lily Knights, Biggle as an enemy) lose some Def, more at higher levels: their class
+  // Def growth outpaces anything the player's attack can catch up with, and nothing in the game pierces armour.
+  if (teamId === 'e' && CLASSES[sp.cls].mt === 'armor') rec.stats.def = Math.max(0, rec.stats.def - (2 + Math.floor(sp.lv/4)));
   if (sp.elite){ rec.stars = 2; rec.stats.mhp += 2; for (const k of ['atk', 'def', 'spd', 'skl']) rec.stats[k] += 1; }
   // chapter-wide difficulty tuning (see enemyMods in 25-data-campaign.js)
   if (teamId === 'e') for (const [k, v] of Object.entries(B?.ch?.enemyMods || B?.ch?.chapter?.enemyMods || {})) rec.stats[k] = Math.max(k === 'mhp' ? 8 : 0, rec.stats[k] + v);
