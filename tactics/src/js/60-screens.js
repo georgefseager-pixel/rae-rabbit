@@ -248,7 +248,14 @@ function openPrep(ck, i){
   // mustDeploy: characters this stage needs (always picked, after the leader)
   const must = r => (ch.mustDeploy || []).includes(r.key);
   const order = [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r) && must(r)), ...alive.filter(r => !isLead(ch, r) && !must(r))];
-  if (!prep || prep.ck !== ck || prep.i !== i) prep = {ck, i, picks: new Set(order.slice(0, max).map(r => r.uid))};
+  // a new stage starts from the team you took last time on this route (SAVE.lastPicks), plus its leader and anyone it
+  // needs; the first time, from the strongest. Only the stage's own limit applies (the team isn't padded out).
+  if (!prep || prep.ck !== ck || prep.i !== i){
+    const last = (SAVE.lastPicks || {})[ck];
+    const picks = last ? [...alive.filter(r => isLead(ch, r)), ...alive.filter(r => !isLead(ch, r) && must(r)), ...last.map(uid => alive.find(r => r.uid === uid && !isLead(ch, r) && !must(r))).filter(Boolean)]
+                       : order;
+    prep = {ck, i, picks: new Set(picks.slice(0, max).map(r => r.uid))};
+  }
   for (const uid of [...prep.picks]) if (!alive.some(r => r.uid === uid)) prep.picks.delete(uid);
   for (const r of alive) if (must(r) && !prep.picks.has(r.uid)){
     if (prep.picks.size >= max){ const drop = [...prep.picks].reverse().find(uid => { const x = alive.find(a => a.uid === uid); return x && !isLead(ch, x) && !must(x); }); if (drop) prep.picks.delete(drop); }
@@ -294,6 +301,8 @@ function togglePick(uid){
 async function playChapter(){
   const {ck, i} = prep, camp = CAMPAIGNS[ck], ch = stageAt(ck, i), st = SAVE.camps[ck];
   const recs = [...st.roster.filter(r => isLead(ch, r)), ...st.roster.filter(r => !isLead(ch, r) && canDeploy(ch, r) && prep.picks.has(r.uid))].filter(r => !r.dead);
+  // remember this team for the next battle on this route (flashbacks and other leaders' stories don't count)
+  if (!ch.flashback && !ch.lead){ (SAVE.lastPicks ||= {})[ck] = [...prep.picks]; saveGame(); }
   // replays skip the story and its one-time rewards; a seasonal story is fresh each day (full pay) but tells its story once
   const seen = st.cleared.includes(ch.id), replay = seen && !ch.event;
   if (!seen){
