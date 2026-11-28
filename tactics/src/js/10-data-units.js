@@ -350,6 +350,10 @@ const SPEAKERS = Object.assign({
   lotus:       {name:'Captain Lotus', faction:'frog', look:'toadknight'},
   wort:        {name:'Captain Wort', faction:'frog', look:'duelist'},
   soldiers:    {name:'The Soldiers', faction:'frog', look:'guard'},
+  // Princess's side stories (29e-data-sides-princess.js), generic frog looks
+  mudge:       {name:'Mudge', faction:'frog', look:'bruiser'},                  // a marsh brigand (years ago)
+  snipe:       {name:'Quartermaster Snipe', faction:'frog', look:'duelist'},    // the eastern march's foragers
+  miller:      {name:'The Miller', faction:'frog', look:'croaker'},             // Lilyford
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Fur colours for the generic mine-rabbit art (art/miner-*.png): [hue shift°, saturation ×, lightness shift].

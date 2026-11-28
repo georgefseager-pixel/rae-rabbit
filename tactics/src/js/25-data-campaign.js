@@ -1468,7 +1468,7 @@ const CAMPAIGNS = {
             ]}),
             E('courtknight',13,4,12,'charge',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true, fleeWord: 'Falls back', bonus: {mhp: 4}}),
             E('heiress',13,6,13,'charge',{key: 'princess', name: 'Princess', look: 'princess', flees: true, fleeWord: 'Falls back', talk: [
-              {who: "princess", text: "My old book is in the sea, rabbit, so I've started a new one. Your name is at the top of the first page."},
+              {who: "princess", text: "My old book is in the sea, rabbit, so I've started a new one. Your name is already in it."},
             ]}),
             E('governess',12,2,14,'guard',{key: 'aurora', name: 'Aurora', look: 'aurora', flees: true, fleeWord: 'Falls back', talk: [
               {who: "aurora", text: "Speshul, if you are close enough to hear me, stay behind the rabbits' line. Please. I don't want you anywhere near this."},

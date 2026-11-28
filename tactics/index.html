@@ -2204,6 +2204,10 @@ const SPEAKERS = Object.assign({
   lotus:       {name:'Captain Lotus', faction:'frog', look:'toadknight'},
   wort:        {name:'Captain Wort', faction:'frog', look:'duelist'},
   soldiers:    {name:'The Soldiers', faction:'frog', look:'guard'},
+  // Princess's side stories (29e-data-sides-princess.js), generic frog looks
+  mudge:       {name:'Mudge', faction:'frog', look:'bruiser'},                  // a marsh brigand (years ago)
+  snipe:       {name:'Quartermaster Snipe', faction:'frog', look:'duelist'},    // the eastern march's foragers
+  miller:      {name:'The Miller', faction:'frog', look:'croaker'},             // Lilyford
 }, Object.fromEntries(Object.entries(CHARACTERS).map(([k, c]) => [k, {name: c.name, faction: c.faction, look: c.look || k}])));
 
 // Fur colours for the generic mine-rabbit art (art/miner-*.png): [hue shift°, saturation ×, lightness shift].
@@ -2402,6 +2406,8 @@ const WEAPONS = {
                  desc: 'Driftwood from the beach, set with a shell from the rock pools and a sea-glass bead, with grip enough for two pairs of paws. The rabbits Tandy & Maus nursed through the fever carved it for them.'},
   grandmabess:  {name: 'Grandmama Bess',   type: 'hook',  stars: 3, mt: 4, hit: 10, crit: 10, owner: 'tilly',
                  desc: 'The hook of Bess Tealbottom, Tilly\'s great-great-grandmother, who robbed the King\'s tax ships for thirty years and bought the family title with the proceeds. It is black with salt, and her name is worked into the steel.'},
+  secondbook:   {name: 'The Second Book',  type: 'tome',  stars: 3, mt: 4, hit: 10, crit: 5, owner: 'princess',
+                 desc: 'The book Princess started on the coast road, on paper borrowed from the King\'s envoy. Every page is ruled down the middle: what she is owed on the left, and what she owes on the right.'},
   dawnegg:      {name: 'The Dawn Egg',     type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'chansey',
                  desc: 'The lotus temple\'s egg, cold in its nest for three hundred years. Chansey found it warm on the night of her truce at the stream.'},
   // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.
@@ -5189,7 +5195,7 @@ const CAMPAIGNS = {
             ]}),
             E('courtknight',13,4,12,'charge',{key: 'biggle', name: 'Biggle Baggle', look: 'biggle', flees: true, fleeWord: 'Falls back', bonus: {mhp: 4}}),
             E('heiress',13,6,13,'charge',{key: 'princess', name: 'Princess', look: 'princess', flees: true, fleeWord: 'Falls back', talk: [
-              {who: "princess", text: "My old book is in the sea, rabbit, so I've started a new one. Your name is at the top of the first page."},
+              {who: "princess", text: "My old book is in the sea, rabbit, so I've started a new one. Your name is already in it."},
             ]}),
             E('governess',12,2,14,'guard',{key: 'aurora', name: 'Aurora', look: 'aurora', flees: true, fleeWord: 'Falls back', talk: [
               {who: "aurora", text: "Speshul, if you are close enough to hear me, stay behind the rabbits' line. Please. I don't want you anywhere near this."},
@@ -7827,6 +7833,63 @@ const SUPPORTS = {
         sL("tilly", "Tomorrow, then. Same time."),
       ],
     },
+    princess: {kind: 'family', about: 'Tiggle\'s cousin, and his rival until the coast road. Princess has kept a book of grievances since she was eleven, and Tiggle wants to know why.',
+      C: [
+        sN("Evening at the camp. Princess sits on her own at the edge of the firelight, writing in a small book tied with string."),
+        sL('tiggle', "May I sit down?"),
+        sL('princess', "It's your camp, cousin. Everything in it is yours now, including me, apparently."),
+        sL('tiggle', "I didn't come to check on you. I wanted to ask about your book. The old one was as thick as a brick. How long did you keep it?"),
+        sL('princess', "Since I was eleven. That was the seventh. The other six are in a chest at home."),
+        sL('tiggle', "Seven books of grievances?"),
+        sL('princess', "Seven books of things that were done to me, and things I did that nobody noticed. Most of the time they turned out to be the same thing."),
+        sL('tiggle', "What was the first entry?"),
+        sL('princess', "The King's spring hunt in the royal park, the year I turned eleven. Brigands got into the pavilion while the hunt was out in the woods, and I drove them off. Your brother thanked Biggle for it."),
+        sL('tiggle', "Biggle? Was he even there?"),
+        sL('princess', "He arrived at the end with the hunt guard, just in time to be thanked. I'll tell you the whole story properly, if you really want to hear it. Not tonight."),
+      ],
+      B: [
+        sN("A rider has come into camp from the north. Princess reads the dispatch over Tiggle's shoulder before he has finished it himself."),
+        sL('princess', "Lieutenant Silt is on the forest road with a squad of the King's soldiers and a writ. He's come to take me back in irons, as the letter said."),
+        sL('tiggle', "Silt was your own officer."),
+        sL('princess', "He was. I put him in my book three times: twice for being late with his reports, and once for laughing at the wrong moment. He'll enjoy this."),
+        sL('tiggle', "He won't take you. I told you on the coast road, and I meant it."),
+        sL('princess', "Why does it matter to you? I spent the whole tournament trying to beat you, and if that letter had gone the other way I'd have marched you home in chains."),
+        sL('tiggle', "Because my brother did the same thing to both of us. He sent me into the tournament knowing he'd never give me the army, and he gave it to you knowing he'd blame you when it went wrong. I'm not going to finish the job for him."),
+        sL('princess', "I thought that if I was useful enough, he'd have to choose me as his heir. I've been useful to him since I was a girl."),
+        sL('tiggle', "And I thought that if I did everything properly, he'd be proud of me. We were both wrong about him."),
+        sL('princess', "Then let's go and meet Silt together. I'd like to see his face when he finds out I'm not on my own."),
+      ],
+      A: [
+        sN("Late at night. Tiggle and Princess are going over the map by lamplight."),
+        sL('tiggle', "Can I ask you something? You wanted to be the King's heir. Do you still?"),
+        sL('princess', "I wanted the crown because nobody overlooks the frog wearing it. I've wanted that since the hunt."),
+        sL('tiggle', "What would you have done with it?"),
+        sL('princess', "I don't know. I never thought further than putting it on. That's ridiculous, isn't it?"),
+        sL('tiggle', "No. I think most people who want a crown are like that. My brother certainly was."),
+        sL('princess', "And you don't want it at all."),
+        sL('tiggle', "No. I want the mines closed, and a king who keeps his word. I'd rather manage that without a crown, if I can."),
+        sN("Princess puts her finger on a small mark on the map, south of the road."),
+        sL('princess', "Lilyford. It's a village on my mother's lands, the only land our side of the family was ever given. I haven't been there since I was six."),
+        sL('princess', "The scouts say the eastern march has sent foragers ahead of its army, and they're stripping every village on the way. Lilyford is on the way. I was going to ask you for soldiers."),
+        sL('tiggle', "You don't need to ask. We'll go in the morning."),
+      ],
+      // after all three of her side stories
+      S: [
+        sN("Lilyford's harvest is back in the barns. Princess sits on the wall by the ford with her new book open on her knee."),
+        sL('princess', "You've been wondering whose name I wrote at the top of the first page. You can look."),
+        sL('tiggle', "Friggle Fraggle. Underlined twice."),
+        sL('princess', "He owes me an apology, a command, and every year I spent being useful to him. I don't expect to collect. But I wanted it written where I'd see it every time I open the book."),
+        sL('tiggle', "There's a line down the middle of every page."),
+        sL('princess', "Two columns. On the left is what I'm owed, and on the right is what I owe. The old books only had the left-hand side. That's why they were so thick."),
+        sL('tiggle', "My name is in the right-hand column."),
+        sL('princess', "For the coast road, when you wouldn't send me home in irons. For Silt. And for Lilyford, where you brought soldiers before I'd finished asking."),
+        sL('princess', "The villagers are in there too. The miller gave me bread and told me nobody from the family had come in twenty years. I owe them more than one visit."),
+        sL('tiggle', "What will you do about it?"),
+        sL('princess', "Come back when all this is over. Have the bridge mended and the barn roofed, and learn their names. It's a small thing, but I've never done a small thing in my life."),
+        sL('tiggle', "I'd like to help, if you'll let me."),
+        sL('princess', "Then I'll write that down as well. In the right-hand column."),
+      ],
+    },
   },
 };
 
@@ -9714,6 +9777,143 @@ Object.assign(SIDE_SETS, {
 
 // Each set's quests go on its route's side story list, in the order they open (as in 29-data-sides-more.js).
 for (const key of ['tilly']){
+  const set = SIDE_SETS[key], camp = CAMPAIGNS[set.camp], at = camp.stages.find(s => s.id === SIDE_OPENS[set.camp]);
+  set.quests.forEach((q, k) => { Object.assign(q, {side: true, char: key, rank: k + 1, set, chapter: at.chapter, ci: at.ci, si: k}); camp.sides.push(q); });
+}
+
+// ---------------- 29e-data-sides-princess.js ----------------
+// ================= Side Stories: Princess (joins the Friggliarchy in Chapter Five) =================
+// Same format as 28-data-sides.js. Princess joins after F5-6, so her set runs above the Chapter Five line (recommended
+// 13 · 14 · 14). Her first story is a flashback to the day she started her book. The new faces (Mudge, Quartermaster
+// Snipe, the Miller) are drawn with generic frog art.
+
+Object.assign(SIDE_SETS, {
+  princess: {camp: 'frog', title: 'Two Columns', about: 'Why Princess started keeping a book of grievances, the King\'s order that follows her to Tiggle\'s camp, and a village of her own she has never visited.',
+    quests: [
+      {
+        id: 'PR-1', title: 'Years Ago: The Spring Hunt', map: 'royalPark', enemyFaction: 'frog', lead: 'princess', flashback: true, enemyMods: {},
+        teaser: 'Princess has promised to tell Tiggle about the first thing she ever wrote in her book: the King\'s spring hunt, the year she turned eleven.',
+        star: {type: 'unhurt', text: 'Princess takes no damage'},
+        objective: {type: 'boss'}, maxDeploy: 5,
+        deploy: [[4,15],[5,15],[3,14],[6,14],[5,14]],
+        brief: 'Years ago, at the King\'s spring hunt. Marsh brigands have climbed into the royal park while the hunt is out in the woods. Drive off their leader. Princess must not fall.',
+        prepNote: 'A flashback: Princess, eleven years old, leads the pavilion guards and the beaters, so only she and ordinary soldiers can come. The battle is lost if she falls.',
+        enemies: () => [
+          E('bruiser',13,4,2,'hold',{boss: true, flees: true, key: 'mudge', name: 'Mudge', look: 'bruiser'}),
+          E('blade',12,2,4), E('blade',12,7,4), E('reed',12,1,1,'guard'), E('reed',12,8,1,'guard'), E('croaker',12,5,0,'guard'),
+          E('bruiser',12,5,7), E('lily',12,3,8), E('blade',12,8,8),
+        ],
+        reinforce: () => [{turn: 3, units: [E('blade',12,0,5), E('lily',12,9,5)]}],
+        bossTalk: [
+          {who: "mudge", text: "A little girl in a tiara? Run along back to your nurse. We only want the silver."},
+          {who: "princess", text: "That silver belongs to the King, and you are standing on his lawn. I'm not going anywhere."},
+        ],
+        pre: [
+          {scene: "court", place: "The Royal Park · Years Ago · Side Story"},
+          {who: "narr", text: "Years ago. The King's spring hunt has ridden out into the woods with horns and hounds and half the court behind it."},
+          {who: "narr", text: "Princess, eleven years old, has been left at the hunt pavilion on the lawn, with the servants, the spare beaters and the silver."},
+          {who: "princess", thought: true, text: "I asked to command the beaters. Friggle laughed in front of everyone and gave the job to Biggle, who is only two years older than me and can't count past twenty."},
+          {who: "narr", text: "There is shouting from the hedges. Frogs in muddy coats are climbing over them, carrying sacks."},
+          {who: "guard", text: "Marsh brigands! Your Highness, get inside the pavilion and stay there!"},
+          {who: "princess", text: "No. If we all hide, they'll take everything. There are a dozen beaters here with poles, and six of you with spears."},
+          {who: "princess", text: "Beaters, stay together and don't let them get round you. Guards, with me. We drive them back over the hedge."},
+        ],
+        post: [
+          {who: "narr", text: "Mudge's brigands scramble back over the hedges without the silver. A few minutes later the horns sound, and the hunt comes galloping back across the lawn with Biggle and the hunt guard in front."},
+          {who: "king", text: "Biggle! Well done, boy. You heard the shouting and rode straight back. That's how a prince should behave."},
+          {who: "biggle", text: "Majesty, I didn't do anything. It was—"},
+          {who: "king", text: "And modest with it. Somebody bring him a drink."},
+          {who: "narr", text: "Nobody asks Princess what happened. She stands by the pavilion with a beater's pole in her hands until a servant takes it away from her."},
+          {who: "narr", text: "That night she takes a blank exercise book from the schoolroom and writes down the date, the hunt, the brigands and what she did. Then she writes what the King said, and to whom."},
+          {who: "princess", thought: true, text: "If nobody else is going to keep count, I will."},
+        ],
+        reward: sideReward(0),
+      },
+      {
+        id: 'PR-2', title: 'The Writ', map: 'forestTrail', enemyFaction: 'frog', mustDeploy: ['princess'], enemyMods: {},
+        teaser: 'Lieutenant Silt is on the road with a writ from the King and a squad of soldiers. He has come to take Princess back to the capital in irons.',
+        star: {type: 'bossBy', key: 'princess', text: 'Princess drives off Lieutenant Silt herself'},
+        objective: {type: 'boss'}, maxDeploy: 7,
+        deploy: [[4,14],[5,14],[3,13],[6,14],[2,14],[7,14],[4,15]],
+        brief: 'Lieutenant Silt has brought the King\'s writ and a squad of loyal soldiers to arrest Princess. Drive him off. Princess must come.',
+        prepNote: 'Princess must come. Silt waits at the far end of the forest road, with his soldiers in the trees on either side. More of them come out of the woods on turn III.',
+        enemies: () => [
+          E('blade',15,4,1,'hold',{boss: true, flees: true, elite: true, key: 'silt', name: 'Lieutenant Silt', look: 'duelist'}),
+          E('toadknight',14,3,3,'guard'), E('lilyknight',14,6,3,'guard'), E('reed',14,1,5,'guard'), E('reed',14,8,5,'guard'), E('croaker',14,5,2,'guard'),
+          E('lily',14,2,7), E('blade',14,7,7), E('bruiser',14,4,9), E('lily',14,6,10),
+        ],
+        reinforce: () => [{turn: 3, units: [E('blade',14,0,7), E('blade',14,9,7)]}],
+        bossTalk: [
+          {who: "silt", text: "Your Highness. By order of His Majesty, you are to come back to the capital with me, in irons. The writ is here, under his seal."},
+          {who: "princess", text: "You were late with every report you ever brought me, Silt. You're very punctual today."},
+          {who: "silt", text: "I learned from your book, Highness. Everything gets written down, and everyone gets paid back. I'm doing as I'm told, the way you taught us."},
+        ],
+        pre: [
+          {scene: "woods", place: "The Forest Road · Side Story"},
+          {who: "narr", text: "On the forest road north of the camp, a squad of the King's soldiers waits under a royal banner. Lieutenant Silt stands at the front, holding up a scroll with a red seal."},
+          {who: "silt", text: "Prince Tiggle! I have a writ from the King for the arrest of Princess. Hand her over, and there will be no trouble."},
+          {who: "tiggle", text: "I'm the senior royal officer in the field, Lieutenant, and I've already decided. She stays with me."},
+          {who: "silt", text: "The writ is in the King's own hand, Highness. It outranks you."},
+          {who: "princess", text: "Let me answer him, cousin. He was my lieutenant. If anyone is going to send him home, it should be me."},
+        ],
+        post: [
+          {who: "narr", text: "Lieutenant Silt runs north up the road with what is left of his squad. The writ lies in the mud where he dropped it."},
+          {who: "princess", text: "He did exactly what I would have done in his place. Followed his orders, and enjoyed it."},
+          {who: "narr", text: "Captain Wort, who was Princess's own captain until the night he went over to Tiggle, picks the writ up and hands it to her."},
+          {who: "princess", text: "Wort. You walked out of my camp with your whole company. I never asked you why."},
+          {who: "wort", text: "You knew all our names, Highness, but only when we'd done something wrong. The Prince asked us how many of us had come back from the lighthouse. You never asked us anything."},
+          {who: "princess", text: "That's fair. I don't like it, but it's fair."},
+          {who: "narr", text: "She tears the writ in half and puts both pieces inside the cover of her book."},
+        ],
+        reward: sideReward(1),
+      },
+      {
+        id: 'PR-3', title: 'Lilyford', map: 'flowerField', enemyFaction: 'frog', mustDeploy: ['princess'], enemyMods: {},
+        teaser: 'Foragers from the eastern march are stripping the villages on their way south. Lilyford, the village on Princess\'s mother\'s lands, is next on their road.',
+        star: {type: 'allies', text: 'No villager is lost'},
+        objective: {type: 'survive', turns: 5, escort: true, who: 'villagers', dest: 'the ford'}, escort: true, maxDeploy: 7,
+        exits: [[2,13],[3,13],[4,13],[5,13],[6,13],[7,13]],
+        deploy: [[3,6],[6,6],[4,7],[5,7],[2,7],[7,7],[3,4],[6,4]],
+        brief: 'Foragers are taking Lilyford\'s harvest for the eastern march. Hold them off while the villagers carry what they can south to the ford (the gold squares). Princess must come.',
+        prepNote: 'Princess must come. The villagers (blue) walk to the gold squares on their own, through the two gaps in the old wall; the foragers go after them first. Hold out for five turns, or until every villager is across.',
+        allies: () => [[3,2],[4,2],[5,2],[6,2],[3,3],[6,3]].map(([x, y]) => E('blade',8,x,y,'courier',{courier: true, key: 'ally', name: 'Villager', look: 'scout', bonus: {mov: -1}})),
+        enemies: () => [
+          E('blade',15,4,0,'charge',{key: 'snipe', name: 'Quartermaster Snipe', look: 'duelist', elite: true, flees: true, talk: [
+            {who: "snipe", text: "This harvest is requisitioned for the eastern march, by order of Governor Bulrush. Stand aside."},
+            {who: "princess", text: "This is my family's village, and these are my family's people. You will requisition nothing here."},
+          ]}),
+          E('blade',14,2,0), E('bruiser',14,7,1), E('lily',14,0,3), E('lily',14,9,3), E('reed',14,1,1,'guard'),
+        ],
+        reinforce: () => [
+          {turn: 2, units: [E('blade',14,0,7), E('bruiser',14,9,7)]},
+          {turn: 3, units: [E('reed',14,0,9), E('lily',14,9,9), E('toadknight',15,5,0)]},
+          {turn: 4, units: [E('blade',14,0,11), E('blade',14,9,11)]},
+        ],
+        pre: [
+          {scene: "woods", place: "Lilyford · Side Story"},
+          {who: "narr", text: "Lilyford is a small frog village beside a ford: a mill, a barn, a dozen houses round a green, and an old wall from the days when it needed one. Princess has not been here since she was six."},
+          {who: "narr", text: "Smoke is rising from behind the barn. Soldiers in the eastern march's colours are loading the villagers' grain onto carts."},
+          {who: "miller", text: "Soldiers in the barn, and more coming up the road! They've taken the seed corn as well as the harvest! Who are— Your Highness? Is that you?"},
+          {who: "princess", text: "Get everyone together and take them south, across the ford. Carry whatever food you can. We'll keep the soldiers off you until you're over."},
+          {who: "tiggle", text: "They'll go for the villagers before they come for us. Keep between them and the ford, and don't let anyone get cut off at the wall."},
+        ],
+        post: [
+          {who: "narr", text: "The last of the villagers splash across the ford with their sacks. Quartermaster Snipe's foragers give up and go back up the road with empty carts."},
+          {who: "miller", text: "Your Highness. We didn't think anyone in the family remembered we were here. Nobody has come to Lilyford in twenty years."},
+          {who: "princess", text: "I remembered. I just never came. I'm sorry."},
+          {who: "miller", text: "Well, you came today. Will you take some bread? It's baked with the last of the old flour, but it's good."},
+          {who: "narr", text: "Princess takes the bread. Later, Tiggle finds her sitting on the riverbank with her book open, writing slowly."},
+          {who: "tiggle", text: "Another grievance?"},
+          {who: "princess", text: "No. Something I owe them. I've had to rule a line down the middle of the page to make room for it."},
+        ],
+        reward: sideReward(2, 'secondbook', 'princess'),
+      },
+    ],
+  },
+});
+
+// Each set's quests go on its route's side story list, in the order they open (as in 29-data-sides-more.js).
+for (const key of ['princess']){
   const set = SIDE_SETS[key], camp = CAMPAIGNS[set.camp], at = camp.stages.find(s => s.id === SIDE_OPENS[set.camp]);
   set.quests.forEach((q, k) => { Object.assign(q, {side: true, char: key, rank: k + 1, set, chapter: at.chapter, ci: at.ci, si: k}); camp.sides.push(q); });
 }
@@ -11698,7 +11898,8 @@ function tokenFor(u, variant){
   // your own units stand on your side's coaster, whatever their people (a monkey in the Raepublic stands on red)
   const L = LOOKS[u.look] || LOOKS.worker, F = (u.team === 'p' && FACTIONS[B?.pf]) || FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   const ally = u.team === 'a';   // allies stand on a blue coaster
-  const spar = u.team === 'e' && !!B?.ch?.spar;   // training opponents stand on grey (not real enemies who happen to share your side's colours)
+  // training opponents, and real enemies from your own side (frog against frog, rabbit against rabbit), stand on grey
+  const spar = u.team === 'e' && (!!B?.ch?.spar || u.faction === B?.pf);
   g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : spar ? '#e8e4da' : F.stitch, T*.5);
   const icon = artImage(u, 'token');
@@ -13366,7 +13567,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '56ebe3d5b63d';
+const BUILD_ID = '88931d99a919';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------

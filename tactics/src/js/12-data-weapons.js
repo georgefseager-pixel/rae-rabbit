@@ -81,6 +81,8 @@ const WEAPONS = {
                  desc: 'Driftwood from the beach, set with a shell from the rock pools and a sea-glass bead, with grip enough for two pairs of paws. The rabbits Tandy & Maus nursed through the fever carved it for them.'},
   grandmabess:  {name: 'Grandmama Bess',   type: 'hook',  stars: 3, mt: 4, hit: 10, crit: 10, owner: 'tilly',
                  desc: 'The hook of Bess Tealbottom, Tilly\'s great-great-grandmother, who robbed the King\'s tax ships for thirty years and bought the family title with the proceeds. It is black with salt, and her name is worked into the steel.'},
+  secondbook:   {name: 'The Second Book',  type: 'tome',  stars: 3, mt: 4, hit: 10, crit: 5, owner: 'princess',
+                 desc: 'The book Princess started on the coast road, on paper borrowed from the King\'s envoy. Every page is ruled down the middle: what she is owed on the left, and what she owes on the right.'},
   dawnegg:      {name: 'The Dawn Egg',     type: 'staff', stars: 3, mt: 4, hit: 0, crit: 0, owner: 'chansey',
                  desc: 'The lotus temple\'s egg, cold in its nest for three hundred years. Chansey found it warm on the night of her truce at the stream.'},
   // Chriggle Chraggle's own, should he ever need a better one: none yet. His class tome is the Naughty List.

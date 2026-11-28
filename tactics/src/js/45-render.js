@@ -313,7 +313,8 @@ function tokenFor(u, variant){
   // your own units stand on your side's coaster, whatever their people (a monkey in the Raepublic stands on red)
   const L = LOOKS[u.look] || LOOKS.worker, F = (u.team === 'p' && FACTIONS[B?.pf]) || FACTIONS[u.faction], ox = T*.3, oy = T*.3;
   const ally = u.team === 'a';   // allies stand on a blue coaster
-  const spar = u.team === 'e' && !!B?.ch?.spar;   // training opponents stand on grey (not real enemies who happen to share your side's colours)
+  // training opponents, and real enemies from your own side (frog against frog, rabbit against rabbit), stand on grey
+  const spar = u.team === 'e' && (!!B?.ch?.spar || u.faction === B?.pf);
   g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
   g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : spar ? '#e8e4da' : F.stitch, T*.5);
   const icon = artImage(u, 'token');

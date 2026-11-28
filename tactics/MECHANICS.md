@@ -158,6 +158,7 @@ and The Lesson, which only help the player.
 | `courier` (a boss) | as below, but a boss who reaches an exit has got away and the battle is LOST (`escapeFail` explains) | R3-2 (Lookout Pecan runs for the bell) |
 | `courier` | never attacks; runs for the nearest of the stage's `exits` and leaves the map there (`escaped`, not a kill). Enemy AI goes for couriers first (+25 target score) | December event (XM-R as enemies, XM-F as allies) |
 
+Enemies from your own side (frog against frog, rabbit against rabbit) stand on grey coasters, like training opponents.
 Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, `monkey`), `defects` (changes sides at a `defect` event), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
 `talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`,
 `parley` and `squad` (Talk, below), `fleeWord` (what a fleeing unit's popup says instead of Fled!/Yields!, e.g. "Falls back", "Disarmed").
@@ -358,8 +359,15 @@ F5-8 needs R5-7). Chapter Six is a stub ("Act Two").
   same on both routes; the Raepublic hears Rae's thoughts and ends with Flopsy at the lighthouse window, the
   Friggliarchy hears Tiggle's and ends on the road north ("Mustn't there?"). Both end "End of Act One".
 
-Princess joins the Friggliarchy after F5-6 (`CHARACTERS.princess`, Royal Heiress, tome, Every Grievance Noted). Her
-supports and side stories are still to be written. New speakers (generic looks): Colonel Grebe, Lieutenant Silt, and
+Princess joins the Friggliarchy after F5-6 (`CHARACTERS.princess`, Royal Heiress, tome, Every Grievance Noted), with
+supports with Tiggle (family: why she keeps a book; the King used them both; what she'd do with a crown; the new book's two
+columns) and side stories "Two Columns" (`29e-data-sides-princess.js`, recommended 13 · 14 · 14): PR-1 Years Ago: The
+Spring Hunt (a flashback: Princess, eleven, leads the pavilion guards against marsh brigands, and the King thanks Biggle;
+that night she starts the book), PR-2 The Writ (Lieutenant Silt comes to arrest her with the King's writ; Captain Wort
+tells her why he left her), PR-3 Lilyford (an escort: the villagers of her family's village carry their harvest to the
+ford while she holds off the eastern march's foragers); it ends with her own tome, The Second Book. In S she shows
+Tiggle the first page: the King's name, and a second column for what she owes. New speakers with generic frog looks:
+Mudge, Quartermaster Snipe, the Miller. New speakers (generic looks): Colonel Grebe, Lieutenant Silt, and
 Captains Moss, Rush, Pickerel, Lotus and Wort.
 
 ## Progression and unlocks
