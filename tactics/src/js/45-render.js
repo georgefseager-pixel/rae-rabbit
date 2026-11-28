@@ -306,21 +306,21 @@ function inkOf(img){
   for (let i = 3; i < px.length; i += 4) if (px[i] > 128) n++;
   const ink = Math.max(1, n/(k*k)); inkCache.set(img, ink); return ink;
 }
+const TEAM_COLOURS = {p: {fill: 'rgba(36,92,196,.95)', rim: '#8fc0ff', stitch: '#d8e8ff', bar: '#5aa0ff'},
+                      a: {fill: 'rgba(34,138,70,.95)', rim: '#8fe6a2', stitch: '#d8f5de', bar: '#5fd27a'},
+                      e: {fill: 'rgba(186,40,32,.95)', rim: '#ff8a78', stitch: '#ffe0da', bar: '#ff5a48'}};
+const teamColours = u => TEAM_COLOURS[u.team] || TEAM_COLOURS.e;
 function tokenFor(u, variant){
   const key = `${artResolve(u, 'token') || u.look}|${u.faction}|${u.team}|${u.w}|${variant}|${T}|${dpr}`;
   if (tokenCache.has(key)) return tokenCache.get(key);
   const S = Math.ceil(T*1.6), c = document.createElement('canvas'); c.width = S*dpr; c.height = S*dpr;
   const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  // your own units stand on your side's coaster, whatever their people (a monkey in the Raepublic stands on red)
-  const L = LOOKS[u.look] || LOOKS.worker, F = (u.team === 'p' && FACTIONS[B?.pf]) || FACTIONS[u.faction], ox = T*.3, oy = T*.3;
-  const ally = u.team === 'a';   // allies stand on a blue coaster
-  // training opponents, and real enemies from your own side (frog against frog, rabbit against rabbit), stand on grey
-  const spar = u.team === 'e' && (!!B?.ch?.spar || u.faction === B?.pf);
-  g.fillStyle = ally ? 'rgba(40,110,190,.92)' : spar ? 'rgba(92,92,100,.85)' : F.coaster; ell(g, ox + T*.5, oy + T*.8, T*.38, T*.1); g.fill();
-  // a bright rim says whose side a unit is on, whatever it looks like: gold for yours, red for enemies, light blue for allies
-  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.38, T*.1, 0, 0, Math.PI*2); g.lineWidth = Math.max(1.5, T*.055);
-  g.strokeStyle = u.team === 'p' ? '#ffd75e' : ally ? '#9fd4ff' : '#ff4b3a'; g.stroke();
-  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, ally ? '#cfe6ff' : spar ? '#e8e4da' : F.stitch, T*.5);
+  // Team colours, whatever a unit's people or faction (as in most tactics games): blue coaster for yours, green for allies
+  // who fight on their own, red for enemies; a bright rim and a stitched ring in the same colour (TEAM_COLOURS).
+  const L = LOOKS[u.look] || LOOKS.worker, ox = T*.3, oy = T*.3, TC = teamColours(u);
+  g.fillStyle = TC.fill; ell(g, ox + T*.5, oy + T*.8, T*.4, T*.11); g.fill();
+  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.4, T*.11, 0, 0, Math.PI*2); g.lineWidth = Math.max(1.8, T*.065); g.strokeStyle = TC.rim; g.stroke();
+  g.beginPath(); g.ellipse(ox + T*.5, oy + T*.8, T*.31, T*.065, 0, 0, Math.PI*2); stitchStroke(g, TC.stitch, T*.5);
   const icon = artImage(u, 'token');
   if (artFor(u, 'token') && !icon) return c;   // art still decoding: draw nothing yet and don't cache
   if (icon){
@@ -353,7 +353,7 @@ function drawUnit(u, now){
   const bw = T*.62, bh = Math.max(3, T*.075), bx = X + T*.5 - bw/2 - T*.06, by = Y + T*.9;
   ctx.fillStyle = '#120c0a'; ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
   const ratio = clamp(u.shp/u.mhp, 0, 1);
-  ctx.fillStyle = ratio > .5 ? '#6fbf6a' : ratio > .25 ? '#e0b44c' : '#e0533d'; ctx.fillRect(bx, by, bw*ratio, bh);
+  ctx.fillStyle = teamColours(u).bar; ctx.fillRect(bx, by, bw*ratio, bh);   // HP bars in the team colour too
   if (u.naughty){ ctx.font = `${Math.round(T*.3)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📜', X + T*.12, Y + T*.1); }   // on Chriggle Chraggle's Naughty List
   ctx.restore();
 }
@@ -425,9 +425,9 @@ function render(now){
     const t = triangle(sel.w, e.w); if (!t) continue;
     triangleArrow(ctx, (e.px + e.ox + .18)*T, (e.py + e.oy + .22)*T + Math.sin(now/220)*T*.03, T*.21, t > 0);
   }
-  // Danger view: each unit's weapon, large, over its token, ringed by side (enemies red, yours gold, allies blue)
+  // Danger view: each unit's weapon, large, over its token, ringed in its team colour (yours blue, allies green, enemies red)
   if (showDanger && !busy) for (const u of units) if (!u.dead && u.alpha > .5){
-    const side = sideOfTeam(u), ring = u.team === 'a' ? '#8cc4ff' : side === 'p' ? '#f2d27a' : '#ff6a5a';
+    const ring = teamColours(u).rim;
     weaponBadge(ctx, u, (u.px + u.ox + .56)*T, (u.py + u.oy + .54)*T, T*.44, ring);
   }
   for (const s of shots){

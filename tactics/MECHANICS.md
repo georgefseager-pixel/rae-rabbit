@@ -16,8 +16,8 @@ Field-level details live in the comments at the top of `src/js/25-data-campaign.
 | Crit | Skl/2 + weapon crit − enemy Skl/4 |
 | Double attack | Spd at least 4 higher than the enemy's |
 | Weapon triangle | Two triangles. Melee: sword beats axe, axe beats lance, lance beats sword. Ranged: tome beats bow, bow beats hook, hook beats tome. A win is +1 damage, +15 hit. Shown as a diagram with `{show: 'triangle'}` |
-| Team rims | every unit's coaster has a bright rim: gold for yours, red for enemies, light blue for allies (so the sides are clear even when both armies look alike) |
-| Weapon badges | every map token carries its weapon's badge, coloured by weapon (swords red, axes green, lances blue, bows gold, tomes purple, staves pale teal). Danger view covers each unit with a large badge, ringed red (enemies), gold (yours) or blue (allies) |
+| Team colours | every unit stands on a coaster in its team's colour, with a bright rim and an HP bar to match: blue for yours, green for allies who act on their own, red for enemies (whatever their faction: frog against frog is still blue against red). `TEAM_COLOURS` in `45-render.js` |
+| Weapon badges | every map token carries its weapon's badge, coloured by weapon (swords red, axes green, lances blue, bows gold, tomes purple, staves pale teal). Danger view covers each unit with a large badge, ringed in its team colour |
 | Triangle arrows | with one of your units selected, each enemy shows a green ▲ (top left of its token) if your weapon beats theirs, a red ▼ if theirs beats yours (tomes over bows included) |
 | Ranges | Bows (and whips) 2 only, so no counterattack up close. Tomes 1–2. Hooks 2 only. Staves heal an adjacent ally (8 + Atk/2) and can't attack |
 | Hooks (Chapter Four on) | On a hit, the target is pulled one square closer (into the square beside the hook). No pull if that square is blocked by a unit or by ground the target can't stand on. A pulled melee fighter strikes back from beside the hook; a pulled ranged one (bow, tome, hook) can't. Reach is checked before every blow, so a pull can also cancel the hook's own follow-up. The forecast says what the pull will do. Used by the pirates' Grapplers (R4-4 on, DK-1) and Tilly Tealbottom (F4-3, then the Champions of the Lists banner). Enemy hooks plan their pulls: they favour readers (who can't strike back once pulled), targets on good cover, and landing squares next to their own allies, and they count a pulled melee fighter's counter; ★/★★ Grapplers on the Pirates of the Satin Sea banner. Fish and shark Grapplers have hook poses (`art/fishhook-battle.png`, `art/sharkhook-battle.png`). Willow reminds you of the rules before R4-4, the first fight with them |
@@ -159,7 +159,6 @@ and The Lesson, which only help the player.
 | `courier` (a boss) | as below, but a boss who reaches an exit has got away and the battle is LOST (`escapeFail` explains) | R3-2 (Lookout Pecan runs for the bell) |
 | `courier` | never attacks; runs for the nearest of the stage's `exits` and leaves the map there (`escaped`, not a kill). Enemy AI goes for couriers first (+25 target score) | December event (XM-R as enemies, XM-F as allies) |
 
-Enemies from your own side (frog against frog, rabbit against rabbit) stand on grey coasters, like training opponents.
 Spawn extras: `faction` (fight for another side; Monkeyland is its own faction, `monkey`), `defects` (changes sides at a `defect` event), `boss`, `elite` (★★ art and +stats), `flees` (escapes when beaten; "yields" in a training fight),
 `talk` (lines the first time it's fought), `vip` (an ally that must survive), `key`, `name`, `look`, `bonus`,
 `parley` and `squad` (Talk, below), `fleeWord` (what a fleeing unit's popup says instead of Fled!/Yields!, e.g. "Falls back", "Disarmed").
