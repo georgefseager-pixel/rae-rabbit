@@ -12148,15 +12148,25 @@ function dexEnt(e){
   if (e.kind === 'char'){ const own = recs.find(x => x.r.key === e.key)?.r; return own ? {...own, attire: null} : recordFor(e.key); }
   if (e.kind === 'attire') return {key: e.key, look: CHARACTERS[e.key]?.look || e.key, attire: e.attire, faction: e.faction};
   // a company: a random soldier of it (any of its classes, any of its colours), rolled afresh each time the Collection opens
-  const roll = DEX_ROLL[e.id] ||= {seed: 'dex-' + Math.random().toString(36).slice(2), cls: e.classes[Math.floor(Math.random()*e.classes.length)]};
-  return {key: 'recruit', uid: roll.seed, name: roll.seed, look: CLASS_LOOK[roll.cls], cls: roll.cls, stars: e.stars, faction: e.faction};
+  // Colours still being dyed in the background are skipped (a few tries); if none are ready yet, dexArt shows the undyed art.
+  const make = r => ({key: 'recruit', uid: r.seed, name: r.seed, look: CLASS_LOOK[r.cls], cls: r.cls, stars: e.stars, faction: e.faction});
+  const pick = () => ({seed: 'dex-' + Math.random().toString(36).slice(2), cls: e.classes[Math.floor(Math.random()*e.classes.length)]});
+  if (!DEX_ROLL[e.id]){ let r = pick(); for (let k = 0; k < 40 && !(artFor(make(r), 'token') && artFor(make(r), 'portrait')); k++) r = pick(); DEX_ROLL[e.id] = r; }
+  return make(DEX_ROLL[e.id]);
 }
 // the tile picture: the map-icon head (its outline makes a readable silhouette), or the portrait if there's no icon
 // the tile picture: always the map icon the game uses for it (a costume without its own icon uses the character's),
 // whose outline also makes a readable silhouette; the portrait only if there is no icon at all
-const dexFace = ent => { const t = artFor(ent, 'token'); return t ? `<img class="dface" alt="" src="${t}">` : portraitInner(ent, 'panel'); };
+// art for an entry; a soldier whose colours aren't dyed yet shows its company's undyed art (never a plush placeholder)
+function dexArt(ent, kind){
+  const a = artFor(ent, kind); if (a || ent.key !== 'recruit') return a;
+  const sp = speciesOf(ent); if (!sp) return undefined;
+  const e = ent.stars === 2, b = sp.base === 'fish' && e ? 'shark' : sp.base;
+  for (const k of [b + (e && b !== 'shark' ? 'elite' : ''), b]) if (ART[k]?.[kind]) return ART[k][kind];
+}
+const dexFace = ent => { const t = dexArt(ent, 'token'); return t ? `<img class="dface" alt="" src="${t}">` : portraitInner(ent, 'panel'); };
 // the card picture: the whole portrait (a silhouette until collected)
-const dexFull = ent => { const a = artFor(ent, 'portrait'); return `<img class="dfull" alt="" src="${a || plushPortrait(ent.look)}">`; };
+const dexFull = ent => { const a = dexArt(ent, 'portrait'); return `<img class="dfull" alt="" src="${a || plushPortrait(ent.look)}">`; };
 const dexName = e => e.kind === 'char' ? charName(e.key) : e.kind === 'attire' ? ATTIRES[e.attire].name : e.name;
 
 // Redraw an open Collection in place (once soldiers' recoloured art is ready), keeping the scroll position.
@@ -12391,7 +12401,7 @@ setInterval(() => {
 // screen. This file covers what that needs from inside the game: backing up and restoring the save, asking the
 // browser to keep the save safe, and noticing when a new version has been published.
 //   BUILD_ID   set by the build; tactics/web/version.json holds the newest one
-const BUILD_ID = '50d64cb2c300';
+const BUILD_ID = '3c36f9f0023c';
 const hosted = () => /^https?:$/.test(location.protocol) && !!document.querySelector('link[rel="manifest"]');
 
 // ---------- Save backup ----------
