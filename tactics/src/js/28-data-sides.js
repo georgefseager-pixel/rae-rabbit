@@ -15,7 +15,7 @@ const SIDE_OPENS = SUPPORT.opensAfter;
 
 const SIDE_SETS = {
   // ---------- Willow's Lessons: Willow trains Rae on the practice field. Each teaches one thing. ----------
-  willow: {camp: 'rae', title: 'Willow\'s Lessons', about: 'Three training fights on the practice field. Willow leads a squad against Rae, with wooden weapons, and each fight teaches one thing about winning battles.',
+  willow: {camp: 'rae', title: 'Willow\'s Lessons', about: 'Three training fights on the practice field, where Willow leads a squad against Rae. Each one teaches a single lesson about how battles are won.',
     quests: [
       {
         id: 'WL-1', title: 'Lesson One: The High Ground', map: 'ridge', enemyFaction: 'rae', enemyLine: 'WILLOW\'S SQUAD ADVANCES',
@@ -71,7 +71,7 @@ const SIDE_SETS = {
           {who: 'willow', text: 'Three piles: swords, axes and spears. Nearly every soldier on that field is carrying one of them.'},
           {show: 'triangle'},
           {who: 'willow', text: 'A sword beats an axe. An axe beats a spear. A spear beats a sword. Win the match-up and you hit a little harder and miss less often.'},
-          {who: 'rae', text: 'And if I get it wrong, they get that over me.'},
+          {who: 'rae', text: 'And if I get it wrong, it works for them instead.'},
           {who: 'willow', text: 'Yes. My axes are over the west bridge, my spears over the east. Who are you sending where?'},
           {who: 'rae', text: 'Swords to the west bridge, axes to the east. Spears for your guards.'},
         ],
@@ -109,10 +109,9 @@ const SIDE_SETS = {
           {who: 'willow', text: 'You won\'t be behind them. You\'ll be among them, where they can reach you and the enemy can\'t.'},
         ],
         post: [
-          {who: 'willow', text: 'None of my soldiers landed a blow on you. Every time one tried, someone of yours was in the way.'},
-          {who: 'rae', text: 'I hardly fought at all. Every time I moved forward, someone moved up beside me.'},
-          {who: 'willow', text: 'That\'s what I wanted you to see. Together, you\'re far harder to beat than any of you alone.'},
-          {who: 'willow', text: 'Come and find me this evening, Rae. I\'d like to tell you properly about the rabbit I trained before you.'},
+          {who: 'willow', text: 'You came through those gaps together every time. I kept looking for one of you on your own, and I couldn\'t find one.'},
+          {who: 'rae', text: 'You look tired, Willow.'},
+          {who: 'willow', text: 'I am, a little. Come and find me tonight, Rae. I want to tell you more about the friend I lost.'},
         ],
         reward: {res: 600, tokens: 3},
       },
@@ -214,7 +213,7 @@ const SIDE_SETS = {
           {scene: 'woods', place: 'The Meadow · Evening'},
           {who: 'narr', text: 'The meadow is where Flopsy Flora said it would be, but there is no colour left in it.'},
           {who: 'narr', text: 'The frogs have torn up every flower and piled them into a wall across the field, with two gaps in it. Behind it are a stockade and Sergeant Sludge.'},
-          {who: 'sister', text: 'They pulled them all up for a wall.'},
+          {who: 'sister', text: 'There were meant to be flowers of every colour here.'},
           {who: 'republic', text: 'Flopsy Flora, it\'s getting dark. We could go home now, and nobody would blame you.'},
           {who: 'sister', text: 'No. If we go home, they keep that stockade, right on the Republic\'s doorstep. We\'re going to take the wall down.'},
           {who: 'sister', text: 'Stay together at the gaps, and don\'t let anyone get cut off.'},

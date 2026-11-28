@@ -242,7 +242,7 @@ function recruitTutorial(ck){
   SAVE.flags['tut-recruit-' + ck] = true; saveGame();
   const a = GACHA_ARMY[ck], F = FACTIONS[CAMPAIGNS[ck].faction], R = GACHA.rarity;
   const hello = ck === 'rae'
-    ? 'Word of you is spreading through the tunnels, Rae Rabbit. Rabbits are coming to find you. Let\'s see who answers.'
+    ? 'Word of you has spread through the tunnels, Rae. Rabbits are slipping out of the mines to find you. Let\'s send word back and see who comes.'
     : 'The crown rewards loyalty, little brother. Put out the call and see who answers it.';
   return talk([
     {who: a.guide, text: hello},

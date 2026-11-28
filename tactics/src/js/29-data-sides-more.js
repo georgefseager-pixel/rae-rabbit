@@ -49,7 +49,7 @@ Object.assign(SIDE_SETS, {
         brief: 'Magpie asked Brigand to meet her. Waiting on the trail is a crown reeve with a price on Brigand\'s head, and the gang is working for him. Defeat the reeve.',
         prepNote: 'Brigand must come. Magpie\'s gang fight beside the frogs.',
         enemies: () => [
-          E('lily',4,4,0,'hold',{boss: true, key: 'reeve', name: 'Reeve Puddock', look: 'guard'}),
+          E('lily',4,4,0,'hold',{boss: true, flees: true, key: 'reeve', name: 'Reeve Puddock', look: 'guard'}),   // flees: he's back in BR-3
           E('captain',4,5,3,'charge',{faction: 'rae', flees: true, key: 'magpie', name: 'Magpie', look: 'workerBig', fur: 'chocolate', talk: [
             {who: 'magpie', text: "It isn't personal. The reeve pays in silver, and we've had a thin year since you left."},
             {who: 'brigand', text: "You'd sell me to the crown, Magpie? After all our years on the road?"},

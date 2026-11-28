@@ -114,9 +114,9 @@ function campTutorial(ck){
   const lord = CAMPAIGNS[ck].lord, F = FACTIONS[CAMPAIGNS[ck].faction];
   return talk([
     {who: lord, text: ck === 'rae' ? 'A night without guards or bells. We should use it to get to know who\'s standing with us.'
-                                  : 'Biggle says a prince should know his soldiers. On that, at least, he may be right.'},
+                                  : 'Biggle says a prince should know his soldiers by name. I think he\'s right, and I\'d like to start tonight.'},
     {who: 'narr', text: `The Camp is open. Here, ${speakerName(lord)} can spend time with the unique (★★★) members of the army.`},
-    {who: 'narr', text: 'Each of them has support conversations, ranked C, B and A (and, for some, a final rank: S). Some become friends. Others have something to teach. Every rank makes them permanently stronger.'},
+    {who: 'narr', text: 'Each of them has support conversations, ranked C, B and A, and some have a final rank, S. Every rank you unlock makes them permanently stronger.'},
     {who: 'narr', text: `Unlocking a rank costs ${F.currency}: ${SUPPORT.cost.C} for C, ${SUPPORT.cost.B} for B, ${SUPPORT.cost.A} for A. Anything you've unlocked can be watched again at any time.`},
     {who: 'narr', text: 'To visit, tap Camp.'},
     ...sideTutorialLines(ck),

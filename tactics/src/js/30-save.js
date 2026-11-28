@@ -34,6 +34,13 @@ function migrateSave(s){
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => r.key !== 'persimmon');
   // the unused placeholder banner characters were removed
   for (const st of Object.values(s.camps)) if (st.roster) st.roster = st.roster.filter(r => !['lantern', 'ironear', 'duckweed', 'glimmer', 'bogsworth'].includes(r.key));
+  // a story character who joined without stats (Ducky's stats were lost from his data for a while): rebuild them from
+  // his starting stats, plus average growth for the levels he has gained since
+  for (const st of Object.values(s.camps)) for (const r of st.roster || []){ const c = CHARACTERS[r.key];
+    if (!c?.stats || (r.stats && Number.isFinite(r.stats.mhp))) continue;
+    r.stats = {...c.stats}; const g = growthOf(r), up = Math.max(0, (r.lv || c.lv) - c.lv);
+    for (const k of ['mhp', 'atk', 'def', 'spd', 'skl']) r.stats[k] += Math.round((g[k] || 0)/100*up);
+  }
   // Biggle became a Court Knight (sword, as his art shows), not a Lily Knight (lance): a carried lance goes back to the Armoury
   for (const st of Object.values(s.camps)) for (const r of st.roster || []) if (r.key === 'biggle' && r.cls === 'lilyknight'){
     r.cls = 'courtknight'; if (r.wname === 'Royal Halberd') r.wname = CLASSES.courtknight.wname;
